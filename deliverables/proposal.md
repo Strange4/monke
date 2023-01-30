@@ -256,7 +256,6 @@ Login/register page (can make popup box instead):
 List of features presented:
 * Register (Create a new account)
 * Login
-* Forgot password option
 
 Submit Quote UI:
 ![alt_text](images/quoteSubmissionPage.png "quote submission page")
