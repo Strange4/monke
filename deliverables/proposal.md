@@ -226,6 +226,8 @@ List of features presented:
     * Etc.
 * Start button (shown to lobby creator only)
 * Progress bar to display each player’s progress
+* Quotes/text choosen will be random
+* Can join/create lobbys from here (lobbys are created and deleted as needed)
 ---
 Browse and Details page UI:
 ![alt_text](images/browsePage.png "browse page")
@@ -239,6 +241,8 @@ List of features presented:
 * Filter functionality (filter by category/origin)
 * Sort functionality
 * Search functionality (searches the text and origin)
+* Cannot choose specific quotes to write (submitted quotes will be added to the pool)
+* Stats are not tied to specific text
 
 User/profile page:
 ![alt_text](images/userProfilePage.png "user profile page")
