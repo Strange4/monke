@@ -124,16 +124,14 @@ Importance of users corresponding to this persona: 80% of the users
 Broad goal: wants to be better at typing (faster and less mistakes)
 
 User stories (give at least 2):
-
-
-
 1. _Uses a computer daily and finds that their typing ability does not match their thinking speed. They want to be able to type as fast as they think_
+    - ability to display the stats related to their typing
+    - display a variety of texts at random in order to practice on different types of texts
 2. _Wants to have a sense of competition between friends and show their improvement._
-
-
+    - multiplayer functionality
+    - ability to see opponents progress compared to yours
+    - leaderboard
 ---
-
-
 ### **User persona 2**
 
 Persona description: Office clerk
@@ -145,13 +143,12 @@ Importance of users corresponding to this persona: 15% of the users (not as big 
 Broad goal: she wants to type faster to keep up with the typing speeds required by her job.
 
 User stories (give at least 2):
-
-
-
 1. _Her boss started hiring more people at the office company. She feels that she has to keep up or she risks missing on the promotions she deserves 🙏_
+    - Ability to select the difficulty of the text by choosing what kind of characters to have in the text
+    - ability to choose the language of the text that is more suitable to the user
 2. _She always wanted to learn how to type without looking at the keyboard. She wants to improve_
-
-
+    - have a section with links on articles about how to get better
+    - ability to play as many time as the user want, with ability to track progress
 ---
 
 **User persona 3**
@@ -162,14 +159,16 @@ Name: Bob
 
 Importance of users corresponding to this persona: 5% of the users 
 
-Broad goal: He’s simply curious to see his score without any goal to improve
+Broad goal: He likes to write and would want to submit his texts and see them show up
 
 User stories (give at least 2):
+1. _Bob wants to see his texts show up on the website for others to type while playing_
+    - submit your own text functionality
+    - admin review process for texts to make sure the texts are appropriate
+2. _Bob is curious about what he previously submitted, wants to be able to view remove the texts_
+    - display of user's text submission along with their status
+    - delete previously sent text submission
 
-
-
-3. _He was bored browsing on his computer and got curious about what his typing speed is_
-4. _Mykyta keeps asking him what his typing speed is and wants to compare to see who is better_
 ---
 
 ## **Mockups**
