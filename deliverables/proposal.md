@@ -131,6 +131,9 @@ User stories (give at least 2):
     - multiplayer functionality
     - ability to see opponents progress compared to yours
     - leaderboard
+    - ability to log in
+    - retrieve and store past results and text used
+    - ability to launch game from profile
 ---
 ### **User persona 2**
 
@@ -163,9 +166,12 @@ Broad goal: He likes to write and would want to submit his texts and see them sh
 
 User stories (give at least 2):
 1. _Bob wants to see his texts show up on the website for others to type while playing_
+    - ability to log in
     - submit your own text functionality
     - admin review process for texts to make sure the texts are appropriate
 2. _Bob is curious about what he previously submitted, wants to be able to view remove the texts_
+    - ability to login
+    - store previously sent texts
     - display of user's text submission along with their status
     - delete previously sent text submission
 
