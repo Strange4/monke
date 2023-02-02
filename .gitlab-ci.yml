@@ -41,16 +41,17 @@ deploy-job:
   only:
     - main
     - staging
+    - 1-basic-project-set-up
   stage: deploy
   image: mcr.microsoft.com/azure-cli
   dependencies:
     - client-build-job
     - server-build-job
   # before_script:
-    # - "az login --allow-no-subscriptions --service-principal -u $AZ_SP_ID -p $AZ_SP_SECRET --tenant $AZ_TENANT"
+    - "az login --allow-no-subscriptions --service-principal -u $AZ_SP_ID -p $AZ_SP_SECRET --tenant $AZ_TENANT"
   script:
-    - echo "FAKE deploying"
-    # - echo "Deploying server... 🐱‍💻"
-    # - zip -r deploy.zip client/build server ./package.json
-    # - "az webapp deployment source config-zip --resource-group $RESOURCE_GROUP_NAME --name $APP_NAME --src deploy.zip"
-    # - echo "Server deployed bring the campagne! 🎉🎉🎉"
+    # - echo "FAKE deploying"
+    - echo "Deploying server... 🐱‍💻"
+    - zip -r deploy.zip client/build server ./package.json
+    - "az webapp deployment source config-zip --resource-group $RESOURCE_GROUP_NAME --name $APP_NAME --src deploy.zip"
+    - echo "Server deployed bring the campagne! 🎉🎉🎉"
