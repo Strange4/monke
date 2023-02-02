@@ -47,7 +47,7 @@ deploy-job:
   dependencies:
     - client-build-job
     - server-build-job
-  # before_script:
+  before_script:
     - "az login --allow-no-subscriptions --service-principal -u $AZ_SP_ID -p $AZ_SP_SECRET --tenant $AZ_TENANT"
   script:
     # - echo "FAKE deploying"
