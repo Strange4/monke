@@ -1,0 +1,56 @@
+image: node:latest
+
+stages:
+  - build
+  - test
+  - deploy
+
+client-build-job:
+  stage: build
+  script:
+    - echo "Building client 🔨"
+    - cd client
+    - npm install
+    - CI=false npm run build
+    - echo "Client Build successful :D 🐱‍🚀"
+  artifacts:
+    expire_in: 1 days
+    paths:
+      - ./client/build
+      - ./client/node_modules
+
+server-build-job:
+  stage: build
+  script:
+    - echo "Building server 🔨"
+    - cd server
+    - npm install
+    - echo "Server Build successful :D 🐱‍🚀"
+  artifacts:
+    expire_in: 1 days
+    paths:
+      - ./server/node_modules
+
+test-job:
+  stage: test
+  script:
+    - echo "Testing 🧪🔬"
+    # - npm run test
+    
+deploy-job:
+  only:
+    - main
+    - staging
+  stage: deploy
+  image: mcr.microsoft.com/azure-cli
+  dependencies:
+    - client-build-job
+    - server-build-job
+  # before_script:
+    # - "az login --allow-no-subscriptions --service-principal -u $AZ_SP_ID -p $AZ_SP_SECRET --tenant $AZ_TENANT"
+  script:
+    - echo "FAKE deploying"
+    # - echo "Deploying server... 🐱‍💻"
+    # - zip -r deploy.zip client/build server ./package.json
+    # - "az webapp deployment source config-zip --resource-group $RESOURCE_GROUP_NAME --name $APP_NAME --src deploy.zip"
+    # - echo "Server deployed bring the campagne! 🎉🎉🎉"
