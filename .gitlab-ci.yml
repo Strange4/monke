@@ -16,8 +16,8 @@ client-build-job:
   artifacts:
     expire_in: 1 days
     paths:
-      - ./client/build
-      - ./client/node_modules
+      - client/build
+      - client/node_modules
 
 server-build-job:
   stage: build
@@ -29,7 +29,7 @@ server-build-job:
   artifacts:
     expire_in: 1 days
     paths:
-      - ./server/node_modules
+      - server/node_modules
 
 test-job:
   stage: test
