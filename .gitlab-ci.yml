@@ -41,7 +41,6 @@ deploy-job:
   only:
     - main
     - staging
-    - 1-basic-project-set-up
   stage: deploy
   image: mcr.microsoft.com/azure-cli
   dependencies:
