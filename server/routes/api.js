@@ -27,7 +27,7 @@ router.use(async function (_, res) {
 * Get method for the user stat
 */
 router.get(`${apiRoute}user_stat`, async () => {
-
+	
 })
 
 export default router;
