@@ -11,14 +11,23 @@ const router = express.Router();
 
 router.use(express.json());
 
+const apiRoute = "/api/";
+
 router.use("/", async function (_, res) {
   console.log("here")
   res.json("Success! Getting to the api!");
 });
 
 
-router.use(function (_, res) {
+router.use(async function (_, res) {
   res.status(404).json({ error: "Not Found" });
 });
+
+/*
+* Get method for the user stat
+*/
+router.get(`${apiRoute}user_stat`, async () => {
+
+})
 
 export default router;
