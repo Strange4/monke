@@ -1,0 +1,15 @@
+#navbar {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+#navbar li{
+  list-style-type: none;
+}
+
+a:link {
+  text-decoration: none;
+}

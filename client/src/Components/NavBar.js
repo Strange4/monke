@@ -1,5 +1,5 @@
-import React, {useState} from "react";
 import {Link} from 'react-router-dom';
+import './Styles/NavBar.css';
 
 /**
  * Navigation bar to be used on all pages
