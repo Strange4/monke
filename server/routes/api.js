@@ -14,7 +14,7 @@ const quoteRoute = "/quote";
 router.use(express.json());
 
 /**
- * endpoint randomly picks from a random hardcoded quote and sends it to the user
+ * endpoint randomly picks a hardcoded quote and sends it to the user
  */
 router.get("/quote", async function (_, res) {
   const quotes = 
