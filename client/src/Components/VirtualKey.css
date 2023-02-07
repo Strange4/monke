@@ -1,0 +1,50 @@
+:root {
+  --roundness: 0.5rem;
+  --font: "Roboto Mono", "Vazirmatn", sans-serif;
+  font-weight: 400;
+  scroll-padding-top: 2rem;
+  --bg-color: #323437;
+  --sub-color: #646669;
+  --sub-alt-color: #2c2e31;
+  --text-color: #d1d0c5;
+}
+
+.keyboard-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0.05em solid;
+  border-color: var(--sub-color);
+  border-radius: var(--roundness);
+}
+
+.keyboard-key {
+  font: --font;
+  align-items: center;
+  background-color: transparent;
+  border: 0.05rem solid;
+  border-color: var(--sub-color);
+  border-radius: var(--roundness);
+  color: var(--sub-color);
+  display: flex;
+  height: 2rem;
+  width: 2rem;
+  justify-content: center;
+}
+
+.vertical {
+  flex-direction: column;
+}
+
+.horizontal {
+  display: flex;
+  flex-direction: row;
+}
+
+.space {
+  width: 15em;
+}
+
+.pressed {
+  background-color: red;
+}
