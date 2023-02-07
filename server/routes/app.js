@@ -15,7 +15,7 @@ app.use("/api", api);
 
 //default 404 route
 app.use(function (_, res) {
-  res.status(404).json({ error: "Not Found." });
+    res.status(404).json({ error: "Not Found." });
 });
 
 export default app;
