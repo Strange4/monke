@@ -5,10 +5,18 @@ function VirtualKeyboard(props) {
   return (
     <div className="keyboard-container vertical">
       {
-        props.allKeys.map((row, i) => {
+        props.currentKeys.map((row, i) => {
           return (
             <div key={i} className="horizontal">
-              {row.map((key, i) => <VirtualKey key={i} classValue={`${key === " " ? "space" : ""}`} keyValue={key} keyCode={cleanUpLetter(key)} />)}
+              {
+                row.map((key, i) => {
+                  return <VirtualKey 
+                    key={i} 
+                    classValue={`${key === " " ? "space" : ""}`} 
+                    keyValue={key} 
+                    keyCode={cleanUpLetter(key)} />
+                })
+              }
             </div>
           )
         })
