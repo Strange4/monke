@@ -46,5 +46,6 @@
 }
 
 .pressed {
-  background-color: red;
+  background-color: var(--bg-color);
+  color: var(--text-color)
 }

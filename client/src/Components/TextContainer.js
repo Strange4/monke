@@ -14,7 +14,7 @@ function TextContainer(props) {
       }, 100)
     }
     else {
-      console.log("not here " + props.allKeys)
+      console.log("not here => " + letter)
     }
   }
 
