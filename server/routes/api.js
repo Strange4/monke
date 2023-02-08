@@ -12,13 +12,26 @@ const router = express.Router();
 router.use(express.json());
 
 
-const userStat = "/user_stat"
+const userStat = "/user_stat";
 const quote = "/quote";
+const user = "/user";
+
+/**
+ * Get endpoint that returns a hardcoded user
+ */
+router.get(user, async (_, res) => {
+    const user = {
+        username: "anonymous",
+        // eslint-disable-next-line max-len
+        profileURL: "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Transparent-Image.png" 
+    };
+    res.status(200).json(user);
+});
 
 /*
 * Get method for the user stat
 */
-router.use(userStat, async (req, res) => {
+router.get(userStat, async (req, res) => {
 
     // Get the name from the url and search for the stats in the database.
     let user = req.query.name;
