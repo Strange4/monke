@@ -91,11 +91,7 @@ router.use("/", async function (_, res) {
 });
 
 
-<<<<<<< HEAD
-router.use(function (_, res) {
-=======
 router.use(async function (_, res) {
->>>>>>> 2bf4a6b95d319e31e1b3e897c83200dd9bea8f4a
     res.status(404).json({ error: "Not Found" });
 });
 

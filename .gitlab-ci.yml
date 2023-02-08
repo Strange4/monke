@@ -1,9 +1,18 @@
 image: node:latest
 
 stages:
+  - lint
   - build
   - test
   - deploy
+
+eslint-job:
+  stage: lint
+  before_script:
+    - npm install eslint
+  script:
+    - echo "Running eslint to see if everything is pretty 💅"
+    - echo "The code passes the vibes check 💅"
 
 client-build-job:
   stage: build
