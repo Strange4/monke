@@ -12,13 +12,28 @@ const router = express.Router();
 router.use(express.json());
 
 
-const userStat = "/user_stat"
+const userStat = "/user_stat";
 const quote = "/quote";
+const user = "/user";
+
+/**
+ * Get endpoint that returns a hardcoded json object containing
+ * username and temporary profileURL
+ */
+router.get(user, async (_, res) => {
+    const user = {
+        username: "anonymous",
+        // eslint-disable-next-line max-len
+        profileURL: "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Transparent-Image.png" 
+    };
+
+    res.status(200).json(user);
+});
 
 /*
 * Get method for the user stat
 */
-router.use(userStat, async (req, res) => {
+router.get(userStat, async (req, res) => {
 
     // Get the name from the url and search for the stats in the database.
     let user = req.query.name;
@@ -43,7 +58,7 @@ router.use(userStat, async (req, res) => {
 /**
  * endpoint randomly picks a hardcoded quote and sends it to the user
  */
-router.get(quote, async function (_, res) {
+router.get(quote, async (_, res) => {
     const quotes = 
     [
         "This is a random quote that I wrote on the spot.",
@@ -85,13 +100,13 @@ router.get(quote, async function (_, res) {
     res.status(200).json({ body: quotes[randQuote] });
 });
 
-router.use("/", async function (_, res) {
+router.use("/", async (_, res) => {
     console.log("here")
     res.json("Success! Getting to the api!");
 });
 
 
-router.use(async function (_, res) {
+router.use(async (_, res) => {
     res.status(404).json({ error: "Not Found" });
 });
 
