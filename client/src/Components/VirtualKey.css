@@ -32,6 +32,10 @@
   justify-content: center;
 }
 
+.keyboard-key {
+  transition: all 0.1s linear;
+}
+
 .vertical {
   flex-direction: column;
 }
