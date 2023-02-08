@@ -17,7 +17,8 @@ const quote = "/quote";
 const user = "/user";
 
 /**
- * Get endpoint that returns a hardcoded user
+ * Get endpoint that returns a hardcoded json object containing
+ * username and temporary profileURL
  */
 router.get(user, async (_, res) => {
     const user = {
@@ -25,6 +26,7 @@ router.get(user, async (_, res) => {
         // eslint-disable-next-line max-len
         profileURL: "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Transparent-Image.png" 
     };
+
     res.status(200).json(user);
 });
 
