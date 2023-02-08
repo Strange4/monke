@@ -58,7 +58,7 @@ router.get(userStat, async (req, res) => {
 /**
  * endpoint randomly picks a hardcoded quote and sends it to the user
  */
-router.get(quote, async function (_, res) {
+router.get(quote, async (_, res) => {
     const quotes = 
     [
         "This is a random quote that I wrote on the spot.",
@@ -100,13 +100,13 @@ router.get(quote, async function (_, res) {
     res.status(200).json({ body: quotes[randQuote] });
 });
 
-router.use("/", async function (_, res) {
+router.use("/", async (_, res) => {
     console.log("here")
     res.json("Success! Getting to the api!");
 });
 
 
-router.use(async function (_, res) {
+router.use(async (_, res) => {
     res.status(404).json({ error: "Not Found" });
 });
 
