@@ -1,3 +1,8 @@
+:root {
+    --primary: red;
+    --secondary: green;
+}
+
 .App {
   text-align: center;
 }
@@ -35,4 +40,11 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+span.right{
+    color: var(--primary)
+}
+span.wrong{
+    color: var(--secondary)
 }
