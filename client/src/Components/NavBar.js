@@ -10,26 +10,26 @@ import Lobby from './Lobby';
  */
 const NavBar = () => {
 
-  return(
-    <div id="navbar">
-      <li>
-        <Link to="/">Home</Link>
-      </li>
-      <li>
-        <Popup trigger={<a>Leaderboard</a>}>
-          <Leaderboard />
-        </Popup>
-      </li>
-      <li>
-        <Popup trigger={<a>Lobby</a>}>
-          <Lobby />
-        </Popup>
-      </li>
-      <li>
-        <Link to="/profile">Profile</Link>
-      </li>
-    </div>
-  )
+    return(
+        <div id="navbar">
+            <li>
+                <Link to="/">Home</Link>
+            </li>
+            <li>
+                <Popup trigger={<a>Leaderboard</a>}>
+                    <Leaderboard />
+                </Popup>
+            </li>
+            <li>
+                <Popup trigger={<a>Lobby</a>}>
+                    <Lobby />
+                </Popup>
+            </li>
+            <li>
+                <Link to="/profile">Profile</Link>
+            </li>
+        </div>
+    )
 }
 
 export default NavBar;
