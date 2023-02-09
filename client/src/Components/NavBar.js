@@ -2,6 +2,7 @@ import {Link} from 'react-router-dom';
 import './Styles/NavBar.css';
 import Popup from 'reactjs-popup'
 import Leaderboard from './Leaderborad';
+import Lobby from './Lobby';
 
 /**
  * Navigation bar to be used on all pages
@@ -20,7 +21,9 @@ const NavBar = () => {
         </Popup>
       </li>
       <li>
-        <Link to="/lobby">Lobby</Link>
+        <Popup trigger={<a>Lobby</a>}>
+          <Lobby />
+        </Popup>
       </li>
       <li>
         <Link to="/profile">Profile</Link>

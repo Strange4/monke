@@ -2,13 +2,15 @@
   display: flex;
   justify-content: space-between;
   margin: 10px;
-  padding-left: 10px;
-  padding-right: 10px;
+
 }
 
 #navbar li{
+  display: flex;
+  justify-content: space-between;
   list-style-type: none;
   cursor: pointer;
+  margin: 0vw 10vw;
 }
 
 a:link {

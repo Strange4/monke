@@ -1,10 +1,10 @@
-#leaderboard{
+#lobby{
   display: flex;
-  width: 80vw;
+  width: 50vw;
   height: 80vh;
   background-color: #000000a8;
-  justify-content: center;
   border-radius: 10px;
-  margin-left: 15%;
+  margin-left: -26%;
+  justify-content: center;
 
 }
