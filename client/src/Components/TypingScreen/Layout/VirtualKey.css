@@ -50,6 +50,10 @@
 }
 
 .pressed {
-  background-color: var(--bg-color);
-  color: var(--text-color)
+  animation: pressed_key_animation 1s;
+}
+
+@keyframes pressed_key_animation{
+  0%   {background: var(--bg-color); color: var(--text-color);}
+  100% {background: transparent; color: var(--sub-color);}
 }
