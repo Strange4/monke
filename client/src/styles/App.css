@@ -1,7 +1,14 @@
 :root {
-    --primary: red;
-    --secondary: green;
+    --primary: white;
+    --secondary: #424445;
+    --background: #191a1c;
+    --wrong-letter: rgba(255, 0, 0, 0.701);
 }
+
+body{
+    background-color: var(--background);
+}
+
 
 .App {
   text-align: center;
@@ -42,9 +49,19 @@
   }
 }
 
-span.right{
-    color: var(--primary)
+span.letter{
+    font-size: large;
+    font-weight: bold;
 }
-span.wrong{
-    color: var(--secondary)
+
+span.letter.right{
+    color: var(--primary);
+    font-weight: bold;
+}
+span.letter.wrong{
+    color: var(--wrong-letter);
+    font-weight: bold;
+}
+span.letter.none{
+    color: var(--secondary);
 }

@@ -1,41 +1,50 @@
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function GameText({textToDisplay}){
-    const defaulDisplay = Array.from(textToDisplay).map((letter, index) => {
-        return <span key={index}>{letter}</span>
+    const defaulDisplay = Array.from(textToDisplay).map((letter) => {
+        // the type of a displayed letter can only be right | wrong | none
+        return {
+            letter,
+            type: "none"
+        }
     });
     const [inputText, setInputText] = useState("");
     const [displayText, setDisplayText] = useState(defaulDisplay);
-    useEffect(()=>{
+
+    function rednerLetters(newInput){
+        const newLetterIndex = newInput.length - 1;
         const newDisplay = displayText.slice();
-        for(let letterIndex in textToDisplay){
-            const inputLetter = inputText[letterIndex];
-            const displayLetter = textToDisplay[letterIndex];
-            
-            if(inputLetter === displayLetter){
-                newDisplay[letterIndex] = <span key={letterIndex} className="right">{displayLetter}</span>
+        /// this is really inneficient and can be sped up by dividing using words
+        for(let i = newLetterIndex + 1;i < newDisplay.length;i++){
+            newDisplay[i].type = "none";
+        }
+
+        // only change it if there is stuff in the input
+        if(newInput.length !== 0){
+            if(newDisplay[newLetterIndex].letter === newInput[newLetterIndex]){
+                newDisplay[newLetterIndex].type = "right";
             } else {
-                newDisplay[letterIndex] = <span key={letterIndex} className="wrong">{displayLetter}</span>
+                newDisplay[newLetterIndex].type = "wrong";
             }
         }
-        setDisplayText(newDisplay);
-        
-    }, [inputText]);
-
-    function rednerLetters(){
-        
+        setDisplayText(newDisplay)
     }
     
     return (
         <>
             <div>
-                {displayText}
+                {
+                    displayText.map((letter, index) => {
+                        return <span className={`${letter.type} letter`} key={index}>{letter.letter}</span>
+                    })
+                }
             </div>
             
             <div>
-                <input type="text" onChange={(e) => {
-                    setInputText(e.target.value)
+                <input type="text" value={inputText} onChange={(e) => {
+                    rednerLetters(e.target.value);
+                    setInputText(e.target.value);
                 }} />
             </div>
         </>
