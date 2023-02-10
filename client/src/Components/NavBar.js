@@ -1,6 +1,6 @@
 import {Link} from 'react-router-dom';
 import './Styles/NavBar.css';
-import Popup from 'reactjs-popup'
+import Popup from 'reactjs-popup';
 import Leaderboard from './Leaderborad';
 import Lobby from './Lobby';
 
@@ -29,7 +29,7 @@ const NavBar = () => {
                 <Link to="/profile">Profile</Link>
             </li>
         </div>
-    )
+    );
 }
 
 export default NavBar;
