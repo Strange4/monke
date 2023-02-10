@@ -16,6 +16,8 @@
   border: 0.05em solid;
   border-color: var(--sub-color);
   border-radius: var(--roundness);
+  width: 75%;
+  align-self: center;
 }
 
 .keyboard-key {
