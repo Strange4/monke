@@ -21,9 +21,9 @@
 }
 
 .keyboard-key {
-  font: --font;
+  font-family: var(--font);
   align-items: center;
-  background-color: transparent;
+  background-color: white;
   border: 0.05rem solid;
   border-color: var(--sub-color);
   border-radius: var(--roundness);
@@ -34,9 +34,11 @@
   justify-content: center;
 }
 
-.keyboard-key {
-  transition: all 0.1s linear;
+.keyboard-key.unpressed {
+    animation:  120ms pressed_key_animation ease-out;
 }
+
+
 
 .vertical {
   flex-direction: column;
@@ -51,11 +53,16 @@
   width: 15em;
 }
 
-.pressed {
-  animation: pressed_key_animation 1s;
+
+.keyboard-key.pressed {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    /* transition: background-color 1000ms ease-in-out; */
+    /* animation: pressed_key_animation 50ms; */
 }
 
 @keyframes pressed_key_animation{
-  0%   {background: var(--bg-color); color: var(--text-color);}
-  100% {background: transparent; color: var(--sub-color);}
+    
+  0%   {background-color: var(--bg-color); color: var(--text-color);}
+  100% {background-color: white; color: var(--sub-color);}
 }

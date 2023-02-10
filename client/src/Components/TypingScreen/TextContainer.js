@@ -10,7 +10,7 @@ import { cleanUpLetter } from "../../Controller/ConversionHelper";
  */
 function TextContainer(props) {
 
-    function handleOnChange(e) {
+    function handleKeyDown(e) {
         let letter = e.nativeEvent.key;
 
         if (letter === "Shift") {
@@ -20,25 +20,29 @@ function TextContainer(props) {
             letter = cleanUpLetter(letter);
 
             let currentKey = props.keyRefs.current.get(letter).current;
-
             currentKey.classList.add("pressed");
-            setTimeout(() => {
-                currentKey.classList.remove("pressed");
-            }, 150);
+            currentKey.classList.remove("unpressed");
         }
     }
 
-    function handleShiftRelease(e) {
-        if (e.nativeEvent.key === "Shift") {
+    function handlekeyUp(e) {
+        const key = e.nativeEvent.key;
+        if (key === "Shift") {
             props.setKeyboard(props.allRegKeys);
+        }
+        if(props.currentKeys.some(row => row.includes(key))){
+            const letter = cleanUpLetter(key);
+            const currentKey = props.keyRefs.current.get(letter).current;
+            currentKey.classList.remove("pressed");
+            currentKey.classList.add("unpressed");
         }
     }
 
     return (
         <textarea
             className="text-container"
-            onKeyUp={e => handleShiftRelease(e)}
-            onKeyDown={e => handleOnChange(e)}>
+            onKeyUp={e => handlekeyUp(e)}
+            onKeyDown={e => handleKeyDown(e)}>
         </textarea>
     )
 }
