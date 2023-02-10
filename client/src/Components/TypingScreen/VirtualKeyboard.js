@@ -9,11 +9,9 @@ function VirtualKeyboard(props) {
                     <div key={i} className="horizontal">
                         {row.map((key, i) => {
                             return <VirtualKey
-                                pressedKey={props.pressedKey}
+                                mapKeys={props.mapKeys}
                                 key={i}
-                                classValue={`
-                                    ${key === " " ? "space" : ""} ${props.pressedKey === cleanUpLetter(key) ? "pressed" : ""}`
-                                }
+                                classValue={`${key === " " ? "space" : ""}`}
                                 keyValue={key}
                                 keyCode={cleanUpLetter(key)} />
                         })}

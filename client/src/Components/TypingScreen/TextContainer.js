@@ -5,10 +5,11 @@ import { cleanUpLetter } from "../../Controller/ConversionHelper";
  * Temporary text container to heberge user typed 
  * text to reflect on the virtual keyboard
  * @param {*} props 
- * @returns HTMLElement
+ * @returns {ReactElement}
  * @author Rim Dallali
  */
 function TextContainer(props) {
+
     function handleOnChange(e) {
         let letter = e.nativeEvent.key;
 
@@ -17,7 +18,13 @@ function TextContainer(props) {
         }
         if (props.currentKeys.some(row => row.includes(letter))) {
             letter = cleanUpLetter(letter);
-            props.setPressedKey(letter);
+
+            let currentKey = props.keyRefs.current.get(letter).current;
+
+            currentKey.classList.add("pressed");
+            setTimeout(() => {
+                currentKey.classList.remove("pressed");
+            }, 150);
         }
     }
 

@@ -1,29 +1,36 @@
 import VirtualKeyboard from './VirtualKeyboard';
 import TextContainer from './TextContainer';
 import keyboardKeys from "../../Data/keyboard_keys.json";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 /**
  * Container for the Textarea and the virtual keyboard
- * @returns HTMLElement
+ * @returns {ReactElement}
  * @author Rim Dallali
  */
 function TypingScreen() {
+
+    const keyRefs = useRef(new Map());
+
+    function mapKeys(letter, virtualKey) {
+        keyRefs.current.set(letter, virtualKey);
+    }
+
     const allShiftKeys = keyboardKeys.english.upper;
     const allRegKeys = keyboardKeys.english.lower;
 
     const [keyboard, setKeyboard] = useState(allRegKeys);
-    const [pressedKey, setPressedKey] = useState("");
 
     return (
         <div className="App">
             <TextContainer
+                keyRefs={keyRefs}
                 currentKeys={keyboard}
                 allRegKeys={allRegKeys}
                 allShiftKeys={allShiftKeys}
                 setKeyboard={setKeyboard}
-                setPressedKey={setPressedKey} />
-            <VirtualKeyboard currentKeys={keyboard} pressedKey={pressedKey} />
+            />
+            <VirtualKeyboard currentKeys={keyboard} mapKeys={mapKeys} />
         </div>
     );
 }
