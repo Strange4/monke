@@ -1,0 +1,6 @@
+#rank-list-item{
+    display: flex;
+    justify-content: space-evenly;
+    width: 30vw;
+    color: #fff;
+}
