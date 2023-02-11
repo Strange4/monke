@@ -1,6 +1,12 @@
-#rank-list-item{
+.rank-list-item{
     display: flex;
-    justify-content: space-evenly;
-    width: 30vw;
+    justify-content: space-between;
+    width: 50vw;
     color: #fff;
+    margin-left: 3vw;
+}
+
+.rank-list-item p {
+    width: 6vw;
+    text-align: left;
 }
