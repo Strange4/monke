@@ -1,20 +1,14 @@
-:root{
-    --wrong-letter: rgba(255, 0, 0, 0.701);
-}
-
 span.letter{
+    color: var(--sub-color);
     font-size: large;
     font-weight: bold;
 }
 
 span.letter.right{
-    color: var(--primary);
+    color: var(--text-color);
     font-weight: bold;
 }
 span.letter.wrong{
-    color: var(--wrong-letter);
+    color: var(--error-color);
     font-weight: bold;
-}
-span.letter.none{
-    color: var(--secondary);
 }

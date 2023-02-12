@@ -1,6 +1,5 @@
 import NavBar from "../components/NavBar";
-import TypingScreen from "../components/TypingScreen/TypingScreen";
-import GameText from '../components/GameText'
+import TypingGame from "../components/TypingGame";
 
 const Home = () => {
     return (
@@ -8,8 +7,7 @@ const Home = () => {
             <NavBar />
             <h1>Home Page</h1>
             <div id="game-component">
-                <GameText textToDisplay="nice to meet you my friend how's it going?"/>
-                <TypingScreen/>
+                <TypingGame/>
             </div>
         </div>
     );

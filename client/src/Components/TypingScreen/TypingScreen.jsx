@@ -22,7 +22,7 @@ function TypingScreen() {
     const [keyboard, setKeyboard] = useState(allRegKeys);
 
     return (
-        <div className="App">
+        <>
             <TextContainer
                 keyRefs={keyRefs}
                 currentKeys={keyboard}
@@ -31,7 +31,7 @@ function TypingScreen() {
                 setKeyboard={setKeyboard}
             />
             <VirtualKeyboard currentKeys={keyboard} mapKeys={mapKeys} />
-        </div>
+        </>
     );
 }
 
