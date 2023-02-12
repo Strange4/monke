@@ -10,8 +10,12 @@ let conn = null;
  */
 const getDBConnection = async () => {
     if(conn === null){
-        mongoose.set('strictQuery', true);
-        conn = await mongoose.connect(dbUrl, {dbName: "QuotesDatabase"});
+        try{
+            mongoose.set('strictQuery', true);
+            conn = await mongoose.connect(dbUrl, {dbName: "QuotesDatabase"});
+        } catch (err) {
+            console.error(err)
+        }
     }
     return conn;
 }
