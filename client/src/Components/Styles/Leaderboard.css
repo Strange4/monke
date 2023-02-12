@@ -1,0 +1,10 @@
+#leaderboard{
+  display: flex;
+  width: 80vw;
+  height: 80vh;
+  background-color: #000000a8;
+  justify-content: center;
+  border-radius: 10px;
+  margin-left: 15%;
+
+}

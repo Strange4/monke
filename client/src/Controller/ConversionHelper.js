@@ -1,67 +1,73 @@
-
+/**
+ * Helper function to convert special 
+ * characters into their string name definition
+ * @param {string} letter 
+ * @returns string
+ * @author Rim Dallali
+ */
 function cleanUpLetter(letter) {
     switch (letter) {
     case " ":
-        return "_space"
+        return "_space";
     case "'":
-        return "_apostrophe"
+        return "_apostrophe";
     case ";":
-        return "_semiColon"
+        return "_semiColon";
     case "[":
-        return "_openSquare"
+        return "_openSquare";
     case "]":
-        return "_closeSquare"
+        return "_closeSquare";
     case ",":
-        return "_comma"
+        return "_comma";
     case ".":
-        return "_period"
+        return "_period";
     case "/":
-        return "_forwardSlash"
+        return "_forwardSlash";
     case "\\":
-        return "_backSlash"
+        return "_backSlash";
     case "=":
-        return "_equal"
+        return "_equal";
     case "!":
-        return "_exclamation"
+        return "_exclamation";
     case "@":
-        return "_at"
+        return "_at";
     case "#":
-        return "_hashtag"
+        return "_hashtag";
     case "$":
-        return "_dollar"
+        return "_dollar";
     case "%":
-        return "percent"
+        return "percent";
     case "^":
-        return "_caret"
+        return "_caret";
     case "&":
-        return "_and"
+        return "_and";
     case "*":
-        return "_star"
+        return "_star";
     case "(":
-        return "_openParenthese"
+        return "_openParenthese";
     case ")":
-        return "_closeParenthese"
+        return "_closeParenthese";
     case "\"":
-        return "_double_quote"
+        return "_double_quote";
     case ":":
-        return "_semi-colon"
+        return "_semi-colon";
     case "+":
-        return "_plus"
+        return "_plus";
     case "{":
-        return "_openCurly"
+        return "_openCurly";
     case "}":
-        return "_closeCurly"
+        return "_closeCurly";
     case "|":
-        return "_pipe"
+        return "_pipe";
     case "?":
-        return "_question"
+        return "_question";
     case ">":
-        return "_gt"
+        return "_gt";
     case "<":
-        return "_lt"
+        return "_lt";
     default:
-        return `_${letter}`
+        return `_${letter}`;
     }
 }
 
-export { cleanUpLetter }
+export { cleanUpLetter };

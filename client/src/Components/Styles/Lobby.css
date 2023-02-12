@@ -1,0 +1,10 @@
+#lobby{
+  display: flex;
+  width: 50vw;
+  height: 80vh;
+  background-color: #000000a8;
+  border-radius: 10px;
+  margin-left: -26%;
+  justify-content: center;
+
+}
