@@ -28,13 +28,13 @@ router.use(userStat, async (req, res) => {
 
     // For now hard coded. 
     let stats = {
-        "Avg Words/Min": 30,
-        "Accuracy": 74,
-        "Games Played": 80,
-        "Win": 34,
-        "Lose": 43,
-        "Draw": 23,
-        "Rank": 12 
+        "wpm": 30,
+        "accuracy": 74,
+        "games_played": 80,
+        "win": 34,
+        "lose": 43,
+        "draw": 23,
+        "rank": 12 
     };
 
     res.status(200).json(stats);
