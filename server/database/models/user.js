@@ -2,11 +2,13 @@ import mongoose from "mongoose";
 
 const Schema = mongoose.Schema;
 
+/**
+ * Schema that represents Users
+ */
 const UserSchema = new Schema({
-    "username": String,
-    "picture_url": String
-})
+    username: { type: String, required: true },
+    pictureURL: String
+});
 
-
-const UserModel = mongoose.model("User", UserSchema);
-export default UserModel;
+const User = mongoose.model("User", UserSchema);
+export default User;
