@@ -1,67 +1,26 @@
 :root {
+    --font-family: "Roboto Mono", "Vazirmatn", sans-serif;
     --primary: white;
     --secondary: #424445;
-    --background: #191a1c;
-    --wrong-letter: rgba(255, 0, 0, 0.701);
+    --sub-color: #646669;
+    --sub-alt-color: #2c2e31;
+    --text-color: #d1d0c5;
+    --background-color: #323437;
 }
-
 body{
-    background-color: var(--background);
+    background-color: var(--background-color);
+    font-family: var(--font-family);
 }
-
-
 .App {
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  flex-flow: column;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-span.letter{
-    font-size: large;
-    font-weight: bold;
-}
-
-span.letter.right{
-    color: var(--primary);
-    font-weight: bold;
-}
-span.letter.wrong{
-    color: var(--wrong-letter);
-    font-weight: bold;
-}
-span.letter.none{
-    color: var(--secondary);
+.popup-content {
+  padding: 5px;
+  text-align: center;
+  border-radius: 10px;
+  margin-top: 5%;
 }

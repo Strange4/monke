@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import './styles/GameText.css'
 
 export default function GameText({textToDisplay}){
     const defaulDisplay = Array.from(textToDisplay).map((letter) => {
@@ -36,7 +37,8 @@ export default function GameText({textToDisplay}){
             <div>
                 {
                     displayText.map((letter, index) => {
-                        return <span className={`${letter.type} letter`} key={index}>{letter.letter}</span>
+                        return <span className={`${letter.type} letter`} key={index}>
+                            {letter.letter}</span>
                     })
                 }
             </div>

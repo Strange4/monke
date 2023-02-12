@@ -1,11 +1,18 @@
-import logo from './logo.svg';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './styles/App.css'
-import GameText from './components/GameText';
+import Home from './Pages/Home';
+import Profile from './Pages/Profile';
 
 function App() {
     return (
         <div className="App">
-            <GameText textToDisplay="nice to meet you my friend how's it going?"/>
+            <Router>
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/profile" element={<Profile />} />
+                </Routes>
+            </Router>
+            <div id="popup-root" />
         </div>
     );
 }

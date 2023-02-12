@@ -1,0 +1,56 @@
+:root {
+  --roundness: 0.5rem;
+}
+
+.keyboard-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0.05em solid;
+  border-color: var(--sub-color);
+  border-radius: var(--roundness);
+  width: 75%;
+  align-self: center;
+}
+
+.keyboard-key {
+  align-items: center;
+  border: 0.05rem solid;
+  border-color: var(--sub-color);
+  border-radius: var(--roundness);
+  color: var(--sub-color);
+  display: flex;
+  height: 2rem;
+  width: 2rem;
+  justify-content: center;
+}
+
+.keyboard-key.unpressed {
+    animation:  120ms pressed_key_animation ease-out;
+}
+
+
+
+.vertical {
+  flex-direction: column;
+}
+
+.horizontal {
+  display: flex;
+  flex-direction: row;
+}
+
+.space {
+  width: 15em;
+}
+
+
+.keyboard-key.pressed {
+    background-color: var(--text-color);
+    /* color: var(--background-color);  */
+}
+
+@keyframes pressed_key_animation{
+    0% {background-color: var(--text-color); color: var(--background-color);}
+    100%   {background-color: var(--background-color); color: var(--text-color);}
+}
