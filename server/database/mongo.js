@@ -11,7 +11,7 @@ let conn = null;
 const getDBConnection = async () => {
     if(conn === null){
         mongoose.set('strictQuery', true);
-        conn = await mongoose.connect(dbUrl, {dbName: ""});
+        conn = await mongoose.connect(dbUrl, {dbName: "QuotesDatabase"});
     }
     return conn;
 }
