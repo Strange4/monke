@@ -50,7 +50,6 @@ deploy-job:
   only:
     - main
     - staging
-    - 36-add-atlas-uri-to-deploy-ci
   stage: deploy
   image: mcr.microsoft.com/azure-cli
   dependencies:
