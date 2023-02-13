@@ -3,6 +3,10 @@ import './styles/App.css'
 import Home from './Pages/Home';
 import Profile from './Pages/Profile';
 
+/**
+ * Displays the Main App container
+ * @returns {ReactElement}
+ */
 function App() {
     return (
         <div className="App">
