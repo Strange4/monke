@@ -15,12 +15,12 @@
     display: flex;
     justify-content: space-between;
     width: 50vw;
-    justify-content: center;
+    /* justify-content: center; */
 }
 
 #leaderboard-header p {
     width: 6vw;
-    text-align: left;
+    text-align: center;
 }
 
 .leaderboard_user_icon {
