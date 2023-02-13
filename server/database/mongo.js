@@ -7,7 +7,8 @@ const dbUrl = process.env.ATLAS_URI;
  * connects to the database and returns the connection
  * Throws error if the connection to the db can't be made
  */
-const connectToDatabase = async () => {
+let connectToDatabase = async () => {
+    let conn;
     try{
         mongoose.set('strictQuery', true);
         conn = await mongoose.connect(dbUrl, {dbName: "QuotesDatabase"});

@@ -6,6 +6,7 @@
  */
 
 import * as express from "express";
+import User from "../database/models/user.js";
 
 const router = express.Router();
 
@@ -15,6 +16,31 @@ router.use(express.json());
 const userStat = "/user_stat";
 const quote = "/quote";
 const user = "/user";
+
+/**
+ * Post endpoint that creates User containing
+ * username and temporary profileURL
+ */
+router.post(user, async (_, res) =>{
+    try {
+        //data = CommentParser.parse(req.body);
+        let data = {
+            username: "anonymous",
+            pictureURL: "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Transparent-Image.png"
+        }
+        let userObject = await User.create(data);
+        await userObject.save();
+        const message = "User created successfully";
+        console.log(message);
+        res.status(200).send(message);
+    }
+    catch (err) {
+        console.error(`Error: ${err}`);
+        res.status(400).send(`<h1>400! User could not be created. Please refill the form.</h1>`);
+    }
+
+})
+
 
 /**
  * Get endpoint that returns a hardcoded json object containing

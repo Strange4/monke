@@ -8,7 +8,8 @@ import app from "../routes/app.js";
 import connectToDatabase from "../database/mongo.js";
 import mongoose from "mongoose";
 //import express from "express"
-
+import dotenv from 'dotenv';
+dotenv.config();
 const PORT = process.env.EXPRESS_PORT || 8080;
 
 connectToDatabase();
