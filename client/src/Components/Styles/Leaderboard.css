@@ -9,13 +9,13 @@
     padding: 10px;
     backdrop-filter: blur(5px);
     margin: auto;
+    margin-top: 2vh;
 }
 
 #leaderboard-header {
     display: flex;
     justify-content: space-between;
     width: 50vw;
-    /* justify-content: center; */
 }
 
 #leaderboard-header p {

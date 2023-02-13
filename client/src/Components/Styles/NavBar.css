@@ -9,8 +9,13 @@
   justify-content: space-between;
   list-style-type: none;
   cursor: pointer;
+  font-size: 1.5em;
 }
 
 a:link {
   text-decoration: none;
+}
+
+a:visited {
+    color: #fff;
 }

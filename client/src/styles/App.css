@@ -12,22 +12,27 @@
     --colorful-error-color: #a61717;
     --colorful-error-extra-color: #731010;
 }
+
 body{
     background-color: var(--bg-color);
     font-family: var(--font-family);
     color: var(--text-color);
 }
+
 .App {
     text-align: center;
     display: flex;
     justify-content: center;
     flex-flow: column;
-  }
+}
   
-  .popup-content {
-      padding: 5px;
+.popup-content {
       border-radius: 10px;
       left: 0 !important;
       width: 100% !important;
-      height: 100% !important;
-  }
+      height: 90% !important;
+}
+
+.popup-arrow {
+    display: none;
+}
