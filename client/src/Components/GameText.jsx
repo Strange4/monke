@@ -13,6 +13,10 @@ function useGameText(textToDisplay) {
     });
     const [display, setDisplay] = useState(defaultDisplay);
         
+    /**
+     * changes the type (right | wrong | none) of the display of letters based on the user input
+     * @param {string} newInput the new input that has been changed by the user
+     */
     function rednerLetters(newInput){
         const newLetterIndex = newInput.length - 1;
         const newDisplay = display.slice();
@@ -21,7 +25,7 @@ function useGameText(textToDisplay) {
             newDisplay[i].type = "none";
         }
     
-        // only change it if there is stuff in the input
+        // only change the type if there is stuff in the input
         if(newInput.length !== 0 && newInput.length <= newDisplay.length){
             if(newDisplay[newLetterIndex].letter === newInput[newLetterIndex]){
                 newDisplay[newLetterIndex].type = "right";
