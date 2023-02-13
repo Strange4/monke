@@ -1,11 +1,13 @@
 #lobby{
-    display: flex;
-    width: 50vw;
+    display: block;
+    width: 80vw;
     height: 80vh;
     background-color: #000000da;
     border-radius: 10px;
-    margin-left: -26%;
     justify-content: center;
     color: #fff;
     backdrop-filter: blur(5px);
+    margin: auto;
+    padding: 10px;
+
 }

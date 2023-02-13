@@ -5,17 +5,17 @@
     background-color: #000000da;
     justify-content: center;
     border-radius: 10px;
-    margin-left: 15%;
     color: #fff;
     padding: 10px;
     backdrop-filter: blur(5px);
+    margin: auto;
 }
 
 #leaderboard-header {
     display: flex;
     justify-content: space-between;
     width: 50vw;
-    margin-left: 3vw;
+    justify-content: center;
 }
 
 #leaderboard-header p {
