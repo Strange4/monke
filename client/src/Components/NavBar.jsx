@@ -1,7 +1,7 @@
 import {Link} from 'react-router-dom';
 import './Styles/NavBar.css';
 import Popup from 'reactjs-popup';
-import Leaderboard from './Leaderborad';
+import Leaderboard from './Leaderboard';
 import Lobby from './Lobby';
 
 /**

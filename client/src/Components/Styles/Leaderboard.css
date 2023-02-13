@@ -22,3 +22,8 @@
     width: 6vw;
     text-align: left;
 }
+
+.leaderboard_user_icon {
+    width: 3vw;
+    height: 5vh;
+}

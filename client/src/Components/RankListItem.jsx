@@ -4,7 +4,7 @@ const RankListItem = (props) => {
     return (
         <div className="rank-list-item">
             <p>{props.rank}</p>
-            <p><img src={`${props.user_image}`}></img>{props.username}</p>
+            <img className="leaderboard_user_icon" src={`${props.picture}`}/><p>{props.user}</p>
             <p>{props.wpm}</p>
             <p>{props.date}</p>
         </div>
