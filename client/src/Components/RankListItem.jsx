@@ -6,6 +6,7 @@ const RankListItem = (props) => {
             <p>{props.rank}</p>
             <img className="leaderboard_user_icon" src={`${props.picture}`}/><p>{props.user}</p>
             <p>{props.wpm}</p>
+            <p>{props.accuracy}</p>
             <p>{props.date}</p>
         </div>
     );

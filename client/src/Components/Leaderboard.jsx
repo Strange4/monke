@@ -25,14 +25,16 @@ const Leaderboard = () => {
                     <p>Rank</p>
                     <p>User</p>
                     <p>WPM</p>
+                    <p>Accuracy</p>
                     <p>Date</p>
                 </div>
                 {
                     leaderboard.map((user, i) => <RankListItem 
                         user={user.username}
-                        picture={user.profile_picture} 
+                        picture={user.profilePicture} 
                         rank={user.rank} 
                         wpm={user.wpm}
+                        accuracy={user.accuracy}
                         date={`${date}`}
                         key={i}/> )
                 }
