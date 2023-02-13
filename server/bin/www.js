@@ -5,13 +5,13 @@
  */
 
 import app from "../routes/app.js";
-import getDBConnection from "../database/mongo.js";
+import connectToDatabase from "../database/mongo.js";
 import mongoose from "mongoose";
 //import express from "express"
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.EXPRESS_PORT || 8080;
 
-getDBConnection();
+connectToDatabase();
 
 mongoose.connection.once('open', () =>{
     console.log('Connected to MongoDB');
