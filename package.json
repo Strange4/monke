@@ -5,8 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "node server/bin/www.js",
-    "build": "cd client && npm install && npm run build && cd ../server && npm install",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "cd client && npm run build",
+    "install:all": "npm install && concurrently \"cd client && npm install\" \"cd server && npm install\"",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently \"cd client && npm run start\" \"cd server && npm run dev\" --kill-others"
   },
   "repository": {
     "type": "git",
@@ -18,5 +20,8 @@
   "bugs": {
     "url": "https://gitlab.com/dawson2223/620-w23/s02/team4/monke/issues"
   },
-  "homepage": "https://gitlab.com/dawson2223/620-w23/s02/team4/monke#readme"
+  "homepage": "https://gitlab.com/dawson2223/620-w23/s02/team4/monke#readme",
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  }
 }
