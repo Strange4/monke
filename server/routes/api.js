@@ -15,6 +15,7 @@ router.use(express.json());
 const userStat = "/user_stat";
 const quote = "/quote";
 const user = "/user";
+const leaderboard="/leaderboard";
 
 /**
  * Get endpoint that returns a hardcoded json object containing
@@ -98,6 +99,35 @@ router.get(quote, async (_, res) => {
     ];
     const randQuote = Math.floor(Math.random() * quotes.length);
     res.status(200).json({ body: quotes[randQuote] });
+});
+
+/**
+ * Get endpoint that returns a hardcoded json object containing
+ * leaderboard info such as rank, wpm, username and temporary profileURL
+ */
+router.get(leaderboard, async (_, res) => {
+    const leaderboard = [
+        {
+            rank: 1, 
+            profile_picture: "https://picsum.photos/id/237/200/300", 
+            username: "Bob Bobson", 
+            wpm: 70
+        }, 
+        {
+            rank: 2, 
+            profile_picture: "https://picsum.photos/id/217/200/300", 
+            username: "John Cena", 
+            wpm: 123
+        }, 
+        {
+            rank: 3, 
+            profile_picture: "https://picsum.photos/id/133/200/300", 
+            username: "Julia Blob", 
+            wpm: 89
+        },  
+    ];
+
+    res.status(200).json(leaderboard);
 });
 
 router.use("/", async (_, res) => {
