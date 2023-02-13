@@ -3,7 +3,7 @@ import { useState } from "react";
 import './Styles/GameText.css';
 
 
-export default function useGameText(textToDisplay) {
+function useGameText(textToDisplay) {
     const defaultDisplay = Array.from(textToDisplay).map((letter) => {
         // the type of a displayed letter can only be right | wrong | none
         return {
@@ -16,13 +16,13 @@ export default function useGameText(textToDisplay) {
     function rednerLetters(newInput){
         const newLetterIndex = newInput.length - 1;
         const newDisplay = display.slice();
-        /// this is really inneficient and can be sped up by dividing using words
+        // are are setting all the next letters that could posibly be deleted to none.
         for(let i = newLetterIndex + 1;i < newDisplay.length;i++){
             newDisplay[i].type = "none";
         }
     
         // only change it if there is stuff in the input
-        if(newInput.length !== 0){
+        if(newInput.length !== 0 && newInput.length <= newDisplay.length){
             if(newDisplay[newLetterIndex].letter === newInput[newLetterIndex]){
                 newDisplay[newLetterIndex].type = "right";
             } else {
@@ -43,3 +43,5 @@ export default function useGameText(textToDisplay) {
     </div>;
     return [letters, rednerLetters];
 }
+
+export default useGameText;
