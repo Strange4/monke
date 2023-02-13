@@ -43,13 +43,13 @@ router.get(userStat, async (req, res) => {
 
     // For now hard coded. 
     let stats = {
-        "wpm": 30,
-        "accuracy": 74,
-        "games_played": 80,
-        "win": 34,
-        "lose": 43,
-        "draw": 23,
-        "rank": 12 
+        wpm: 30,
+        accuracy: 74,
+        games: 80,
+        win: 34,
+        lose: 43,
+        draw: 23,
+        rank: 12 
     };
 
     res.status(200).json(stats);
