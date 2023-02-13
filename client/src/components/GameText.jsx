@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import './styles/GameText.css';
+import './Styles/GameText.css';
 
 
 export default function useGameText(textToDisplay) {

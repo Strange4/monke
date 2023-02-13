@@ -1,4 +1,4 @@
-import './styles/Lobby.css';
+import './Styles/Lobby.css';
 
 const Lobby = () => {
     return (

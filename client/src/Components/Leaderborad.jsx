@@ -1,4 +1,4 @@
-import './styles/Leaderboard.css';
+import './Styles/Leaderboard.css';
 
 const Leaderboard = () => {
     return (

@@ -1,5 +1,5 @@
 import {Link} from 'react-router-dom';
-import './styles/NavBar.css';
+import './Styles/NavBar.css';
 import Popup from 'reactjs-popup';
 import Leaderboard from './Leaderborad';
 import Lobby from './Lobby';
