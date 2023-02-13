@@ -26,7 +26,7 @@
     "no-unused-vars": "warn",
     "no-undef": "off",
     "no-extra-parens": "warn",
-    "indent": ["error", 4],
+    "indent": ["warn", 4],
     "block-scoped-var": "warn",
     "curly": "warn",
     "default-case": "warn",
