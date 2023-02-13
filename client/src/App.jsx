@@ -1,15 +1,13 @@
-import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import './styles/App.css'
 import Home from './Pages/Home';
 import Profile from './Pages/Profile';
-import './App.css';
 
 /**
  * Displays the Main App container
  * @returns {ReactElement}
  */
 function App() {
-
     return (
         <div className="App">
             <Router>

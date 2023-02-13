@@ -39,11 +39,12 @@ function TextContainer(props) {
     }
 
     return (
-        <textarea
+        <input type="text"
             className="text-container"
             onKeyUp={e => handlekeyUp(e)}
-            onKeyDown={e => handleKeyDown(e)}>
-        </textarea>
+            onKeyDown={e => handleKeyDown(e)}
+            onChange={(e)=> props.onChangeText(e.target.value) }>
+        </input >
     )
 }
 

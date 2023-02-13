@@ -1,12 +1,5 @@
 :root {
   --roundness: 0.5rem;
-  --font: "Roboto Mono", "Vazirmatn", sans-serif;
-  font-weight: 400;
-  scroll-padding-top: 2rem;
-  --bg-color: #323437;
-  --sub-color: #646669;
-  --sub-alt-color: #2c2e31;
-  --text-color: #d1d0c5;
 }
 
 .keyboard-container {
@@ -21,10 +14,9 @@
 }
 
 .keyboard-key {
-  font-family: var(--font);
   align-items: center;
-  background-color: white;
   border: 0.05rem solid;
+  margin: 0.1rem;
   border-color: var(--sub-color);
   border-radius: var(--roundness);
   color: var(--sub-color);
@@ -55,14 +47,11 @@
 
 
 .keyboard-key.pressed {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    /* transition: background-color 1000ms ease-in-out; */
-    /* animation: pressed_key_animation 50ms; */
+    background-color: var(--text-color);
+    color: var(--bg-color); 
 }
 
 @keyframes pressed_key_animation{
-    
-  0%   {background-color: var(--bg-color); color: var(--text-color);}
-  100% {background-color: white; color: var(--sub-color);}
+    0% {background-color: var(--text-color); color: var(--bg-color);}
+    100%   {background-color: var(--bg-color); color: var(--text-color);}
 }
