@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import Spinner from "../Components/Spinner";
 
 /**
  * Generic fetch function to fetch from any given
@@ -36,9 +37,9 @@ function useFetch(url, params) {
             console.log(contentType);
             let data = null;
             // return the right content type
-            if(contentType.match("application/json")){
+            if(contentType.match("json")){
                 data = await response.json();
-            } else if(contentType.match("text/html")){
+            } else if(contentType.match("text")){
                 data = await response.text()
             } else {
                 data = await response.blob();
@@ -53,10 +54,7 @@ function useFetch(url, params) {
     
     const loadingPlaceHolder = 
         isLoading || error ?
-            <div>
-                {isLoading && "Loading..."}
-                {error && `There was an error fetching the page: ${error}`}
-            </div> : undefined
+            <Spinner/> : undefined
 
     return { sendRequest, loadingPlaceHolder };
 }
