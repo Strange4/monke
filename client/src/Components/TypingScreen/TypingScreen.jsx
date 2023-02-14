@@ -15,10 +15,11 @@ import Timer from "timer-machine";
  * @author Rim Dallali
  */
 function TypingScreen() {
-    const textToDisplay = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab pariatur laboriosam nobis, excepturi eaque adipisci amet placeat similique modi sunt suscipit. Aspernatur nam eum nesciunt excepturi maiores repellendus tenetur distinctio!";
+    const textToDisplay = "Lorem ipsum"
+    // const textToDisplay = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab pariatur laboriosam nobis, excepturi eaque adipisci amet placeat similique modi sunt suscipit. Aspernatur nam eum nesciunt excepturi maiores repellendus tenetur distinctio!";
     const [timer, setTimer] = useState(new Timer());
     const [displayTime, setDisplayTime] = useState({"seconds": 0, "state": "stopped"})
-    const [GameText, updateGameText] = useGameText(textToDisplay, timer, setTimer, setDisplayTime);
+    const [GameText, updateGameText] = useGameText(textToDisplay, timer, setTimer, setDisplayTime, displayTime);
     const keyRefs = useRef(new Map());
     
     function mapKeys(letter, virtualKey) {

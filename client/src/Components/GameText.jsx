@@ -1,8 +1,8 @@
 import { useState } from "react";
 import './Styles/GameText.css';
-import "timer-machine";
+import Timer from "timer-machine";
 
-function useGameText(textToDisplay, timer, setTimer, setDisplayTime) {
+function useGameText(textToDisplay, timer, setTimer, setDisplayTime, displayTime) {
     const defaultDisplay = Array.from(textToDisplay).map((letter) => {
         // the type of a displayed letter can only be right | wrong | none
         return {
@@ -12,14 +12,35 @@ function useGameText(textToDisplay, timer, setTimer, setDisplayTime) {
     });
     const [display, setDisplay] = useState(defaultDisplay);
     function setupTimer() {
+        let interval;
         timer.on('start', function () {
-            setTimer(timer)
             setDisplayTime({ "seconds": (timer.time() / 1000), "state": "started" })
+            interval = setInterval(timer.emitTime.bind(timer), 1000)
         })
         timer.on('stop', function () {
             setTimer(timer)
             setDisplayTime({ "seconds": (timer.time() / 1000), "state": "stopped" })
+            setTimer(new Timer())
+            clearInterval(interval)
         })
+        timer.on('time', function (time) {
+            console.log('Current time: ' + time / 1000 + 's')
+            setDisplayTime({ "seconds": (timer.time() / 1000), "state": displayTime.state })
+        })
+        
+    }
+
+    function handleTimer(newInput) {
+        if (!timer.isStarted() && display.length > newInput.length + 1) {
+            setupTimer()
+        }
+        if (newInput.length === 1 && !timer.isStarted()) {
+            console.log("starting timer")
+            timer.start()
+        } else if (display.length === newInput.length && timer.isStarted()) {
+            console.log("stopping at: " + timer.time())
+            timer.stop()
+        }
     }
 
     /**
@@ -27,17 +48,8 @@ function useGameText(textToDisplay, timer, setTimer, setDisplayTime) {
      * @param {string} newInput the new input that has been changed by the user
      */
     function rednerLetters(newInput) {
-        if (!timer.isStarted()) {
-            setupTimer()
-        }
+        handleTimer(newInput);
 
-        if (newInput.length === 1 && !timer.isStarted()) {
-            console.log("starting timer")
-            timer.start()
-        } else if (display.length === newInput.length + 1 && timer.isStarted()) {
-            console.log("stopping at: " + timer.time())
-            timer.stop()
-        }
         const newLetterIndex = newInput.length - 1;
         const newDisplay = display.slice();
         // are are setting all the next letters that could posibly be deleted to none.
