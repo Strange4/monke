@@ -11,4 +11,3 @@ node_modules
 *.swp
 .env
 .DS_Store
-*/package-lock.json
