@@ -12,11 +12,14 @@ function useGameText(textToDisplay, timer, setTimer, setDisplayTime) {
     });
     const [display, setDisplay] = useState(defaultDisplay);
     function setupTimer() {
-        // timer.on('start', function () {
-        //     setTimer(timer.time())
-        //     setDisplayTime({"seconds": (timer.time() / 1000), "state": "started"})
-        // })
-        
+        timer.on('start', function () {
+            setTimer(timer)
+            setDisplayTime({ "seconds": (timer.time() / 1000), "state": "started" })
+        })
+        timer.on('stop', function () {
+            setTimer(timer)
+            setDisplayTime({ "seconds": (timer.time() / 1000), "state": "stopped" })
+        })
     }
 
     /**
@@ -24,20 +27,15 @@ function useGameText(textToDisplay, timer, setTimer, setDisplayTime) {
      * @param {string} newInput the new input that has been changed by the user
      */
     function rednerLetters(newInput) {
-        setupTimer()
+        if (!timer.isStarted()) {
+            setupTimer()
+        }
+
         if (newInput.length === 1 && !timer.isStarted()) {
             console.log("starting timer")
-            timer.on('start', function () {
-                setTimer(timer.time())
-                setDisplayTime({"seconds": (timer.time() / 1000), "state": "started"})
-            })
-            timer.on('stop', function () {
-                setTimer(timer.time())
-                setDisplayTime({"seconds": (timer.time() / 1000), "state": "stopped"})
-            })
             timer.start()
         } else if (display.length === newInput.length + 1 && timer.isStarted()) {
-            console.log("stopping at:")
+            console.log("stopping at: " + timer.time())
             timer.stop()
         }
         const newLetterIndex = newInput.length - 1;
