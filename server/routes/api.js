@@ -36,12 +36,13 @@ router.get(user+"12", async (_, res) =>{
 
         const user = new User({
             username: "testing stats",
-            pictureURL: "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Transparent-Image.png"
+            "picture_url": "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Transparent-Image.png"
         })
         let userObject = await User.create(user);
+        //console.log(userObject._id)
         await userObject.save();
 
-        // Stat creation
+        //Stat creation
         const stats = new UserStat({
             user: userObject._id,
             "max_wpm": 0,
@@ -89,7 +90,7 @@ router.put(userStat, async (_, res) =>{
         // buidl the data with the id of the user
 
         //data = CommentParser.parse(req.body);
-        
+
         let data = {
             username: "user1 test for stat",
             pictureURL: "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Transparent-Image.png"
