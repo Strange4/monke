@@ -9,6 +9,7 @@ import * as express from "express";
 import User from "../database/models/user.js";
 import Quote from "../database/models/quote.js";
 import UserStat from "../database/models/userStat.js";
+import { userSchema, userStatSchema } from "../database/validation.js";
 
 const router = express.Router();
 
@@ -38,6 +39,9 @@ router.get(user+"12", async (_, res) =>{
             username: "testing stats",
             "picture_url": "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Transparent-Image.png"
         })
+
+        let userValidation = userSchema.parse(user) 
+
         let userObject = await User.create(user);
         //console.log(userObject._id)
         await userObject.save();

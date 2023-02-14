@@ -10,7 +10,7 @@ const userSchema = z.object({
 //user stats validation
 const userStatSchema = z.object({
     user: {type : Schema.Types.ObjectId, ref: "User"},
-    "max_wpm": Number,
+    "max_wpm": z.number(),
     wpm: Number,
     "max_accuracy": Number,
     accuracy: Number,
