@@ -3,6 +3,7 @@ import './Styles/GameText.css';
 import Timer from "timer-machine";
 
 function useGameText(textToDisplay, timer, setTimer, setDisplayTime, displayTime) {
+    const updateRate = 1000
     const defaultDisplay = Array.from(textToDisplay).map((letter) => {
         // the type of a displayed letter can only be right | wrong | none
         return {
@@ -14,18 +15,17 @@ function useGameText(textToDisplay, timer, setTimer, setDisplayTime, displayTime
     function setupTimer() {
         let interval;
         timer.on('start', function () {
-            setDisplayTime({ "seconds": (timer.time() / 1000), "state": "started" })
-            interval = setInterval(timer.emitTime.bind(timer), 1000)
+            setDisplayTime({ "seconds": Math.floor(timer.time() / updateRate), "state": "started" })
+            interval = setInterval(timer.emitTime.bind(timer), updateRate)
         })
         timer.on('stop', function () {
             setTimer(timer)
-            setDisplayTime({ "seconds": (timer.time() / 1000), "state": "stopped" })
+            setDisplayTime({ "seconds": Math.floor(timer.time() / updateRate), "state": "stopped" })
             setTimer(new Timer())
             clearInterval(interval)
         })
         timer.on('time', function (time) {
-            console.log('Current time: ' + time / 1000 + 's')
-            setDisplayTime({ "seconds": (timer.time() / 1000), "state": displayTime.state })
+            setDisplayTime({ "seconds": Math.floor(time / updateRate), "state": displayTime.state })
         })
         
     }
@@ -35,10 +35,8 @@ function useGameText(textToDisplay, timer, setTimer, setDisplayTime, displayTime
             setupTimer()
         }
         if (newInput.length === 1 && !timer.isStarted()) {
-            console.log("starting timer")
             timer.start()
         } else if (display.length === newInput.length && timer.isStarted()) {
-            console.log("stopping at: " + timer.time())
             timer.stop()
         }
     }
