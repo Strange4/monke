@@ -7,6 +7,8 @@
 
 import * as express from "express";
 import User from "../database/models/user.js";
+import Quote from "../database/models/quote.js";
+import UserStat from "../database/models/userStat.js";
 
 const router = express.Router();
 
@@ -21,25 +23,50 @@ const user = "/user";
  * Post endpoint that creates User containing
  * username and temporary profileURL
  */
-router.post(user, async (_, res) =>{
+router.get(user+"12", async (_, res) =>{
     try {
-        //data = CommentParser.parse(req.body);
-        let data = {
-            username: "anonymous",
+
+        // create the user then create stats
+
+        // need to validate data before
+
+        //data = CommentParser.parse(req.body); // code from before
+
+        // create the user
+
+        const user = new User({
+            username: "testing stats",
             pictureURL: "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Transparent-Image.png"
-        }
-        let userObject = await User.create(data);
+        })
+        let userObject = await User.create(user);
         await userObject.save();
+
+        // Stat creation
+        const stats = new UserStat({
+            user: userObject._id,
+            "max_wpm": 0,
+            wpm: 0,
+            "max_accuracy": 0,
+            accuracy: 0,
+            "games_count": 0,
+            win: 0,
+            lose: 0,
+            draw: 0,
+            date: null
+        })
+
+
+        let userStatsObject = await UserStat.create(stats)
+        await userStatsObject.save() 
+
         const message = "User created successfully";
         console.log(message);
         res.status(200).send(message);
-    }
-    catch (err) {
+    } catch (err) {
         console.error(`Error: ${err}`);
         res.status(400).send(`<h1>400! User could not be created. Please refill the form.</h1>`);
     }
-
-})
+});
 
 
 /**
@@ -49,12 +76,53 @@ router.post(user, async (_, res) =>{
 router.get(user, async (_, res) => {
     const user = {
         username: "anonymous",
-        // eslint-disable-next-line max-len
         profileURL: "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Transparent-Image.png" 
     };
 
     res.status(200).json(user);
 });
+
+router.put(userStat, async (_, res) =>{
+    try {
+
+        // find the user to get the id
+        // buidl the data with the id of the user
+
+        //data = CommentParser.parse(req.body);
+        
+        let data = {
+            username: "user1 test for stat",
+            pictureURL: "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Transparent-Image.png"
+        }
+
+        let userObject = await User.create(data);
+        await userObject.save();
+
+        let userStatObject = await UserStat.create(data2);
+        await userStatObject.save();
+
+        // const stats = new UserStat({
+        //     user: userObject._id,
+        //     "max_wpm": 0,
+        //     wpm: 0,
+        //     "max_accuracy": 0,
+        //     accuracy: 0,
+        //     "games_count": 0,
+        //     win: 0,
+        //     lose: 0,
+        //     draw: 0,
+        //     date: Date.now()
+        // })
+
+        const message = "UserStat created successfully";
+        console.log(message);
+        res.status(200).send(message);
+    } catch (err) {
+        console.error(`Error: ${err}`);
+        res.status(400).send(`<h1>400! User could not be created. Please refill the form.</h1>`);
+    }
+});
+
 
 /*
 * Get method for the user stat
@@ -125,6 +193,8 @@ router.get(quote, async (_, res) => {
     const randQuote = Math.floor(Math.random() * quotes.length);
     res.status(200).json({ body: quotes[randQuote] });
 });
+
+
 
 router.use("/", async (_, res) => {
     console.log("here")

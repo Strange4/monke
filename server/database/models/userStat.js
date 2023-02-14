@@ -7,15 +7,15 @@ const Schema = mongoose.Schema;
  */
 const UserStatSchema = new Schema({
     user: {type : Schema.Types.ObjectId, ref: "User"},
-    max_wpm: Number,
+    "max_wpm": Number,
     wpm: Number,
-    max_accuracy: Number,
+    "max_accuracy": Number,
     accuracy: Number,
-    games_count: Number,
+    "games_count": Number,
     win: Number,
     lose: Number,
     draw: Number,
-    max_date: Date
+    date: Date
 });
 
 const UserStat = mongoose.model("UserStat", UserStatSchema);
