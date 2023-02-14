@@ -1,8 +1,7 @@
 #navbar {
-  display: flex;
-  justify-content: space-between;
-  margin: 10px;
-
+    display: flex;
+    justify-content: space-between;
+    width:100%;
 }
 
 #navbar li{
@@ -10,9 +9,13 @@
   justify-content: space-between;
   list-style-type: none;
   cursor: pointer;
-  margin: 0vw 10vw;
+  font-size: 1.5em;
 }
 
 a:link {
   text-decoration: none;
+}
+
+a:visited {
+    color: #fff;
 }
