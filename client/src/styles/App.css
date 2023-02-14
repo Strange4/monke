@@ -26,10 +26,6 @@ body{
     flex-flow: column;
 }
 
-.popup-content {
-    left: 9.5vw !important;
-}
-
 .popup-arrow {
     display: none;
 }

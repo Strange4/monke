@@ -16,12 +16,12 @@ const NavBar = () => {
                 <Link to="/">Home</Link>
             </li>
             <li>
-                <Popup trigger={<a>Leaderboard</a>}>
+                <Popup trigger={<a>Leaderboard</a>} modal>
                     <Leaderboard />
                 </Popup>
             </li>
             <li>
-                <Popup trigger={<a>Lobby</a>}>
+                <Popup trigger={<a>Lobby</a>} modal>
                     <Lobby />
                 </Popup>
             </li>
