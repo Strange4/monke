@@ -1,5 +1,5 @@
-import NavBar from "../Components/NavBar";
-import TypingScreen from "../Components/TypingScreen/TypingScreen";
+import NavBar from "../components/NavBar";
+import TypingScreen from "../components/TypingScreen/TypingScreen";
 
 const Home = () => {
     return (

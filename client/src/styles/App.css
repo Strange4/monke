@@ -25,12 +25,9 @@ body{
     justify-content: center;
     flex-flow: column;
 }
-  
+
 .popup-content {
-      border-radius: 10px;
-      left: 0 !important;
-      width: 100% !important;
-      height: 90% !important;
+    left: 9.5vw !important;
 }
 
 .popup-arrow {
