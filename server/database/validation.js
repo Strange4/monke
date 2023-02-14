@@ -1,4 +1,5 @@
-import z from "zod";
+import z, { nullable, object } from "zod";
+import mongoose from "mongoose";
 
 
 // user validation 
@@ -9,16 +10,16 @@ const userSchema = z.object({
 
 //user stats validation
 const userStatSchema = z.object({
-    user: {type : Schema.Types.ObjectId, ref: "User"},
-    "max_wpm": z.number(),
-    wpm: Number,
-    "max_accuracy": Number,
-    accuracy: Number,
-    "games_count": Number,
-    win: Number,
-    lose: Number,
-    draw: Number,
-    date: Date
+    user: object,
+    "max_wpm": z.number().positive(),
+    wpm: z.number().positive(),
+    "max_accuracy": z.number(),
+    accuracy: z.number(),
+    "games_count": z.number(),
+    win: z.number(),
+    lose: z.number(),
+    draw: z.number(),
+    date: z.date().nullable(true)
 });
 
 export {userSchema, userStatSchema};

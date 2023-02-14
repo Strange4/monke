@@ -36,14 +36,14 @@ router.get(user+"12", async (_, res) =>{
         // create the user
 
         const user = new User({
-            username: "testing stats",
+            username: "testing stats 2",
             "picture_url": "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Transparent-Image.png"
         })
 
-        let userValidation = userSchema.parse(user) 
+        userSchema.parse(user) 
 
         let userObject = await User.create(user);
-        //console.log(userObject._id)
+        console.log(userObject._id)
         await userObject.save();
 
         //Stat creation
@@ -60,6 +60,7 @@ router.get(user+"12", async (_, res) =>{
             date: null
         })
 
+        userStatSchema.parse(stats)
 
         let userStatsObject = await UserStat.create(stats)
         await userStatsObject.save() 
@@ -134,11 +135,15 @@ router.put(userStat, async (_, res) =>{
 */
 router.get(userStat, async (req, res) => {
 
-    // Get the name from the url and search for the stats in the database.
+    // Get the name from the url and search for the stats in the database. or body
     let user = req.query.name;
     console.log(user);
+    // get the object user
+    // take the id from the  user query
 
-    // Should create a json object or just use the model and return it in res.json
+    // query the userstat with the user id.
+
+    // return the object userstat
 
     // For now hard coded. 
     let stats = {
