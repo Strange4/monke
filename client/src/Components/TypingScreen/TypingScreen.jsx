@@ -4,6 +4,9 @@ import keyboardKeys from "../../Data/keyboard_keys.json";
 import './Layout/TypingScreen.css';
 import { useState, useRef } from "react";
 import useGameText from '../GameText';
+import Chronometer from './Chronometer';
+import "timer-machine";
+import Timer from "timer-machine";
 
 
 /**
@@ -13,9 +16,11 @@ import useGameText from '../GameText';
  */
 function TypingScreen() {
     const textToDisplay = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab pariatur laboriosam nobis, excepturi eaque adipisci amet placeat similique modi sunt suscipit. Aspernatur nam eum nesciunt excepturi maiores repellendus tenetur distinctio!";
-    const [GameText, updateGameText] = useGameText(textToDisplay);
+    const [timer, setTimer] = useState(new Timer());
+    const [displayTime, setDisplayTime] = useState({"seconds": 0, "state": "stopped"})
+    const [GameText, updateGameText] = useGameText(textToDisplay, timer, setTimer, setDisplayTime);
     const keyRefs = useRef(new Map());
-
+    
     function mapKeys(letter, virtualKey) {
         keyRefs.current.set(letter, virtualKey);
     }
@@ -30,6 +35,7 @@ function TypingScreen() {
 
     return (
         <div className='vertical-center'>
+            <Chronometer seconds={displayTime.seconds} state={displayTime.state}/>
             {GameText}
             <TextContainer
                 keyRefs={keyRefs}
