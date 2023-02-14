@@ -40,15 +40,16 @@ router.get(user+"12", async (_, res) =>{
             "picture_url": "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Transparent-Image.png"
         })
 
+        
+
         userSchema.parse(user) 
 
         let userObject = await User.create(user);
-        console.log(userObject._id)
         await userObject.save();
 
         //Stat creation
         const stats = new UserStat({
-            user: userObject._id,
+            user: userObject.id,
             "max_wpm": 0,
             wpm: 0,
             "max_accuracy": 0,
@@ -61,7 +62,6 @@ router.get(user+"12", async (_, res) =>{
         })
 
         userStatSchema.parse(stats)
-
         let userStatsObject = await UserStat.create(stats)
         await userStatsObject.save() 
 
@@ -158,6 +158,10 @@ router.get(userStat, async (req, res) => {
 
     res.status(200).json(stats);
 });
+
+function getNames(name){
+    
+}
 
 /**
  * endpoint randomly picks a hardcoded quote and sends it to the user
