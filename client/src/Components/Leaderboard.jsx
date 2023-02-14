@@ -12,13 +12,8 @@ const Leaderboard = () => {
 
     useEffect(() => {
         sendRequest((data) => {
-            console.log(data);
             setLeaderboard(data);
         });
-        // (async function loadLeaderboardData() {
-        //     let leaderboardData = await FetchModule.fetchData("/api/leaderboard")
-        //     setLeaderboard(leaderboardData)
-        // })();
     }, [])
 
     return (
