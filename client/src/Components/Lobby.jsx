@@ -6,6 +6,6 @@ const Lobby = () => {
             <h1>Lobby Popup</h1>
         </div>
     );
-};
+}
 
 export default Lobby;

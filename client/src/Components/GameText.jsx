@@ -3,7 +3,7 @@ import './Styles/GameText.css';
 import Timer from "timer-machine";
 
 function useGameText(textToDisplay, timer, setTimer, setDisplayTime, displayTime, setPopup, setResults) {
-    const updateRate = 1000
+    const updateRate = 1000;
     const defaultDisplay = Array.from(textToDisplay).map((letter) => {
         // the type of a displayed letter can only be right | wrong | none
         return {
@@ -16,21 +16,21 @@ function useGameText(textToDisplay, timer, setTimer, setDisplayTime, displayTime
     function setupTimer() {
         let interval;
         timer.on('start', function () {
-            setDisplayTime({"seconds": Math.floor(timer.time() / updateRate)})
-            interval = setInterval(timer.emitTime.bind(timer), updateRate)
-            setPopup(false)
-        })
+            setDisplayTime({"seconds": Math.floor(timer.time() / updateRate)});
+            interval = setInterval(timer.emitTime.bind(timer), updateRate);
+            setPopup(false);
+        });
         timer.on('stop', function () {
-            setTimer(timer)
-            setDisplayTime({"seconds": Math.floor(timer.time() / updateRate)})
-            setTimer(new Timer())
-            clearInterval(interval)
-            setPopup(true)
-            computeResults()
-        })
+            setTimer(timer);
+            setDisplayTime({"seconds": Math.floor(timer.time() / updateRate)});
+            setTimer(new Timer());
+            clearInterval(interval);
+            setPopup(true);
+            computeResults();
+        });
         timer.on('time', function (time) {
-            setDisplayTime({"seconds": Math.floor(time / updateRate)})
-        })
+            setDisplayTime({"seconds": Math.floor(time / updateRate)});
+        });
     }
 
     function computeResults() {
@@ -63,12 +63,12 @@ function useGameText(textToDisplay, timer, setTimer, setDisplayTime, displayTime
 
     function handleTimer(newInput) {
         if (!timer.isStarted() && display.length > newInput.length + 1) {
-            setupTimer()
+            setupTimer();
         }
         if (newInput.length === 1 && !timer.isStarted()) {
-            timer.start()
+            timer.start();
         } else if (display.length === newInput.length && timer.isStarted()) {
-            timer.stop()
+            timer.stop();
         }
     }
 
@@ -105,7 +105,7 @@ function useGameText(textToDisplay, timer, setTimer, setDisplayTime, displayTime
                         {letter.letter}</span>
                 })
             }
-        </div>;
+        </div>
     return [letters, rednerLetters];
 }
 

@@ -10,6 +10,6 @@ const RankListItem = (props) => {
             <p>{props.date}</p>
         </div>
     );
-};
+}
 
 export default RankListItem;

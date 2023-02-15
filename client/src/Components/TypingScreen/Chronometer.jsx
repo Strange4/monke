@@ -1,4 +1,4 @@
-import "./Layout/Chronometer.css"
+import "./Layout/Chronometer.css";
 
 function Chronometer(props) {
 

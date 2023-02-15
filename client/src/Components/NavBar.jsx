@@ -9,7 +9,6 @@ import Lobby from './Lobby';
  * @returns html
  */
 const NavBar = () => {
-
     return(
         <div id="navbar">
             <li>
