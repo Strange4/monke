@@ -40,7 +40,7 @@ function useGameText(textToDisplay, timer, setTimer, setDisplayTime, setPopup, s
         let minutes = timer.time() / 60000;
         let wpm = nbWords / minutes;
         setRes({
-            "time": Math.round((timer.time() / 1000) * 100) / 100,
+            "time": Math.round(timer.time() / 1000 * 100) / 100,
             "wpm": Math.round(wpm * 100) / 100,
             "accuracy": Math.round(computeAccuracy() * 100) / 100
         });

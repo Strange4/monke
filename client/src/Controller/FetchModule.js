@@ -18,7 +18,7 @@ async function fetchData(url) {
 }
 
 /**
- * Post the input comment to the api
+ * Post the user stat to the api
  * @param url 
  * @param userInput 
  */

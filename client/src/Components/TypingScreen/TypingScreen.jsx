@@ -44,7 +44,15 @@ function TypingScreen() {
     function postUserStats() {
         console.log("posting")
         console.log(results)
-        FetchModule.postUserStatAPI("/api/user_stat", results)
+        let userStats = {
+            "username": "Bob",
+            "wpm": results.wpm,
+            "accuracy": results.accuracy,
+            "win": 0,
+            "lose": 0,
+            "draw": 0
+        }
+        FetchModule.postUserStatAPI("/api/user_stat", userStats)
     }
 
     return (
