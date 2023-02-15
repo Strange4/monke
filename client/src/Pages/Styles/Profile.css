@@ -1,0 +1,18 @@
+#profile {
+    display: flex;
+    margin: auto;
+    border: #fff solid 2px;
+    border-radius: 20px;
+    width: 70vw;
+    height: 70vh;
+    margin-top: 10vh;
+}
+
+#profile-pic {
+    width: 20vw;
+    height: 30vh;
+    margin: 15px;
+    border: #fff solid 2px;
+    border-radius: 20px;
+
+}
