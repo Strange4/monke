@@ -21,53 +21,127 @@ const quote = "/quote";
 const user = "/user";
 
 /**
+ * Check to see in the database if the username exists or not.
+ * @param {string} name, username of the new User. 
+ * @returns boolean depending on if the username exists or not. 
+ */
+async function checkName(name){
+    try {
+        const databaseName = await User.find({username: name});
+        // Name exists.
+        if (databaseName.length >= 1){
+            return true;
+        // Name does not exists.
+        } else {
+            return false;
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+/**
+ * Get the Id of the User then return the UserStats of the User.
+ * @param {string} name, username of the new User. 
+ * @returns boolean depending on if the username exists or not. 
+ */
+async function getUserStats(name){
+    try {
+        const databaseUser = await User.find({username: name});
+        if (databaseUser.length >= 1){
+            console.log(databaseUser[0].id)
+            const stats = await UserStat.find({id: databaseUser[0].id})
+            console.log(stats);
+
+            return stats[0];
+        } else {
+            console.log(`Could not find user with name: ${name}`)
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+router.get("/testid", async(req,res) =>{
+    let s = await getUserStats(req.query.name);
+    console.log(s.max_wpm);
+    res.json(s)
+})
+
+router.get("/testuser", async (req, res) =>{
+    try{
+        let user = req.query.name;
+
+        if(await checkName(user)){
+            res.status(404).json({message:"Username already taken"});
+        }
+        else{
+            const userModel = new User({
+                username: user,
+                "picture_url": "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Transparent-Image.png"
+            });
+
+            let userObject = await User.create(userModel);
+            await userObject.save();
+
+            res.status(200).json({message: "User created successfuly"})
+        }
+
+    } catch (err){
+        console.error(`Error: ${err}`);
+        res.status(400).send(`<h1>400! User could not be created. Please refill the form.</h1>`);
+    }
+})
+
+
+/**
  * Post endpoint that creates User containing
  * username and temporary profileURL
  */
-router.get(user+"12", async (_, res) =>{
+router.post(user, async (req, res) =>{
     try {
+        // change to req.body after done and change to post method
+        const name = req.query.username;
+        if (await checkName(name) == false){
+            // create the user
 
-        // create the user then create stats
+            const user = new User({
+                "username": name,
+                "picture_url": "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Transparent-Image.png"
+            })
 
-        // need to validate data before
+            userSchema.parse(user) 
 
-        //data = CommentParser.parse(req.body); // code from before
+            let userObject = await User.create(user);
+            await userObject.save();
 
-        // create the user
+            //Stat creation
+            const stats = new UserStat({
+                "user": userObject.id,
+                "max_wpm": 0,
+                "wpm": 0,
+                "max_accuracy": 0,
+                "accuracy": 0,
+                "games_count": 0,
+                "win": 0,
+                "lose": 0,
+                "draw": 0,
+                "date": null
+            })
 
-        const user = new User({
-            username: "testing stats 2",
-            "picture_url": "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Transparent-Image.png"
-        })
+            userStatSchema.parse(stats)
+            let userStatsObject = await UserStat.create(stats)
+            await userStatsObject.save() 
 
-        
+            const message = "User created successfully";
+            console.log(message);
+            res.status(200).send(message);
 
-        userSchema.parse(user) 
+        // user already exist
+        } else{
+            res.status(404).json({error: "Username Already Taken"})
+        }
 
-        let userObject = await User.create(user);
-        await userObject.save();
-
-        //Stat creation
-        const stats = new UserStat({
-            user: userObject.id,
-            "max_wpm": 0,
-            wpm: 0,
-            "max_accuracy": 0,
-            accuracy: 0,
-            "games_count": 0,
-            win: 0,
-            lose: 0,
-            draw: 0,
-            date: null
-        })
-
-        userStatSchema.parse(stats)
-        let userStatsObject = await UserStat.create(stats)
-        await userStatsObject.save() 
-
-        const message = "User created successfully";
-        console.log(message);
-        res.status(200).send(message);
     } catch (err) {
         console.error(`Error: ${err}`);
         res.status(400).send(`<h1>400! User could not be created. Please refill the form.</h1>`);
@@ -159,9 +233,6 @@ router.get(userStat, async (req, res) => {
     res.status(200).json(stats);
 });
 
-function getNames(name){
-    
-}
 
 /**
  * endpoint randomly picks a hardcoded quote and sends it to the user
