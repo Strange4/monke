@@ -16,10 +16,10 @@ import SoloGameResult from './SoloGameResult';
  * @author Rim Dallali
  */
 function TypingScreen() {
-    const textToDisplay = "Lorem ipsum"
-    // const textToDisplay = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab pariatur laboriosam nobis, excepturi eaque adipisci amet placeat similique modi sunt suscipit. Aspernatur nam eum nesciunt excepturi maiores repellendus tenetur distinctio!";
+    // const textToDisplay = "Lorem ipsum"
+    const textToDisplay = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab pariatur laboriosam nobis, excepturi eaque adipisci amet placeat similique modi sunt suscipit. Aspernatur nam eum nesciunt excepturi maiores repellendus tenetur distinctio!";
     const [timer, setTimer] = useState(new Timer());
-    const [displayTime, setDisplayTime] = useState({ "seconds": 0, "state": "stopped" })
+    const [displayTime, setDisplayTime] = useState({ "seconds": 0})
     const [popup, setPopup] = useState(false);
     const [results, setResults] = useState({"time": 0, "wpm": 0})
     const [GameText, updateGameText] = useGameText(textToDisplay, timer, setTimer, setDisplayTime, displayTime, setPopup, setResults);

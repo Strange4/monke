@@ -16,20 +16,20 @@ function useGameText(textToDisplay, timer, setTimer, setDisplayTime, displayTime
     function setupTimer() {
         let interval;
         timer.on('start', function () {
-            setDisplayTime({ "seconds": Math.floor(timer.time() / updateRate), "state": "started" })
+            setDisplayTime({"seconds": Math.floor(timer.time() / updateRate)})
             interval = setInterval(timer.emitTime.bind(timer), updateRate)
             setPopup(false)
         })
         timer.on('stop', function () {
             setTimer(timer)
-            setDisplayTime({ "seconds": Math.floor(timer.time() / updateRate), "state": "stopped" })
+            setDisplayTime({"seconds": Math.floor(timer.time() / updateRate)})
             setTimer(new Timer())
             clearInterval(interval)
             setPopup(true)
             computeResults()
         })
         timer.on('time', function (time) {
-            setDisplayTime({ "seconds": Math.floor(time / updateRate), "state": displayTime.state })
+            setDisplayTime({"seconds": Math.floor(time / updateRate)})
         })
     }
 
