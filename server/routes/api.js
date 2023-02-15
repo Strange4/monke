@@ -7,7 +7,7 @@
 
 import * as express from "express";
 import User from "../database/models/user.js";
-import Quote from "../database/models/quote.js";
+// import Quote from "../database/models/quote.js"; currently unused
 import UserStat from "../database/models/userStat.js";
 import { userSchema, userStatSchema } from "../database/validation.js";
 
@@ -30,7 +30,7 @@ async function checkName(name){
     try {
         const databaseName = await User.findOne({username: name});
         // Name exists.
-        if (databaseName != null){
+        if (databaseName !== null){
             return true;
         // Name does not exists.
         } else {
@@ -50,7 +50,7 @@ async function checkName(name){
 async function getUserStats(name){
     try {
         const databaseUser = await User.findOne({username: name});
-        if (databaseUser != null){
+        if (databaseUser !== null){
             const stats = await UserStat.findOne({id: databaseUser.id});
             return stats;
         } else {
@@ -116,15 +116,15 @@ router.put(userStat, async(req, res) =>{
 router.post(user, async (req, res) =>{
     try {
         const name = req.body.username;
-        if (await checkName(name) == false){
+        if (await checkName(name) === false){
             // create the user
 
             const user = new User({
                 "username": name,
                 "picture_url": "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Transparent-Image.png"
-            })
+            });
 
-            userSchema.parse(user) 
+            userSchema.parse(user);
 
             let userObject = await User.create(user);
             await userObject.save();
@@ -153,7 +153,7 @@ router.post(user, async (req, res) =>{
 
         // user already exist
         } else{
-            res.status(404).json({error: "Username Already Taken"})
+            res.status(400).json({error: "Username Already Taken"});
         }
 
     } catch (err) {
@@ -189,8 +189,6 @@ router.get(user, async (req, res) => {
 
     res.status(200).json(returnData);
 });
-
-
 
 /**
  * endpoint randomly picks a hardcoded quote and sends it to the user
