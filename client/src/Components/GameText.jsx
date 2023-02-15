@@ -2,7 +2,7 @@ import { useState } from "react";
 import './Styles/GameText.css';
 import Timer from "timer-machine";
 
-function useGameText(textToDisplay, timer, setTimer, setDisplayTime, displayTime) {
+function useGameText(textToDisplay, timer, setTimer, setDisplayTime, displayTime, setPopup, setResults) {
     const updateRate = 1000
     const defaultDisplay = Array.from(textToDisplay).map((letter) => {
         // the type of a displayed letter can only be right | wrong | none
@@ -12,22 +12,35 @@ function useGameText(textToDisplay, timer, setTimer, setDisplayTime, displayTime
         }
     });
     const [display, setDisplay] = useState(defaultDisplay);
+
     function setupTimer() {
         let interval;
         timer.on('start', function () {
             setDisplayTime({ "seconds": Math.floor(timer.time() / updateRate), "state": "started" })
             interval = setInterval(timer.emitTime.bind(timer), updateRate)
+            setPopup(false)
         })
         timer.on('stop', function () {
             setTimer(timer)
             setDisplayTime({ "seconds": Math.floor(timer.time() / updateRate), "state": "stopped" })
             setTimer(new Timer())
             clearInterval(interval)
+            setPopup(true)
+            computeResults()
         })
         timer.on('time', function (time) {
             setDisplayTime({ "seconds": Math.floor(time / updateRate), "state": displayTime.state })
         })
-        
+    }
+
+    function computeResults() {
+        let nbWords = textToDisplay.split(" ").length;
+        let minutes = timer.time() / 60000;
+        let wpm = nbWords / minutes;
+        setResults({
+            "time": Math.round((timer.time() / 1000) * 100) / 100,
+            "wpm": Math.round(wpm * 100) / 100
+        });
     }
 
     function handleTimer(newInput) {

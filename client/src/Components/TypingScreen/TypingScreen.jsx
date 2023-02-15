@@ -7,7 +7,7 @@ import useGameText from '../GameText';
 import Chronometer from './Chronometer';
 import Timer from "timer-machine";
 import Popup from "reactjs-popup";
-import 'reactjs-popup/dist/index.css';
+import SoloGameResult from './SoloGameResult';
 
 
 /**
@@ -20,7 +20,9 @@ function TypingScreen() {
     // const textToDisplay = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab pariatur laboriosam nobis, excepturi eaque adipisci amet placeat similique modi sunt suscipit. Aspernatur nam eum nesciunt excepturi maiores repellendus tenetur distinctio!";
     const [timer, setTimer] = useState(new Timer());
     const [displayTime, setDisplayTime] = useState({ "seconds": 0, "state": "stopped" })
-    const [GameText, updateGameText] = useGameText(textToDisplay, timer, setTimer, setDisplayTime, displayTime);
+    const [popup, setPopup] = useState(false);
+    const [results, setResults] = useState({"time": 0, "wpm": 0})
+    const [GameText, updateGameText] = useGameText(textToDisplay, timer, setTimer, setDisplayTime, displayTime, setPopup, setResults);
     const keyRefs = useRef(new Map());
 
     function mapKeys(letter, virtualKey) {
@@ -48,8 +50,8 @@ function TypingScreen() {
                 onChangeText={onChangeText}
             />
             <VirtualKeyboard currentKeys={keyboard} mapKeys={mapKeys} />
-            <Popup trigger={<button> Trigger</button>} position="right center">
-                <div>Popup content here !!</div>
+            <Popup open={popup} position="center" modal>
+                <SoloGameResult time={results.time} wpm={results.wpm}/>
             </Popup>
         </div>
     );
