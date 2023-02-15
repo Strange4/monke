@@ -27,7 +27,8 @@ function useGameText(textToDisplay, timer, setTimer, setDisplayTime, displayTime
             clearInterval(interval);
             setPopup(true);
             computeResults();
-            textContainerRef.current.value= "";
+            textContainerRef.current.value = "";
+            textContainerRef.current.blur()
         });
         timer.on('time', function (time) {
             setDisplayTime({"seconds": Math.floor(time / updateRate)});
