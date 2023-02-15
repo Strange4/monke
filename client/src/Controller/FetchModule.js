@@ -17,4 +17,26 @@ async function fetchData(url) {
     }
 }
 
-export { fetchData };
+/**
+ * Post the input comment to the api
+ * @param url 
+ * @param userInput 
+ */
+async function postUserStatAPI(url, userStat) {
+    console.log(userStat)
+    let response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: userStat
+    });
+    if (response.ok) {
+        console.log(`sent data successfully: ${JSON.stringify(userStat)}`);
+    } else {
+        throw Error("Something Went wrong posting data");
+    }
+}
+
+export { fetchData, postUserStatAPI };

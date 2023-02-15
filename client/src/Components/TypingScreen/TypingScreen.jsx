@@ -8,6 +8,7 @@ import Chronometer from './Chronometer';
 import Timer from "timer-machine";
 import Popup from "reactjs-popup";
 import SoloGameResult from './SoloGameResult';
+import * as FetchModule from '../../Controller/FetchModule'
 
 
 /**
@@ -25,7 +26,7 @@ function TypingScreen() {
     let textContainerRef = useRef();
     const keyRefs = useRef(new Map());
     const [GameText, updateGameText] = useGameText(
-        textToDisplay, timer, setTimer, setDisplayTime, setPopup, setResults, textContainerRef);
+        textToDisplay, timer, setTimer, setDisplayTime, setPopup, setResults, textContainerRef, postUserStats);
 
     function mapKeys(letter, virtualKey) {
         keyRefs.current.set(letter, virtualKey);
@@ -38,6 +39,12 @@ function TypingScreen() {
 
     function onChangeText(currentText) {
         updateGameText(currentText);
+    }
+
+    function postUserStats() {
+        console.log("posting")
+        console.log(results)
+        FetchModule.postUserStatAPI("/api/user_stat", results)
     }
 
     return (
