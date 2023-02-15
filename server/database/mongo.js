@@ -12,7 +12,7 @@ const connectToDatabase = async () => {
         mongoose.set('strictQuery', true);
         await mongoose.connect(dbUrl, {dbName: "QuotesDatabase"});
     } catch (err) {
-        throw new Error("Could not connect");
+        throw new Error("Could not connect" + err);
     }
 }
 
