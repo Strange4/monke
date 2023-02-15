@@ -6,6 +6,10 @@
  */
 
 import * as express from "express";
+import User from "../database/models/user.js";
+import Quote from "../database/models/quote.js";
+import UserStat from "../database/models/userStat.js";
+import { userSchema, userStatSchema } from "../database/validation.js";
 
 const router = express.Router();
 
@@ -18,43 +22,192 @@ const user = "/user";
 const leaderboard = "/leaderboard";
 
 /**
+ * Check to see in the database if the username exists or not.
+ * @param {string} name, username of the new User. 
+ * @returns boolean depending on if the username exists or not. 
+ */
+async function checkName(name){
+    try {
+        const databaseName = await User.findOne({username: name});
+        // Name exists.
+        if (databaseName != null){
+            return true;
+        // Name does not exists.
+        } else {
+            console.log(`Could not find user with name: ${name}`);
+            return false;
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+/**
+ * Get the Id of the User then return the UserStats of the User.
+ * @param {string} name, username of the new User. 
+ * @returns boolean depending on if the username exists or not. 
+ */
+async function getUserStats(name){
+    try {
+        const databaseUser = await User.findOne({username: name});
+        if (databaseUser != null){
+            const stats = await UserStat.findOne({id: databaseUser.id});
+            return stats;
+        } else {
+            console.log(`Could not find user with name: ${name}`);
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
+ 
+
+/**
+ * Return the average of a stat
+ * @param {Number} stat, the previous average of the stat.
+ * @param {Number} newStat, the new stat obtain after a game has been complete. 
+ * @param {Number} games, the total number of games.
+ * @returns Average of the stat
+ */
+function getAverage(stat, newStat, games){
+    let unAverage = stat * games;
+    let newTotal = unAverage + newStat;
+    return newTotal / (games + 1);
+}
+
+// change to put after
+router.put(userStat, async(req, res) =>{
+    let name = req.body.username;
+    let newWpm = req.body.wpm;
+    let newAccuracy = req.body.accuracy;
+    let win = req.body.win;
+    let lose = req.body.lose;
+    let draw = req.body.draw;
+
+    const previousStats = await getUserStats(name);
+
+    const filter = { id: previousStats.id }
+
+    let update;
+    
+    if (newWpm > previousStats.max_wpm){
+        update = {
+            "user": previousStats.id,
+            "max_wpm": newWpm,
+            "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
+            "max_accuracy": newAccuracy,
+            "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
+            "games_count": previousStats.games_count + 1,
+            "win": previousStats.win + win,
+            "lose": previousStats.lose + lose,
+            "draw": previousStats.draw + draw,
+            "date": Date.now()
+        }
+
+    }else if (newWpm == previousStats.max_wpm && newAccuracy > previousStats.max_accuracy){
+        update = {
+            "user": previousStats.id,
+            "max_wpm": newWpm,
+            "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
+            "max_accuracy": newAccuracy,
+            "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
+            "games_count": previousStats.games_count + 1,
+            "win": previousStats.win + win,
+            "lose": previousStats.lose + lose,
+            "draw": previousStats.draw + draw,
+            "date": Date.now()
+        }
+    } 
+    // Update average only
+    else {
+        update = {
+            "user": previousStats.id,
+            "max_wpm": previousStats.max_wpm,
+            "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
+            "max_accuracy": previousStats.max_accuracy,
+            "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
+            "games_count": previousStats.games_count + 1,
+            "win": previousStats.win + win,
+            "lose": previousStats.lose + lose,
+            "draw": previousStats.draw + draw,
+            "date": previousStats.date
+        }
+    }
+    userStatSchema.parse(update)
+    await UserStat.findOneAndUpdate(filter, update);
+
+    res.status(200).json({message: "Stats updated"})
+})
+
+
+/**
+ * Post endpoint that creates User containing
+ * username and temporary profileURL
+ */
+router.post(user, async (req, res) =>{
+    try {
+        const name = req.body.username;
+        if (await checkName(name) == false){
+            // create the user
+
+            const user = new User({
+                "username": name,
+                "picture_url": "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Transparent-Image.png"
+            })
+
+            userSchema.parse(user) 
+
+            let userObject = await User.create(user);
+            await userObject.save();
+
+            //Stat creation
+            const stats = new UserStat({
+                "user": userObject.id,
+                "max_wpm": 0,
+                "wpm": 0,
+                "max_accuracy": 0,
+                "accuracy": 0,
+                "games_count": 0,
+                "win": 0,
+                "lose": 0,
+                "draw": 0,
+                "date": null
+            })
+
+            userStatSchema.parse(stats)
+            let userStatsObject = await UserStat.create(stats)
+            await userStatsObject.save() 
+
+            const message = "User created successfully";
+            console.log(message);
+            res.status(200).send(message);
+
+        // user already exist
+        } else{
+            res.status(404).json({error: "Username Already Taken"})
+        }
+
+    } catch (err) {
+        console.error(`Error: ${err}`);
+        res.status(400).send(`<h1>400! User could not be created. Please refill the form.</h1>`);
+    }
+});
+
+
+/**
  * Get endpoint that returns a hardcoded json object containing
  * username and temporary profileURL
  */
 router.get(user, async (_, res) => {
     const user = {
         username: "anonymous",
-        // eslint-disable-next-line max-len
         profileURL: "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Transparent-Image.png" 
     };
 
     res.status(200).json(user);
 });
 
-/*
-* Get method for the user stat
-*/
-router.get(userStat, async (req, res) => {
 
-    // Get the name from the url and search for the stats in the database.
-    let user = req.query.name;
-    console.log(user);
-
-    // Should create a json object or just use the model and return it in res.json
-
-    // For now hard coded. 
-    let stats = {
-        wpm: 30,
-        accuracy: 74,
-        games: 80,
-        win: 34,
-        lose: 43,
-        draw: 23,
-        rank: 12 
-    };
-
-    res.status(200).json(stats);
-});
 
 /**
  * endpoint randomly picks a hardcoded quote and sends it to the user

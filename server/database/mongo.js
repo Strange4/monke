@@ -10,8 +10,7 @@ const dbUrl = process.env.ATLAS_URI;
 const connectToDatabase = async () => {
     try{
         mongoose.set('strictQuery', true);
-        let conn = await mongoose.connect(dbUrl, {dbName: "QuotesDatabase"});
-        return conn;
+        await mongoose.connect(dbUrl, {dbName: "QuotesDatabase"});
     } catch (err) {
         throw new Error("Could not connect" + err);
     }
