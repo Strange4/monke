@@ -1,19 +1,19 @@
 import './Styles/Leaderboard.css';
 import RankListItem from './RankListItem';
 import { useEffect, useState } from 'react';
-import * as FetchModule from "../Controller/FetchModule"
+import {useFetch} from "../Controller/FetchModule"
 
 const Leaderboard = () => {
     const current = new Date();
-    const date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`
+    const date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
 
-    const [leaderboard, setLeaderboard] = useState([])
+    const [leaderboard, setLeaderboard] = useState([]);
+    const {loadingPlaceHolder, sendRequest} = useFetch("/api/leaderboard");
 
     useEffect(() => {
-        (async function loadLeaderboardData() {
-            let leaderboardData = await FetchModule.fetchData("/api/leaderboard")
-            setLeaderboard(leaderboardData)
-        })();
+        sendRequest((data) => {
+            setLeaderboard(data);
+        });
     }, [])
 
     return (
@@ -28,6 +28,7 @@ const Leaderboard = () => {
                     <p>Date</p>
                 </div>
                 {
+                    loadingPlaceHolder ||
                     leaderboard.map((user, i) => <RankListItem 
                         user={user.username}
                         picture={user.profilePicture} 
