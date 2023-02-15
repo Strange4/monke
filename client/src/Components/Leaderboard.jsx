@@ -6,14 +6,15 @@ import * as FetchModule from "../Controller/FetchModule";
 const Leaderboard = () => {
     const current = new Date();
     const date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
+
     const [leaderboard, setLeaderboard] = useState([]);
+    const {loadingPlaceHolder, sendRequest} = FetchModule.useFetch("/api/leaderboard");
 
     useEffect(() => {
-        (async function loadLeaderboardData() {
-            let leaderboardData = await FetchModule.fetchData("/api/leaderboard");
-            setLeaderboard(leaderboardData);
-        })();
-    }, []);
+        sendRequest((data) => {
+            setLeaderboard(data);
+        });
+    }, [])
 
     return (
         <div id="leaderboard">
@@ -27,6 +28,7 @@ const Leaderboard = () => {
                     <p>Date</p>
                 </div>
                 {
+                    loadingPlaceHolder ||
                     leaderboard.map((user, i) => <RankListItem 
                         user={user.username}
                         picture={user.profilePicture} 
