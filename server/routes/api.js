@@ -88,51 +88,20 @@ router.put(userStat, async(req, res) =>{
 
     const filter = { id: previousStats.id }
 
-    let update;
-    
-    if (newWpm > previousStats.max_wpm){
-        update = {
-            "user": previousStats.id,
-            "max_wpm": newWpm,
-            "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
-            "max_accuracy": newAccuracy,
-            "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
-            "games_count": previousStats.games_count + 1,
-            "win": previousStats.win + win,
-            "lose": previousStats.lose + lose,
-            "draw": previousStats.draw + draw,
-            "date": Date.now()
-        }
-
-    }else if (newWpm == previousStats.max_wpm && newAccuracy > previousStats.max_accuracy){
-        update = {
-            "user": previousStats.id,
-            "max_wpm": newWpm,
-            "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
-            "max_accuracy": newAccuracy,
-            "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
-            "games_count": previousStats.games_count + 1,
-            "win": previousStats.win + win,
-            "lose": previousStats.lose + lose,
-            "draw": previousStats.draw + draw,
-            "date": Date.now()
-        }
-    } 
-    // Update average only
-    else {
-        update = {
-            "user": previousStats.id,
-            "max_wpm": previousStats.max_wpm,
-            "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
-            "max_accuracy": previousStats.max_accuracy,
-            "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
-            "games_count": previousStats.games_count + 1,
-            "win": previousStats.win + win,
-            "lose": previousStats.lose + lose,
-            "draw": previousStats.draw + draw,
-            "date": previousStats.date
-        }
+    const update = {
+        "user": previousStats.id,
+        "max_wpm": newWpm > previousStats.max_wpm ? newWpm : previousStats.max_wpm,
+        "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
+        "max_accuracy":
+            newAccuracy > previousStats.max_accuracy ? newAccuracy : previousStats.max_accuracy,
+        "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
+        "games_count": previousStats.games_count + 1,
+        "win": previousStats.win + win,
+        "lose": previousStats.lose + lose,
+        "draw": previousStats.draw + draw,
+        "date": Date.now()
     }
+
     userStatSchema.parse(update)
     await UserStat.findOneAndUpdate(filter, update);
 
