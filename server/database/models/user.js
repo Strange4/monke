@@ -6,7 +6,7 @@ const Schema = mongoose.Schema;
  * Schema that represents Users
  */
 const UserSchema = new Schema({
-    username: { type: String, required: true },
+    "username": { type: String, required: true },
     "picture_url": String
 });
 

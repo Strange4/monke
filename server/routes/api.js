@@ -27,12 +27,13 @@ const user = "/user";
  */
 async function checkName(name){
     try {
-        const databaseName = await User.find({username: name});
+        const databaseName = await User.findOne({username: name});
         // Name exists.
-        if (databaseName.length >= 1){
+        if (databaseName != null){
             return true;
         // Name does not exists.
         } else {
+            console.log(`Could not find user with name: ${name}`);
             return false;
         }
     } catch (err) {
@@ -47,15 +48,12 @@ async function checkName(name){
  */
 async function getUserStats(name){
     try {
-        const databaseUser = await User.find({username: name});
-        if (databaseUser.length >= 1){
-            console.log(databaseUser[0].id)
-            const stats = await UserStat.find({id: databaseUser[0].id})
-            console.log(stats);
-
-            return stats[0];
+        const databaseUser = await User.findOne({username: name});
+        if (databaseUser != null){
+            const stats = await UserStat.findOne({id: databaseUser.id});
+            return stats;
         } else {
-            console.log(`Could not find user with name: ${name}`)
+            console.log(`Could not find user with name: ${name}`);
         }
     } catch (err) {
         console.error(err);
@@ -93,6 +91,28 @@ router.get("/testuser", async (req, res) =>{
     }
 })
 
+// change to put after
+router.get(userStat+"11", async(req, res) =>{
+    let name = req.query.username;
+
+    await checkName(name)
+
+    const statsId = await getUserStats(name);
+    const filter = { id: statsId }
+    const update = {
+        "wpm": 100,
+        "accuracy": 90,
+        "win": 10,
+        "games_count": 100
+    }
+    //userStatSchema.parse(update)
+   
+
+    await UserStat.findOneAndUpdate(filter, update);
+
+    res.status(200).json({message: "Stats updated"})
+})
+
 
 /**
  * Post endpoint that creates User containing
@@ -101,7 +121,7 @@ router.get("/testuser", async (req, res) =>{
 router.post(user, async (req, res) =>{
     try {
         // change to req.body after done and change to post method
-        const name = req.query.username;
+        const name = req.body.username;
         if (await checkName(name) == false){
             // create the user
 
