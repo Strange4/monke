@@ -33,7 +33,7 @@ async function postUserStatAPI(url, userStat) {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
-        body: userStat
+        body: JSON.stringify(userStat)
     });
     if (response.ok) {
         console.log(`sent data successfully: ${JSON.stringify(userStat)}`);
