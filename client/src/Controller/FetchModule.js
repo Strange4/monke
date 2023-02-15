@@ -34,7 +34,6 @@ function useFetch(url, params) {
                 return;
             }
             const contentType = response.headers.get("Content-Type");
-            console.log(contentType);
             let data = null;
             // return the right content type
             if(contentType.match("json")){
