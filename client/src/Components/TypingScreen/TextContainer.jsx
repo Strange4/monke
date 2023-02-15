@@ -30,21 +30,30 @@ function TextContainer(props) {
         if (key === "Shift") {
             props.setKeyboard(props.allRegKeys);
         }
-        if(props.currentKeys.some(row => row.includes(key))){
+        if (props.currentKeys.some(row => row.includes(key))) {
             const letter = cleanUpLetter(key);
             const currentKey = props.keyRefs.current.get(letter).current;
             currentKey.classList.remove("pressed");
             currentKey.classList.add("unpressed");
         }
     }
+    
+    const handleChange = (e) => {
+        e.preventDefault();
+    };
 
     return (
-        <input type="text"
+        <input
+            type="text"
+            onPaste={handleChange}
+            onDrag={handleChange}
+            onDrop={handleChange}
+            onCopy={handleChange}
             ref={props.textRef}
             className="text-container"
             onKeyUp={e => handlekeyUp(e)}
             onKeyDown={e => handleKeyDown(e)}
-            onChange={(e)=> props.onChangeText(e.target.value) }>
+            onChange={(e) => props.onChangeText(e.target.value)}>
         </input >
     )
 }

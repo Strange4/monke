@@ -2,7 +2,7 @@ import { useState } from "react";
 import './Styles/GameText.css';
 import Timer from "timer-machine";
 
-function useGameText(textToDisplay, timer, setTimer, setDisplayTime, displayTime, setPopup, setResults, textContainerRef) {
+function useGameText(textToDisplay, timer, setTimer, setDisplayTime, setPopup, setRes, textRef) {
     const updateRate = 1000;
     const defaultDisplay = Array.from(textToDisplay).map((letter) => {
         // the type of a displayed letter can only be right | wrong | none
@@ -27,8 +27,8 @@ function useGameText(textToDisplay, timer, setTimer, setDisplayTime, displayTime
             clearInterval(interval);
             setPopup(true);
             computeResults();
-            textContainerRef.current.value = "";
-            textContainerRef.current.blur()
+            textRef.current.value = "";
+            textRef.current.blur()
         });
         timer.on('time', function (time) {
             setDisplayTime({"seconds": Math.floor(time / updateRate)});
@@ -39,7 +39,7 @@ function useGameText(textToDisplay, timer, setTimer, setDisplayTime, displayTime
         let nbWords = textToDisplay.split(" ").length;
         let minutes = timer.time() / 60000;
         let wpm = nbWords / minutes;
-        setResults({
+        setRes({
             "time": Math.round((timer.time() / 1000) * 100) / 100,
             "wpm": Math.round(wpm * 100) / 100,
             "accuracy": Math.round(computeAccuracy() * 100) / 100
@@ -56,7 +56,7 @@ function useGameText(textToDisplay, timer, setTimer, setDisplayTime, displayTime
                 wrongCount++;
             }
         });
-        let accuracy = (rightCount / (rightCount + wrongCount)) * 100;
+        let accuracy = rightCount / (rightCount + wrongCount) * 100;
         if (wrongCount === 0) {
             accuracy = 100;
         }

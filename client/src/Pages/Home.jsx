@@ -7,7 +7,7 @@ const Home = () => {
             <NavBar />
             <h1>Home Page</h1>
             <div id="game-component">
-                <TypingScreen/>
+                <TypingScreen />
             </div>
         </div>
     );
