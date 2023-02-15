@@ -23,5 +23,8 @@
   "homepage": "https://gitlab.com/dawson2223/620-w23/s02/team4/monke#readme",
   "devDependencies": {
     "concurrently": "^7.6.0"
+  },
+  "dependencies": {
+    "react-icons": "^4.7.1"
   }
 }

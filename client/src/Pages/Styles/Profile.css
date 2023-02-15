@@ -4,15 +4,64 @@
     border: #fff solid 2px;
     border-radius: 20px;
     width: 70vw;
+    min-width: 500pt;
+    max-width: 700pt;
     height: 70vh;
+    min-height: 500pt;
     margin-top: 10vh;
+    flex-flow: row wrap;
+}
+
+#image {
+    position: relative;
+    display: flex;
+    flex-flow: column;
+    width: 230pt;
+    height: 230pt;
 }
 
 #profile-pic {
-    width: 20vw;
-    height: 30vh;
+    position: relative;
+    width: 200pt;
+    height: 200pt;
     margin: 15px;
     border: #fff solid 2px;
     border-radius: 20px;
+}
 
+#edit-icon {
+    position: absolute;
+    justify-content: right;
+    right: 0;
+    bottom: 0;
+    margin: 30pt;
+    width: 2em;
+    height: 2em;
+    color: #000;
+}
+
+#user-info {
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: space-evenly;
+    width: 280pt;
+    height: 150pt;
+    margin: 15px;
+    text-align: left;
+}
+
+#user-stats {
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: space-around;
+    width: 60vw;
+    height: 20vh;
+    min-height: 200pt;
+    margin: auto;
+    margin-bottom: 40pt;
+}
+
+#user-stats p {
+    font-size: 1.5em;
+    padding: 5pt;
 }
