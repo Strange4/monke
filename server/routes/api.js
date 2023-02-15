@@ -164,16 +164,30 @@ router.post(user, async (req, res) =>{
 
 
 /**
- * Get endpoint that returns a hardcoded json object containing
- * username and temporary profileURL
+ * Get endpoint that  json object containing the user
+ * and their game statistics
  */
-router.get(user, async (_, res) => {
-    const user = {
-        username: "anonymous",
-        profileURL: "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Transparent-Image.png" 
+router.get(user, async (req, res) => {    
+    // query for user that matches username
+    const user = await User.findOne({username: req.query.username});
+    // query for user's game statistics
+    const stats = await getUserStats(user.username);
+
+    let returnData = {
+        "username": user.username,
+        "image": user.picture_url,
+        "wpm": stats.wpm,
+        "max_wpm": stats.max_wpm,
+        "accuracy": stats.accuracy,
+        "max_accuracy": stats.max_accuracy,
+        "games_count": stats.games_count,
+        "win": stats.win,
+        "lose": stats.lose,
+        "draw": stats.draw,
+        "date": stats.date
     };
 
-    res.status(200).json(user);
+    res.status(200).json(returnData);
 });
 
 
