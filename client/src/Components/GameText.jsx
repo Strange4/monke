@@ -2,7 +2,7 @@ import { useState } from "react";
 import './Styles/GameText.css';
 import Timer from "timer-machine";
 
-function useGameText(textToDisplay, timer, setTimer, setDisplayTime, displayTime, setPopup, setResults) {
+function useGameText(textToDisplay, timer, setTimer, setDisplayTime, displayTime, setPopup, setResults, textContainerRef) {
     const updateRate = 1000;
     const defaultDisplay = Array.from(textToDisplay).map((letter) => {
         // the type of a displayed letter can only be right | wrong | none
@@ -27,6 +27,7 @@ function useGameText(textToDisplay, timer, setTimer, setDisplayTime, displayTime
             clearInterval(interval);
             setPopup(true);
             computeResults();
+            textContainerRef.current.value= "";
         });
         timer.on('time', function (time) {
             setDisplayTime({"seconds": Math.floor(time / updateRate)});

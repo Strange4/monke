@@ -40,6 +40,7 @@ function TextContainer(props) {
 
     return (
         <input type="text"
+            ref={props.textRef}
             className="text-container"
             onKeyUp={e => handlekeyUp(e)}
             onKeyDown={e => handleKeyDown(e)}

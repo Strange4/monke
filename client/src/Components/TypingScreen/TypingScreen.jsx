@@ -22,8 +22,9 @@ function TypingScreen() {
     const [displayTime, setDisplayTime] = useState({ "seconds": 0})
     const [popup, setPopup] = useState(false);
     const [results, setResults] = useState({"time": 0, "wpm": 0})
-    const [GameText, updateGameText] = useGameText(textToDisplay, timer, setTimer, setDisplayTime, displayTime, setPopup, setResults);
+    let textContainerRef = useRef();
     const keyRefs = useRef(new Map());
+    const [GameText, updateGameText] = useGameText(textToDisplay, timer, setTimer, setDisplayTime, displayTime, setPopup, setResults, textContainerRef);
 
     function mapKeys(letter, virtualKey) {
         keyRefs.current.set(letter, virtualKey);
@@ -33,6 +34,7 @@ function TypingScreen() {
     const allRegKeys = keyboardKeys.english.lower;
 
     const [keyboard, setKeyboard] = useState(allRegKeys);
+    
     function onChangeText(currentText) {
         updateGameText(currentText);
     }
@@ -42,6 +44,7 @@ function TypingScreen() {
             <Chronometer seconds={displayTime.seconds} state={displayTime.state} />
             {GameText}
             <TextContainer
+                textRef={textContainerRef}
                 keyRefs={keyRefs}
                 currentKeys={keyboard}
                 allRegKeys={allRegKeys}
