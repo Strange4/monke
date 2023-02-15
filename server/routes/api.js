@@ -59,55 +59,80 @@ async function getUserStats(name){
         console.error(err);
     }
 }
+ 
 
-router.get("/testid", async(req,res) =>{
-    let s = await getUserStats(req.query.name);
-    console.log(s.max_wpm);
-    res.json(s)
-})
-
-router.get("/testuser", async (req, res) =>{
-    try{
-        let user = req.query.name;
-
-        if(await checkName(user)){
-            res.status(404).json({message:"Username already taken"});
-        }
-        else{
-            const userModel = new User({
-                username: user,
-                "picture_url": "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Transparent-Image.png"
-            });
-
-            let userObject = await User.create(userModel);
-            await userObject.save();
-
-            res.status(200).json({message: "User created successfuly"})
-        }
-
-    } catch (err){
-        console.error(`Error: ${err}`);
-        res.status(400).send(`<h1>400! User could not be created. Please refill the form.</h1>`);
-    }
-})
+/**
+ * Return the average of a stat
+ * @param {Number} stat, the previous average of the stat.
+ * @param {Number} newStat, the new stat obtain after a game has been complete. 
+ * @param {Number} games, the total number of games.
+ * @returns Average of the stat
+ */
+function getAverage(stat, newStat, games){
+    let unAverage = stat * games;
+    let newTotal = unAverage + newStat;
+    return newTotal / (games + 1);
+}
 
 // change to put after
-router.get(userStat+"11", async(req, res) =>{
-    let name = req.query.username;
+router.put(userStat, async(req, res) =>{
+    let name = req.body.username;
+    let newWpm = req.body.wpm;
+    let newAccuracy = req.body.accuracy;
+    let win = req.body.win;
+    let lose = req.body.lose;
+    let draw = req.body.draw;
 
-    await checkName(name)
+    const previousStats = await getUserStats(name);
 
-    const statsId = await getUserStats(name);
-    const filter = { id: statsId }
-    const update = {
-        "wpm": 100,
-        "accuracy": 90,
-        "win": 10,
-        "games_count": 100
+    const filter = { id: previousStats.id }
+
+    let update;
+    
+    if (newWpm > previousStats.max_wpm){
+        update = {
+            "user": previousStats.id,
+            "max_wpm": newWpm,
+            "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
+            "max_accuracy": newAccuracy,
+            "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
+            "games_count": previousStats.games_count + 1,
+            "win": previousStats.win + win,
+            "lose": previousStats.lose + lose,
+            "draw": previousStats.draw + draw,
+            "date": Date.now()
+        }
+
+    }else if (newWpm == previousStats.max_wpm && newAccuracy > previousStats.max_accuracy){
+        update = {
+            "user": previousStats.id,
+            "max_wpm": newWpm,
+            "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
+            "max_accuracy": newAccuracy,
+            "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
+            "games_count": previousStats.games_count + 1,
+            "win": previousStats.win + win,
+            "lose": previousStats.lose + lose,
+            "draw": previousStats.draw + draw,
+            "date": Date.now()
+        }
+    } 
+    // Update average only
+    else {
+        update = {
+            "user": previousStats.id,
+            "max_wpm": previousStats.max_wpm,
+            "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
+            "max_accuracy": previousStats.max_accuracy,
+            "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
+            "games_count": previousStats.games_count + 1,
+            "win": previousStats.win + win,
+            "lose": previousStats.lose + lose,
+            "draw": previousStats.draw + draw,
+            "date": previousStats.date
+        }
     }
-    //userStatSchema.parse(update)
-   
-
+    userStatSchema.parse(update)
     await UserStat.findOneAndUpdate(filter, update);
 
     res.status(200).json({message: "Stats updated"})
@@ -120,7 +145,6 @@ router.get(userStat+"11", async(req, res) =>{
  */
 router.post(user, async (req, res) =>{
     try {
-        // change to req.body after done and change to post method
         const name = req.body.username;
         if (await checkName(name) == false){
             // create the user
@@ -182,76 +206,6 @@ router.get(user, async (_, res) => {
     res.status(200).json(user);
 });
 
-router.put(userStat, async (_, res) =>{
-    try {
-
-        // find the user to get the id
-        // buidl the data with the id of the user
-
-        //data = CommentParser.parse(req.body);
-
-        let data = {
-            username: "user1 test for stat",
-            pictureURL: "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Transparent-Image.png"
-        }
-
-        let userObject = await User.create(data);
-        await userObject.save();
-
-        let userStatObject = await UserStat.create(data2);
-        await userStatObject.save();
-
-        // const stats = new UserStat({
-        //     user: userObject._id,
-        //     "max_wpm": 0,
-        //     wpm: 0,
-        //     "max_accuracy": 0,
-        //     accuracy: 0,
-        //     "games_count": 0,
-        //     win: 0,
-        //     lose: 0,
-        //     draw: 0,
-        //     date: Date.now()
-        // })
-
-        const message = "UserStat created successfully";
-        console.log(message);
-        res.status(200).send(message);
-    } catch (err) {
-        console.error(`Error: ${err}`);
-        res.status(400).send(`<h1>400! User could not be created. Please refill the form.</h1>`);
-    }
-});
-
-
-/*
-* Get method for the user stat
-*/
-router.get(userStat, async (req, res) => {
-
-    // Get the name from the url and search for the stats in the database. or body
-    let user = req.query.name;
-    console.log(user);
-    // get the object user
-    // take the id from the  user query
-
-    // query the userstat with the user id.
-
-    // return the object userstat
-
-    // For now hard coded. 
-    let stats = {
-        wpm: 30,
-        accuracy: 74,
-        games: 80,
-        win: 34,
-        lose: 43,
-        draw: 23,
-        rank: 12 
-    };
-
-    res.status(200).json(stats);
-});
 
 
 /**
