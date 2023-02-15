@@ -39,8 +39,26 @@ function useGameText(textToDisplay, timer, setTimer, setDisplayTime, displayTime
         let wpm = nbWords / minutes;
         setResults({
             "time": Math.round((timer.time() / 1000) * 100) / 100,
-            "wpm": Math.round(wpm * 100) / 100
+            "wpm": Math.round(wpm * 100) / 100,
+            "accuracy": Math.round(computeAccuracy() * 100) / 100
         });
+    }
+
+    function computeAccuracy() {
+        let wrongCount = 0;
+        let rightCount = 0;
+        display.forEach(letter => {
+            if (letter.type === "right") {
+                rightCount++;
+            } else if (letter.type === "wrong") {
+                wrongCount++;
+            }
+        });
+        let accuracy = (rightCount / (rightCount + wrongCount)) * 100;
+        if (wrongCount === 0) {
+            accuracy = 100;
+        }
+        return accuracy;
     }
 
     function handleTimer(newInput) {
