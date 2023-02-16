@@ -75,7 +75,7 @@ function getAverage(stat, newStat, games){
     return newTotal / (games + 1);
 }
 
-// change to put after
+
 router.put(userStat, async(req, res) =>{
     let name = req.body.username;
     let newWpm = req.body.wpm;
@@ -88,20 +88,48 @@ router.put(userStat, async(req, res) =>{
 
     const filter = { id: previousStats.id }
 
-    const update = {
-        "user": previousStats.id,
-        "max_wpm": newWpm > previousStats.max_wpm ? newWpm : previousStats.max_wpm,
-        "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
-        "max_accuracy":
-            newAccuracy > previousStats.max_accuracy ? newAccuracy : previousStats.max_accuracy,
-        "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
-        "games_count": previousStats.games_count + 1,
-        "win": previousStats.win + win,
-        "lose": previousStats.lose + lose,
-        "draw": previousStats.draw + draw,
-        "date": Date.now()
-    }
+    let update;
+    
+    if (newWpm > previousStats.max_wpm){
+        update = {
+            "max_wpm": newWpm,
+            "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
+            "max_accuracy": newAccuracy,
+            "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
+            "games_count": previousStats.games_count + 1,
+            "win": previousStats.win + win,
+            "lose": previousStats.lose + lose,
+            "draw": previousStats.draw + draw,
+            "date": Date.now()
+        }
 
+    }else if (newWpm == previousStats.max_wpm && newAccuracy > previousStats.max_accuracy){
+        update = {
+            "max_wpm": newWpm,
+            "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
+            "max_accuracy": newAccuracy,
+            "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
+            "games_count": previousStats.games_count + 1,
+            "win": previousStats.win + win,
+            "lose": previousStats.lose + lose,
+            "draw": previousStats.draw + draw,
+            "date": Date.now()
+        }
+    } 
+    // Update average only
+    else {
+        update = {
+            "max_wpm": previousStats.max_wpm,
+            "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
+            "max_accuracy": previousStats.max_accuracy,
+            "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
+            "games_count": previousStats.games_count + 1,
+            "win": previousStats.win + win,
+            "lose": previousStats.lose + lose,
+            "draw": previousStats.draw + draw,
+            "date": previousStats.date
+        }
+    }
     userStatSchema.parse(update)
     await UserStat.findOneAndUpdate(filter, update);
 
@@ -304,14 +332,13 @@ router.get(leaderboard, async (_, res) => {
     try {
         const stats = [];
         const users = await User.find();
-
         for (const user of users){
             const userStats = await UserStat.findOne({user: user.id});
-            stats.push({
-                "profilePicture": user.picture_url,
-                "username": user.username,
-                "wpm": userStats.max_wpm,
-                "accuracy": userStats.max_accuracy
+             stats.push({
+                 "profilePicture": user.picture_url,
+                 "username": user.username,
+                 "wpm": userStats.max_wpm,
+                 "accuracy": userStats.max_accuracy
             });
         }
         res.status(200).json(sortRank(stats));
