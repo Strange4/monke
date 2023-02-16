@@ -41,6 +41,12 @@ function TypingScreen() {
         updateGameText(currentText);
     }
 
+    function cleanVirtualKeyboard() {
+        keyRefs.current.forEach(key => {
+            key.current.classList.remove("pressed")
+        })
+    }
+
     /**
      * Sends data to the post api for a user's solo game
      * TODO change the username to be the real username 
@@ -48,6 +54,7 @@ function TypingScreen() {
      * @param {Object} result 
      */
     function postUserStats(result) {
+        cleanVirtualKeyboard()
         setResults(result)
         let userStats = {
             "username": "john",

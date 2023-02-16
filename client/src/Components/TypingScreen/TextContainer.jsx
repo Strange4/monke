@@ -1,6 +1,5 @@
 import "./Layout/TextContainer.css";
 import { cleanUpLetter } from "../../Controller/ConversionHelper";
-import { useState } from "react";
 
 /**
  * Temporary text container to heberge user typed 
@@ -32,9 +31,7 @@ function TextContainer(props) {
     }
 
     function handlekeyUp(e) {
-        console.log(e.getModifierState('CapsLock'))
         const key = e.nativeEvent.key;
-        console.log(key)
         if (key === "Shift" && e.getModifierState('CapsLock') === false) {
             props.setKeyboard(props.allRegKeys);
         } else if (key === "Shift" && e.getModifierState('CapsLock') === true) {
