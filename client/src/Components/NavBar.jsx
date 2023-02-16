@@ -27,6 +27,8 @@ const NavBar = () => {
                 </Popup>
             </li>
             <li>
+                {/* popup and link work at same time for now, 
+                will be changed to show right one depending on login status */}
                 <Popup trigger={<Link to="/profile">Profile</Link>}>
                     <Login />
                 </Popup>
