@@ -51,7 +51,7 @@ async function getUserStats(name){
     try {
         const databaseUser = await User.findOne({username: name});
         if (databaseUser !== null){
-            const stats = await UserStat.findOne({id: databaseUser.id});
+            const stats = await UserStat.findOne({user: databaseUser.id});
             return stats;
         } else {
             console.log(`Could not find user with name: ${name}`);
@@ -75,7 +75,7 @@ function getAverage(stat, newStat, games){
     return newTotal / (games + 1);
 }
 
-// change to put after
+
 router.put(userStat, async(req, res) =>{
     let name = req.body.username;
     let newWpm = req.body.wpm;
@@ -88,20 +88,48 @@ router.put(userStat, async(req, res) =>{
 
     const filter = { id: previousStats.id }
 
-    const update = {
-        "user": previousStats.id,
-        "max_wpm": newWpm > previousStats.max_wpm ? newWpm : previousStats.max_wpm,
-        "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
-        "max_accuracy":
-            newAccuracy > previousStats.max_accuracy ? newAccuracy : previousStats.max_accuracy,
-        "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
-        "games_count": previousStats.games_count + 1,
-        "win": previousStats.win + win,
-        "lose": previousStats.lose + lose,
-        "draw": previousStats.draw + draw,
-        "date": Date.now()
-    }
+    let update;
+    
+    if (newWpm > previousStats.max_wpm){
+        update = {
+            "max_wpm": newWpm,
+            "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
+            "max_accuracy": newAccuracy,
+            "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
+            "games_count": previousStats.games_count + 1,
+            "win": previousStats.win + win,
+            "lose": previousStats.lose + lose,
+            "draw": previousStats.draw + draw,
+            "date": Date.now()
+        }
 
+    }else if (newWpm == previousStats.max_wpm && newAccuracy > previousStats.max_accuracy){
+        update = {
+            "max_wpm": newWpm,
+            "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
+            "max_accuracy": newAccuracy,
+            "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
+            "games_count": previousStats.games_count + 1,
+            "win": previousStats.win + win,
+            "lose": previousStats.lose + lose,
+            "draw": previousStats.draw + draw,
+            "date": Date.now()
+        }
+    } 
+    // Update average only
+    else {
+        update = {
+            "max_wpm": previousStats.max_wpm,
+            "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
+            "max_accuracy": previousStats.max_accuracy,
+            "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
+            "games_count": previousStats.games_count + 1,
+            "win": previousStats.win + win,
+            "lose": previousStats.lose + lose,
+            "draw": previousStats.draw + draw,
+            "date": previousStats.date
+        }
+    }
     userStatSchema.parse(update)
     await UserStat.findOneAndUpdate(filter, update);
 
@@ -243,35 +271,80 @@ router.get(quote, async (_, res) => {
 });
 
 /**
+ * Sort the users into rank depending on wpm and accuracy, then returns the sorted leaderboard.
+ * @param {*} users, Leadeaboard JSON Object without sorting and no rank field.
+ * @returns Array of JSON object that represents the leaderboard.
+ */
+function sortRank(users){
+    const leaderboard = [];
+    let rank = 1;
+
+    while (users.length > 0){
+        let picture = users[0].profilePicture;
+        let username = users[0].username;
+        let wpm = users[0].wpm;
+        let accuracy = users[0].accuracy;
+
+        if (users.length > 1){
+            for (const user of users){
+                if (user.wpm > wpm){
+                    picture = user.profilePicture;
+                    username = user.username;
+                    wpm = user.wpm;
+                    accuracy = user.accuracy;
+                
+                } else if (user.wpm === wpm && user.accuracy > accuracy){
+                    picture = user.profilePicture;
+                    username = user.username;
+                    wpm = user.wpm;
+                    accuracy = user.accuracy;
+                }
+    
+                leaderboard.push({
+                    "rank": rank,
+                    "profilePicture": picture,
+                    "username": username,
+                    "wpm": wpm,
+                    "accuracy": accuracy
+                })
+                users.splice(users.indexOf(user), 1);
+                rank++;
+            }
+        } else {
+            leaderboard.push({
+                "rank": rank,
+                "profilePicture": picture,
+                "username": username,
+                "wpm": wpm,
+                "accuracy": accuracy
+            })
+            users.splice(users.indexOf(user), 1);
+        }
+    }
+    return leaderboard;
+}
+
+/**
  * Get endpoint that returns a hardcoded json object containing
  * leaderboard info such as rank, wpm, username and temporary profileURL
  */
 router.get(leaderboard, async (_, res) => {
-    const leaderboard = [
-        {
-            rank: 1, 
-            profilePicture: "https://picsum.photos/id/237/200/300", 
-            username: "Bob Bobson", 
-            wpm: 70,
-            accuracy: 60
-        }, 
-        {
-            rank: 2, 
-            profilePicture: "https://picsum.photos/id/217/200/300", 
-            username: "John Cena", 
-            wpm: 123,
-            accuracy: 83
-        }, 
-        {
-            rank: 3, 
-            profilePicture: "https://picsum.photos/id/133/200/300", 
-            username: "Julia Blob", 
-            wpm: 89,
-            accuracy: 100
-        },  
-    ];
-
-    res.status(200).json(leaderboard);
+    try {
+        const stats = [];
+        const users = await User.find();
+        for (const user of users){
+            const userStats = await UserStat.findOne({user: user.id});
+             stats.push({
+                 "profilePicture": user.picture_url,
+                 "username": user.username,
+                 "wpm": userStats.max_wpm,
+                 "accuracy": userStats.max_accuracy
+            });
+        }
+        res.status(200).json(sortRank(stats));
+    } catch (err){
+        console.error(err);
+    }
 });
 
 router.use("/", async (_, res) => {
