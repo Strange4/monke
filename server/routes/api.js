@@ -301,7 +301,6 @@ function sortRank(users){
  * leaderboard info such as rank, wpm, username and temporary profileURL
  */
 router.get(leaderboard, async (_, res) => {
-
     try {
         const stats = [];
         const users = await User.find();
@@ -315,35 +314,10 @@ router.get(leaderboard, async (_, res) => {
                 "accuracy": userStats.max_accuracy
             });
         }
-
         res.status(200).json(sortRank(stats));
     } catch (err){
         console.error(err);
     }
-
-    // const leaderboard = [
-    //     {
-    //         rank: 1, 
-    //         profilePicture: "https://picsum.photos/id/237/200/300", 
-    //         username: "Bob Bobson", 
-    //         wpm: 70,
-    //         accuracy: 60
-    //     }, 
-    //     {
-    //         rank: 2, 
-    //         profilePicture: "https://picsum.photos/id/217/200/300", 
-    //         username: "John Cena", 
-    //         wpm: 123,
-    //         accuracy: 83
-    //     }, 
-    //     {
-    //         rank: 3, 
-    //         profilePicture: "https://picsum.photos/id/133/200/300", 
-    //         username: "Julia Blob", 
-    //         wpm: 89,
-    //         accuracy: 100
-    //     },  
-    // ];
 });
 
 router.use("/", async (_, res) => {
