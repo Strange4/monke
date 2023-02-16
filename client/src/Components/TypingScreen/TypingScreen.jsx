@@ -17,8 +17,7 @@ import * as FetchModule from '../../Controller/FetchModule'
  * @author Rim Dallali
  */
 function TypingScreen() {
-    const textToDisplay = "Lorem ipsum hello world" 
-    // const textToDisplay = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab pariatur laboriosam nobis, excepturi eaque adipisci amet placeat similique modi sunt suscipit. Aspernatur nam eum nesciunt excepturi maiores repellendus tenetur distinctio!";
+    const textToDisplay = "Lorem ipsum dolor sit amet consectetur adipisicing elit.";
     const [timer, setTimer] = useState(new Timer());
     const [displayTime, setDisplayTime] = useState({ "seconds": 0})
     const [popup, setPopup] = useState(false);

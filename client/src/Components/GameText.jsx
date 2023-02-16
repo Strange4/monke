@@ -34,9 +34,6 @@ function useGameText(textToDisplay, timer, setTimer, setDisplayTime, setPopup, t
             computeResults();
             textRef.current.value = "";
             textRef.current.blur();
-            display.forEach(letter => {
-                console.log(letter.type)
-            })
         });
         timer.on('time', function (time) {
             setDisplayTime({"seconds": Math.floor(time / updateRate)});
