@@ -168,10 +168,18 @@ router.post(user, async (req, res) =>{
  * and their game statistics
  */
 router.get(user, async (req, res) => {    
-    // query for user that matches username
-    const user = await User.findOne({username: req.query.username});
-    // query for user's game statistics
-    const stats = await getUserStats(user.username);
+
+    let user;
+    let stats;
+    try{
+        // query for user that matches username
+        user = await User.findOne({username: req.body.username});
+        // query for user's game statistics
+        stats = await getUserStats(user.username);
+    } catch (err) {
+        console.error("Could not obtain userstats ", err);
+        res.status(400).json({ error: "Could not obtain user stats."})
+    }
 
     let returnData = {
         "username": user.username,
