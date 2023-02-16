@@ -1,5 +1,6 @@
 import "./Layout/TextContainer.css";
 import { cleanUpLetter } from "../../Controller/ConversionHelper";
+import { useState } from "react";
 
 /**
  * Temporary text container to heberge user typed 
@@ -9,12 +10,17 @@ import { cleanUpLetter } from "../../Controller/ConversionHelper";
  * @author Rim Dallali
  */
 function TextContainer(props) {
-
     function handleKeyDown(e) {
         let letter = e.nativeEvent.key;
 
-        if (letter === "Shift") {
+        if (letter === "Shift" && e.getModifierState('CapsLock') === false) {
             props.setKeyboard(props.allShiftKeys);
+        } else if (letter === "Shift" && e.getModifierState('CapsLock') === true) {
+            props.setKeyboard(props.allRegKeys);
+        } else if (letter === "CapsLock") {
+            props.setKeyboard(
+                props.currentKeys === props.allRegKeys ? props.allShiftKeys : props.allRegKeys
+            );
         }
         if (props.currentKeys.some(row => row.includes(letter))) {
             letter = cleanUpLetter(letter);
@@ -26,9 +32,13 @@ function TextContainer(props) {
     }
 
     function handlekeyUp(e) {
+        console.log(e.getModifierState('CapsLock'))
         const key = e.nativeEvent.key;
-        if (key === "Shift") {
+        console.log(key)
+        if (key === "Shift" && e.getModifierState('CapsLock') === false) {
             props.setKeyboard(props.allRegKeys);
+        } else if (key === "Shift" && e.getModifierState('CapsLock') === true) {
+            props.setKeyboard(props.allShiftKeys);
         }
         if (props.currentKeys.some(row => row.includes(key))) {
             const letter = cleanUpLetter(key);
@@ -37,7 +47,7 @@ function TextContainer(props) {
             currentKey.classList.add("unpressed");
         }
     }
-    
+
     const handleChange = (e) => {
         e.preventDefault();
     };
