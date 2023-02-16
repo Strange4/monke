@@ -13,6 +13,10 @@ function useGameText(textToDisplay, timer, setTimer, setDisplayTime, setPopup, t
     });
     const [display, setDisplay] = useState(defaultDisplay);
 
+    /**
+     * Sets up the different listeners for the timer (start, stop and time)
+     * Resets the solo game on stop and sends data to api for posting
+     */
     function setupTimer() {
         let interval;
         timer.on('start', function () {
@@ -35,6 +39,9 @@ function useGameText(textToDisplay, timer, setTimer, setDisplayTime, setPopup, t
         });
     }
 
+    /**
+     * Compute the results for the solo game upon end and post them
+     */
     function computeResults() {
         let nbWords = textToDisplay.split(" ").length;
         let minutes = timer.time() / 60000;
@@ -47,6 +54,10 @@ function useGameText(textToDisplay, timer, setTimer, setDisplayTime, setPopup, t
         postStats(result)
     }
 
+    /**
+     * computes the accuracy and returns it to the results computation
+     * @returns {number}
+     */
     function computeAccuracy() {
         let wrongCount = 0;
         let rightCount = 0;
@@ -64,6 +75,10 @@ function useGameText(textToDisplay, timer, setTimer, setDisplayTime, setPopup, t
         return accuracy;
     }
 
+    /**
+     * Handles when the timer should start and stop
+     * @param {*} newInput 
+     */
     function handleTimer(newInput) {
         if (!timer.isStarted() && display.length > newInput.length + 1) {
             setupTimer();

@@ -41,6 +41,12 @@ function TypingScreen() {
         updateGameText(currentText);
     }
 
+    /**
+     * Sends data to the post api for a user's solo game
+     * TODO change the username to be the real username 
+     * once login is implemented
+     * @param {Object} result 
+     */
     function postUserStats(result) {
         setResults(result)
         let userStats = {
