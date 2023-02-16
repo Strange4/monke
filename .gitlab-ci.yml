@@ -56,7 +56,6 @@ deploy-job:
   only:
     - main
     - staging
-    - 41-package-json-script-configuration
   stage: deploy
   image: mcr.microsoft.com/azure-cli
   dependencies:
