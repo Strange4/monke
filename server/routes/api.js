@@ -85,8 +85,8 @@ router.put(userStat, async(req, res) =>{
     let draw = req.body.draw;
 
     const previousStats = await getUserStats(name);
-
-    const filter = { id: previousStats.id }
+    const user = await User.findOne({username: name})
+    const filter = { user: user.id, id: previousStats.id }
 
     let update;
     
