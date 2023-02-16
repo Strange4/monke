@@ -51,7 +51,7 @@ async function getUserStats(name){
     try {
         const databaseUser = await User.findOne({username: name});
         if (databaseUser !== null){
-            let stats = await UserStat.findOne({user: databaseUser.id});
+            const stats = await UserStat.findOne({user: databaseUser.id});
             return stats;
         } else {
             console.log(`Could not find user with name: ${name}`);
@@ -243,15 +243,83 @@ router.get(quote, async (_, res) => {
 });
 
 /**
+ * Sort the users into rank depending on wpm and accuracy, then returns the sorted leaderboard.
+ * @param {*} users, Leadeaboard JSON Object without sorting and no rank field.
+ * @returns Array of JSON object that represents the leaderboard.
+ */
+function sortRank(users){
+    const leaderboard = [];
+    let rank = 1;
+
+    while (users.length > 0){
+        let picture = users[0].profilePicture;
+        let username = users[0].username;
+        let wpm = users[0].wpm;
+        let accuracy = users[0].accuracy;
+
+        if (users.length > 1){
+            for (const user of users){
+                if (user.wpm > wpm){
+                    picture = user.profilePicture;
+                    username = user.username;
+                    wpm = user.wpm;
+                    accuracy = user.accuracy;
+                
+                } else if (user.wpm === wpm && user.accuracy > accuracy){
+                    picture = user.profilePicture;
+                    username = user.username;
+                    wpm = user.wpm;
+                    accuracy = user.accuracy;
+                }
+    
+                leaderboard.push({
+                    "rank": rank,
+                    "profilePicture": picture,
+                    "username": username,
+                    "wpm": wpm,
+                    "accuracy": accuracy
+                })
+                users.splice(users.indexOf(user), 1);
+                rank++;
+            }
+        } else {
+            leaderboard.push({
+                "rank": rank,
+                "profilePicture": picture,
+                "username": username,
+                "wpm": wpm,
+                "accuracy": accuracy
+            })
+            users.splice(users.indexOf(user), 1);
+        }
+    }
+    return leaderboard;
+}
+
+/**
  * Get endpoint that returns a hardcoded json object containing
  * leaderboard info such as rank, wpm, username and temporary profileURL
  */
-router.get(leaderboard, async (req, res) => {
+router.get(leaderboard, async (_, res) => {
 
-    checkName(req.query.name)
-    let stats = getUserStats(req.query.name)
+    try {
+        const stats = [];
+        const users = await User.find();
 
-    console.log(stats);
+        for (const user of users){
+            const userStats = await UserStat.findOne({user: user.id});
+            stats.push({
+                "profilePicture": user.picture_url,
+                "username": user.username,
+                "wpm": userStats.max_wpm,
+                "accuracy": userStats.max_accuracy
+            });
+        }
+
+        res.status(200).json(sortRank(stats));
+    } catch (err){
+        console.error(err);
+    }
 
     // const leaderboard = [
     //     {
@@ -276,8 +344,6 @@ router.get(leaderboard, async (req, res) => {
     //         accuracy: 100
     //     },  
     // ];
-
-    res.status(200).json(stats);
 });
 
 router.use("/", async (_, res) => {
