@@ -30,9 +30,13 @@ function useGameText(textToDisplay, timer, setTimer, setDisplayTime, setPopup, t
             setTimer(new Timer());
             clearInterval(interval);
             setPopup(true);
+            textRef.current.value += "k"
             computeResults();
             textRef.current.value = "";
             textRef.current.blur();
+            display.forEach(letter => {
+                console.log(letter.type)
+            })
         });
         timer.on('time', function (time) {
             setDisplayTime({"seconds": Math.floor(time / updateRate)});
@@ -63,9 +67,9 @@ function useGameText(textToDisplay, timer, setTimer, setDisplayTime, setPopup, t
         let rightCount = 0;
         display.forEach(letter => {
             if (letter.type === "right") {
-                rightCount++;
+                ++rightCount;
             } else if (letter.type === "wrong") {
-                wrongCount++;
+                ++wrongCount;
             }
         });
         let accuracy = rightCount / (rightCount + wrongCount) * 100;
@@ -95,8 +99,6 @@ function useGameText(textToDisplay, timer, setTimer, setDisplayTime, setPopup, t
      * @param {string} newInput the new input that has been changed by the user
      */
     function rednerLetters(newInput) {
-        handleTimer(newInput);
-
         const newLetterIndex = newInput.length - 1;
         const newDisplay = display.slice();
         // are are setting all the next letters that could posibly be deleted to none.
@@ -113,6 +115,7 @@ function useGameText(textToDisplay, timer, setTimer, setDisplayTime, setPopup, t
             }
         }
         setDisplay(newDisplay);
+        handleTimer(newInput);
     }
 
     let letters =
