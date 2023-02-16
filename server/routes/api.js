@@ -169,33 +169,32 @@ router.post(user, async (req, res) =>{
  */
 router.get(user, async (req, res) => {    
 
-    let user;
-    let stats;
     try{
         // query for user that matches username
-        user = await User.findOne({username: req.body.username});
+        const user = await User.findOne({username: req.body.username});
         // query for user's game statistics
-        stats = await getUserStats(user.username);
+        const stats = await getUserStats(user.username);
+
+        let data = {
+            "username": user.username,
+            "image": user.picture_url,
+            "wpm": stats.wpm,
+            "max_wpm": stats.max_wpm,
+            "accuracy": stats.accuracy,
+            "max_accuracy": stats.max_accuracy,
+            "games_count": stats.games_count,
+            "win": stats.win,
+            "lose": stats.lose,
+            "draw": stats.draw,
+            "date": stats.date
+        };
+    
+        res.status(200).json(data);
+
     } catch (err) {
         console.error("Could not obtain userstats ", err);
         res.status(400).json({ error: "Could not obtain user stats."})
     }
-
-    let returnData = {
-        "username": user.username,
-        "image": user.picture_url,
-        "wpm": stats.wpm,
-        "max_wpm": stats.max_wpm,
-        "accuracy": stats.accuracy,
-        "max_accuracy": stats.max_accuracy,
-        "games_count": stats.games_count,
-        "win": stats.win,
-        "lose": stats.lose,
-        "draw": stats.draw,
-        "date": stats.date
-    };
-
-    res.status(200).json(returnData);
 });
 
 /**
