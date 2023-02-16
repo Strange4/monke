@@ -12,6 +12,7 @@ eslint-job:
     - npm install eslint
   script:
     - echo "Running eslint to see if everything is pretty 💅"
+
     - echo "The code passes the vibes check 💅"
 
 client-build-job:
@@ -50,6 +51,7 @@ deploy-job:
   only:
     - main
     - staging
+    - 41-package-json-script-configuration
   stage: deploy
   image: mcr.microsoft.com/azure-cli
   dependencies:
