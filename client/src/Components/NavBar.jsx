@@ -3,6 +3,7 @@ import './Styles/NavBar.css';
 import Popup from 'reactjs-popup';
 import Leaderboard from './Leaderboard';
 import Lobby from './Lobby';
+import Login from './Login';
 
 /**
  * Navigation bar to be used on all pages
@@ -26,7 +27,9 @@ const NavBar = () => {
                 </Popup>
             </li>
             <li>
-                <Link to="/profile">Profile</Link>
+                <Popup trigger={<Link to="/profile">Profile</Link>}>
+                    <Login />
+                </Popup>
             </li>
         </div>
     );
