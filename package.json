@@ -4,11 +4,11 @@
   "description": "To make it easy for you to get started with GitLab, here's a list of recommended next steps.",
   "main": "index.js",
   "scripts": {
-    "start": "npm run install:all && npm run build && concurrently \"cd client && npm run start\" \"cd server && npm run dev\" --kill-others",
+    "start": "node ./server/bin/www.js",
     "build": "cd ./client && npm run build",
     "install:all": "npm install && concurrently \"cd client && npm install\" \"cd server && npm install\"",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently \"cd client && npm run start\" \"cd server && npm run dev\" --kill-others"
+    "dev": "npm install:all && concurrently \"cd client && npm run start\" \"cd server && npm run dev\" --kill-others"
   },
   "repository": {
     "type": "git",
