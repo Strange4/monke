@@ -22,11 +22,11 @@ function TypingScreen() {
     const [timer, setTimer] = useState(new Timer());
     const [displayTime, setDisplayTime] = useState({ "seconds": 0})
     const [popup, setPopup] = useState(false);
-    const [results, setResults] = useState({"time": 0, "wpm": 0})
+    const [results, setResults] = useState({"time": 0, "wpm": 0, "accuracy": 0})
     let textContainerRef = useRef();
     const keyRefs = useRef(new Map());
     const [GameText, updateGameText] = useGameText(
-        textToDisplay, timer, setTimer, setDisplayTime, setPopup, setResults, textContainerRef, postUserStats);
+        textToDisplay, timer, setTimer, setDisplayTime, setPopup, textContainerRef, postUserStats);
 
     function mapKeys(letter, virtualKey) {
         keyRefs.current.set(letter, virtualKey);
@@ -41,13 +41,12 @@ function TypingScreen() {
         updateGameText(currentText);
     }
 
-    function postUserStats() {
-        console.log("posting")
-        console.log(results)
+    function postUserStats(result) {
+        setResults(result)
         let userStats = {
-            "username": "Bob",
-            "wpm": results.wpm,
-            "accuracy": results.accuracy,
+            "username": "john",
+            "wpm": result.wpm,
+            "accuracy": result.accuracy,
             "win": 0,
             "lose": 0,
             "draw": 0

@@ -2,7 +2,7 @@ import { useState } from "react";
 import './Styles/GameText.css';
 import Timer from "timer-machine";
 
-function useGameText(textToDisplay, timer, setTimer, setDisplayTime, setPopup, setRes, textRef, postStats) {
+function useGameText(textToDisplay, timer, setTimer, setDisplayTime, setPopup, textRef, postStats) {
     const updateRate = 1000;
     const defaultDisplay = Array.from(textToDisplay).map((letter) => {
         // the type of a displayed letter can only be right | wrong | none
@@ -39,13 +39,12 @@ function useGameText(textToDisplay, timer, setTimer, setDisplayTime, setPopup, s
         let nbWords = textToDisplay.split(" ").length;
         let minutes = timer.time() / 60000;
         let wpm = nbWords / minutes;
-        setRes({
+        let result = {
             "time": Math.round(timer.time() / 1000 * 100) / 100,
             "wpm": Math.round(wpm * 100) / 100,
             "accuracy": Math.round(computeAccuracy() * 100) / 100
-        });
-        console.log("new")
-        postStats()
+        }
+        postStats(result)
     }
 
     function computeAccuracy() {
