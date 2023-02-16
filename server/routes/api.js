@@ -7,7 +7,7 @@
 
 import * as express from "express";
 import User from "../database/models/user.js";
-import Quote from "../database/models/quote.js";
+// import Quote from "../database/models/quote.js"; currently unused
 import UserStat from "../database/models/userStat.js";
 import { userSchema, userStatSchema } from "../database/validation.js";
 
@@ -30,7 +30,7 @@ async function checkName(name){
     try {
         const databaseName = await User.findOne({username: name});
         // Name exists.
-        if (databaseName != null){
+        if (databaseName !== null){
             return true;
         // Name does not exists.
         } else {
@@ -50,7 +50,7 @@ async function checkName(name){
 async function getUserStats(name){
     try {
         const databaseUser = await User.findOne({username: name});
-        if (databaseUser != null){
+        if (databaseUser !== null){
             const stats = await UserStat.findOne({id: databaseUser.id});
             return stats;
         } else {
@@ -88,51 +88,20 @@ router.put(userStat, async(req, res) =>{
 
     const filter = { id: previousStats.id }
 
-    let update;
-    
-    if (newWpm > previousStats.max_wpm){
-        update = {
-            "user": previousStats.id,
-            "max_wpm": newWpm,
-            "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
-            "max_accuracy": newAccuracy,
-            "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
-            "games_count": previousStats.games_count + 1,
-            "win": previousStats.win + win,
-            "lose": previousStats.lose + lose,
-            "draw": previousStats.draw + draw,
-            "date": Date.now()
-        }
-
-    }else if (newWpm == previousStats.max_wpm && newAccuracy > previousStats.max_accuracy){
-        update = {
-            "user": previousStats.id,
-            "max_wpm": newWpm,
-            "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
-            "max_accuracy": newAccuracy,
-            "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
-            "games_count": previousStats.games_count + 1,
-            "win": previousStats.win + win,
-            "lose": previousStats.lose + lose,
-            "draw": previousStats.draw + draw,
-            "date": Date.now()
-        }
-    } 
-    // Update average only
-    else {
-        update = {
-            "user": previousStats.id,
-            "max_wpm": previousStats.max_wpm,
-            "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
-            "max_accuracy": previousStats.max_accuracy,
-            "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
-            "games_count": previousStats.games_count + 1,
-            "win": previousStats.win + win,
-            "lose": previousStats.lose + lose,
-            "draw": previousStats.draw + draw,
-            "date": previousStats.date
-        }
+    const update = {
+        "user": previousStats.id,
+        "max_wpm": newWpm > previousStats.max_wpm ? newWpm : previousStats.max_wpm,
+        "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
+        "max_accuracy":
+            newAccuracy > previousStats.max_accuracy ? newAccuracy : previousStats.max_accuracy,
+        "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
+        "games_count": previousStats.games_count + 1,
+        "win": previousStats.win + win,
+        "lose": previousStats.lose + lose,
+        "draw": previousStats.draw + draw,
+        "date": Date.now()
     }
+
     userStatSchema.parse(update)
     await UserStat.findOneAndUpdate(filter, update);
 
@@ -147,15 +116,15 @@ router.put(userStat, async(req, res) =>{
 router.post(user, async (req, res) =>{
     try {
         const name = req.body.username;
-        if (await checkName(name) == false){
+        if (await checkName(name) === false){
             // create the user
 
             const user = new User({
                 "username": name,
                 "picture_url": "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Transparent-Image.png"
-            })
+            });
 
-            userSchema.parse(user) 
+            userSchema.parse(user);
 
             let userObject = await User.create(user);
             await userObject.save();
@@ -184,7 +153,7 @@ router.post(user, async (req, res) =>{
 
         // user already exist
         } else{
-            res.status(404).json({error: "Username Already Taken"})
+            res.status(400).json({error: "Username Already Taken"});
         }
 
     } catch (err) {
@@ -195,19 +164,38 @@ router.post(user, async (req, res) =>{
 
 
 /**
- * Get endpoint that returns a hardcoded json object containing
- * username and temporary profileURL
+ * Get endpoint that  json object containing the user
+ * and their game statistics
  */
-router.get(user, async (_, res) => {
-    const user = {
-        username: "anonymous",
-        profileURL: "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Transparent-Image.png" 
-    };
+router.get(user, async (req, res) => {    
 
-    res.status(200).json(user);
+    try{
+        // query for user that matches username
+        const user = await User.findOne({username: req.body.username});
+        // query for user's game statistics
+        const stats = await getUserStats(user.username);
+
+        let data = {
+            "username": user.username,
+            "image": user.picture_url,
+            "wpm": stats.wpm,
+            "max_wpm": stats.max_wpm,
+            "accuracy": stats.accuracy,
+            "max_accuracy": stats.max_accuracy,
+            "games_count": stats.games_count,
+            "win": stats.win,
+            "lose": stats.lose,
+            "draw": stats.draw,
+            "date": stats.date
+        };
+    
+        res.status(200).json(data);
+
+    } catch (err) {
+        console.error("Could not obtain userstats ", err);
+        res.status(400).json({ error: "Could not obtain user stats."})
+    }
 });
-
-
 
 /**
  * endpoint randomly picks a hardcoded quote and sends it to the user
