@@ -1,101 +1,15 @@
 import { useState } from "react";
 import './Styles/GameText.css';
-import Timer from "timer-machine";
 
-function useGameText(textToDisplay, timer, setTimer, setDisplayTime, setPopup, textRef, postStats) {
-    const updateRate = 1000;
-    const defaultDisplay = Array.from(textToDisplay).map((letter) => {
-        // the type of a displayed letter can only be right | wrong | none
-        return {
-            letter,
-            type: "none"
-        }
-    });
-    const [display, setDisplay] = useState(defaultDisplay);
 
-    /**
-     * Sets up the different listeners for the timer (start, stop and time)
-     * Resets the solo game on stop and sends data to api for posting
-     */
-    function setupTimer() {
-        let interval;
-        timer.on('start', function () {
-            setDisplayTime({"seconds": Math.floor(timer.time() / updateRate)});
-            interval = setInterval(timer.emitTime.bind(timer), updateRate);
-            setPopup(false);
-        });
-        timer.on('stop', async function () {
-            setTimer(timer);
-            setDisplayTime({"seconds": Math.floor(timer.time() / updateRate)});
-            setTimer(new Timer());
-            clearInterval(interval);
-            setPopup(true);
-            textRef.current.value += "k"
-            computeResults();
-            textRef.current.value = "";
-            textRef.current.blur();
-        });
-        timer.on('time', function (time) {
-            setDisplayTime({"seconds": Math.floor(time / updateRate)});
-        });
-    }
-
-    /**
-     * Compute the results for the solo game upon end and post them
-     */
-    function computeResults() {
-        let nbWords = textToDisplay.split(" ").length;
-        let minutes = timer.time() / 60000;
-        let wpm = nbWords / minutes;
-        let result = {
-            "time": Math.round(timer.time() / 1000 * 100) / 100,
-            "wpm": Math.round(wpm * 100) / 100,
-            "accuracy": Math.round(computeAccuracy() * 100) / 100
-        }
-        postStats(result)
-    }
-
-    /**
-     * computes the accuracy and returns it to the results computation
-     * @returns {number}
-     */
-    function computeAccuracy() {
-        let wrongCount = 0;
-        let rightCount = 0;
-        display.forEach(letter => {
-            if (letter.type === "right") {
-                ++rightCount;
-            } else if (letter.type === "wrong") {
-                ++wrongCount;
-            }
-        });
-        let accuracy = rightCount / (rightCount + wrongCount) * 100;
-        if (wrongCount === 0) {
-            accuracy = 100;
-        }
-        return accuracy;
-    }
-
-    /**
-     * Handles when the timer should start and stop
-     * @param {*} newInput 
-     */
-    function handleTimer(newInput) {
-        if (!timer.isStarted() && display.length > newInput.length + 1) {
-            setupTimer();
-        }
-        if (newInput.length === 1 && !timer.isStarted()) {
-            timer.start();
-        } else if (display.length === newInput.length && timer.isStarted()) {
-            timer.stop();
-        }
-    }
+function useGameText(userDisplay, setUserDisplayText) {
+    const [display, setDisplay] = useState(userDisplay);
 
     /**
      * changes the type (right | wrong | none) of the display of letters based on the user input
      * @param {string} newInput the new input that has been changed by the user
      */
-    function rednerLetters(newInput) {
+    function renderLetters(newInput) {
         const newLetterIndex = newInput.length - 1;
         const newDisplay = display.slice();
         // are are setting all the next letters that could posibly be deleted to none.
@@ -112,7 +26,8 @@ function useGameText(textToDisplay, timer, setTimer, setDisplayTime, setPopup, t
             }
         }
         setDisplay(newDisplay);
-        handleTimer(newInput);
+
+        setUserDisplayText(newDisplay)
     }
 
     let letters =
@@ -124,7 +39,7 @@ function useGameText(textToDisplay, timer, setTimer, setDisplayTime, setPopup, t
                 })
             }
         </div>
-    return [letters, rednerLetters];
+    return [letters, renderLetters];
 }
 
 export default useGameText;

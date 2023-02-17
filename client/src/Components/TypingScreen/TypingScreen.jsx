@@ -6,10 +6,7 @@ import { useState, useRef } from "react";
 import useGameText from '../GameText';
 import Chronometer from './Chronometer';
 import Timer from "timer-machine";
-import Popup from "reactjs-popup";
 import SoloGameResult from './SoloGameResult';
-import * as FetchModule from '../../Controller/FetchModule'
-
 
 /**
  * Container for the Textarea and the virtual keyboard
@@ -18,52 +15,45 @@ import * as FetchModule from '../../Controller/FetchModule'
  */
 function TypingScreen() {
     const textToDisplay = "Lorem ipsum dolor sit amet consectetur adipisicing elit.";
+    const allShiftKeys = keyboardKeys.english.upper;
+    const allRegKeys = keyboardKeys.english.lower;
+    const [keyboard, setKeyboard] = useState(allRegKeys);
+    const [gameState, setGameState] = useState("reset");
     const [timer, setTimer] = useState(new Timer());
-    const [displayTime, setDisplayTime] = useState({ "seconds": 0})
-    const [popup, setPopup] = useState(false);
-    const [results, setResults] = useState({"time": 0, "wpm": 0, "accuracy": 0})
+    const [displayTime, setDisplayTime] = useState({ "seconds": 0 });
+    const [userDisplay, setUserDisplayText] = useState(getDefaultUserDisplay());
+    const [GameText, updateGameText] = useGameText(userDisplay, setUserDisplayText);
     let textContainerRef = useRef();
     const keyRefs = useRef(new Map());
-    const [GameText, updateGameText] = useGameText(
-        textToDisplay, timer, setTimer, setDisplayTime, setPopup, textContainerRef, postUserStats);
 
     function mapKeys(letter, virtualKey) {
         keyRefs.current.set(letter, virtualKey);
     }
 
-    const allShiftKeys = keyboardKeys.english.upper;
-    const allRegKeys = keyboardKeys.english.lower;
-
-    const [keyboard, setKeyboard] = useState(allRegKeys);
-
     function onChangeText(currentText) {
+        if (currentText.length === 1 && !timer.isStarted()) {
+            setGameState("started");
+        } else if (textToDisplay.length === currentText.length && timer.isStarted()) {
+            setGameState("stopped");
+            cleanVirtualKeyboard();
+        }
         updateGameText(currentText);
+    }
+
+    function getDefaultUserDisplay() {
+        return Array.from(textToDisplay).map((letter) => {
+            // the type of a displayed letter can only be right | wrong | none
+            return {
+                letter,
+                type: "none"
+            }
+        });
     }
 
     function cleanVirtualKeyboard() {
         keyRefs.current.forEach(key => {
-            key.current.classList.remove("pressed")
-        })
-    }
-
-    /**
-     * Sends data to the post api for a user's solo game
-     * TODO change the username to be the real username 
-     * once login is implemented
-     * @param {Object} result 
-     */
-    function postUserStats(result) {
-        cleanVirtualKeyboard()
-        setResults(result)
-        let userStats = {
-            "username": "john",
-            "wpm": result.wpm,
-            "accuracy": result.accuracy,
-            "win": 0,
-            "lose": 0,
-            "draw": 0
-        }
-        FetchModule.postUserStatAPI("/api/user_stat", userStats)
+            key.current.classList.remove("pressed");
+        });
     }
 
     return (
@@ -80,9 +70,16 @@ function TypingScreen() {
                 onChangeText={onChangeText}
             />
             <VirtualKeyboard currentKeys={keyboard} mapKeys={mapKeys} />
-            <Popup open={popup} position="center" modal>
-                <SoloGameResult time={results.time} wpm={results.wpm} accuracy={results.accuracy}/>
-            </Popup>
+            <SoloGameResult
+                setGameState={setGameState}
+                gameState={gameState}
+                userDisplay={userDisplay}
+                timer={timer}
+                setTimer={setTimer}
+                setDisplayTime={setDisplayTime}
+                textRef={textContainerRef}
+                textDisplay={textToDisplay}
+            />
         </div>
     );
 }

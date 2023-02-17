@@ -334,11 +334,11 @@ router.get(leaderboard, async (_, res) => {
         const users = await User.find();
         for (const user of users){
             const userStats = await UserStat.findOne({user: user.id});
-             stats.push({
-                 "profilePicture": user.picture_url,
-                 "username": user.username,
-                 "wpm": userStats.max_wpm,
-                 "accuracy": userStats.max_accuracy
+            stats.push({
+                "profilePicture": user.picture_url,
+                "username": user.username,
+                "wpm": userStats.max_wpm,
+                "accuracy": userStats.max_accuracy
             });
         }
         res.status(200).json(sortRank(stats));
@@ -348,7 +348,6 @@ router.get(leaderboard, async (_, res) => {
 });
 
 router.use("/", async (_, res) => {
-    console.log("here")
     res.json("Success! Getting to the api!");
 });
 
