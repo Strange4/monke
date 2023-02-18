@@ -12,7 +12,7 @@ function VirtualKey(props) {
 
     useEffect(() => {
         props.mapKeys(props.keyCode, keyRef);
-    });
+    }, []);
 
     return (
         <div
