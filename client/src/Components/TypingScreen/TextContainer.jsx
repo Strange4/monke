@@ -6,9 +6,14 @@ import { cleanUpLetter } from "../../Controller/ConversionHelper";
  * text to reflect on the virtual keyboard
  * @param {*} props 
  * @returns {ReactElement}
- * @author Rim Dallali
  */
 function TextContainer(props) {
+
+    /**
+     * handles the key down event and sets keyboard
+     * according to shift and caps states.
+     * @param {Event} e 
+     */
     function handleKeyDown(e) {
         let letter = e.nativeEvent.key;
 
@@ -30,6 +35,11 @@ function TextContainer(props) {
         }
     }
 
+    /**
+     * handles the key up event and sets keyboard
+     * according to shift and caps states.
+     * @param {Event} e 
+     */
     function handlekeyUp(e) {
         const key = e.nativeEvent.key;
         if (key === "Shift" && e.getModifierState('CapsLock') === false) {
@@ -45,6 +55,11 @@ function TextContainer(props) {
         }
     }
 
+    /**
+     * used to stop user from executing certains
+     * manipulations on the text (copy, paste, cut, etc.)
+     * @param {Event} e 
+     */
     const handleChange = (e) => {
         e.preventDefault();
     };
@@ -62,7 +77,7 @@ function TextContainer(props) {
             onKeyDown={e => handleKeyDown(e)}
             onChange={(e) => props.onChangeText(e.target.value)}>
         </input >
-    )
+    );
 }
 
 export default TextContainer;

@@ -1,8 +1,8 @@
+import './Layout/TypingScreen.css';
+import { useState, useRef } from "react";
 import VirtualKeyboard from './VirtualKeyboard';
 import TextContainer from './TextContainer';
 import keyboardKeys from "../../Data/keyboard_keys.json";
-import './Layout/TypingScreen.css';
-import { useState, useRef } from "react";
 import useGameText from '../GameText';
 import Chronometer from './Chronometer';
 import Timer from "timer-machine";
@@ -11,7 +11,6 @@ import SoloGameResult from './SoloGameResult';
 /**
  * Container for the Textarea and the virtual keyboard
  * @returns {ReactElement}
- * @author Rim Dallali
  */
 function TypingScreen() {
     const textToDisplay = "Lorem ipsum dolor sit amet consectetur adipisicing elit.";
@@ -26,10 +25,19 @@ function TypingScreen() {
     let textContainerRef = useRef();
     const keyRefs = useRef(new Map());
 
+    /**
+     * maps each letter code to its virtual key on the keyboard
+     * @param {*} letter 
+     * @param {*} virtualKey 
+     */
     function mapKeys(letter, virtualKey) {
         keyRefs.current.set(letter, virtualKey);
     }
 
+    /**
+     * Changes the game state according to the current text progress.
+     * @param {String} currentText 
+     */
     function onChangeText(currentText) {
         if (currentText.length === 1 && !timer.isStarted()) {
             setGameState("started");
@@ -40,6 +48,10 @@ function TypingScreen() {
         updateGameText(currentText);
     }
 
+    /**
+     * Get's the default user display filler with letter object with type none.
+     * @returns {Object}
+     */
     function getDefaultUserDisplay() {
         return Array.from(textToDisplay).map((letter) => {
             // the type of a displayed letter can only be right | wrong | none
@@ -50,6 +62,9 @@ function TypingScreen() {
         });
     }
 
+    /**
+     * Cleans the state of the virtual keyboard and marks each key as unpressed.
+     */
     function cleanVirtualKeyboard() {
         keyRefs.current.forEach(key => {
             key.current.classList.remove("pressed");

@@ -7,14 +7,14 @@ function VirtualKeyboard(props) {
             {props.currentKeys.map((row, i) => {
                 return (
                     <div key={i} className="horizontal">
-                        {row.map((key, i) => {
-                            return <VirtualKey
+                        {row.map((key, i) =>
+                            <VirtualKey
                                 mapKeys={props.mapKeys}
                                 key={i}
                                 classValue={`${key === " " ? "space" : ""}`}
                                 keyValue={key}
                                 keyCode={cleanUpLetter(key)} />
-                        })}
+                        )}
                     </div>
                 );
             })}

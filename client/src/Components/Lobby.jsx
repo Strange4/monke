@@ -1,6 +1,10 @@
 import './Styles/Lobby.css';
 
-const Lobby = () => {
+/**
+ * Displays a Popup for the lobby
+ * @returns {ReactElement}
+ */
+function Lobby() {
     return (
         <div id="lobby">
             <h1>Lobby Popup</h1>

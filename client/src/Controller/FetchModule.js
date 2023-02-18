@@ -7,7 +7,6 @@ import Spinner from "../Components/Spinner";
  * 
  * @param {String} url 
  * @returns {JSON} data
- * @author Rim Dallali
  */
 async function fetchData(url) {
     let data;

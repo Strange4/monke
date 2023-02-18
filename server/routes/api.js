@@ -1,8 +1,6 @@
 /**
  * this module exports a router containing routes that will query
  * a mongo database and return the info as json to the user
- * 
- * @author Rim Dallali
  */
 
 import * as express from "express";

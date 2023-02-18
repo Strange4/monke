@@ -1,6 +1,5 @@
-import { useState } from "react";
 import './Styles/GameText.css';
-
+import { useState } from "react";
 
 function useGameText(userDisplay, setUserDisplayText) {
     const [display, setDisplay] = useState(userDisplay);
@@ -26,18 +25,15 @@ function useGameText(userDisplay, setUserDisplayText) {
             }
         }
         setDisplay(newDisplay);
-
-        setUserDisplayText(newDisplay)
+        setUserDisplayText(newDisplay);
     }
 
     let letters =
         <div>
-            {
-                display.map((letter, index) => {
-                    return <span className={`${letter.type} letter`} key={index}>
-                        {letter.letter}</span>
-                })
-            }
+            {display.map((letter, index) => {
+                return <span className={`${letter.type} letter`} key={index}>
+                    {letter.letter}</span>
+            })}
         </div>
     return [letters, renderLetters];
 }

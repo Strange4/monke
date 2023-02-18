@@ -1,6 +1,10 @@
 import './Styles/Spinner.css';
 
-function Spinner(){
+/**
+ * Displays a loading spinner
+ * @returns {ReactElement}
+ */
+function Spinner() {
     return (
         <span className="loader"></span>
     );

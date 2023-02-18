@@ -1,20 +1,20 @@
+import './Layout/SoloGameResult.css';
 import { useEffect, useState } from 'react';
 import Popup from "reactjs-popup";
 import Timer from "timer-machine";
-import './Layout/SoloGameResult.css';
 import * as FetchModule from '../../Controller/FetchModule';
 
 function SoloGameResult(props) {
-    const [results, setResults] = useState({ "time": 0, "wpm": 0, "accuracy": 0 });
+    const [userStats, setUserStats] = useState({ "time": 0, "wpm": 0, "accuracy": 0 });
     const [popup, setPopup] = useState(false);
     const updateRate = 1000;
 
     useEffect(() => {
-        handleTimer()
-    }, [props.gameState])
+        handleTimer();
+    }, [props.gameState]);
 
     /**
-     * Handles when the timer should start and stop
+     * Handles when the timer should start, stop & reset
      * @param {*} newInput 
      */
     function handleTimer() {
@@ -24,7 +24,7 @@ function SoloGameResult(props) {
             props.timer.start();
         } else if (props.gameState === "stopped") {
             props.timer.stop();
-            props.setGameState("reset")
+            props.setGameState("reset");
         }
     }
 
@@ -65,7 +65,7 @@ function SoloGameResult(props) {
             "wpm": Math.round(wpm * 100) / 100,
             "accuracy": Math.round(computeAccuracy() * 100) / 100
         }
-        postUserStats(result)
+        postUserStats(result);
     }
 
     /**
@@ -90,14 +90,13 @@ function SoloGameResult(props) {
     }
 
     /**
- * Sends data to the post api for a user's solo game
- * TODO change the username to be the real username 
- * once login is implemented
- * @param {Object} result 
- */
+     * Sends data to the post api for a user's solo game
+     * TODO change the username to be the real username 
+     * once login is implemented
+     * @param {Object} result 
+     */
     function postUserStats(result) {
-        // cleanVirtualKeyboard();
-        setResults(result);
+        setUserStats(result);
         let userStats = {
             "username": "john",
             "wpm": result.wpm,
@@ -113,13 +112,12 @@ function SoloGameResult(props) {
         <Popup open={popup} position="center" modal>
             <div id="solo-game-result">
                 <h1>END Solo Game Popup</h1>
-                <p>time: {results.time} seconds </p>
-                <p>wpm: {results.wpm}</p>
-                <p>accuracy: {results.accuracy}%</p>
+                <p>time: {userStats.time} seconds </p>
+                <p>wpm: {userStats.wpm}</p>
+                <p>accuracy: {userStats.accuracy}%</p>
             </div>
         </Popup>
     );
-
 }
 
 export default SoloGameResult;
