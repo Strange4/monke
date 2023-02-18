@@ -146,7 +146,8 @@ router.post(user, async (req, res) => {
 
             const user = new User({
                 "username": name,
-                "picture_url": "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Transparent-Image.png"
+                "picture_url": 
+                "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Transparent-Image.png"
             });
 
             userSchema.parse(user);
@@ -229,35 +230,30 @@ router.get(quote, async (_, res) => {
     const quotes =
         [
             "This is a random quote that I wrote on the spot.",
-            "Did you know that the critically acclaimed MMORPG Final Fantasy XIV has a free trial, " +
-            "and includes the entirety of A Realm Reborn AND the award-winning Heavensward expansion " +
+            "Did you know that the critically acclaimed MMORPG Final Fantasy XIV has a free," +
+            "and includes the entirety of A Realm Reborn AND the award-winning Heavensward" +
             "up to level 60 with no restrictions on playtime? Sign up, and enjoy Eorzea today! " +
             "https://secure.square-enix.com/account/app/svc/ffxivregister?lng=en-gb",
-            "The Shining (1980) is a horror film directed by Stanley Kubrick. " +
-            "It follows a family who heads to an isolated hotel for the winter, where a sinister " +
-            "presence influences the father into violence. His psychic son sees horrific forebodings " +
-            "from both past and future. The movie is praised for its chilling atmosphere, grand " +
-            "vision, and Kubrick's unique editing and set mis-arrangements. It captures the viewer's " +
-            "attention with its terror and eccentric direction, and its cold-eyed view of the man's " +
+            "The Shining (1980) is a horror film directed by Stanley Kubrick." +
+            "It follows a family who heads to an isolated hotel for the winter, where a sinister" +
+            "presence influences the father into violence. His psychic son sees horrific" +
+            "from both past and future. The movie is praised for its chilling atmosphere, grand" +
+            "vision, and Kubrick's unique editing and set mis-arrangements. It captures the" +
+            "attention with its terror and eccentric direction, and its cold-eyed view of the" +
             "mind gone overboard. It is considered one of the most terrifying films ever made, " +
-            "and is a perfect example of how the presence of evil can be dormant in all of our minds.",
+            "and is a perfect example of how the presence of evil can be dormant in all of our",
             "Let your plans be dark and impenetrable as night, " +
             "and when you move, fall like a thunderbolt.",
-            "'I Have No Mouth, and I Must Scream' is a post-apocalyptic science fiction short story " +
-            // eslint-disable-next-line max-len
-            "by American writer Harlan Ellison. It was first published in the March 1967 issue of IF: " +
-            "Worlds of Science Fiction and won a Hugo Award in 1968. The story follows a group of " +
-            // eslint-disable-next-line max-len
-            "five humans who are the only survivors of a genocide operation by a supercomputer called " +
-            "AM. AM keeps them captive in an underground housing complex and tortures them for its " +
-            "own pleasure. The group eventually makes a desperate journey to an ice cave in search of" +
-            // eslint-disable-next-line max-len
-            " canned food, only to find that they have no means of opening it. In a moment of clarity, " +
-            // eslint-disable-next-line max-len
-            "Ted realizes their only escape is through death and kills the other four. AM then focuses " +
-            // eslint-disable-next-line max-len
-            "all its rage on Ted, transforming him into a 'great soft jelly thing' incapable of causing " +
-            "itself harm. The story ends with Ted's famous line, 'I have no mouth. And I must scream.'",
+            "'I Have No Mouth, and I Must Scream' is a post-apocalyptic science fiction short" +
+            "by American writer Harlan Ellison. It was first published in the March 1967 issue of" +
+            "Worlds of Science Fiction and won a Hugo Award in 1968. The story follows a group" +
+            "five humans who are the only survivors of a genocide operation by a supercomputer" +
+            "AM. AM keeps them captive in an underground housing complex and tortures them for" +
+            "own pleasure. The group eventually makes a desperate journey to an ice cave in" +
+            " canned food, only to find that they have no means of opening it. In a moment of" +
+            "Ted realizes their only escape is through death and kills the other four. AM then" +
+            "all its rage on Ted, transforming him into a 'great soft jelly thing' incapable of" +
+            "itself harm. The story ends with Ted's famous line, 'I have no mouth. And I must",
             "In the midst of chaos, there is also opportunity",
             "Who wishes to fight must first count the cost",
             "It is easy to love your friend, but sometimes the hardest lesson to learn " +
