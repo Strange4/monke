@@ -45,6 +45,14 @@
   width: 15em;
 }
 
+.caps {
+  width: 5em;
+}
+
+.shift {
+  width: 6em;
+}
+
 
 .keyboard-key.pressed {
     background-color: var(--text-color);

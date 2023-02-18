@@ -2,6 +2,19 @@ import { cleanUpLetter } from "../../Controller/ConversionHelper";
 import VirtualKey from "./VirtualKey";
 
 function VirtualKeyboard(props) {
+
+    function getKeyType(key) {
+        switch (key) {
+        case " ":
+            return "space";
+        case "CapsLock":
+            return "caps";
+        case "Shift":
+            return "shift";
+        default:
+            return "";
+        }
+    }
     return (
         <div className="keyboard-container vertical">
             {props.currentKeys.map((row, i) => {
@@ -11,7 +24,7 @@ function VirtualKeyboard(props) {
                             <VirtualKey
                                 mapKeys={props.mapKeys}
                                 key={i}
-                                classValue={`${key === " " ? "space" : ""}`}
+                                classValue={`${getKeyType(key)}`}
                                 keyValue={key}
                                 keyCode={cleanUpLetter(key)} />
                         )}
