@@ -13,6 +13,7 @@ function VirtualKeyboard(props) {
             return "";
         }
     }
+    
     return (
         <div className="keyboard-container vertical">
             {props.currentKeys.map((row, i) => {

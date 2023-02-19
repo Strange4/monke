@@ -1,5 +1,4 @@
 import "./Layout/TextContainer.css";
-import { useEffect } from "react";
 import { cleanUpLetter } from "../../Controller/ConversionHelper";
 
 /**
@@ -9,10 +8,6 @@ import { cleanUpLetter } from "../../Controller/ConversionHelper";
  * @returns {ReactElement}
  */
 function TextContainer(props) {
-
-    useEffect(() => {
-        console.log("here")
-    }, [])
 
     /**
      * handles the key down event and sets keyboard
