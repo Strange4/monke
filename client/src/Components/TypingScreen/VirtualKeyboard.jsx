@@ -7,8 +7,6 @@ function VirtualKeyboard(props) {
         switch (key) {
         case " ":
             return "space";
-        case "CapsLock":
-            return "caps";
         case "Shift":
             return "shift";
         default:
