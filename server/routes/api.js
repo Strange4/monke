@@ -7,7 +7,7 @@
 
 import * as express from "express";
 import User from "../database/models/user.js";
-// import Quote from "../database/models/quote.js"; currently unused
+import Quote from "../database/models/quote.js";
 import UserStat from "../database/models/userStat.js";
 import { userSchema, userStatSchema } from "../database/validation.js";
 
@@ -20,6 +20,9 @@ const userStat = "/user_stat";
 const quote = "/quote";
 const user = "/user";
 const leaderboard = "/leaderboard";
+
+const SUCCESS = 200;
+const ERROR = 400;
 
 /**
  * Check to see in the database if the username exists or not.
@@ -133,7 +136,7 @@ router.put(userStat, async(req, res) =>{
     userStatSchema.parse(update)
     await UserStat.findOneAndUpdate(filter, update);
 
-    res.status(200).json({message: "Stats updated"})
+    res.status(SUCCESS).json({message: "Stats updated"})
 })
 
 
@@ -177,7 +180,7 @@ router.post(user, async (req, res) =>{
 
             const message = "User created successfully";
             console.log(message);
-            res.status(200).send(message);
+            res.status(SUCCESS).send(message);
 
         // user already exist
         } else{
@@ -217,7 +220,7 @@ router.get(user, async (req, res) => {
             "date": stats.date
         };
     
-        res.status(200).json(data);
+        res.status(SUCCESS).json(data);
 
     } catch (err) {
         console.error("Could not obtain userstats ", err);
