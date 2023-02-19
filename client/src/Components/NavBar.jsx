@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Popup from 'reactjs-popup';
 import Leaderboard from './Leaderboard';
 import Lobby from './Lobby';
+import Login from './Login';
 
 /**
  * Navigation bar to be used on all pages
@@ -25,7 +26,11 @@ function NavBar() {
                 </Popup>
             </li>
             <li>
-                <Link to="/profile">Profile</Link>
+                {/* popup and link work at same time for now, 
+                will be changed to show right one depending on login status */}
+                <Popup trigger={<Link to="/profile">Profile</Link>}>
+                    <Login />
+                </Popup>
             </li>
         </div>
     );
