@@ -45,11 +45,23 @@ function SoloGameResult(props) {
             clearInterval(interval);
             computeResults();
             setPopup(true);
-            props.textRef.current.value = "";
-            props.textRef.current.blur();
+            cleanTypingScreen()
         });
         props.timer.on('time', function (time) {
             props.setDisplayTime({ "seconds": Math.floor(time / updateRate) });
+        });
+    }
+
+    /**
+     * Resets the timer and text, sets the text to empty and unfocuses 
+     * the text container in order to prepare for the next game.
+     */
+    function cleanTypingScreen() {
+        props.textRef.current.value = "";
+        props.textRef.current.blur();
+        props.setDisplayTime({ "seconds": 0 });
+        props.userDisplay.forEach(letter => {
+            letter.type = "none"
         });
     }
 
