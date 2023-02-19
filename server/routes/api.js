@@ -184,12 +184,12 @@ router.post(user, async (req, res) =>{
 
         // user already exist
         } else{
-            res.status(400).json({error: "Username Already Taken"});
+            res.status(ERROR).json({error: "Username Already Taken"});
         }
 
     } catch (err) {
         console.error(`Error: ${err}`);
-        res.status(400).send(`<h1>400! User could not be created. Please refill the form.</h1>`);
+        res.status(ERROR).send(`<h1>400! User could not be created. Please refill the form.</h1>`);
     }
 });
 
@@ -224,7 +224,7 @@ router.get(user, async (req, res) => {
 
     } catch (err) {
         console.error("Could not obtain userstats ", err);
-        res.status(400).json({ error: "Could not obtain user stats."})
+        res.status(ERROR).json({ error: "Could not obtain user stats."})
     }
 });
 
@@ -236,14 +236,14 @@ router.get(quote, async (req, res) => {
     let statusCode = SUCCESS;
     let message;
 
-    // verify if difficulty is NaN
-    if(isNaN(req.query.difficulty) && req.query.difficulty !== undefined){
+    // verify if difficulty is NaN and not undefined
+    if(isNaN(req.body.difficulty) && req.body.difficulty !== undefined){
         console.error("Invalid number input for quotes");
         statusCode = ERROR;
         message = { "error": "Input for difficulty is not a valid number" };
     } else {
         try{
-            message = await queryQuotes(req.query.difficulty);
+            message = await queryQuotes(req.body.difficulty);
         } catch (err) {
             statusCode = ERROR;
             message = { "error": "unable to retrieve quote"};
@@ -257,7 +257,7 @@ router.get(quote, async (req, res) => {
  * pick and return one quote randomly from resulting list.
  * If said list is length of 1, return that single quote.
  * @param {number} difficultyVal : represents difficulty level of desired quotes
- * @returns Object
+ * @returns Object, is a json that holds the body of the quote.
  */
 async function queryQuotes(difficultyVal){
     let quotes, message;
@@ -362,7 +362,7 @@ router.use("/", async (_, res) => {
 
 
 router.use(async (_, res) => {
-    res.status(404).json({ error: "Not Found" });
+    res.status(ERROR).json({ error: "Not Found" });
 });
 
 export default router;
