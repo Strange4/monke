@@ -229,49 +229,54 @@ router.get(user, async (req, res) => {
 });
 
 /**
- * endpoint randomly picks a hardcoded quote and sends it to the user
+ * Endpoint returns a quote to the client.
  */
-router.get(quote, async (_, res) => {
-    const quotes = 
-    [
-        "This is a random quote that I wrote on the spot.",
-        "Did you know that the critically acclaimed MMORPG Final Fantasy XIV has a free trial, " +
-        "and includes the entirety of A Realm Reborn AND the award-winning Heavensward expansion " +
-        "up to level 60 with no restrictions on playtime? Sign up, and enjoy Eorzea today! " +
-        "https://secure.square-enix.com/account/app/svc/ffxivregister?lng=en-gb",
-        "The Shining (1980) is a horror film directed by Stanley Kubrick. " +
-        "It follows a family who heads to an isolated hotel for the winter, where a sinister " +
-        "presence influences the father into violence. His psychic son sees horrific forebodings " +
-        "from both past and future. The movie is praised for its chilling atmosphere, grand " +
-        "vision, and Kubrick's unique editing and set mis-arrangements. It captures the viewer's " +
-        "attention with its terror and eccentric direction, and its cold-eyed view of the man's " +
-        "mind gone overboard. It is considered one of the most terrifying films ever made, " +
-        "and is a perfect example of how the presence of evil can be dormant in all of our minds.",
-        "Let your plans be dark and impenetrable as night, " +
-        "and when you move, fall like a thunderbolt.",
-        "'I Have No Mouth, and I Must Scream' is a post-apocalyptic science fiction short story " +
-        // eslint-disable-next-line max-len
-        "by American writer Harlan Ellison. It was first published in the March 1967 issue of IF: " +
-        "Worlds of Science Fiction and won a Hugo Award in 1968. The story follows a group of " +
-        // eslint-disable-next-line max-len
-        "five humans who are the only survivors of a genocide operation by a supercomputer called " +
-        "AM. AM keeps them captive in an underground housing complex and tortures them for its " + 
-        "own pleasure. The group eventually makes a desperate journey to an ice cave in search of" +
-        // eslint-disable-next-line max-len
-        " canned food, only to find that they have no means of opening it. In a moment of clarity, " +
-        // eslint-disable-next-line max-len
-        "Ted realizes their only escape is through death and kills the other four. AM then focuses " +
-        // eslint-disable-next-line max-len
-        "all its rage on Ted, transforming him into a 'great soft jelly thing' incapable of causing " +
-        "itself harm. The story ends with Ted's famous line, 'I have no mouth. And I must scream.'",
-        "In the midst of chaos, there is also opportunity",
-        "Who wishes to fight must first count the cost",
-        "It is easy to love your friend, but sometimes the hardest lesson to learn " +
-        "is to love your enemy"
-    ];
-    const randQuote = Math.floor(Math.random() * quotes.length);
-    res.status(200).json({ body: quotes[randQuote] });
+router.get(quote, async (req, res) => {
+    
+    let statusCode = SUCCESS;
+    let message;
+
+    // verify if difficulty is NaN
+    if(isNaN(req.query.difficulty) && req.query.difficulty !== undefined){
+        console.error("Invalid number input for quotes");
+        statusCode = ERROR;
+        message = { "error": "Input for difficulty is not a valid number" };
+    } else {
+        try{
+            message = await queryQuotes(req.query.difficulty);
+        } catch (err) {
+            statusCode = ERROR;
+            message = { "error": "unable to retrieve quote"};
+        }
+    }
+    res.status(statusCode).json(message);
 });
+
+/**
+ * Function will query database for quotes with given difficulty then
+ * pick and return one quote randomly from resulting list.
+ * If said list is length of 1, return that single quote.
+ * @param {number} difficultyVal : represents difficulty level of desired quotes
+ * @returns Object
+ */
+async function queryQuotes(difficultyVal){
+    let quotes, message;
+
+    // selects all quotes if difficultyVal is undefined otherwise query by difficulty
+    quotes = difficultyVal === undefined ? 
+        await Quote.find() : await Quote.find( { difficulty: difficultyVal });
+ 
+    if(quotes.length > 0){
+        // if len quotes > 1 randomize index to pick from quotes, otherwise assign 0
+        const quoteIndex =
+            quotes.length > 1 ? Math.floor(Math.random() * quotes.length) : 0;
+        message = { "body": quotes[quoteIndex].quote };
+    } else {
+        message = { "body": "There are no quotes available with that difficulty." };
+    }
+
+    return message;
+}
 
 /**
  * Sort the users into rank depending on wpm and accuracy, then returns the sorted leaderboard.
@@ -337,14 +342,14 @@ router.get(leaderboard, async (_, res) => {
         const users = await User.find();
         for (const user of users){
             const userStats = await UserStat.findOne({user: user.id});
-             stats.push({
-                 "profilePicture": user.picture_url,
-                 "username": user.username,
-                 "wpm": userStats.max_wpm,
-                 "accuracy": userStats.max_accuracy
+            stats.push({
+                "profilePicture": user.picture_url,
+                "username": user.username,
+                "wpm": userStats.max_wpm,
+                "accuracy": userStats.max_accuracy
             });
         }
-        res.status(200).json(sortRank(stats));
+        res.status(SUCCESS).json(sortRank(stats));
     } catch (err){
         console.error(err);
     }
