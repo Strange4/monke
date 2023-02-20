@@ -37,9 +37,11 @@ function useGameText(textToDisplay) {
         
         const inputIsEmpty = newInput.length === 0;
         const inputIsDone = newInput.length === newDisplay.length;
+        if(!inputIsDone){
+            newDisplay[newLetterIndex + 1].current = true;
+        }
         // only change the type if there is stuff in the input
         if(!inputIsEmpty && !inputIsDone){
-            newDisplay[newLetterIndex + 1].current = true;
             const newLetter = newDisplay[newLetterIndex];
             newLetter.current = false;
             if(newLetter.letter === newInput[newLetterIndex]){
