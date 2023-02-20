@@ -127,6 +127,7 @@ function SoloGameResult(props) {
                 <p>time: {userStats.time} seconds </p>
                 <p>wpm: {userStats.wpm}</p>
                 <p>accuracy: {userStats.accuracy}%</p>
+                <p> press escape or click out of the popup to leave </p>
             </div>
         </Popup>
     );
