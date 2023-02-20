@@ -1,14 +1,42 @@
+:root{
+    --letter-width: 1rem;
+}
+
 span.letter{
+    display: inline-block;
     color: var(--sub-color);
     font-size: large;
     font-weight: bold;
+    width: var(--letter-width);
+    text-align: center;
+    position: relative;
+    min-height: 1rem;
 }
 
 span.letter.right{
     color: var(--text-color);
-    font-weight: bold;
 }
 span.letter.wrong{
     color: var(--error-color);
-    font-weight: bold;
+}
+
+span#inputCaret{
+    position: absolute;
+    transition: left 90ms linear;
+    color: var(--text-color);
+    background-color: var(--text-color);
+    --caret-width: calc(var(--letter-width) / 10);
+    width: var(--caret-width);
+    height: calc(var(--letter-width) * 1.1);
+    left: calc(var(--caret-width) / -2);
+}
+
+
+@keyframes caret-transition{
+    from {
+        left: -100%;
+    }
+    to {
+        left: 0;
+    }
 }
