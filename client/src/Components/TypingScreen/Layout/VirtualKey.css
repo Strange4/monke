@@ -45,6 +45,10 @@
   width: 15em;
 }
 
+.shift {
+  width: 6em;
+}
+
 
 .keyboard-key.pressed {
     background-color: var(--text-color);

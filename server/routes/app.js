@@ -1,8 +1,6 @@
 /**
  * This module imports and gives the api router an alias and uses it
  * it also exposes the build server as a "public" folder and exports itself
- * 
- * @author Rim Dallali
  */
 
 import api from "./api.js";

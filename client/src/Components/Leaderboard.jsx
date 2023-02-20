@@ -1,20 +1,24 @@
 import './Styles/Leaderboard.css';
-import RankListItem from './RankListItem';
 import { useEffect, useState } from 'react';
-import {useFetch} from "../Controller/FetchModule"
+import RankListItem from './RankListItem';
+import * as FetchModule from "../Controller/FetchModule";
 
-const Leaderboard = () => {
+/**
+ * Displays the users along with their stats to the leaderboard
+ * @returns {ReactElement}
+ */
+function Leaderboard() {
     const current = new Date();
     const date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
 
     const [leaderboard, setLeaderboard] = useState([]);
-    const {loadingPlaceHolder, sendRequest} = useFetch("/api/leaderboard");
+    const { loadingPlaceHolder, sendRequest } = FetchModule.useFetch("/api/leaderboard");
 
     useEffect(() => {
         sendRequest((data) => {
             setLeaderboard(data);
         });
-    }, [])
+    }, []);
 
     return (
         <div id="leaderboard">
@@ -29,18 +33,18 @@ const Leaderboard = () => {
                 </div>
                 {
                     loadingPlaceHolder ||
-                    leaderboard.map((user, i) => <RankListItem 
+                    leaderboard.map((user, i) => <RankListItem
                         user={user.username}
-                        picture={user.profilePicture} 
-                        rank={user.rank} 
+                        picture={user.profilePicture}
+                        rank={user.rank}
                         wpm={user.wpm}
                         accuracy={user.accuracy}
                         date={`${date}`}
-                        key={i}/> )
+                        key={i} />)
                 }
             </div>
         </div>
     );
-};
+}
 
 export default Leaderboard;

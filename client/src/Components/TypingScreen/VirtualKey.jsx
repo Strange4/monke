@@ -5,7 +5,6 @@ import { useRef, useEffect } from "react";
  * Displays a single virtual key with its value
  * @param {*} props 
  * @returns {ReactElement}
- * @author Rim Dallali
  */
 function VirtualKey(props) {
 
@@ -13,7 +12,7 @@ function VirtualKey(props) {
 
     useEffect(() => {
         props.mapKeys(props.keyCode, keyRef);
-    });
+    }, [props.keyCode]);
 
     return (
         <div

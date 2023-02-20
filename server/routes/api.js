@@ -1,8 +1,6 @@
 /**
  * this module exports a router containing routes that will query
  * a mongo database and return the info as json to the user
- * 
- * @author Rim Dallali
  */
 
 import * as express from "express";
@@ -29,13 +27,13 @@ const ERROR = 400;
  * @param {string} name, username of the new User. 
  * @returns boolean depending on if the username exists or not. 
  */
-async function checkName(name){
+async function checkName(name) {
     try {
-        const databaseName = await User.findOne({username: name});
+        const databaseName = await User.findOne({ username: name });
         // Name exists.
-        if (databaseName !== null){
+        if (databaseName !== null) {
             return true;
-        // Name does not exists.
+            // Name does not exists.
         } else {
             console.log(`Could not find user with name: ${name}`);
             return false;
@@ -50,11 +48,11 @@ async function checkName(name){
  * @param {string} name, username of the new User. 
  * @returns boolean depending on if the username exists or not. 
  */
-async function getUserStats(name){
+async function getUserStats(name) {
     try {
-        const databaseUser = await User.findOne({username: name});
-        if (databaseUser !== null){
-            const stats = await UserStat.findOne({user: databaseUser.id});
+        const databaseUser = await User.findOne({ username: name });
+        if (databaseUser !== null) {
+            const stats = await UserStat.findOne({ user: databaseUser.id });
             return stats;
         } else {
             console.log(`Could not find user with name: ${name}`);
@@ -63,7 +61,7 @@ async function getUserStats(name){
         console.error(err);
     }
 }
- 
+
 
 /**
  * Return the average of a stat
@@ -72,14 +70,14 @@ async function getUserStats(name){
  * @param {Number} games, the total number of games.
  * @returns Average of the stat
  */
-function getAverage(stat, newStat, games){
+function getAverage(stat, newStat, games) {
     let unAverage = stat * games;
     let newTotal = unAverage + newStat;
     return newTotal / (games + 1);
 }
 
 
-router.put(userStat, async(req, res) =>{
+router.put(userStat, async (req, res) => {
     let name = req.body.username;
     let newWpm = req.body.wpm;
     let newAccuracy = req.body.accuracy;
@@ -88,12 +86,12 @@ router.put(userStat, async(req, res) =>{
     let draw = req.body.draw;
 
     const previousStats = await getUserStats(name);
-
-    const filter = { id: previousStats.id }
+    const user = await User.findOne({ username: name })
+    const filter = { user: user.id, id: previousStats.id }
 
     let update;
-    
-    if (newWpm > previousStats.max_wpm){
+
+    if (newWpm > previousStats.max_wpm) {
         update = {
             "max_wpm": newWpm,
             "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
@@ -106,7 +104,7 @@ router.put(userStat, async(req, res) =>{
             "date": Date.now()
         }
 
-    }else if (newWpm == previousStats.max_wpm && newAccuracy > previousStats.max_accuracy){
+    } else if (newWpm === previousStats.max_wpm && newAccuracy > previousStats.max_accuracy) {
         update = {
             "max_wpm": newWpm,
             "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
@@ -118,9 +116,8 @@ router.put(userStat, async(req, res) =>{
             "draw": previousStats.draw + draw,
             "date": Date.now()
         }
-    } 
-    // Update average only
-    else {
+    } else {
+        // Update average only
         update = {
             "max_wpm": previousStats.max_wpm,
             "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
@@ -144,15 +141,16 @@ router.put(userStat, async(req, res) =>{
  * Post endpoint that creates User containing
  * username and temporary profileURL
  */
-router.post(user, async (req, res) =>{
+router.post(user, async (req, res) => {
     try {
         const name = req.body.username;
-        if (await checkName(name) === false){
+        if (await checkName(name) === false) {
             // create the user
 
             const user = new User({
                 "username": name,
-                "picture_url": "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Transparent-Image.png"
+                "picture_url": 
+                "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Transparent-Image.png"
             });
 
             userSchema.parse(user);
@@ -176,7 +174,7 @@ router.post(user, async (req, res) =>{
 
             userStatSchema.parse(stats)
             let userStatsObject = await UserStat.create(stats)
-            await userStatsObject.save() 
+            await userStatsObject.save()
 
             const message = "User created successfully";
             console.log(message);
@@ -198,11 +196,11 @@ router.post(user, async (req, res) =>{
  * Get endpoint that  json object containing the user
  * and their game statistics
  */
-router.get(user, async (req, res) => {    
+router.get(user, async (req, res) => {
 
-    try{
+    try {
         // query for user that matches username
-        const user = await User.findOne({username: req.body.username});
+        const user = await User.findOne({ username: req.body.username });
         // query for user's game statistics
         const stats = await getUserStats(user.username);
 
@@ -283,31 +281,31 @@ async function queryQuotes(difficultyVal){
  * @param {*} users, Leadeaboard JSON Object without sorting and no rank field.
  * @returns Array of JSON object that represents the leaderboard.
  */
-function sortRank(users){
+function sortRank(users) {
     const leaderboard = [];
     let rank = 1;
 
-    while (users.length > 0){
+    while (users.length > 0) {
         let picture = users[0].profilePicture;
         let username = users[0].username;
         let wpm = users[0].wpm;
         let accuracy = users[0].accuracy;
 
-        if (users.length > 1){
-            for (const user of users){
-                if (user.wpm > wpm){
+        if (users.length > 1) {
+            for (const user of users) {
+                if (user.wpm > wpm) {
                     picture = user.profilePicture;
                     username = user.username;
                     wpm = user.wpm;
                     accuracy = user.accuracy;
-                
-                } else if (user.wpm === wpm && user.accuracy > accuracy){
+
+                } else if (user.wpm === wpm && user.accuracy > accuracy) {
                     picture = user.profilePicture;
                     username = user.username;
                     wpm = user.wpm;
                     accuracy = user.accuracy;
                 }
-    
+
                 leaderboard.push({
                     "rank": rank,
                     "profilePicture": picture,
@@ -356,7 +354,6 @@ router.get(leaderboard, async (_, res) => {
 });
 
 router.use("/", async (_, res) => {
-    console.log("here")
     res.json("Success! Getting to the api!");
 });
 
