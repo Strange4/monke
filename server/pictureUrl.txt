@@ -1,0 +1,6 @@
+https://keyboardchampion.blob.core.windows.net/keyboard-champion-container/profile_keyboard.png
+https://keyboardchampion.blob.core.windows.net/keyboard-champion-container/profile_gear.png
+https://keyboardchampion.blob.core.windows.net/keyboard-champion-container/default_user_image.png
+https://keyboardchampion.blob.core.windows.net/keyboard-champion-container/profile_mac.png
+https://keyboardchampion.blob.core.windows.net/keyboard-champion-container/profile_pc.png
+https://keyboardchampion.blob.core.windows.net/keyboard-champion-container/profile_user.png
