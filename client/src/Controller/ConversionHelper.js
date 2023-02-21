@@ -3,7 +3,6 @@
  * characters into their string name definition
  * @param {string} letter 
  * @returns string
- * @author Rim Dallali
  */
 function cleanUpLetter(letter) {
     switch (letter) {

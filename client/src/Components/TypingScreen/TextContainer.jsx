@@ -6,10 +6,14 @@ import { cleanUpLetter } from "../../Controller/ConversionHelper";
  * text to reflect on the virtual keyboard
  * @param {*} props 
  * @returns {ReactElement}
- * @author Rim Dallali
  */
 function TextContainer(props) {
 
+    /**
+     * handles the key down event and sets keyboard
+     * according to shift and caps states.
+     * @param {Event} e 
+     */
     function handleKeyDown(e) {
         let letter = e.nativeEvent.key;
 
@@ -25,12 +29,17 @@ function TextContainer(props) {
         }
     }
 
+    /**
+     * handles the key up event and sets keyboard
+     * according to shift and caps states.
+     * @param {Event} e 
+     */
     function handlekeyUp(e) {
         const key = e.nativeEvent.key;
         if (key === "Shift") {
             props.setKeyboard(props.allRegKeys);
         }
-        if(props.currentKeys.some(row => row.includes(key))){
+        if (props.currentKeys.some(row => row.includes(key))) {
             const letter = cleanUpLetter(key);
             const currentKey = props.keyRefs.current.get(letter).current;
             currentKey.classList.remove("pressed");
@@ -38,14 +47,29 @@ function TextContainer(props) {
         }
     }
 
+    /**
+     * used to stop user from executing certains
+     * manipulations on the text (copy, paste, cut, etc.)
+     * @param {Event} e 
+     */
+    const handleChange = (e) => {
+        e.preventDefault();
+    };
+
     return (
-        <input type="text"
+        <input
+            type="text"
+            onPaste={handleChange}
+            onDrag={handleChange}
+            onDrop={handleChange}
+            onCopy={handleChange}
+            ref={props.textRef}
             className="text-container"
             onKeyUp={e => handlekeyUp(e)}
             onKeyDown={e => handleKeyDown(e)}
-            onChange={(e)=> props.onChangeText(e.target.value) }>
+            onChange={(e) => props.onChangeText(e.target.value)}>
         </input >
-    )
+    );
 }
 
 export default TextContainer;
