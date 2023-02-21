@@ -46,13 +46,10 @@ function useGameText(textToDisplay) {
             newLetter.current = false;
             if(newLetter.letter === newInput[newLetterIndex]){
                 newLetter.type = "right";
-            } else {
+            } else if(newLetter.letter !== " " ) {
                 newLetter.type = "wrong";
             }
         }
-        // startFunction(() => {
-            
-        // });
         setDisplay(newDisplay);
     } 
 
