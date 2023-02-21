@@ -1,14 +1,11 @@
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import './Styles/GameText.css';
 // import useRect from "./useRect";
 
 
 function useGameText(textToDisplay) {
-    const currentInputRef = useRef();
-
     const defaultDisplay = Array.from(textToDisplay).map((letter) => {
-        // the type of a displayed letter can only be right | wrong | none
         return {
             letter,
             type: "none",
@@ -66,7 +63,6 @@ function useGameText(textToDisplay) {
                 return (
                     <span 
                         key={index + letter}
-                        ref={letter.current ? currentInputRef : undefined}
                         className={`${letter.type} letter ${letter.current}`} >
                         {letter.current ? caret : undefined}
                         {letter.letter}
