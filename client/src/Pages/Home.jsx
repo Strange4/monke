@@ -1,5 +1,6 @@
 import NavBar from "../Components/NavBar";
 import TypingScreen from "../Components/TypingScreen/TypingScreen";
+import GameSettings from "../Components/GameSettings";
 
 const Home = () => {
     return (
@@ -7,6 +8,7 @@ const Home = () => {
             <NavBar />
             <h1>Home Page</h1>
             <div id="game-component">
+                <GameSettings />
                 <TypingScreen />
             </div>
         </div>
