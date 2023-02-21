@@ -12,11 +12,7 @@ function useGameText(textToDisplay) {
             current: false
         }
     });
-
-    // setting the first letter to be the current letter
-    if(defaultDisplay[0]){
-        defaultDisplay[0].current = true;
-    }
+    defaultDisplay[0].current = true;
     const [display, setDisplay] = useState(defaultDisplay);
     /**
      * changes the type (right | wrong | none) of the display of letters based on the user input
