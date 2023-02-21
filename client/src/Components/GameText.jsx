@@ -1,29 +1,16 @@
-
-import { useState } from "react";
 import './Styles/GameText.css';
-// import useRect from "./useRect";
 
-
-function useGameText(textToDisplay) {
-    const defaultDisplay = Array.from(textToDisplay).map((letter) => {
-        return {
-            letter,
-            type: "none",
-            current: false
-        }
-    });
-    defaultDisplay[0].current = true;
-    const [display, setDisplay] = useState(defaultDisplay);
+function useGameText(textToDisplay, setUserDisplayText) {
     /**
      * changes the type (right | wrong | none) of the display of letters based on the user input
      * @param {string} newInput the new input that has been changed by the user
      */
-    function rednerLetters(newInput){
+    function renderLetters(newInput) {
         const newLetterIndex = newInput.length - 1;
         const newDisplay = display.slice();
 
         // are are setting all the next letters that could posibly be deleted to none.
-        for(let i = newLetterIndex + 1;i < newDisplay.length;i++){
+        for (let i = newLetterIndex + 1; i < newDisplay.length; i++) {
             newDisplay[i].type = "none";
             newDisplay[i].current = false;
         }
@@ -33,7 +20,7 @@ function useGameText(textToDisplay) {
         if(!inputIsDone){
             newDisplay[newLetterIndex + 1].current = true;
         }
-        // only change the type if there is stuff in the input
+
         if(!inputIsEmpty && !inputIsDone){
             const newLetter = newDisplay[newLetterIndex];
             newLetter.current = false;
@@ -43,13 +30,10 @@ function useGameText(textToDisplay) {
                 newLetter.type = "wrong";
             }
         }
-        setDisplay(newDisplay);
+        setUserDisplayText(newDisplay);
     } 
 
-    const caret = 
-    <span id="inputCaret">
-        
-    </span>;
+    const caret = <span id="inputCaret"></span>;
 
     const letters = 
     <div className="letterContainer">
@@ -68,7 +52,7 @@ function useGameText(textToDisplay) {
         }
     </div>;
         
-    return [letters, rednerLetters];
+    return [letters, renderLetters];
 }
 
 export default useGameText;

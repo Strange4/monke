@@ -5,6 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node ./bin/www.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon bin/www.js"
   },
@@ -15,6 +16,7 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "mongoose": "^6.9.1",
-    "nodemon": "^2.0.20"
+    "nodemon": "^2.0.20",
+    "zod": "^3.20.6"
   }
 }
