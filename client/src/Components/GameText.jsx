@@ -1,6 +1,6 @@
 import './Styles/GameText.css';
 
-function useGameText(textToDisplay, setUserDisplayText) {
+function useGameText(display, setUserDisplayText) {
     /**
      * changes the type (right | wrong | none) of the display of letters based on the user input
      * @param {string} newInput the new input that has been changed by the user
@@ -16,12 +16,16 @@ function useGameText(textToDisplay, setUserDisplayText) {
         }
         
         const inputIsEmpty = newInput.length === 0;
-        const inputIsDone = newInput.length === newDisplay.length;
-        if(!inputIsDone){
-            newDisplay[newLetterIndex + 1].current = true;
+        const inputIsDone = newInput.length > newDisplay.length;
+        if(inputIsDone){
+            return;
+        }
+        const nextLetter = newDisplay[newLetterIndex + 1];
+        if(nextLetter){
+            nextLetter.current = true;
         }
 
-        if(!inputIsEmpty && !inputIsDone){
+        if(!inputIsEmpty){
             const newLetter = newDisplay[newLetterIndex];
             newLetter.current = false;
             if(newLetter.letter === newInput[newLetterIndex]){
