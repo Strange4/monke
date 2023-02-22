@@ -13,8 +13,13 @@ function GameSettings() {
     const [length, setLengthMode] = useState(false)
 
     const handleClick = e => {
-        setTimeMode(current => !current)
-        setLengthMode(current => !current)
+        if(e.target.id === "time-btn") {
+            setTimeMode(true)
+            setLengthMode(false)
+        } else if(e.target.id === "length-btn") {
+            setLengthMode(true)
+            setTimeMode(false)
+        }
     }
 
     return (
@@ -24,13 +29,14 @@ function GameSettings() {
                 <button>Punctuation</button>
             </div>
             <div id="game-mode">
-                <button onClick={handleClick}>Time Based</button>
-                <button onClick={handleClick}>Length Based</button>
+                <button id="time-btn" onClick={handleClick}>Time Based</button>
+                <button id="length-btn" onClick={handleClick}>Length Based</button>
             </div>
 
             {/* will add mode specific options here */}
             
             {time && <TimeSettings/>}
+            
             {length && <LengthSettings/>}
 
         </div>
