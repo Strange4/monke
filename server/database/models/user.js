@@ -7,7 +7,8 @@ const Schema = mongoose.Schema;
  */
 const UserSchema = new Schema({
     "username": { type: String, required: true },
-    "picture_url": String
+    "picture_url": {type: String, required: true},
+    "email": {type: String, required: true}
 });
 
 const User = mongoose.model("User", UserSchema);
