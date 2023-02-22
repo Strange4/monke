@@ -45,6 +45,38 @@ async function checkName(name) {
 }
 
 /**
+ * Check to see in the database if the username exists or not.
+ * @param {string} email, email of the new User. 
+ * @returns boolean depending on if the email exists or not. 
+ */
+async function checkEmail(newEmail) {
+    try {
+        const databaseName = await User.findOne({ email: newEmail });
+        // Name exists.
+        if (databaseName !== null) {
+            return true;
+            // Name does not exists.
+        } else {
+            console.log(`Could not find user with email: ${newEmail}`);
+            return false;
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+router.get("/email", async (req, res) =>{
+
+    console.log(req.query.email)
+    console.log(await checkEmail(req.query.email))
+
+    const email = await User.findOne({email: req.query.email})
+    
+
+    res.json(email)
+})
+
+/**
  * Get the Id of the User then return the UserStats of the User.
  * @param {string} name, username of the new User. 
  * @returns boolean depending on if the username exists or not. 
@@ -145,7 +177,8 @@ router.put(userStat, async (req, res) => {
 router.post(user, async (req, res) => {
     try {
         const name = req.body.username;
-        if (await checkName(name) === false){
+        const email = req.body.email;
+        if (await checkName(name) === false && await checkEmail(email) === false){
             
             // Get the link for the picture
             const picture = await Picture.findOne({"picture_name": req.body.picture});
@@ -153,7 +186,8 @@ router.post(user, async (req, res) => {
             // create the user
             const user = new User({
                 "username": name,
-                "picture_url": picture.url
+                "picture_url": picture.url,
+                "email": email
             });
 
             userSchema.parse(user);
