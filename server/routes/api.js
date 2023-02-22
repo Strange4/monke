@@ -94,9 +94,13 @@ async function getUserStats(name) {
  * @returns Average of the stat
  */
 function getAverage(stat, newStat, games) {
-    let unAverage = stat * games;
-    let newTotal = unAverage + newStat;
-    return newTotal / (games + 1);
+    if (games === 0){
+        return newStat;
+    } else{
+        let unAverage = stat * games;
+        let newTotal = unAverage + newStat;
+        return newTotal / (games + 1);
+    }
 }
 
 
@@ -321,6 +325,7 @@ async function queryQuotes(difficultyVal){
 function sortRank(users) {
     const leaderboard = [];
     let rank = 1;
+
 
     while (users.length > 0) {
         let picture = users[0].profilePicture;
