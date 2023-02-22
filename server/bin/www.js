@@ -8,7 +8,7 @@ import mongoose from "mongoose";
 import express from "express"
 import dotenv from 'dotenv';
 dotenv.config();
-const PORT = process.env.EXPRESS_PORT || 8080;
+const PORT = process.env.EXPRESS_PORT || 3001;
 
 connectToDatabase();
 

@@ -9,19 +9,20 @@ const Profile = (props) => {
             <NavBar />
             <div id="profile">
                 <div id="image">
-                    <img id="profile-pic" 
-                        src={`${props.profilePicture ? 
-                            props.profilePicture : 
+                    <img id="profile-pic"
+                        src={`${props.profilePicture ?
+                            props.profilePicture :
                             // eslint-disable-next-line max-len
                             "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"}`}
                         alt="your profile image"></img>
-                    <RiImageEditFill id="edit-icon"/>
+                    <RiImageEditFill id="edit-icon" />
                 </div>
 
 
                 <div id="user-info">
                     <h2>Name: {props.username}</h2>
                     <h2>Rank: {props.rank}</h2>
+                    <button onClick={props.handleLogout}>Logout</button>
                 </div>
                 <div id="user-stats">
                     <p>Avg. WPM: {props.avg_wpm}</p>

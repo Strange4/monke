@@ -1,6 +1,7 @@
 import './Styles/Login.css';
 import { GoogleLogin } from '@react-oauth/google';
 import { useState } from "react";
+import Profile from '../Pages/Profile';
 
 function Login() {
 
@@ -20,19 +21,19 @@ function Login() {
         setUsername(data.user.name);
     }
 
-    const protectedRoute = async () => {
-        const response = await fetch("/authentication/protected");
-        if (response.status === 200) {
-            // eslint-disable-next-line no-alert
-            alert("You are authorized to see this!");
-        } else if (response.status === 401) {
-            // eslint-disable-next-line no-alert
-            alert("You are not authorized to see this!");
-        } else {
-            // eslint-disable-next-line no-alert
-            alert("Something went wrong!");
-        }
-    }
+    // const checkAccess = async () => {
+    //     const response = await fetch("/authentication/protected");
+    //     if (response.status === 200) {
+    //         console.log("true")
+    //         return true
+    //     } else if (response.status === 401) {
+    //         console.log("false")
+    //         return false
+    //     } else {
+    //         console.log("error")
+    //         return false
+    //     }
+    // }
 
     const handleLogout = async () => {
         await fetch("/authentication/logout");
@@ -48,8 +49,7 @@ function Login() {
                 onError={() => {
                     console.log('Login Failed');
                 }} />}
-            {username && <button onClick={handleLogout}>Logout</button>}
-            <button onClick={protectedRoute}>Test protected</button>
+            {username && <Profile handleLogout={handleLogout}/>}
         </div>
     );
 }
