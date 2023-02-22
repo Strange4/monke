@@ -2,6 +2,10 @@
     --letter-width: 1rem;
 }
 
+div.letterContainer{
+    display: flex;
+}
+
 span.letter{
     display: inline-block;
     color: var(--sub-color);
@@ -25,8 +29,7 @@ span.letter.wrong{
 span#inputCaret{
     position: absolute;
     transition: left 90ms linear;
-    color: var(--text-color);
-    background-color: var(--text-color);
+    background-color: var(--caret-color);
     --caret-width: calc(var(--letter-width) / 10);
     width: var(--caret-width);
     height: calc(var(--letter-width) * 1.1);
