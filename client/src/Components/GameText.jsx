@@ -46,7 +46,7 @@ function useGameText(display, setUserDisplayText) {
             display.map((letter, index) => {
                 return (
                     <span 
-                        key={index + letter}
+                        key={index}
                         className={`${letter.type} letter ${letter.current}`} >
                         {letter.current ? caret : undefined}
                         {letter.letter}
