@@ -1,5 +1,7 @@
 # Monke
 
+[![pipeline status](https://gitlab.com/dawson2223/620-w23/s02/team4/monke/badges/main/pipeline.svg)](https://gitlab.com/dawson2223/620-w23/s02/team4/monke/-/commits/main)
+
 ## Members
 
 - Rim Dallali
@@ -12,6 +14,10 @@
 A simple and engaging typing game. On this website you are able to test your skills using a variety of settings and stats. 
 
 ## Technology Stack
+
+[![Node.js](https://img.shields.io/badge/node.js-339933.svg?style=for-the-badge&logo=Node.js&logoColor=white)](https://nodejs.org/)
+[![React](https://img.shields.io/badge/React-61DAFB.svg?style=for-the-badge&logo=React&logoColor=white)]()
+[![MongoDb](https://img.shields.io/badge/mongodb-47A248.svg?style=for-the-badge&logo=MongoDB&logoColor=white)](https://img.shields.io/badge/mongodb-47A248.svg?style=for-the-badge&logo=MongoDB&logoColor=white)
 
 This project was built using [React] with the following technologies
 
