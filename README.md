@@ -15,8 +15,8 @@ A simple and engaging typing game. On this website you are able to test your ski
 
 This project was built using [React] with the following technologies
 
-- ESLint - Used to improve code quality and ensure a code standard across all developers
-- ReactJS-popup - Used to create popups across the website
+- [ESLint](https://eslint.org/) - Used to improve code quality and ensure a code standard across all developers
+- [ReactJS-popup](https://react-popup.elazizi.com/) - Used to create popups across the website
 
 ## Visuals
 
@@ -39,11 +39,15 @@ Got to the following link: https://themonke.azurewebsites.net/
 Once on the website either locally or remotely, you will be presented with the home page that is populated by a body of text.
 
 You can:
-- start typing to aytomatically begin the game
-- once you reach the end of the text a popup eill appear to show you your stats
-- You can click the Leaderboard menu item to view a popup of other players global stats (hard codes at the moment)
+- start typing to automatically begin the game
+- Once you reach the end of the text a popup will appear to show you your stats
+  - Words per minute
+  - Time
+  - Accuracy
+- You can click the Leaderboard menu item to view a popup of other players global stats (hard coded at the moment)
 - Click the lobby menu item to view a popup of Lobby option (blank for now)
 - Click the profile menu item to view and edit your profile data (no data or edit options for now)
 
 ## Credits
 
+[Jaya OAUTH](https://dawsoncollege.gitlab.io/620-capstone/2023-01/620-study/tutorials/GoogleAuthentication.html) - For the user authentication
