@@ -133,7 +133,7 @@ router.put(userStat, async (req, res) => {
     userStatSchema.parse(update)
     await UserStat.findOneAndUpdate(filter, update);
 
-    res.status(SUCCESS).json({message: "Stats updated"})
+    res.status(SUCCESS).json({ message: "Stats updated" })
 })
 
 
@@ -180,9 +180,9 @@ router.post(user, async (req, res) => {
             console.log(message);
             res.status(SUCCESS).send(message);
 
-        // user already exist
-        } else{
-            res.status(ERROR).json({error: "Username Already Taken"});
+            // user already exist
+        } else {
+            res.status(ERROR).json({ error: "Username Already Taken" });
         }
 
     } catch (err) {
@@ -217,12 +217,12 @@ router.get(user, async (req, res) => {
             "draw": stats.draw,
             "date": stats.date
         };
-    
+
         res.status(SUCCESS).json(data);
 
     } catch (err) {
         console.error("Could not obtain userstats ", err);
-        res.status(ERROR).json({ error: "Could not obtain user stats."})
+        res.status(ERROR).json({ error: "Could not obtain user stats." })
     }
 });
 
@@ -230,21 +230,20 @@ router.get(user, async (req, res) => {
  * Endpoint returns a quote to the client.
  */
 router.get(quote, async (req, res) => {
-    
     let statusCode = SUCCESS;
     let message;
 
     // verify if difficulty is NaN and not undefined
-    if(isNaN(req.body.difficulty) && req.body.difficulty !== undefined){
+    if (isNaN(req.body.difficulty) && req.body.difficulty !== undefined) {
         console.error("Invalid number input for quotes");
         statusCode = ERROR;
         message = { "error": "Input for difficulty is not a valid number" };
     } else {
-        try{
+        try {
             message = await queryQuotes(req.body.difficulty);
         } catch (err) {
             statusCode = ERROR;
-            message = { "error": "unable to retrieve quote"};
+            message = { "error": "unable to retrieve quote" };
         }
     }
     res.status(statusCode).json(message);
@@ -257,14 +256,14 @@ router.get(quote, async (req, res) => {
  * @param {number} difficultyVal : represents difficulty level of desired quotes
  * @returns Object, is a json that holds the body of the quote.
  */
-async function queryQuotes(difficultyVal){
+async function queryQuotes(difficultyVal) {
     let quotes, message;
 
     // selects all quotes if difficultyVal is undefined otherwise query by difficulty
-    quotes = difficultyVal === undefined ? 
-        await Quote.find() : await Quote.find( { difficulty: difficultyVal });
- 
-    if(quotes.length > 0){
+    quotes = difficultyVal === undefined ?
+        await Quote.find() : await Quote.find({ difficulty: difficultyVal });
+
+    if (quotes.length > 0) {
         // if len quotes > 1 randomize index to pick from quotes, otherwise assign 0
         const quoteIndex =
             quotes.length > 1 ? Math.floor(Math.random() * quotes.length) : 0;
@@ -338,8 +337,8 @@ router.get(leaderboard, async (_, res) => {
     try {
         const stats = [];
         const users = await User.find();
-        for (const user of users){
-            const userStats = await UserStat.findOne({user: user.id});
+        for (const user of users) {
+            const userStats = await UserStat.findOne({ user: user.id });
             stats.push({
                 "profilePicture": user.picture_url,
                 "username": user.username,
@@ -348,7 +347,7 @@ router.get(leaderboard, async (_, res) => {
             });
         }
         res.status(SUCCESS).json(sortRank(stats));
-    } catch (err){
+    } catch (err) {
         console.error(err);
     }
 });
