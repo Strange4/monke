@@ -28,9 +28,7 @@ Open the Monke project folder in your preferred IDE
 
 1. Open the terminal in your chosen IDE and ensure you are in the root directory `.\monke\`
 2. Install the dependencies with: `npm run install:all`
-3. To start server run: `npm run start` in root
-4. cd to client with: `cd .\client\`
-5. To strat client run: `npm run start`
+3. To start server and client run: `npm run dev`
 
 ### Run Remote
 
