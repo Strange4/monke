@@ -9,16 +9,30 @@ import { useState } from 'react';
  */
 function GameSettings() {
 
+    const [time, setTimeMode] = useState(true)
+    const [length, setLengthMode] = useState(false)
+
+    const handleClick = e => {
+        setTimeMode(current => !current)
+        setLengthMode(current => !current)
+    }
+
     return (
         <div id="game-settings">
+
             <div id="global-settings">
-                <button>punctuation</button>
+                <button>Punctuation</button>
             </div>
             <div id="game-mode">
-                <button>Time Based</button>
-                <button>Length Based</button>
+                <button onClick={handleClick}>Time Based</button>
+                <button onClick={handleClick}>Length Based</button>
             </div>
+
             {/* will add mode specific options here */}
+            
+            {time && <TimeSettings/>}
+            {length && <LengthSettings/>}
+
         </div>
     );
 }

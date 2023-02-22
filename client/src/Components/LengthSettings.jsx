@@ -6,7 +6,7 @@ import './Styles/GameSettings.css';
  */
 function LengthSettings() {
     return (
-        <div id="game-settings">
+        <div id="length-settings">
             <button>10</button>
             <button>25</button>
             <button>50</button>
