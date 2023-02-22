@@ -4,6 +4,7 @@
 
 div.letterContainer{
     display: flex;
+    justify-content: center;
 }
 
 span.letter{
