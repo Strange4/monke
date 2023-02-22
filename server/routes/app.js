@@ -4,12 +4,14 @@
  */
 
 import api from "./api.js";
+import authentication from "./authentication.js"
 import express from "express";
 
 const app = express();
 
 app.use(express.static("./client/build/"));
 app.use("/api", api);
+app.use("/authentication", authentication);
 
 //default 404 route
 app.use(function (_, res) {
