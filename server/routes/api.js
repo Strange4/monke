@@ -7,6 +7,7 @@ import * as express from "express";
 import User from "../database/models/user.js";
 import Quote from "../database/models/quote.js";
 import UserStat from "../database/models/userStat.js";
+import Picture from "../database/models/picture.js";
 import { userSchema, userStatSchema } from "../database/validation.js";
 
 const router = express.Router();
@@ -144,13 +145,15 @@ router.put(userStat, async (req, res) => {
 router.post(user, async (req, res) => {
     try {
         const name = req.body.username;
-        if (await checkName(name) === false) {
-            // create the user
+        if (await checkName(name) === false){
+            
+            // Get the link for the picture
+            const picture = await Picture.findOne({"picture_name": req.body.picture});
 
+            // create the user
             const user = new User({
                 "username": name,
-                "picture_url": 
-                "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Transparent-Image.png"
+                "picture_url": picture.url
             });
 
             userSchema.parse(user);
