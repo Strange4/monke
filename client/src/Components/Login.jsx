@@ -1,10 +1,13 @@
 import './Styles/Login.css';
 import { GoogleLogin } from '@react-oauth/google';
+import { useState } from "react";
 
 function Login() {
 
+    const [username, setUsername] = useState("");
+
     const handleLogin = async googleData => {
-        const res = await fetch("/auth", {
+        const res = await fetch("authentication/auth", {
             method: "POST",
             body: JSON.stringify({
                 token: googleData.credential
@@ -14,20 +17,39 @@ function Login() {
             }
         })
         const data = await res.json()
-        // we will come back to this, since our server will be replying with our info
+        setUsername(data.user.name);
     }
 
-    const handleError = error => {
-        console.error(error);
+    const protectedRoute = async () => {
+        const response = await fetch("/authentication/protected");
+        if (response.status === 200) {
+            // eslint-disable-next-line no-alert
+            alert("You are authorized to see this!");
+        } else if (response.status === 401) {
+            // eslint-disable-next-line no-alert
+            alert("You are not authorized to see this!");
+        } else {
+            // eslint-disable-next-line no-alert
+            alert("Something went wrong!");
+        }
+    }
+
+    const handleLogout = async () => {
+        await fetch("/authentication/logout");
+        setUsername("");
     }
 
     return (
         <div id="login">
             <h1>Login Popup</h1>
-            <GoogleLogin
+            <h2>Welcome {username ? username : "Anonymous"}</h2>
+            {!username && <GoogleLogin
                 onSuccess={handleLogin}
-                onError={handleError}
-            />
+                onError={() => {
+                    console.log('Login Failed');
+                }} />}
+            {username && <button onClick={handleLogout}>Logout</button>}
+            <button onClick={protectedRoute}>Test protected</button>
         </div>
     );
 }
