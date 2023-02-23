@@ -1,6 +1,6 @@
 # Monke
 
-[![pipeline status](https://gitlab.com/dawson2223/620-w23/s02/team4/monke/badges/main/pipeline.svg)](https://gitlab.com/dawson2223/620-w23/s02/team4/monke/-/commits/staging)
+[![pipeline status](https://gitlab.com/dawson2223/620-w23/s02/team4/monke/badges/staging/pipeline.svg)](https://gitlab.com/dawson2223/620-w23/s02/team4/monke/-/commits/staging)
 
 ## Members
 
