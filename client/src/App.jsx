@@ -37,7 +37,7 @@ function App() {
                     <Routes>
                         <Route path="/" element={<Home loginStatus={loginStatus} />} />
                         <Route path="/profile" element={
-                            loginStatus ? <Profile loginStatus={loginStatus} /> : <Login/>
+                            loginStatus ? <Profile loginStatus={loginStatus} /> : <Login navbar={true}/>
                         } />
                     </Routes>
                 </Router>

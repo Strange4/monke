@@ -47,9 +47,14 @@ function NavBar(props) {
                 <Link to="/profile">Profile</Link>
             </li>
             <li>
-                <Popup trigger={<a> {props.loginStatus ? 
+                <Popup trigger={<a> {props.loginStatus ?
                     <button onClick={handleLogout}> Logout </button> : "Login"}</a>}>
-                    {props.loginStatus ? null : <Login />}
+                    {
+                        props.loginStatus ? null :
+                            <div>
+                                <Login navbar={false}/>
+                            </div>
+                    }
                 </Popup>
             </li>
         </div>
