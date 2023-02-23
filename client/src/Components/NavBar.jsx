@@ -4,12 +4,30 @@ import Popup from 'reactjs-popup';
 import Leaderboard from './Leaderboard';
 import Lobby from './Lobby';
 import Login from './Login';
+import Profile from '../Pages/Profile';
+import AuthContext from '../Context/AuthContext';
+// import * as AuthHelper from '../Controller/AuthHelper'
+
+import { useContext } from "react";
 
 /**
  * Navigation bar to be used on all pages
  * @returns {ReactElement}
  */
-function NavBar() {
+function NavBar(props) {
+    const auth = useContext(AuthContext);
+
+    async function handleLogout() {
+        console.log("logging out")
+        await fetch("/authentication/logout");
+        auth.setUserData({
+            username: "",
+            email: "",
+            picture: ""
+        })
+        auth.setLoginStatus(false)
+    }
+
     return (
         <div id="navbar">
             <li>
@@ -26,13 +44,22 @@ function NavBar() {
                 </Popup>
             </li>
             <li>
-                {/* popup and link work at same time for now, 
-                will be changed to show right one depending on login status */}
                 <Popup trigger={<Link to="/profile">Profile</Link>}>
-                    <Login />
+                    <Profile />
                 </Popup>
             </li>
-        </div>
+            <li>
+                {console.log(auth)}
+                <Popup trigger={<a> {props.loginStatus ? "Logout" : "Login"}</a>}>
+                    {
+                        props.loginStatus ?
+                            <button onClick={handleLogout}> Logout </button>
+                            :
+                            <Login />
+                    }
+                </Popup>
+            </li>
+        </div >
     );
 }
 

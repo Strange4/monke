@@ -1,13 +1,14 @@
 import './Styles/Login.css';
 import { GoogleLogin } from '@react-oauth/google';
-import { useState } from "react";
-import Profile from '../Pages/Profile';
+import { useContext } from "react";
+import AuthContext from "../Context/AuthContext";
 
 function Login() {
 
-    const [username, setUsername] = useState("");
+    const auth = useContext(AuthContext);
 
-    const handleLogin = async googleData => {
+    async function handleLogin(googleData) {
+        console.log("here")
         const res = await fetch("authentication/auth", {
             method: "POST",
             body: JSON.stringify({
@@ -18,38 +19,17 @@ function Login() {
             }
         })
         const data = await res.json()
-        setUsername(data.user.name);
-    }
-
-    // const checkAccess = async () => {
-    //     const response = await fetch("/authentication/protected");
-    //     if (response.status === 200) {
-    //         console.log("true")
-    //         return true
-    //     } else if (response.status === 401) {
-    //         console.log("false")
-    //         return false
-    //     } else {
-    //         console.log("error")
-    //         return false
-    //     }
-    // }
-
-    const handleLogout = async () => {
-        await fetch("/authentication/logout");
-        setUsername("");
+        auth.setUserData(data.user)
+        auth.setLoginStatus(true)
     }
 
     return (
         <div id="login">
             <h1>Login Popup</h1>
-            <h2>Welcome {username ? username : "Anonymous"}</h2>
-            {!username && <GoogleLogin
+            <h2>Welcome {auth.checkAccess() ? auth.user.username : "Anonymous"}</h2>
+            <GoogleLogin
                 onSuccess={handleLogin}
-                onError={() => {
-                    console.log('Login Failed');
-                }} />}
-            {username && <Profile handleLogout={handleLogout}/>}
+                onError={() => console.log('Login Failed')} />
         </div>
     );
 }

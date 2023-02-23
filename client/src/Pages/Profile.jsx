@@ -6,7 +6,7 @@ const Profile = (props) => {
 
     return (
         <div id="home">
-            <NavBar />
+            <NavBar loginStatus={props.loginStatus}/>
             <div id="profile">
                 <div id="image">
                     <img id="profile-pic"
@@ -22,7 +22,6 @@ const Profile = (props) => {
                 <div id="user-info">
                     <h2>Name: {props.username}</h2>
                     <h2>Rank: {props.rank}</h2>
-                    <button onClick={props.handleLogout}>Logout</button>
                 </div>
                 <div id="user-stats">
                     <p>Avg. WPM: {props.avg_wpm}</p>
