@@ -33,9 +33,7 @@ async function postUserStatAPI(url, userStat) {
         },
         body: JSON.stringify(userStat)
     });
-    if (response.ok) {
-        console.log(`sent data successfully: ${JSON.stringify(userStat)}`);
-    } else {
+    if (!response.ok) {
         throw Error("Something Went wrong posting data");
     }
 }
