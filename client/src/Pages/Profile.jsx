@@ -41,7 +41,8 @@ const Profile = (props) => {
                 </div>
 
                 <div id="user-info">
-                    <h2>Name: {auth.user.username}</h2>
+                    {console.log(auth)}
+                    <h2>Name: {auth.user.name}</h2>
                     <h2>Rank: {userData.rank}</h2>
                 </div>
                 <div id="user-stats">
