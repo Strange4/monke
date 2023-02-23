@@ -53,13 +53,18 @@ function TypingScreen() {
      * @returns {Object}
      */
     function getDefaultUserDisplay() {
-        return Array.from(textToDisplay).map((letter) => {
+        const display = Array.from(textToDisplay).map((letter) => {
             // the type of a displayed letter can only be right | wrong | none
             return {
                 letter,
-                type: "none"
+                type: "none",
+                current: false
             }
         });
+
+        display[0].current = true;
+
+        return display;
     }
 
     /**
