@@ -7,6 +7,7 @@ import * as express from "express";
 import User from "../database/models/user.js";
 import Quote from "../database/models/quote.js";
 import UserStat from "../database/models/userStat.js";
+import Picture from "../database/models/picture.js";
 import { userSchema, userStatSchema } from "../database/validation.js";
 
 const router = express.Router();
@@ -29,9 +30,9 @@ const ERROR = 400;
  */
 async function checkName(name) {
     try {
-        const databaseName = await User.findOne({ username: name });
+        const nameQuery = await User.findOne({ username: name });
         // Name exists.
-        if (databaseName !== null) {
+        if (nameQuery !== null) {
             return true;
             // Name does not exists.
         } else {
@@ -42,6 +43,28 @@ async function checkName(name) {
         console.error(err);
     }
 }
+
+/**
+ * Check to see in the database if the username exists or not.
+ * @param {string} email, email of the new User. 
+ * @returns boolean depending on if the email exists or not. 
+ */
+async function checkEmail(newEmail) {
+    try {
+        const emailQuery = await User.findOne({ email: newEmail });
+        // Name exists.
+        if (emailQuery !== null) {
+            return true;
+            // Name does not exists.
+        } else {
+            console.log(`Could not find user with email: ${newEmail}`);
+            return false;
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
+
 
 /**
  * Get the Id of the User then return the UserStats of the User.
@@ -143,14 +166,21 @@ router.put(userStat, async (req, res) => {
  */
 router.post(user, async (req, res) => {
     try {
+        const picName = ["profile_gear", "profile_keyboard", "profile_mac", "profile_user", "profile_pc", "default_user_image"];
         const name = req.body.username;
-        if (await checkName(name) === false) {
-            // create the user
+        const email = req.body.email;
+        const picture = req.body.picture;
 
+        if (await checkName(name) === false && await checkEmail(email) === false && picName.includes(picture)) {
+
+            // Get the link for the picture
+            const pictureQuery = await Picture.findOne({ "picture_name": picture });
+
+            // create the user
             const user = new User({
                 "username": name,
-                "picture_url": 
-                "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Transparent-Image.png"
+                "picture_url": pictureQuery.url,
+                "email": email
             });
 
             userSchema.parse(user);
@@ -180,9 +210,15 @@ router.post(user, async (req, res) => {
             console.log(message);
             res.status(SUCCESS).send(message);
 
-            // user already exist
-        } else {
+            // user not valid
+        } else if (await checkName(name) === true && await checkEmail(email) === true) {
+            res.status(ERROR).json({ error: "Username and Email Already Taken" });
+        } else if (await checkName(name) === true) {
             res.status(ERROR).json({ error: "Username Already Taken" });
+        } else if (await checkEmail(email) === true) {
+            res.status(ERROR).json({ error: "Email Already Taken" });
+        } else {
+            res.status(ERROR).json({ error: `Picture Name Invalid | Valid Names: profile_gear, profile_keyboard, profile_mac, profile_user, profile_pc, default_user_image` });
         }
 
     } catch (err) {
