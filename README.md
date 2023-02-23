@@ -50,7 +50,7 @@ You can:
   - Words per minute
   - Time
   - Accuracy
-- You can click the Leaderboard menu item to view a popup of other players global stats (hard coded at the moment)
+- You can click the Leaderboard menu item to view a popup of other players global stats
 - Click the lobby menu item to view a popup of Lobby option (blank for now)
 - Click the profile menu item to view and edit your profile data (no data or edit options for now)
 

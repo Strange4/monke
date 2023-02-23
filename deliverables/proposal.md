@@ -175,6 +175,29 @@ User stories (give at least 2):
     - display of user's text submission along with their status
     - delete previously sent text submission
 
+**User persona 4**
+
+Persona description: Avid User
+
+Name: MasterTyperXX (Tom)
+
+Importance of users corresponding to this persona: 30% of the users 
+
+Broad goal: He wants to be the best, he wants to reach the first place in the leaderboards. He wants to win every match he plays online.
+
+User stories (give at least 2):
+1. _Tom wants to he is doing better than other competitor in an online lobby_
+    - join online lobby and play
+    - ability to see other competitor progress during the game
+    - see stats of other player at the end
+    - while waiting for others to finish you could send message in the lobby
+    - taunt other players
+2. _Tom wants to see he's ranking in the leaderboard and see other people's profile to compare_
+    - ability to go on the leaderboard
+    - look at other user's profile
+    - able to see other profile from the leaderboard
+    - search up other user and see their profile
+
 ---
 
 ## **Mockups**
