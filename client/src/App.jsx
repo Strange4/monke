@@ -5,6 +5,7 @@ import Login from './Components/Login';
 import AuthContext from './Context/AuthContext';
 import { useState, useEffect } from 'react';
 import checkAccess from './Controller/AuthHelper'
+import Profile from './Pages/Profile';
 
 /**
  * Displays the Main App container
@@ -36,7 +37,7 @@ function App() {
                     <Routes>
                         <Route path="/" element={<Home loginStatus={loginStatus} />} />
                         <Route path="/profile" element={
-                            <Login profilePicture={""} loginStatus={loginStatus} />
+                            loginStatus ? <Profile loginStatus={loginStatus} /> : <Login/>
                         } />
                     </Routes>
                 </Router>

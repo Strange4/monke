@@ -44,22 +44,15 @@ function NavBar(props) {
                 </Popup>
             </li>
             <li>
-                <Popup trigger={<Link to="/profile">Profile</Link>}>
-                    <Profile />
-                </Popup>
+                <Link to="/profile">Profile</Link>
             </li>
             <li>
-                {console.log(auth)}
-                <Popup trigger={<a> {props.loginStatus ? "Logout" : "Login"}</a>}>
-                    {
-                        props.loginStatus ?
-                            <button onClick={handleLogout}> Logout </button>
-                            :
-                            <Login />
-                    }
+                <Popup trigger={<a> {props.loginStatus ? 
+                    <button onClick={handleLogout}> Logout </button> : "Login"}</a>}>
+                    {props.loginStatus ? null : <Login />}
                 </Popup>
             </li>
-        </div >
+        </div>
     );
 }
 

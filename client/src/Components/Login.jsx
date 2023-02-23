@@ -2,8 +2,9 @@ import './Styles/Login.css';
 import { GoogleLogin } from '@react-oauth/google';
 import { useContext } from "react";
 import AuthContext from "../Context/AuthContext";
+import NavBar from './NavBar';
 
-function Login() {
+function Login(props) {
 
     const auth = useContext(AuthContext);
 
