@@ -16,8 +16,9 @@ A simple and engaging typing game. On this website you are able to test your ski
 ## Technology Stack
 
 [![Node.js](https://img.shields.io/badge/node.js-339933.svg?style=for-the-badge&logo=Node.js&logoColor=white)](https://nodejs.org/)
-[![React](https://img.shields.io/badge/React-61DAFB.svg?style=for-the-badge&logo=React&logoColor=white)]()
-[![MongoDb](https://img.shields.io/badge/mongodb-47A248.svg?style=for-the-badge&logo=MongoDB&logoColor=white)](https://img.shields.io/badge/mongodb-47A248.svg?style=for-the-badge&logo=MongoDB&logoColor=white)
+[![React](https://img.shields.io/badge/React-61DAFB.svg?style=for-the-badge&logo=React&logoColor=white)](https://reactjs.org/)
+[![MongoDb](https://img.shields.io/badge/mongodb-47A248.svg?style=for-the-badge&logo=MongoDB&logoColor=white)](https://www.mongodb.com/)
+[![Express](https://img.shields.io/badge/express-white.svg?style=for-the-badge&logo=express&logoColor=black)](https://expressjs.com/)
 
 This project was built using [React] with the following technologies
 
