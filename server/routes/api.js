@@ -94,9 +94,13 @@ async function getUserStats(name) {
  * @returns Average of the stat
  */
 function getAverage(stat, newStat, games) {
-    let unAverage = stat * games;
-    let newTotal = unAverage + newStat;
-    return newTotal / (games + 1);
+    if (games === 0){
+        return newStat;
+    } else{
+        let unAverage = stat * games;
+        let newTotal = unAverage + newStat;
+        return newTotal / (games + 1);
+    }
 }
 
 
@@ -142,9 +146,7 @@ router.put(userStat, async (req, res) => {
     } else {
         // Update average only
         update = {
-            "max_wpm": previousStats.max_wpm,
             "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
-            "max_accuracy": previousStats.max_accuracy,
             "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
             "games_count": previousStats.games_count + 1,
             "win": previousStats.win + win,
@@ -171,7 +173,9 @@ router.post(user, async (req, res) => {
         const email = req.body.email;
         const picture = req.body.picture;
 
-        if (await checkName(name) === false && await checkEmail(email) === false && picName.includes(picture)){
+        if (await checkName(name) === false 
+        && await checkEmail(email) === false 
+        && picName.includes(picture)){
             
             // Get the link for the picture
             const pictureQuery = await Picture.findOne({"picture_name": picture});
@@ -213,7 +217,7 @@ router.post(user, async (req, res) => {
         // user not valid
         } else{
             if (await checkName(name) === true && await checkEmail(email) === true)
-            res.status(ERROR).json({error: "Username and Email Already Taken"});
+                res.status(ERROR).json({error: "Username and Email Already Taken"});
             else if (await checkName(name) === true)
                 res.status(ERROR).json({error: "Username Already Taken"});
             else if(await checkEmail(email) === true)
@@ -320,50 +324,41 @@ async function queryQuotes(difficultyVal){
  */
 function sortRank(users) {
     const leaderboard = [];
+    const userCount = users.length;
     let rank = 1;
 
-    while (users.length > 0) {
+    while (leaderboard.length !== userCount){
         let picture = users[0].profilePicture;
         let username = users[0].username;
-        let wpm = users[0].wpm;
-        let accuracy = users[0].accuracy;
-
-        if (users.length > 1) {
-            for (const user of users) {
-                if (user.wpm > wpm) {
-                    picture = user.profilePicture;
-                    username = user.username;
-                    wpm = user.wpm;
-                    accuracy = user.accuracy;
-
-                } else if (user.wpm === wpm && user.accuracy > accuracy) {
-                    picture = user.profilePicture;
-                    username = user.username;
-                    wpm = user.wpm;
-                    accuracy = user.accuracy;
-                }
-
-                leaderboard.push({
-                    "rank": rank,
-                    "profilePicture": picture,
-                    "username": username,
-                    "wpm": wpm,
-                    "accuracy": accuracy
-                })
-                users.splice(users.indexOf(user), 1);
-                rank++;
+        let wpm = 0;
+        let accuracy = 0;
+        let index = 0;
+        for (let i = 0; i < users.length; i++){
+            if (users[i].wpm > wpm){
+                picture = users[i].profilePicture;
+                username = users[i].username;
+                wpm = users[i].wpm;
+                accuracy = users[i].accuracy;
+                index = i;
+            } else if(users[i].wpm === wpm && users[i].accuracy > accuracy){
+                picture = users[i].profilePicture;
+                username = users[i].username;
+                wpm = users[i].wpm;
+                accuracy = users[i].accuracy;
+                index = i;
             }
-        } else {
-            leaderboard.push({
-                "rank": rank,
-                "profilePicture": picture,
-                "username": username,
-                "wpm": wpm,
-                "accuracy": accuracy
-            })
-            users.splice(users.indexOf(user), 1);
         }
+
+        leaderboard.push({
+            "rank": rank++,
+            "profilePicture": picture,
+            "username": username,
+            "wpm": wpm,
+            "accuracy": accuracy
+        });
+        users.splice(index, 1);
     }
+
     return leaderboard;
 }
 
