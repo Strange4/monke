@@ -9,9 +9,7 @@ import express from "express";
 const app = express();
 
 app.use(express.static("./client/build/"));
-app.get("/*", function(req, res) {
-    res.sendFile("./client/build/index.html")
-});
+app.use("/*", express.static("public"));
 app.use("/api", api);
 
 //default 404 route
