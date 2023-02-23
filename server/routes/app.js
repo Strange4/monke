@@ -18,11 +18,11 @@ function html (req, _, next) {
     }
 }
 
-app.get("/*", html, function(_, res) {
-    res.sendFile("./client/build/index.html")
-});
-
 app.use("/api", api);
+
+app.get("*", html, function(_, res) {
+    res.sendFile("index.html", {root: "./client/build/"})
+});
 
 //default 404 route
 app.use(function (_, res) {
