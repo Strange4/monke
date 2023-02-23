@@ -94,9 +94,9 @@ async function getUserStats(name) {
  * @returns Average of the stat
  */
 function getAverage(stat, newStat, games) {
-    if (games === 0){
+    if (games === 0) {
         return newStat;
-    } else{
+    } else {
         let unAverage = stat * games;
         let newTotal = unAverage + newStat;
         return newTotal / (games + 1);
@@ -173,10 +173,10 @@ router.post(user, async (req, res) => {
         const email = req.body.email;
         const picture = req.body.picture;
 
-        if (await checkName(name) === false 
-        && await checkEmail(email) === false 
-        && picName.includes(picture)){
-            
+        if (await checkName(name) === false
+            && await checkEmail(email) === false
+            && picName.includes(picture)) {
+
             // Get the link for the picture
             const pictureQuery = await Picture.findOne({ "picture_name": picture });
 
@@ -214,18 +214,16 @@ router.post(user, async (req, res) => {
             console.log(message);
             res.status(SUCCESS).send(message);
 
-        // user not valid
-        } else{
-            if (await checkName(name) === true && await checkEmail(email) === true)
-                res.status(ERROR).json({error: "Username and Email Already Taken"});
-            else if (await checkName(name) === true)
-                res.status(ERROR).json({error: "Username Already Taken"});
-            else if(await checkEmail(email) === true)
-                res.status(ERROR).json({error: "Email Already Taken"});
-            else
-                res.status(ERROR).json({error: `Picture Name Invalid | Valid Names: profile_gear, profile_keyboard, profile_mac, profile_user, profile_pc, default_user_image`}); 
+            // user not valid
+        } else if (await checkName(name) === true && await checkEmail(email) === true) {
+            res.status(ERROR).json({ error: "Username and Email Already Taken" });
+        } else if (await checkName(name) === true) {
+            res.status(ERROR).json({ error: "Username Already Taken" });
+        } else if (await checkEmail(email) === true) {
+            res.status(ERROR).json({ error: "Email Already Taken" });
+        } else {
+            res.status(ERROR).json({ error: `Picture Name Invalid | Valid Names: profile_gear, profile_keyboard, profile_mac, profile_user, profile_pc, default_user_image` });
         }
-
     } catch (err) {
         console.error(`Error: ${err}`);
         res.status(ERROR).send(`<h1>400! User could not be created. Please refill the form.</h1>`);
@@ -326,20 +324,20 @@ function sortRank(users) {
     const userCount = users.length;
     let rank = 1;
 
-    while (leaderboard.length !== userCount){
+    while (leaderboard.length !== userCount) {
         let picture = users[0].profilePicture;
         let username = users[0].username;
         let wpm = 0;
         let accuracy = 0;
         let index = 0;
-        for (let i = 0; i < users.length; i++){
-            if (users[i].wpm > wpm){
+        for (let i = 0; i < users.length; i++) {
+            if (users[i].wpm > wpm) {
                 picture = users[i].profilePicture;
                 username = users[i].username;
                 wpm = users[i].wpm;
                 accuracy = users[i].accuracy;
                 index = i;
-            } else if(users[i].wpm === wpm && users[i].accuracy > accuracy){
+            } else if (users[i].wpm === wpm && users[i].accuracy > accuracy) {
                 picture = users[i].profilePicture;
                 username = users[i].username;
                 wpm = users[i].wpm;
