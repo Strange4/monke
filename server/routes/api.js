@@ -10,6 +10,7 @@ import User from "../database/models/user.js";
 import Quote from "../database/models/quote.js";
 import UserStat from "../database/models/userStat.js";
 import { userSchema, userStatSchema } from "../database/validation.js";
+import createError from "http-errors";
 
 const router = express.Router();
 
@@ -23,6 +24,7 @@ const leaderboard = "/leaderboard";
 
 const SUCCESS = 200;
 const ERROR = 400;
+const INTERNAL_SE = 500;
 
 /**
  * Check to see in the database if the username exists or not.
@@ -106,7 +108,7 @@ router.put(userStat, async(req, res) =>{
             "date": Date.now()
         }
 
-    }else if (newWpm == previousStats.max_wpm && newAccuracy > previousStats.max_accuracy){
+    }else if (newWpm === previousStats.max_wpm && newAccuracy > previousStats.max_accuracy){
         update = {
             "max_wpm": newWpm,
             "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
@@ -231,25 +233,28 @@ router.get(user, async (req, res) => {
 /**
  * Endpoint returns a quote to the client.
  */
-router.get(quote, async (req, res) => {
+router.get(quote, async (req, res, next) => {
     
     let statusCode = SUCCESS;
     let message;
 
     // verify if difficulty is NaN and not undefined
-    if(isNaN(req.body.difficulty) && req.body.difficulty !== undefined){
-        console.error("Invalid number input for quotes");
+    if(isNaN(req.query.difficulty) && req.query.difficulty !== undefined){
         statusCode = ERROR;
         message = { "error": "Input for difficulty is not a valid number" };
+        next(createError(statusCode, message));
+        
     } else {
         try{
-            message = await queryQuotes(req.body.difficulty);
+            message = await queryQuotes(req.query.difficulty);
         } catch (err) {
-            statusCode = ERROR;
-            message = { "error": "unable to retrieve quote"};
+            statusCode = INTERNAL_SE;
+            message = { "error": "Unable to retrieve quote, please try again later."};
         }
+
+        console.log("resonponding from get quote");
+        res.status(statusCode).json(message);
     }
-    res.status(statusCode).json(message);
 });
 
 /**
@@ -355,14 +360,14 @@ router.get(leaderboard, async (_, res) => {
     }
 });
 
-router.use("/", async (_, res) => {
-    console.log("here")
-    res.json("Success! Getting to the api!");
-});
 
-
-router.use(async (_, res) => {
-    res.status(ERROR).json({ error: "Not Found" });
+// middleware for handling errors
+router.use((error, req, res, next) => {
+    console.log(error);
+    // check if error should be publicly exposed to end-user
+    if(error.expose){
+        res.status(error.status).json( error.message );
+    }
 });
 
 export default router;
