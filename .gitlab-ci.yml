@@ -56,7 +56,6 @@ deploy-job:
   only:
     - main
     - staging
-    - 55-serve-the-index-html-from-the-server
   stage: deploy
   image: mcr.microsoft.com/azure-cli
   dependencies:
