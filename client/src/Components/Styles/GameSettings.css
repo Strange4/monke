@@ -11,5 +11,9 @@
     display: flex;
     justify-content: space-evenly;
     margin-top: 30px;
+}
 
+#game-settings button:hover {
+    cursor: pointer;
+    color: #d68b49;
 }

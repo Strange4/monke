@@ -12,6 +12,10 @@
   font-size: 1.5em;
 }
 
+#navbar li:hover {
+    color: #d68b49;
+}
+
 a:link {
   text-decoration: none;
 }
