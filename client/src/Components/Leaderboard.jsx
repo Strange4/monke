@@ -2,6 +2,8 @@ import './Styles/Leaderboard.css';
 import { useEffect, useState } from 'react';
 import RankListItem from './RankListItem';
 import * as FetchModule from "../Controller/FetchModule";
+import {useQuery} from "react-query";
+import Spinner from './Spinner';
 
 /**
  * Displays the users along with their stats to the leaderboard
@@ -10,15 +12,9 @@ import * as FetchModule from "../Controller/FetchModule";
 function Leaderboard() {
     const current = new Date();
     const date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
-
-    const [leaderboard, setLeaderboard] = useState([]);
-    const { loadingPlaceHolder, sendRequest } = FetchModule.useFetch("/api/leaderboard");
-
-    useEffect(() => {
-        sendRequest((data) => {
-            setLeaderboard(data);
-        });
-    }, []);
+    const { data: leaderboard, isLoading, error } = useQuery('leaderboard', async () => {
+        return await (await fetch("/api/leaderboard")).json();
+    });
 
     return (
         <div id="leaderboard">
@@ -32,15 +28,16 @@ function Leaderboard() {
                     <p>Date</p>
                 </div>
                 {
-                    loadingPlaceHolder ||
-                    leaderboard.map((user, i) => <RankListItem
-                        user={user.username}
-                        picture={user.profilePicture}
-                        rank={user.rank}
-                        wpm={user.wpm}
-                        accuracy={user.accuracy}
-                        date={`${date}`}
-                        key={i} />)
+                    isLoading ? 
+                        <Spinner/> :
+                        leaderboard.map((user, i) => <RankListItem
+                            user={user.username}
+                            picture={user.profilePicture}
+                            rank={user.rank}
+                            wpm={user.wpm}
+                            accuracy={user.accuracy}
+                            date={`${date}`}
+                            key={i} />)
                 }
             </div>
         </div>

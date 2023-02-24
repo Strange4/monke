@@ -73,7 +73,7 @@ function useFetch(url, params) {
         isLoading || error ?
             <Spinner/> : undefined
 
-    return { sendRequest, loadingPlaceHolder };
+    return [sendRequest, loadingPlaceHolder];
 }
 
 
