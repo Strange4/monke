@@ -8,6 +8,7 @@
     max-width: 750px;
     height: 70vh;
     min-height: 600px;
+    max-height: 800px;
     margin-top: 10vh;
     flex-flow: row wrap;
 }

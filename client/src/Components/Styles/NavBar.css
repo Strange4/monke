@@ -12,7 +12,7 @@
   font-size: 1.5em;
 }
 
-#navbar li:hover {
+#navbar li:hover, #navbar a:hover {
     color: #d68b49;
 }
 
