@@ -4,10 +4,7 @@ import Popup from 'reactjs-popup';
 import Leaderboard from './Leaderboard';
 import Lobby from './Lobby';
 import Login from './Login';
-import Profile from '../Pages/Profile';
 import AuthContext from '../Context/AuthContext';
-// import * as AuthHelper from '../Controller/AuthHelper'
-
 import { useContext } from "react";
 
 /**
@@ -52,7 +49,7 @@ function NavBar(props) {
                     {
                         props.loginStatus ? null :
                             <div>
-                                <Login navbar={false}/>
+                                <Login navbar={false} />
                             </div>
                     }
                 </Popup>

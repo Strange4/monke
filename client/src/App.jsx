@@ -1,10 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './styles/App.css'
+import './styles/App.css';
 import Home from './Pages/Home';
 import Login from './Components/Login';
 import AuthContext from './Context/AuthContext';
 import { useState, useEffect } from 'react';
-import checkAccess from './Controller/AuthHelper'
+import checkAccess from './Controller/AuthHelper';
 import Profile from './Pages/Profile';
 
 /**
@@ -12,18 +12,16 @@ import Profile from './Pages/Profile';
  * @returns {ReactElement}
  */
 function App() {
-
-    const [loginStatus, setLoginStatus] = useState()
+    const [loginStatus, setLoginStatus] = useState();
     const [userData, setUserData] = useState({
         username: "",
         email: "",
         picture: "",
-    })
+    });
 
     useEffect(() => {
-        setLoginStatus(checkAccess())
-    }, [])
-
+        setLoginStatus(checkAccess());
+    }, []);
 
     return (
         <div className="App">
@@ -37,7 +35,8 @@ function App() {
                     <Routes>
                         <Route path="/" element={<Home loginStatus={loginStatus} />} />
                         <Route path="/profile" element={
-                            loginStatus ? <Profile loginStatus={loginStatus} /> : <Login navbar={true}/>
+                            loginStatus ?
+                                <Profile loginStatus={loginStatus} /> : <Login navbar={true} />
                         } />
                     </Routes>
                 </Router>

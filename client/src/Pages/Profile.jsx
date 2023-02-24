@@ -1,5 +1,5 @@
 import NavBar from "../Components/NavBar";
-import "./Styles/Profile.css"
+import "./Styles/Profile.css";
 import { RiImageEditFill } from "react-icons/ri";
 import AuthContext from "../Context/AuthContext";
 import { useContext, useEffect, useState } from "react";
@@ -16,7 +16,8 @@ const Profile = (props) => {
         loseCount: 0,
         drawCount: 0,
         gameCount: 0
-    })
+    });
+    
     const auth = useContext(AuthContext);
     const { loadingPlaceHolder, sendRequest } = FetchModule.useFetch("/api/user", { body: { "username": userData.username } });
 
@@ -25,7 +26,7 @@ const Profile = (props) => {
         sendRequest((data) => {
             setUserData(data);
         });
-    }, [])
+    }, []);
 
     return (
         <div id="home">
@@ -35,6 +36,7 @@ const Profile = (props) => {
                     <img id="profile-pic"
                         src={`${auth.user.picture ?
                             auth.user.picture :
+                            // eslint-disable-next-line max-len
                             "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"}`}
                         alt="your profile image"></img>
                     <RiImageEditFill id="edit-icon" />
@@ -53,7 +55,6 @@ const Profile = (props) => {
                     <p>Loses: {userData.loseCount}</p>
                     <p>Draws: {userData.drawCount}</p>
                 </div>
-
             </div>
         </div>
     );

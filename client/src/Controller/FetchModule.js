@@ -43,10 +43,10 @@ function useFetch(url, params) {
     const [isLoading, setIsLoading] = useState(false);
     const sendRequest = useCallback(async (callback) => {
         setIsLoading(true);
-        try{
+        try {
             const response = await fetch(url, params);
 
-            if(!response.ok){
+            if (!response.ok) {
                 setError(await response.text());
                 setIsLoading(false);
                 return;
@@ -54,24 +54,24 @@ function useFetch(url, params) {
             const contentType = response.headers.get("Content-Type");
             let data = null;
             // return the right content type
-            if(contentType.match("json")){
+            if (contentType.match("json")) {
                 data = await response.json();
-            } else if(contentType.match("text")){
-                data = await response.text()
+            } else if (contentType.match("text")) {
+                data = await response.text();
             } else {
                 data = await response.blob();
             }
             setIsLoading(false);
             callback(data);
-        } catch (caughtError){
+        } catch (caughtError) {
             setError(caughtError);
             setIsLoading(false);
         }
     });
-    
-    const loadingPlaceHolder = 
+
+    const loadingPlaceHolder =
         isLoading || error ?
-            <Spinner/> : undefined
+            <Spinner /> : undefined
 
     return { sendRequest, loadingPlaceHolder };
 }
