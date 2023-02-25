@@ -12,12 +12,6 @@ const DB_NAME = "QuotesDatabase";
  * Contains functions to connect to a database and check connection status.
  */
 class Database {
-    constructor(){
-        // immediately establish a connection with the database if disconnected
-        if(this.isConnected() === DISCONNECTED){
-            this.connectToDatabase(); 
-        }
-    }
 
     /**
      * async method to establish a connection with the database.
