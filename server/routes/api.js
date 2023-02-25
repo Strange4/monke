@@ -11,8 +11,10 @@ import Quote from "../database/models/quote.js";
 import UserStat from "../database/models/userStat.js";
 import { userSchema, userStatSchema } from "../database/validation.js";
 import createError from "http-errors";
+import Database from "../database/mongo.js";
 
 const router = express.Router();
+const database = new Database();
 
 router.use(express.json());
 
@@ -233,26 +235,23 @@ router.get(user, async (req, res) => {
 /**
  * Endpoint returns a quote to the client.
  */
-router.get(quote, async (req, res, next) => {
-    
+router.get(quote, async (req, res, next) => { 
     let statusCode = SUCCESS;
     let message;
 
     // verify if difficulty is NaN and not undefined
-    if(isNaN(req.query.difficulty) && req.query.difficulty !== undefined){
+    if(isNaN(req.body.difficulty) && req.body.difficulty !== undefined){
         statusCode = ERROR;
         message = { "error": "Input for difficulty is not a valid number" };
-        next(createError(statusCode, message));
-        
+        next(createError(statusCode, message)); 
     } else {
         try{
-            message = await queryQuotes(req.query.difficulty);
+            message = await queryQuotes(req.body.difficulty);
         } catch (err) {
             statusCode = INTERNAL_SE;
             message = { "error": "Unable to retrieve quote, please try again later."};
+            next(createError(INTERNAL_SE, message));
         }
-
-        console.log("resonponding from get quote");
         res.status(statusCode).json(message);
     }
 });
@@ -265,22 +264,21 @@ router.get(quote, async (req, res, next) => {
  * @returns Object, is a json that holds the body of the quote.
  */
 async function queryQuotes(difficultyVal){
-    let quotes, message;
+    let quotes;
 
-    // selects all quotes if difficultyVal is undefined otherwise query by difficulty
-    quotes = difficultyVal === undefined ? 
-        await Quote.find() : await Quote.find( { difficulty: difficultyVal });
+    if(database.isConnected()){
+
+        // selects all quotes if difficultyVal is undefined otherwise query by difficulty
+        quotes = difficultyVal === undefined ? 
+            await Quote.find() : await Quote.find( { difficulty: difficultyVal } );
  
-    if(quotes.length > 0){
-        // if len quotes > 1 randomize index to pick from quotes, otherwise assign 0
-        const quoteIndex =
-            quotes.length > 1 ? Math.floor(Math.random() * quotes.length) : 0;
-        message = { "body": quotes[quoteIndex].quote };
-    } else {
-        message = { "body": "There are no quotes available with that difficulty." };
+        if(quotes.length > 0){
+            const quoteIndex = quotes.length > 1 ? Math.floor(Math.random() * quotes.length) : 0;
+            return { "body": quotes[quoteIndex].quote };
+        }
+        return { "body": "There are no quotes available with that difficulty." };
     }
-
-    return message;
+    return { "body": "The database is currently down so make do with this quote instead." };
 }
 
 /**
@@ -364,10 +362,7 @@ router.get(leaderboard, async (_, res) => {
 // middleware for handling errors
 router.use((error, req, res, next) => {
     console.log(error);
-    // check if error should be publicly exposed to end-user
-    if(error.expose){
-        res.status(error.status).json( error.message );
-    }
+    res.status(error.status).json( { "error": error.error, "type": error.message } );
 });
 
 export default router;
