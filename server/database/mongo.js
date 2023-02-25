@@ -3,7 +3,6 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const dbUrl = process.env.ATLAS_URI;
-const DISCONNECTED = 0;
 const CONNECTED = 1;
 const DB_NAME = "QuotesDatabase";
 
@@ -28,11 +27,17 @@ class Database {
     }
 
     /**
-     * returns true if online connection to database is established:
+     * returns true if online connection to database is established.
+     * If false reconnect and return whether it is connected or not.
      * @returns boolean
      */
-    isConnected() {
-        return mongoose.connection.readyState === CONNECTED ? true : false
+    async isConnected() {
+        // return mongoose.connection.readyState === CONNECTED ? true : false
+        if(mongoose.connection.readyState === CONNECTED){
+            return true;
+        }
+        await this.connectToDatabase();
+        return mongoose.connection.readyState === CONNECTED ? true : false;
     }
 }
 
