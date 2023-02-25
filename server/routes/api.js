@@ -1,14 +1,13 @@
 /**
  * this module exports a router containing routes that will query
  * a mongo database and return the info as json to the user
- * 
- * @author Rim Dallali
  */
 
 import * as express from "express";
 import User from "../database/models/user.js";
 import Quote from "../database/models/quote.js";
 import UserStat from "../database/models/userStat.js";
+import Picture from "../database/models/picture.js";
 import { userSchema, userStatSchema } from "../database/validation.js";
 import createError from "http-errors";
 import Database from "../database/mongo.js";
@@ -33,13 +32,13 @@ const INTERNAL_SE = 500;
  * @param {string} name, username of the new User. 
  * @returns boolean depending on if the username exists or not. 
  */
-async function checkName(name){
+async function checkName(name) {
     try {
-        const databaseName = await User.findOne({username: name});
+        const nameQuery = await User.findOne({ username: name });
         // Name exists.
-        if (databaseName !== null){
+        if (nameQuery !== null) {
             return true;
-        // Name does not exists.
+            // Name does not exists.
         } else {
             console.log(`Could not find user with name: ${name}`);
             return false;
@@ -50,15 +49,37 @@ async function checkName(name){
 }
 
 /**
+ * Check to see in the database if the username exists or not.
+ * @param {string} email, email of the new User. 
+ * @returns boolean depending on if the email exists or not. 
+ */
+async function checkEmail(newEmail) {
+    try {
+        const emailQuery = await User.findOne({ email: newEmail });
+        // Name exists.
+        if (emailQuery !== null) {
+            return true;
+            // Name does not exists.
+        } else {
+            console.log(`Could not find user with email: ${newEmail}`);
+            return false;
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+
+/**
  * Get the Id of the User then return the UserStats of the User.
  * @param {string} name, username of the new User. 
  * @returns boolean depending on if the username exists or not. 
  */
-async function getUserStats(name){
+async function getUserStats(name) {
     try {
-        const databaseUser = await User.findOne({username: name});
-        if (databaseUser !== null){
-            const stats = await UserStat.findOne({user: databaseUser.id});
+        const databaseUser = await User.findOne({ username: name });
+        if (databaseUser !== null) {
+            const stats = await UserStat.findOne({ user: databaseUser.id });
             return stats;
         } else {
             console.log(`Could not find user with name: ${name}`);
@@ -67,7 +88,7 @@ async function getUserStats(name){
         console.error(err);
     }
 }
- 
+
 
 /**
  * Return the average of a stat
@@ -76,14 +97,18 @@ async function getUserStats(name){
  * @param {Number} games, the total number of games.
  * @returns Average of the stat
  */
-function getAverage(stat, newStat, games){
-    let unAverage = stat * games;
-    let newTotal = unAverage + newStat;
-    return newTotal / (games + 1);
+function getAverage(stat, newStat, games) {
+    if (games === 0){
+        return newStat;
+    } else{
+        let unAverage = stat * games;
+        let newTotal = unAverage + newStat;
+        return newTotal / (games + 1);
+    }
 }
 
 
-router.put(userStat, async(req, res) =>{
+router.put(userStat, async (req, res) => {
     let name = req.body.username;
     let newWpm = req.body.wpm;
     let newAccuracy = req.body.accuracy;
@@ -92,12 +117,12 @@ router.put(userStat, async(req, res) =>{
     let draw = req.body.draw;
 
     const previousStats = await getUserStats(name);
-
-    const filter = { id: previousStats.id }
+    const user = await User.findOne({ username: name })
+    const filter = { user: user.id, id: previousStats.id }
 
     let update;
-    
-    if (newWpm > previousStats.max_wpm){
+
+    if (newWpm > previousStats.max_wpm) {
         update = {
             "max_wpm": newWpm,
             "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
@@ -110,7 +135,7 @@ router.put(userStat, async(req, res) =>{
             "date": Date.now()
         }
 
-    }else if (newWpm === previousStats.max_wpm && newAccuracy > previousStats.max_accuracy){
+    } else if (newWpm === previousStats.max_wpm && newAccuracy > previousStats.max_accuracy) {
         update = {
             "max_wpm": newWpm,
             "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
@@ -122,13 +147,10 @@ router.put(userStat, async(req, res) =>{
             "draw": previousStats.draw + draw,
             "date": Date.now()
         }
-    } 
-    // Update average only
-    else {
+    } else {
+        // Update average only
         update = {
-            "max_wpm": previousStats.max_wpm,
             "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
-            "max_accuracy": previousStats.max_accuracy,
             "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
             "games_count": previousStats.games_count + 1,
             "win": previousStats.win + win,
@@ -148,15 +170,25 @@ router.put(userStat, async(req, res) =>{
  * Post endpoint that creates User containing
  * username and temporary profileURL
  */
-router.post(user, async (req, res) =>{
+router.post(user, async (req, res) => {
     try {
+        const picName = ["profile_gear", "profile_keyboard", "profile_mac", "profile_user", "profile_pc", "default_user_image"];
         const name = req.body.username;
-        if (await checkName(name) === false){
-            // create the user
+        const email = req.body.email;
+        const picture = req.body.picture;
 
+        if (await checkName(name) === false 
+        && await checkEmail(email) === false 
+        && picName.includes(picture)){
+            
+            // Get the link for the picture
+            const pictureQuery = await Picture.findOne({"picture_name": picture});
+
+            // create the user
             const user = new User({
                 "username": name,
-                "picture_url": "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Transparent-Image.png"
+                "picture_url": pictureQuery.url,
+                "email": email
             });
 
             userSchema.parse(user);
@@ -180,15 +212,22 @@ router.post(user, async (req, res) =>{
 
             userStatSchema.parse(stats)
             let userStatsObject = await UserStat.create(stats)
-            await userStatsObject.save() 
+            await userStatsObject.save()
 
             const message = "User created successfully";
             console.log(message);
             res.status(SUCCESS).send(message);
 
-        // user already exist
+        // user not valid
         } else{
-            res.status(ERROR).json({error: "Username Already Taken"});
+            if (await checkName(name) === true && await checkEmail(email) === true)
+                res.status(ERROR).json({error: "Username and Email Already Taken"});
+            else if (await checkName(name) === true)
+                res.status(ERROR).json({error: "Username Already Taken"});
+            else if(await checkEmail(email) === true)
+                res.status(ERROR).json({error: "Email Already Taken"});
+            else
+                res.status(ERROR).json({error: `Picture Name Invalid | Valid Names: profile_gear, profile_keyboard, profile_mac, profile_user, profile_pc, default_user_image`}); 
         }
 
     } catch (err) {
@@ -202,11 +241,11 @@ router.post(user, async (req, res) =>{
  * Get endpoint that  json object containing the user
  * and their game statistics
  */
-router.get(user, async (req, res) => {    
+router.get(user, async (req, res) => {
 
-    try{
+    try {
         // query for user that matches username
-        const user = await User.findOne({username: req.body.username});
+        const user = await User.findOne({ username: req.body.username });
         // query for user's game statistics
         const stats = await getUserStats(user.username);
 
@@ -286,52 +325,43 @@ async function queryQuotes(difficultyVal){
  * @param {*} users, Leadeaboard JSON Object without sorting and no rank field.
  * @returns Array of JSON object that represents the leaderboard.
  */
-function sortRank(users){
+function sortRank(users) {
     const leaderboard = [];
+    const userCount = users.length;
     let rank = 1;
 
-    while (users.length > 0){
+    while (leaderboard.length !== userCount){
         let picture = users[0].profilePicture;
         let username = users[0].username;
-        let wpm = users[0].wpm;
-        let accuracy = users[0].accuracy;
-
-        if (users.length > 1){
-            for (const user of users){
-                if (user.wpm > wpm){
-                    picture = user.profilePicture;
-                    username = user.username;
-                    wpm = user.wpm;
-                    accuracy = user.accuracy;
-                
-                } else if (user.wpm === wpm && user.accuracy > accuracy){
-                    picture = user.profilePicture;
-                    username = user.username;
-                    wpm = user.wpm;
-                    accuracy = user.accuracy;
-                }
-    
-                leaderboard.push({
-                    "rank": rank,
-                    "profilePicture": picture,
-                    "username": username,
-                    "wpm": wpm,
-                    "accuracy": accuracy
-                })
-                users.splice(users.indexOf(user), 1);
-                rank++;
+        let wpm = 0;
+        let accuracy = 0;
+        let index = 0;
+        for (let i = 0; i < users.length; i++){
+            if (users[i].wpm > wpm){
+                picture = users[i].profilePicture;
+                username = users[i].username;
+                wpm = users[i].wpm;
+                accuracy = users[i].accuracy;
+                index = i;
+            } else if(users[i].wpm === wpm && users[i].accuracy > accuracy){
+                picture = users[i].profilePicture;
+                username = users[i].username;
+                wpm = users[i].wpm;
+                accuracy = users[i].accuracy;
+                index = i;
             }
-        } else {
-            leaderboard.push({
-                "rank": rank,
-                "profilePicture": picture,
-                "username": username,
-                "wpm": wpm,
-                "accuracy": accuracy
-            })
-            users.splice(users.indexOf(user), 1);
         }
+
+        leaderboard.push({
+            "rank": rank++,
+            "profilePicture": picture,
+            "username": username,
+            "wpm": wpm,
+            "accuracy": accuracy
+        });
+        users.splice(index, 1);
     }
+
     return leaderboard;
 }
 
@@ -357,7 +387,6 @@ router.get(leaderboard, async (_, res) => {
         console.error(err);
     }
 });
-
 
 // middleware for handling errors
 router.use((error, req, res, next) => {

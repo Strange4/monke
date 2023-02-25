@@ -1,7 +1,5 @@
 /**
  * this module imports the app module and starts a local express server
- * 
- * @author Rim Dallali
  */
 
 import app from "../routes/app.js";

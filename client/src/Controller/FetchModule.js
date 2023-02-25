@@ -7,7 +7,6 @@ import Spinner from "../Components/Spinner";
  * 
  * @param {String} url 
  * @returns {JSON} data
- * @author Rim Dallali
  */
 async function fetchData(url) {
     let data;
@@ -17,6 +16,25 @@ async function fetchData(url) {
         return data;
     } else {
         throw Error("Something Went wrong fetching data");
+    }
+}
+
+/**
+ * Post the user stat to the api
+ * @param url 
+ * @param userInput 
+ */
+async function postUserStatAPI(url, userStat) {
+    let response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userStat)
+    });
+    if (!response.ok) {
+        throw Error("Something Went wrong posting data");
     }
 }
 
@@ -59,4 +77,4 @@ function useFetch(url, params) {
 }
 
 
-export { fetchData, useFetch };
+export { fetchData, useFetch, postUserStatAPI };
