@@ -1,7 +1,7 @@
 import './Styles/GameSettings.css';
 
 /**
- * Displays a loading spinner
+ * Displays time specific settings
  * @returns {ReactElement}
  */
 function LengthSettings() {

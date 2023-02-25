@@ -4,7 +4,7 @@ import LengthSettings from './LengthSettings';
 import { useState } from 'react';
 
 /**
- * Displays a loading spinner
+ * Displays game settings
  * @returns {ReactElement}
  */
 function GameSettings() {
