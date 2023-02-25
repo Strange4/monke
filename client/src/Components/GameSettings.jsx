@@ -9,16 +9,13 @@ import { useState } from 'react';
  */
 function GameSettings() {
 
-    const [time, setTimeMode] = useState(true)
-    const [length, setLengthMode] = useState(false)
+    const [mode, setMode] = useState(true)
 
     const handleClick = e => {
         if(e.target.id === "time-btn") {
-            setTimeMode(true)
-            setLengthMode(false)
+            setMode(true)
         } else if(e.target.id === "length-btn") {
-            setLengthMode(true)
-            setTimeMode(false)
+            setMode(false)
         }
     }
 
@@ -32,12 +29,9 @@ function GameSettings() {
                 <button id="time-btn" onClick={handleClick}>Time Based</button>
                 <button id="length-btn" onClick={handleClick}>Length Based</button>
             </div>
-
-            {/* will add mode specific options here */}
             
-            {time && <TimeSettings/>}
-            
-            {length && <LengthSettings/>}
+            {mode && <TimeSettings/>}
+            {!mode && <LengthSettings/>}
 
         </div>
     );
