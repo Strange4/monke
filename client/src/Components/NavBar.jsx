@@ -14,6 +14,7 @@ import { useContext } from "react";
 function NavBar(props) {
     const auth = useContext(AuthContext);
 
+
     async function handleLogout() {
         console.log("logging out")
         await fetch("/authentication/logout");
@@ -21,8 +22,8 @@ function NavBar(props) {
             username: "",
             email: "",
             picture: ""
-        })
-        auth.setLoginStatus(false)
+        });
+        auth.setLoginStatus(false);
     }
 
     return (

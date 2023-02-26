@@ -1,13 +1,15 @@
 import './Layout/SoloGameResult.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import Popup from "reactjs-popup";
 import Timer from "timer-machine";
 import * as FetchModule from '../../Controller/FetchModule';
+import AuthContext from '../../Context/AuthContext';
 
 function SoloGameResult(props) {
     const [userStats, setUserStats] = useState({ "time": 0, "wpm": 0, "accuracy": 0 });
     const [popup, setPopup] = useState(false);
     const updateRate = 1000;
+    const auth = useContext(AuthContext);
 
     useEffect(() => {
         handleTimer();
@@ -109,6 +111,7 @@ function SoloGameResult(props) {
      */
     function postUserStats(result) {
         setUserStats(result);
+        console.log(auth)
         let userStats = {
             "username": "john",
             "wpm": result.wpm,
