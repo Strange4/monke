@@ -5,12 +5,15 @@
 
 import * as express from "express";
 import User from "../database/models/user.js";
-import Quote from "../database/models/quote.js";
+
 import UserStat from "../database/models/userStat.js";
 import Picture from "../database/models/picture.js";
 import { userSchema, userStatSchema } from "../database/validation.js";
 import createError from "http-errors";
 import Database from "../database/mongo.js";
+import { QUOTE, USER, USER_STAT, PIC } from "../database/mongo.js";
+
+import { getQuote, getUserStats, checkName, checkEmail } from "../controller/mongoHelper.js";
 
 const router = express.Router();
 const database = new Database();
@@ -26,69 +29,6 @@ const leaderboard = "/leaderboard";
 const SUCCESS = 200;
 const ERROR = 400;
 const INTERNAL_SE = 500;
-
-/**
- * Check to see in the database if the username exists or not.
- * @param {string} name, username of the new User. 
- * @returns boolean depending on if the username exists or not. 
- */
-async function checkName(name) {
-    try {
-        const nameQuery = await User.findOne({ username: name });
-        // Name exists.
-        if (nameQuery !== null) {
-            return true;
-            // Name does not exists.
-        } else {
-            console.log(`Could not find user with name: ${name}`);
-            return false;
-        }
-    } catch (err) {
-        console.error(err);
-    }
-}
-
-/**
- * Check to see in the database if the username exists or not.
- * @param {string} email, email of the new User. 
- * @returns boolean depending on if the email exists or not. 
- */
-async function checkEmail(newEmail) {
-    try {
-        const emailQuery = await User.findOne({ email: newEmail });
-        // Name exists.
-        if (emailQuery !== null) {
-            return true;
-            // Name does not exists.
-        } else {
-            console.log(`Could not find user with email: ${newEmail}`);
-            return false;
-        }
-    } catch (err) {
-        console.error(err);
-    }
-}
-
-
-/**
- * Get the Id of the User then return the UserStats of the User.
- * @param {string} name, username of the new User. 
- * @returns boolean depending on if the username exists or not. 
- */
-async function getUserStats(name) {
-    try {
-        const databaseUser = await User.findOne({ username: name });
-        if (databaseUser !== null) {
-            const stats = await UserStat.findOne({ user: databaseUser.id });
-            return stats;
-        } else {
-            console.log(`Could not find user with name: ${name}`);
-        }
-    } catch (err) {
-        console.error(err);
-    }
-}
-
 
 /**
  * Return the average of a stat
@@ -116,53 +56,56 @@ router.put(userStat, async (req, res) => {
     let lose = req.body.lose;
     let draw = req.body.draw;
 
-    const previousStats = await getUserStats(name);
-    const user = await User.findOne({ username: name })
-    const filter = { user: user.id, id: previousStats.id }
+    if(database.isConnected()){
+        const previousStats = await getUserStats(name);
+        const user = await database.findOne(USER, { username: name })
+        const filter = { user: user.id, id: previousStats.id }
 
-    let update;
+        let update;
+        if (newWpm > previousStats.max_wpm) {
+            update = {
+                "max_wpm": newWpm,
+                "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
+                "max_accuracy": newAccuracy,
+                "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
+                "games_count": previousStats.games_count + 1,
+                "win": previousStats.win + win,
+                "lose": previousStats.lose + lose,
+                "draw": previousStats.draw + draw,
+                "date": Date.now()
+            }
 
-    if (newWpm > previousStats.max_wpm) {
-        update = {
-            "max_wpm": newWpm,
-            "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
-            "max_accuracy": newAccuracy,
-            "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
-            "games_count": previousStats.games_count + 1,
-            "win": previousStats.win + win,
-            "lose": previousStats.lose + lose,
-            "draw": previousStats.draw + draw,
-            "date": Date.now()
+        } else if (newWpm === previousStats.max_wpm && newAccuracy > previousStats.max_accuracy) {
+            update = {
+                "max_wpm": newWpm,
+                "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
+                "max_accuracy": newAccuracy,
+                "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
+                "games_count": previousStats.games_count + 1,
+                "win": previousStats.win + win,
+                "lose": previousStats.lose + lose,
+                "draw": previousStats.draw + draw,
+                "date": Date.now()
+            }
+        } else {
+            // Update average only
+            update = {
+                "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
+                "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
+                "games_count": previousStats.games_count + 1,
+                "win": previousStats.win + win,
+                "lose": previousStats.lose + lose,
+                "draw": previousStats.draw + draw,
+                "date": previousStats.date
+            }
         }
+        userStatSchema.parse(update)
+        await database.findOneAndUpdate(USER_STAT, filter, update);
 
-    } else if (newWpm === previousStats.max_wpm && newAccuracy > previousStats.max_accuracy) {
-        update = {
-            "max_wpm": newWpm,
-            "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
-            "max_accuracy": newAccuracy,
-            "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
-            "games_count": previousStats.games_count + 1,
-            "win": previousStats.win + win,
-            "lose": previousStats.lose + lose,
-            "draw": previousStats.draw + draw,
-            "date": Date.now()
-        }
+        res.status(SUCCESS).json({message: "Stats updated"});
     } else {
-        // Update average only
-        update = {
-            "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
-            "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
-            "games_count": previousStats.games_count + 1,
-            "win": previousStats.win + win,
-            "lose": previousStats.lose + lose,
-            "draw": previousStats.draw + draw,
-            "date": previousStats.date
-        }
+        next(INTERNAL_SE, { "error": "Database unavailable, try again later."});
     }
-    userStatSchema.parse(update)
-    await UserStat.findOneAndUpdate(filter, update);
-
-    res.status(SUCCESS).json({message: "Stats updated"})
 })
 
 
@@ -171,68 +114,75 @@ router.put(userStat, async (req, res) => {
  * username and temporary profileURL
  */
 router.post(user, async (req, res) => {
-    try {
-        const picName = ["profile_gear", "profile_keyboard", "profile_mac", "profile_user", "profile_pc", "default_user_image"];
-        const name = req.body.username;
-        const email = req.body.email;
-        const picture = req.body.picture;
+    if(database.isConnected()){
+        try {
+            const picName = ["profile_gear", "profile_keyboard", "profile_mac",
+                "profile_user", "profile_pc", "default_user_image"];
+            const name = req.body.username;
+            const email = req.body.email;
+            const picture = req.body.picture;
 
-        if (await checkName(name) === false 
-        && await checkEmail(email) === false 
-        && picName.includes(picture)){
-            
-            // Get the link for the picture
-            const pictureQuery = await Picture.findOne({"picture_name": picture});
+            if (await checkName(name) === false 
+            && await checkEmail(email) === false 
+            && picName.includes(picture)){
+                
+                // Get the link for the picture
+                const pictureQuery = await database.findOne(PIC, {"picture_name": picture});
 
-            // create the user
-            const user = new User({
-                "username": name,
-                "picture_url": pictureQuery.url,
-                "email": email
-            });
+                // create the user
+                const user = new User({
+                    "username": name,
+                    "picture_url": pictureQuery.url,
+                    "email": email
+                });
 
-            userSchema.parse(user);
+                userSchema.parse(user);
 
-            let userObject = await User.create(user);
-            await userObject.save();
+                let userObject = await User.create(user);
+                await userObject.save();
 
-            //Stat creation
-            const stats = new UserStat({
-                "user": userObject.id,
-                "max_wpm": 0,
-                "wpm": 0,
-                "max_accuracy": 0,
-                "accuracy": 0,
-                "games_count": 0,
-                "win": 0,
-                "lose": 0,
-                "draw": 0,
-                "date": null
-            })
+                //Stat creation
+                const stats = new UserStat({
+                    "user": userObject.id,
+                    "max_wpm": 0,
+                    "wpm": 0,
+                    "max_accuracy": 0,
+                    "accuracy": 0,
+                    "games_count": 0,
+                    "win": 0,
+                    "lose": 0,
+                    "draw": 0,
+                    "date": null
+                })
 
-            userStatSchema.parse(stats)
-            let userStatsObject = await UserStat.create(stats)
-            await userStatsObject.save()
+                userStatSchema.parse(stats)
+                let userStatsObject = await UserStat.create(stats)
+                await userStatsObject.save()
 
-            const message = "User created successfully";
-            console.log(message);
-            res.status(SUCCESS).send(message);
+                const message = "User created successfully";
+                console.log(message);
+                res.status(SUCCESS).send(message);
 
-        // user not valid
-        } else{
-            if (await checkName(name) === true && await checkEmail(email) === true)
-                res.status(ERROR).json({error: "Username and Email Already Taken"});
-            else if (await checkName(name) === true)
-                res.status(ERROR).json({error: "Username Already Taken"});
-            else if(await checkEmail(email) === true)
-                res.status(ERROR).json({error: "Email Already Taken"});
-            else
-                res.status(ERROR).json({error: `Picture Name Invalid | Valid Names: profile_gear, profile_keyboard, profile_mac, profile_user, profile_pc, default_user_image`}); 
+            // user not valid
+            } else{
+                if (await checkName(name) === true && await checkEmail(email) === true)
+                    next(ERROR, {"error": "Username and Email Already Taken"});
+                else if (await checkName(name) === true)
+                    next(ERROR, {"error": "Username Already Taken"});
+                else if(await checkEmail(email) === true)
+                    next(ERROR, {"error": "Email Already Taken"});
+                else
+                    next(ERROR, {"error": `Picture Name Invalid | Valid Names: profile_gear, profile_keyboard, profile_mac, profile_user, profile_pc, default_user_image`});
+            }
+
+        } catch (err) {
+            console.log(err);
+            next(createError(ERROR,
+                { "error": "User could not be created. Please refill the form."})
+            );
         }
-
-    } catch (err) {
-        console.error(`Error: ${err}`);
-        res.status(ERROR).send(`<h1>400! User could not be created. Please refill the form.</h1>`);
+    } else{
+        next(createError(INTERNAL_SE, { "error": "Database unavailable, try again later."}));
     }
 });
 
@@ -241,33 +191,34 @@ router.post(user, async (req, res) => {
  * Get endpoint that  json object containing the user
  * and their game statistics
  */
-router.get(user, async (req, res) => {
+router.get(user, async (req, res, next) => {
+    if(database.isConnected()){
+        try {
+            // query for user that matches username
+            const user = await database.findOne(USER, { username: req.body.username });
+            // query for user's game statistics
+            const stats = await getUserStats(user.username);
 
-    try {
-        // query for user that matches username
-        const user = await User.findOne({ username: req.body.username });
-        // query for user's game statistics
-        const stats = await getUserStats(user.username);
+            let data = {
+                "username": user.username,
+                "image": user.picture_url,
+                "wpm": stats.wpm,
+                "max_wpm": stats.max_wpm,
+                "accuracy": stats.accuracy,
+                "max_accuracy": stats.max_accuracy,
+                "games_count": stats.games_count,
+                "win": stats.win,
+                "lose": stats.lose,
+                "draw": stats.draw,
+                "date": stats.date
+            };
+        
+            res.status(SUCCESS).json(data);
 
-        let data = {
-            "username": user.username,
-            "image": user.picture_url,
-            "wpm": stats.wpm,
-            "max_wpm": stats.max_wpm,
-            "accuracy": stats.accuracy,
-            "max_accuracy": stats.max_accuracy,
-            "games_count": stats.games_count,
-            "win": stats.win,
-            "lose": stats.lose,
-            "draw": stats.draw,
-            "date": stats.date
-        };
-    
-        res.status(SUCCESS).json(data);
-
-    } catch (err) {
-        console.error("Could not obtain userstats ", err);
-        res.status(ERROR).json({ error: "Could not obtain user stats."})
+        } catch (err) {
+            console.error("Could not obtain userstats ", err);
+            next(createError(INTERNAL_SE, { error: "Could not obtain user stats."}));
+        }
     }
 });
 
@@ -285,40 +236,14 @@ router.get(quote, async (req, res, next) => {
         next(createError(statusCode, message)); 
     } else {
         try{
-            message = await queryQuotes(req.body.difficulty);
+            message = await getQuote(req.body.difficulty);
         } catch (err) {
-            statusCode = INTERNAL_SE;
-            message = { "error": "Unable to retrieve quote, please try again later."};
-            next(createError(INTERNAL_SE, message));
+            // rather than return an error return a quote as per Mauricio's suggestion.
+            message = { "body": "Unable to retrieve quote from database, please try again later."};
         }
         res.status(statusCode).json(message);
     }
 });
-
-/**
- * Function will query database for quotes with given difficulty then
- * pick and return one quote randomly from resulting list.
- * If said list is length of 1, return that single quote.
- * @param {number} difficultyVal : represents difficulty level of desired quotes
- * @returns Object, is a json that holds the body of the quote.
- */
-async function queryQuotes(difficultyVal){
-    let quotes;
-
-    if(database.isConnected()){
-
-        // selects all quotes if difficultyVal is undefined otherwise query by difficulty
-        quotes = difficultyVal === undefined ? 
-            await Quote.find() : await Quote.find( { difficulty: difficultyVal } );
- 
-        if(quotes.length > 0){
-            const quoteIndex = quotes.length > 1 ? Math.floor(Math.random() * quotes.length) : 0;
-            return { "body": quotes[quoteIndex].quote };
-        }
-        return { "body": "There are no quotes available with that difficulty." };
-    }
-    return { "body": "The database is currently down so make do with this quote instead." };
-}
 
 /**
  * Sort the users into rank depending on wpm and accuracy, then returns the sorted leaderboard.
@@ -372,9 +297,9 @@ function sortRank(users) {
 router.get(leaderboard, async (_, res) => {
     try {
         const stats = [];
-        const users = await User.find();
+        const users = await database.find(USER);
         for (const user of users){
-            const userStats = await UserStat.findOne({user: user.id});
+            const userStats = await database.findOne(USER, {user: user.id});
             stats.push({
                 "profilePicture": user.picture_url,
                 "username": user.username,
@@ -384,14 +309,19 @@ router.get(leaderboard, async (_, res) => {
         }
         res.status(SUCCESS).json(sortRank(stats));
     } catch (err){
-        console.error(err);
+        res.status(INTERNAL_SE).json( { "error": "Unable to retrieve leaderboard data."} );
     }
 });
 
 // middleware for handling errors
 router.use((error, req, res, next) => {
+    console.log("fuckity fuck fuck");
     console.log(error);
     res.status(error.status).json( { "error": error.error, "type": error.message } );
+});
+
+router.use(function (_, res) {
+    res.status(404).json({ error: "Not Found" });
 });
 
 export default router;
