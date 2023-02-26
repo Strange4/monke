@@ -162,34 +162,29 @@ router.put(userStat, async (req, res) => {
 })
 
 
-/**
- * Post endpoint that creates User containing
- * username and temporary profileURL
- */
-router.post(user, async (req, res) => {
-    try {
-        const picName = ["profile_gear", "profile_keyboard", "profile_mac", "profile_user", "profile_pc", "default_user_image"];
-        const name = req.body.username;
-        const email = req.body.email;
-        const picture = req.body.picture;
+router.get(user, async (req, res) => {
+    try{
+        //----------------change these 2 to get from the email from google.
+        const name = req.query.name;
+        const pic = req.query.pic;
 
-        if (await checkName(name) === false
-            && await checkEmail(email) === false
-            && picName.includes(picture)) {
 
-            // Get the link for the picture
-            const pictureQuery = await Picture.findOne({ "picture_name": picture });
-
+        const email = req.query.email;
+        let user = await User.findOne({email: email})
+     
+        // Create the user.
+        if (user === null){
             // create the user
-            const user = new User({
+            const newUser = new User({
+                // change username and pic to thta of the email from google account.
                 "username": name,
-                "picture_url": pictureQuery.url,
+                "picture_url": pic,
                 "email": email
             });
 
-            userSchema.parse(user);
+            userSchema.parse(newUser);
 
-            let userObject = await User.create(user);
+            let userObject = await User.create(newUser);
             await userObject.save();
 
             //Stat creation
@@ -209,37 +204,10 @@ router.post(user, async (req, res) => {
             userStatSchema.parse(stats)
             let userStatsObject = await UserStat.create(stats)
             await userStatsObject.save()
-
-            const message = "User created successfully";
-            console.log(message);
-            res.status(SUCCESS).send(message);
-
-            // user not valid
-        } else if (await checkName(name) === true && await checkEmail(email) === true) {
-            res.status(ERROR).json({ error: "Username and Email Already Taken" });
-        } else if (await checkName(name) === true) {
-            res.status(ERROR).json({ error: "Username Already Taken" });
-        } else if (await checkEmail(email) === true) {
-            res.status(ERROR).json({ error: "Email Already Taken" });
-        } else {
-            res.status(ERROR).json({ error: `Picture Name Invalid | Valid Names: profile_gear, profile_keyboard, profile_mac, profile_user, profile_pc, default_user_image` });
         }
-    } catch (err) {
-        console.error(`Error: ${err}`);
-        res.status(ERROR).send(`<h1>400! User could not be created. Please refill the form.</h1>`);
-    }
-});
-
-
-/**
- * Get endpoint that  json object containing the user
- * and their game statistics
- */
-router.get(user, async (req, res) => {
-
-    try {
+        
         // query for user that matches username
-        const user = await User.findOne({ username: req.body.username });
+        user = await User.findOne({ email: email });
         // query for user's game statistics
         const stats = await getUserStats(user.username);
 
@@ -258,12 +226,115 @@ router.get(user, async (req, res) => {
         };
 
         res.status(SUCCESS).json(data);
-
-    } catch (err) {
-        console.error("Could not obtain userstats ", err);
-        res.status(ERROR).json({ error: "Could not obtain user stats." })
+    } catch(err) {
+        console.error(`Error: ${err}`);
+        res.status(ERROR).send(`<h1>400! User could not be found.</h1>`);
     }
-});
+})
+
+
+// /**
+//  * Post endpoint that creates User containing
+//  * username and temporary profileURL
+//  */
+// router.post(user, async (req, res) => {
+//     try {
+//         const picName = ["profile_gear", "profile_keyboard", "profile_mac", "profile_user", "profile_pc", "default_user_image"];
+//         const name = req.body.username;
+//         const email = req.body.email;
+//         const picture = req.body.picture;
+
+//         if (await checkName(name) === false
+//             && await checkEmail(email) === false
+//             && picName.includes(picture)) {
+
+//             // Get the link for the picture
+//             const pictureQuery = await Picture.findOne({ "picture_name": picture });
+
+//             // create the user
+//             const user = new User({
+//                 "username": name,
+//                 "picture_url": pictureQuery.url,
+//                 "email": email
+//             });
+
+//             userSchema.parse(user);
+
+//             let userObject = await User.create(user);
+//             await userObject.save();
+
+//             //Stat creation
+//             const stats = new UserStat({
+//                 "user": userObject.id,
+//                 "max_wpm": 0,
+//                 "wpm": 0,
+//                 "max_accuracy": 0,
+//                 "accuracy": 0,
+//                 "games_count": 0,
+//                 "win": 0,
+//                 "lose": 0,
+//                 "draw": 0,
+//                 "date": null
+//             })
+
+//             userStatSchema.parse(stats)
+//             let userStatsObject = await UserStat.create(stats)
+//             await userStatsObject.save()
+
+//             const message = "User created successfully";
+//             console.log(message);
+//             res.status(SUCCESS).send(message);
+
+//             // user not valid
+//         } else if (await checkName(name) === true && await checkEmail(email) === true) {
+//             res.status(ERROR).json({ error: "Username and Email Already Taken" });
+//         } else if (await checkName(name) === true) {
+//             res.status(ERROR).json({ error: "Username Already Taken" });
+//         } else if (await checkEmail(email) === true) {
+//             res.status(ERROR).json({ error: "Email Already Taken" });
+//         } else {
+//             res.status(ERROR).json({ error: `Picture Name Invalid | Valid Names: profile_gear, profile_keyboard, profile_mac, profile_user, profile_pc, default_user_image` });
+//         }
+//     } catch (err) {
+//         console.error(`Error: ${err}`);
+//         res.status(ERROR).send(`<h1>400! User could not be created. Please refill the form.</h1>`);
+//     }
+// });
+
+
+// /**
+//  * Get endpoint that  json object containing the user
+//  * and their game statistics
+//  */
+// router.get(user, async (req, res) => {
+
+//     try {
+//         // query for user that matches username
+//         const user = await User.findOne({ username: req.body.username });
+//         // query for user's game statistics
+//         const stats = await getUserStats(user.username);
+
+//         let data = {
+//             "username": user.username,
+//             "image": user.picture_url,
+//             "wpm": stats.wpm,
+//             "max_wpm": stats.max_wpm,
+//             "accuracy": stats.accuracy,
+//             "max_accuracy": stats.max_accuracy,
+//             "games_count": stats.games_count,
+//             "win": stats.win,
+//             "lose": stats.lose,
+//             "draw": stats.draw,
+//             "date": stats.date
+//         };
+
+//         res.status(SUCCESS).json(data);
+
+//     } catch (err) {
+//         console.error("Could not obtain userstats ", err);
+//         res.status(ERROR).json({ error: "Could not obtain user stats." })
+//     }
+// });
 
 /**
  * Endpoint returns a quote to the client.
