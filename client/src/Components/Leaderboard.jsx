@@ -1,9 +1,6 @@
 import './Styles/Leaderboard.css';
-import { useEffect, useState } from 'react';
 import RankListItem from './RankListItem';
-import * as FetchModule from "../Controller/FetchModule";
-import {useQuery} from "react-query";
-import Spinner from './Spinner';
+import { useFetch } from '../Controller/FetchModule';
 
 /**
  * Displays the users along with their stats to the leaderboard
@@ -12,10 +9,7 @@ import Spinner from './Spinner';
 function Leaderboard() {
     const current = new Date();
     const date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
-    const { data: leaderboard, isLoading, error } = useQuery('leaderboard', async () => {
-        return await (await fetch("/api/leaderboard")).json();
-    });
-
+    const [loadingIndicator, leaderboard] = useFetch("leaderboard", "/api/leaderboard", )
     return (
         <div id="leaderboard">
             <h1>Leaderboard</h1>
@@ -28,20 +22,16 @@ function Leaderboard() {
                     <p>Date</p>
                 </div>
                 {
-                    isLoading ? 
-                        <Spinner/> :
-                        leaderboard.map((user, i) => <RankListItem
-                            user={user.username}
-                            picture={user.profilePicture}
-                            rank={user.rank}
-                            wpm={user.wpm}
-                            accuracy={user.accuracy}
-                            date={`${date}`}
-                            key={i} />)
+                    loadingIndicator || leaderboard.map((user, i) => <RankListItem
+                        user={user.username}
+                        picture={user.profilePicture}
+                        rank={user.rank}
+                        wpm={user.wpm}
+                        accuracy={user.accuracy}
+                        date={`${date}`}
+                        key={i} />)
                 }
             </div>
         </div>
     );
 }
-
-export default Leaderboard;
