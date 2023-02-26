@@ -299,7 +299,7 @@ router.get(leaderboard, async (_, res) => {
         const stats = [];
         const users = await database.find(USER);
         for (const user of users){
-            const userStats = await database.findOne(USER, {user: user.id});
+            const userStats = await database.findOne(USER_STAT, {user: user.id});
             stats.push({
                 "profilePicture": user.picture_url,
                 "username": user.username,
@@ -315,7 +315,6 @@ router.get(leaderboard, async (_, res) => {
 
 // middleware for handling errors
 router.use((error, req, res, next) => {
-    console.log("fuckity fuck fuck");
     console.log(error);
     res.status(error.status).json( { "error": error.error, "type": error.message } );
 });
