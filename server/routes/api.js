@@ -161,7 +161,7 @@ router.put(userStat, async (req, res) => {
     res.status(SUCCESS).json({ message: "Stats updated" })
 })
 
-
+//----------------change all query to body when done testing
 router.get(user, async (req, res) => {
     try{
         //----------------change these 2 to get from the email from google.
