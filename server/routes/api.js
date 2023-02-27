@@ -103,15 +103,16 @@ router.put(userStat, async (req, res, next) => {
                 }
             }
     
-            let validSchema;
+            let isValidSchema;
             try{
                 userStatSchema.parse(update);
-                validSchema = true;
+                isValidSchema = true;
             } catch (err){
-                validSchema = false;
+                console.log(err);
+                isValidSchema = false;
                 next(createError(ERROR, {"error": "stat values do not comply with schema"} ));
             }
-            if(validSchema){
+            if(isValidSchema){
                 await database.findOneAndUpdate(USER_STAT, filter, update);
                 res.status(SUCCESS).json({message: "Stats updated"});
             }            
