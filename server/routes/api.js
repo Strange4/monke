@@ -179,15 +179,15 @@ router.post(user, async (req, res) => {
 
                 try{
                     userStatSchema.parse(stats);
+                    let userStatsObject = await UserStat.create(stats)
+                    await userStatsObject.save()
+    
+                    const message = "User created successfully";
+                    console.log(message);
+                    res.status(SUCCESS).send(message);
                 } catch (err){
                     next(ERROR, {"error": "values does not comply with user stat schema"});
                 }
-                let userStatsObject = await UserStat.create(stats)
-                await userStatsObject.save()
-
-                const message = "User created successfully";
-                console.log(message);
-                res.status(SUCCESS).send(message);
 
             // user not valid
             } else{
@@ -221,25 +221,31 @@ router.get(user, async (req, res, next) => {
     if(database.isConnected()){
         try {
             // query for user that matches username
-            const user = await database.findOne(USER, { username: req.body.username });
-            // query for user's game statistics
-            const stats = await getUserStats(user.username);
+            const user = await database.findOne(USER, { username: req.query.username });
 
-            let data = {
-                "username": user.username,
-                "image": user.picture_url,
-                "wpm": stats.wpm,
-                "max_wpm": stats.max_wpm,
-                "accuracy": stats.accuracy,
-                "max_accuracy": stats.max_accuracy,
-                "games_count": stats.games_count,
-                "win": stats.win,
-                "lose": stats.lose,
-                "draw": stats.draw,
-                "date": stats.date
-            };
-        
-            res.status(SUCCESS).json(data);
+            // check if user exists
+            if(user?.id !== undefined){
+                // query for user's game statistics
+                const stats = await getUserStats(user.username);
+
+                let data = {
+                    "username": user.username,
+                    "image": user.picture_url,
+                    "wpm": stats.wpm,
+                    "max_wpm": stats.max_wpm,
+                    "accuracy": stats.accuracy,
+                    "max_accuracy": stats.max_accuracy,
+                    "games_count": stats.games_count,
+                    "win": stats.win,
+                    "lose": stats.lose,
+                    "draw": stats.draw,
+                    "date": stats.date
+                };
+            
+                res.status(SUCCESS).json(data);
+            } else {
+                next(createError(ERROR, { "error": "username does not exist"} ));
+            }
 
         } catch (err) {
             console.error("Could not obtain userstats ", err);
