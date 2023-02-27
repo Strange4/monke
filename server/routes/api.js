@@ -48,7 +48,7 @@ function getAverage(stat, newStat, games) {
 }
 
 
-router.put(userStat, async (req, res) => {
+router.put(userStat, async (req, res, next) => {
     let name = req.body.username;
     let newWpm = req.body.wpm;
     let newAccuracy = req.body.accuracy;
@@ -57,57 +57,68 @@ router.put(userStat, async (req, res) => {
     let draw = req.body.draw;
 
     if(database.isConnected()){
-        const previousStats = await getUserStats(name);
-        const user = await database.findOne(USER, { username: name })
-        const filter = { user: user.id, id: previousStats.id }
-
-        let update;
-        if (newWpm > previousStats.max_wpm) {
-            update = {
-                "max_wpm": newWpm,
-                "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
-                "max_accuracy": newAccuracy,
-                "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
-                "games_count": previousStats.games_count + 1,
-                "win": previousStats.win + win,
-                "lose": previousStats.lose + lose,
-                "draw": previousStats.draw + draw,
-                "date": Date.now()
-            }
-
-        } else if (newWpm === previousStats.max_wpm && newAccuracy > previousStats.max_accuracy) {
-            update = {
-                "max_wpm": newWpm,
-                "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
-                "max_accuracy": newAccuracy,
-                "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
-                "games_count": previousStats.games_count + 1,
-                "win": previousStats.win + win,
-                "lose": previousStats.lose + lose,
-                "draw": previousStats.draw + draw,
-                "date": Date.now()
-            }
-        } else {
-            // Update average only
-            update = {
-                "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
-                "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
-                "games_count": previousStats.games_count + 1,
-                "win": previousStats.win + win,
-                "lose": previousStats.lose + lose,
-                "draw": previousStats.draw + draw,
-                "date": previousStats.date
-            }
-        }
-        try{
-            userStatSchema.parse(update);
-        } catch (err){
-            next(ERROR, createError( {"error": "stat values do not comply with schema"} ));
-        }
+        const user = await database.findOne(USER, { username: name });
         
-        await database.findOneAndUpdate(USER_STAT, filter, update);
-
-        res.status(SUCCESS).json({message: "Stats updated"});
+        // check if user exists
+        if(user?.id !== undefined){
+            const previousStats = await getUserStats(name);
+            const filter = { user: user.id, id: previousStats.id }
+    
+            let update;
+            if (newWpm > previousStats.max_wpm) {
+                update = {
+                    "max_wpm": newWpm,
+                    "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
+                    "max_accuracy": newAccuracy,
+                    "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
+                    "games_count": previousStats.games_count + 1,
+                    "win": previousStats.win + win,
+                    "lose": previousStats.lose + lose,
+                    "draw": previousStats.draw + draw,
+                    "date": Date.now()
+                }
+    
+            } else if (newWpm === previousStats.max_wpm && newAccuracy > previousStats.max_accuracy) {
+                update = {
+                    "max_wpm": newWpm,
+                    "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
+                    "max_accuracy": newAccuracy,
+                    "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
+                    "games_count": previousStats.games_count + 1,
+                    "win": previousStats.win + win,
+                    "lose": previousStats.lose + lose,
+                    "draw": previousStats.draw + draw,
+                    "date": Date.now()
+                }
+            } else {
+                // Update average only
+                update = {
+                    "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
+                    "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
+                    "games_count": previousStats.games_count + 1,
+                    "win": previousStats.win + win,
+                    "lose": previousStats.lose + lose,
+                    "draw": previousStats.draw + draw,
+                    "date": previousStats.date
+                }
+            }
+    
+            let validSchema;
+            try{
+                userStatSchema.parse(update);
+                validSchema = true;
+            } catch (err){
+                validSchema = false;
+                next(createError(ERROR, {"error": "stat values do not comply with schema"} ));
+            }
+            if(validSchema){
+                await database.findOneAndUpdate(USER_STAT, filter, update);
+                res.status(SUCCESS).json({message: "Stats updated"});
+            }            
+        } else {
+            console.log(user);
+            next(createError(ERROR, {"error": "Username does not exist on database."}));
+        }
     } else {
         next(INTERNAL_SE, { "error": "Database unavailable, try again later."});
     }
@@ -329,7 +340,7 @@ router.get(leaderboard, async (_, res) => {
 
 // middleware for handling errors
 router.use((error, req, res, next) => {
-    console.log(error);
+    // console.log(error);
     res.status(error.status).json( { "error": error.error, "type": error.message } );
 });
 
