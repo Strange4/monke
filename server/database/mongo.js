@@ -91,22 +91,25 @@ class Database {
      */
     async findOne(model, queryOptions){
         let result;
-        // eslint-disable-next-line default-case
-        switch(model){
-        case QUOTE: 
-            result = await Quote.findOne(queryOptions);
-            break;
-        case USER:
-            console.log("querying user");
-            result = await User.findOne(queryOptions);
-            console.log(result);
-            break;
-        case USER_STAT:
-            result = await UserStat.findOne(queryOptions);
-            break;
-        case PIC:
-            result = await Picture.findOne(queryOptions);
+        try{
+            // eslint-disable-next-line default-case
+            switch(model){
+            case QUOTE: 
+                result = await Quote.findOne(queryOptions);
+                break;
+            case USER:
+                result = await User.findOne(queryOptions);
+                break;
+            case USER_STAT:
+                result = await UserStat.findOne(queryOptions);
+                break;
+            case PIC:
+                result = await Picture.findOne(queryOptions);
+            } 
+        } catch (err) {
+            result = { "error": "could not find specified error" };
         }
+        
         return result;
     }
 
