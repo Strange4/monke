@@ -99,7 +99,12 @@ router.put(userStat, async (req, res) => {
                 "date": previousStats.date
             }
         }
-        userStatSchema.parse(update)
+        try{
+            userStatSchema.parse(update);
+        } catch (err){
+            next(ERROR, createError( {"error": "stat values do not comply with schema"} ));
+        }
+        
         await database.findOneAndUpdate(USER_STAT, filter, update);
 
         res.status(SUCCESS).json({message: "Stats updated"});
@@ -135,8 +140,13 @@ router.post(user, async (req, res) => {
                     "picture_url": pictureQuery.url,
                     "email": email
                 });
-
-                userSchema.parse(user);
+                
+                try{
+                    userSchema.parse(user);
+                } catch (err) {
+                    res.status(ERROR, { "error": "values do not comply with user schema"});
+                }
+                
 
                 let userObject = await User.create(user);
                 await userObject.save();
@@ -155,7 +165,11 @@ router.post(user, async (req, res) => {
                     "date": null
                 })
 
-                userStatSchema.parse(stats)
+                try{
+                    userStatSchema.parse(stats);
+                } catch (err){
+                    next(ERROR, {"error": "values does not comply with user stat schema"});
+                }
                 let userStatsObject = await UserStat.create(stats)
                 await userStatsObject.save()
 
