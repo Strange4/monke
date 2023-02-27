@@ -44,7 +44,7 @@ async function postUserStatAPI(url, userStat) {
  * @param {string} cacheKey the key used by react-query to cache the response
  * @param {string} url the url used for the fetch request
  * @param {object?} params the parameters for the fetch request
- * @returns {[JSX.Element?, any]}
+ * @returns {[JSX.Element?, any?]}
  */
 function useFetch(cacheKey, url, params){
     const {data, error, isLoading} = useQuery(cacheKey, async () => {

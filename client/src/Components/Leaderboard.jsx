@@ -9,7 +9,7 @@ import { useFetch } from '../Controller/FetchModule';
 function Leaderboard() {
     const current = new Date();
     const date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
-    const [loadingIndicator, leaderboard] = useFetch("leaderboard", "/api/leaderboard", )
+    const [loadingIndicator, leaderboard] = useFetch("leaderboard", "/api/leaderboard")
     return (
         <div id="leaderboard">
             <h1>Leaderboard</h1>
@@ -35,3 +35,5 @@ function Leaderboard() {
         </div>
     );
 }
+
+export default Leaderboard;

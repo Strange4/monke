@@ -30,7 +30,7 @@ function useGameText(display, setUserDisplayText) {
             newLetter.current = false;
             if(newLetter.letter === newInput[newLetterIndex]){
                 newLetter.type = "right";
-            } else if(newLetter.letter !== " " ) {
+            } else {
                 newLetter.type = "wrong";
             }
         }
