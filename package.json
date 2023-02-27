@@ -1,0 +1,30 @@
+{
+  "name": "monke",
+  "version": "1.0.0",
+  "description": "To make it easy for you to get started with GitLab, here's a list of recommended next steps.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./server/bin/www.js",
+    "build": "cd ./client && npm run build",
+    "install:all": "npm install && concurrently \"cd client && npm install\" \"cd server && npm install\"",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently \"cd client && npm run start\" \"cd server && npm run dev\" --kill-others"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/dawson2223/620-w23/s02/team4/monke.git"
+  },
+  "keywords": [],
+  "author": "Rim Dallali, Andrew Trinh, Katharina Orfanidis, Christopher Hu, Mauricio Murillo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/dawson2223/620-w23/s02/team4/monke/issues"
+  },
+  "homepage": "https://gitlab.com/dawson2223/620-w23/s02/team4/monke#readme",
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  },
+  "dependencies": {
+    "react-icons": "^4.7.1"
+  }
+}

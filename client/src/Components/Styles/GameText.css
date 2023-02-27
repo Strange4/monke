@@ -1,0 +1,48 @@
+:root{
+    --letter-width: 1rem;
+}
+
+div.letterContainer{
+    display: flex;
+    justify-content: center;
+}
+
+span.letter{
+    display: inline-block;
+    color: var(--sub-color);
+    font-size: large;
+    font-weight: bold;
+    width: var(--letter-width);
+    text-align: center;
+    position: relative;
+    height: 1rem;
+    border-bottom: 2px solid transparent;
+}
+
+span.letter.right{
+    color: var(--text-color);
+}
+span.letter.wrong{
+    color: var(--error-color);
+    border-bottom: 2px solid var(--error-color);
+}
+
+span#inputCaret{
+    position: absolute;
+    transition: left 90ms linear;
+    background-color: var(--caret-color);
+    --caret-width: calc(var(--letter-width) / 10);
+    width: var(--caret-width);
+    height: calc(var(--letter-width) * 1.1);
+    left: calc(var(--caret-width) / -2);
+}
+
+
+@keyframes caret-transition{
+    from {
+        left: -100%;
+    }
+    to {
+        left: 0;
+    }
+}
