@@ -10,9 +10,9 @@ const userSchema = z.object({
 
 //user stats validation
 const userStatSchema = z.object({
-    "max_wpm": z.number().nonnegative(),
+    "max_wpm": z.number().nonnegative().optional(),
     "wpm": z.number().nonnegative(),
-    "max_accuracy": z.number().nonnegative(),
+    "max_accuracy": z.number().nonnegative().optional(),
     "accuracy": z.number().nonnegative(),
     "games_count": z.number().int().nonnegative(),
     "win": z.number().int().nonnegative(),
