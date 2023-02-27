@@ -123,16 +123,16 @@ class Database {
         // eslint-disable-next-line default-case
         switch(model){
         case QUOTE: 
-            result = await Quote.findOneAndUpdate(filter, update);
+            await Quote.findOneAndUpdate(filter, update);
             break;
         case USER:
-            result = await User.findOneAndUpdate(filter, update);
+            await User.findOneAndUpdate(filter, update);
             break;
         case USER_STAT:
-            result = await UserStat.findOneAndUpdate(filter, update);
+            await UserStat.findOneAndUpdate(filter, update);
             break;
         case PIC:
-            result = await Picture.findOneAndUpdate(filter, update);
+            await Picture.findOneAndUpdate(filter, update);
         }
     }
 }
