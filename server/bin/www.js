@@ -2,6 +2,11 @@
  * this module imports the app module and starts a local express server
  */
 
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+console.log(__dirname);
 import app from "../routes/app.js";
 import connectToDatabase from "../database/mongo.js";
 import mongoose from "mongoose";
@@ -14,7 +19,9 @@ connectToDatabase();
 
 mongoose.connection.once('open', () =>{
     console.log('Connected to MongoDB');
-    app.use(express.static("../client/build"));
+    const buildPath = path.resolve(__dirname, "..", "..", "client", "build");
+    console.log(buildPath);
+    app.use(express.static(buildPath));
     app.listen(PORT, () => {
         console.log("Server Started on port: http://localhost:" + PORT);
     })
