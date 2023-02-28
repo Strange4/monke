@@ -155,13 +155,14 @@ router.post(user, async (req, res) => {
                 
                 try{
                     userSchema.parse(user);
+                    let userObject = await User.create(user);
+                    await userObject.save();
                 } catch (err) {
                     res.status(ERROR, { "error": "values do not comply with user schema"});
                 }
                 
 
-                let userObject = await User.create(user);
-                await userObject.save();
+
 
                 //Stat creation
                 const stats = new UserStat({
