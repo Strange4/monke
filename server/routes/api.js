@@ -132,81 +132,78 @@ router.put(userStat, async (req, res, next) => {
  */
 router.post(user, async (req, res) => {
     if(database.isConnected()){
-        try {
-            const picName = ["profile_gear", "profile_keyboard", "profile_mac",
-                "profile_user", "profile_pc", "default_user_image"];
-            const name = req.body.username;
-            const email = req.body.email;
-            const picture = req.body.picture;
+        const picName = ["profile_gear", "profile_keyboard", "profile_mac",
+            "profile_user", "profile_pc", "default_user_image"];
+        const name = req.body.username;
+        const email = req.body.email;
+        const picture = req.body.picture;
+        let nameExists = await checkName(name);
+        let emailExists = await checkEmail(email);
 
-            if (await checkName(name) === false 
-            && await checkEmail(email) === false 
-            && picName.includes(picture)){
+        if (nameExists === false 
+        && emailExists === false 
+        && picName.includes(picture)){
                 
-                // Get the link for the picture
-                const pictureQuery = await database.findOne(PIC, {"picture_name": picture});
-
-                // create the user
-                const user = new User({
-                    "username": name,
-                    "picture_url": pictureQuery.url,
-                    "email": email
-                });
+            // Get the link for the picture
+            const pictureQuery = await database.findOne(PIC, {"picture_name": picture});
+            // create the user
+            const user = new User({
+                "username": name,
+                "picture_url": pictureQuery.url,
+                "email": email
+            });
                 
-                try{
-                    userSchema.parse(user);
-                    let userObject = await User.create(user);
-                    await userObject.save();
-                } catch (err) {
-                    res.status(ERROR, { "error": "values do not comply with user schema"});
-                }
-                
+            let userObject;
+            try{
+                userSchema.parse(user);
+                userObject = await User.create(user);
+                await userObject.save();
+            } catch (err) {
+                res.status(ERROR, { "error": "values do not comply with user schema"});
+            }
+            
+            //Stat creation
+            const stats = new UserStat({
+                "user": userObject.id,
+                "max_wpm": 0,
+                "wpm": 0,
+                "max_accuracy": 0,
+                "accuracy": 0,
+                "games_count": 0,
+                "win": 0,
+                "lose": 0,
+                "draw": 0,
+                "date": null
+            })
 
-
-
-                //Stat creation
-                const stats = new UserStat({
-                    "user": userObject.id,
-                    "max_wpm": 0,
-                    "wpm": 0,
-                    "max_accuracy": 0,
-                    "accuracy": 0,
-                    "games_count": 0,
-                    "win": 0,
-                    "lose": 0,
-                    "draw": 0,
-                    "date": null
-                })
-
-                try{
-                    userStatSchema.parse(stats);
-                    let userStatsObject = await UserStat.create(stats)
-                    await userStatsObject.save()
+            try{
+                userStatSchema.parse(stats);
+                let userStatsObject = await UserStat.create(stats)
+                await userStatsObject.save()
     
-                    const message = "User created successfully";
-                    console.log(message);
-                    res.status(SUCCESS).send(message);
-                } catch (err){
-                    next(ERROR, {"error": "values does not comply with user stat schema"});
-                }
-
-            // user not valid
-            } else{
-                if (await checkName(name) === true && await checkEmail(email) === true)
-                    next(ERROR, {"error": "Username and Email Already Taken"});
-                else if (await checkName(name) === true)
-                    next(ERROR, {"error": "Username Already Taken"});
-                else if(await checkEmail(email) === true)
-                    next(ERROR, {"error": "Email Already Taken"});
-                else
-                    next(ERROR, {"error": `Picture Name Invalid | Valid Names: profile_gear, profile_keyboard, profile_mac, profile_user, profile_pc, default_user_image`});
+                const message = "User created successfully";
+                console.log(message);
+                res.status(SUCCESS).send(message);
+            } catch (err){
+                next(ERROR, {"error": "values does not comply with user stat schema"});
             }
 
-        } catch (err) {
-            console.log(err);
-            next(createError(ERROR,
-                { "error": "User could not be created. Please refill the form."})
-            );
+        // user not valid
+        } else{
+            // eslint-disable-next-line no-lonely-if
+            if (nameExists === true && emailExists === true){
+                next(createError(ERROR, {"error": "Username and Email Already Taken"}));
+            } else if (nameExists === true) {
+                next(createError(ERROR, {"error": "Username Already Taken"}));
+            } else if(emailExists === true) {
+                next(createError(ERROR, {"error": "Email Already Taken"}));
+            } else {
+                next(createError(
+                    ERROR,
+                    // eslint-disable-next-line max-len
+                    {"error": `Picture Name Invalid | Valid Names: profile_gear, profile_keyboard, profile_mac, profile_user, profile_pc, default_user_image`}
+                ));
+            }
         }
     } else{
         next(createError(INTERNAL_SE, { "error": "Database unavailable, try again later."}));
