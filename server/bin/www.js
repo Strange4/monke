@@ -20,7 +20,6 @@ connectToDatabase();
 mongoose.connection.once('open', () =>{
     console.log('Connected to MongoDB');
     const buildPath = path.resolve(__dirname, "..", "..", "client", "build");
-    console.log(buildPath);
     app.use(express.static(buildPath));
     app.listen(PORT, () => {
         console.log("Server Started on port: http://localhost:" + PORT);

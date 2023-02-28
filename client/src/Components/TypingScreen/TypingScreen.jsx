@@ -6,6 +6,7 @@ import GameText from '../GameText';
 import Chronometer from './Chronometer';
 import { useChronometer } from './Chronometer';
 import SoloGameResult from './SoloGameResult';
+import { useQuery } from 'react-query';
 
 const allShiftKeys = keyboardKeys.english.upper;
 const allRegKeys = keyboardKeys.english.lower;
@@ -14,14 +15,21 @@ const allRegKeys = keyboardKeys.english.lower;
  * @returns {ReactElement}
  */
 function TypingScreen() {
-    const textToDisplay = "Lorem ipsum dolor sit amet consectetur adipisicing elit.";
+    
+    useQuery("textToDisplay", async () => {
+        return (await (await fetch("/api/quote")).json()).body;
+    }, {onSuccess: (quote) => {
+        setUserDisplay(getDefaultUserDisplay(quote));
+        setTextToDisplay(quote);
+    }});
+    const [textToDisplay, setTextToDisplay] = useState("lorem ipsum baby");
     const [keyboard, setKeyboard] = useState(mapKeyToKeyboard(allRegKeys));
     const [displayTime, setDisplayTime] = useState(0);
     const [displayResults, setDisplayResults] = useState(false);
     const { startTimer, stopTimer, resetTimer, timer } = useChronometer(setDisplayTime);
 
     // there we don't user the setter because modifying the state directly is faster
-    const [userDisplay,] = useState(getDefaultUserDisplay(textToDisplay));
+    const [userDisplay, setUserDisplay] = useState(getDefaultUserDisplay(textToDisplay));
     const textContainerRef = useRef();
 
     function handleGameEnd(){
@@ -55,19 +63,6 @@ function TypingScreen() {
             letter.current = false;
             letter.type = "none";
         });
-    }
-
-    /**
-     * Cleans the state of the virtual keyboard and marks each key as unpressed.
-     */
-    function cleanVirtualKeyboard() {
-        const newKeyboard = keyboard.slice();
-        newKeyboard.forEach(row => {
-            row.forEach(key => {
-                key.isPressed = false;
-            });
-        });
-        setKeyboard(newKeyboard);
     }
 
     /**
@@ -115,7 +110,6 @@ function TypingScreen() {
     
 
     return (
-        
         <div className='vertical-center'>
             <Chronometer seconds={displayTime}/>
             <GameText display={userDisplay} />
