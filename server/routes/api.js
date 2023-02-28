@@ -130,7 +130,7 @@ router.put(userStat, async (req, res, next) => {
  * Post endpoint that creates User containing
  * username and temporary profileURL
  */
-router.post(user, async (req, res) => {
+router.post(user, async (req, res, next) => {
     if(database.isConnected()){
         const picName = ["profile_gear", "profile_keyboard", "profile_mac",
             "profile_user", "profile_pc", "default_user_image"];
@@ -324,8 +324,8 @@ function sortRank(users) {
  * Get endpoint that returns a hardcoded json object containing
  * leaderboard info such as rank, wpm, username and temporary profileURL
  */
-router.get(leaderboard, async (_, res) => {
-    try {
+router.get(leaderboard, async (_, res, next) => {
+    if(database.isConnected()){
         const stats = [];
         const users = await database.find(USER);
         for (const user of users){
@@ -338,8 +338,8 @@ router.get(leaderboard, async (_, res) => {
             });
         }
         res.status(SUCCESS).json(sortRank(stats));
-    } catch (err){
-        res.status(INTERNAL_SE).json( { "error": "Unable to retrieve leaderboard data."} );
+    } else {
+        next(createError(INTERNAL_SE, { "error": "Unable to retrieve leaderboard data."} ));
     }
 });
 
