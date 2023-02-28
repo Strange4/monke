@@ -1,4 +1,3 @@
-import { useState, useCallback } from "react";
 import { useQuery } from "react-query";
 import Spinner from "../Components/Spinner";
 
@@ -55,13 +54,13 @@ function useFetch(cacheKey, url, params){
         return await transformData(response);
     });
     if(isLoading){
-        return [<Spinner key="spinner"/>, data];
+        return [<Spinner key="spinner"/>, undefined];
     }
     if(error){
         return (
             [<div key="spinner">
                 <h1>There was an error contacting the server. Please try again later</h1>
-            </div>, data]
+            </div>, undefined]
         );
     }
     return [undefined, data];
