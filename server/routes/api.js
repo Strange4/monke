@@ -164,12 +164,9 @@ router.put(userStat, async (req, res) => {
 //----------------change all query to body when done testing
 router.get(user, async (req, res) => {
     try{
-        //----------------change these 2 to get from the email from google.
-        const name = req.query.name;
-        const pic = req.query.pic;
-
-
-        const email = req.query.email;
+        const name = req.body.name;
+        const pic = req.body.picture;
+        const email = req.body.email;
         let user = await User.findOne({email: email})
      
         // Create the user.
