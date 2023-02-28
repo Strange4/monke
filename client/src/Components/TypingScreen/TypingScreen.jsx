@@ -5,7 +5,7 @@ import keyboardKeys from "../../Data/keyboard_keys.json";
 import GameText from '../GameText';
 import Chronometer from './Chronometer';
 import { useChronometer } from './Chronometer';
-// import SoloGameResult from './SoloGameResult';
+import SoloGameResult from './SoloGameResult';
 
 const allShiftKeys = keyboardKeys.english.upper;
 const allRegKeys = keyboardKeys.english.lower;
@@ -17,11 +17,24 @@ function TypingScreen() {
     const textToDisplay = "Lorem ipsum dolor sit amet consectetur adipisicing elit.";
     const [keyboard, setKeyboard] = useState(mapKeyToKeyboard(allRegKeys));
     const [displayTime, setDisplayTime] = useState(0);
-    const { startTimer, stopTimer } = useChronometer(setDisplayTime);
+    const [displayResults, setDisplayResults] = useState(false);
+    const { startTimer, stopTimer, resetTimer, timer } = useChronometer(setDisplayTime);
 
     // there we don't user the setter because modifying the state directly is faster
     const [userDisplay,] = useState(getDefaultUserDisplay(textToDisplay));
     const textContainerRef = useRef();
+
+    function handleGameEnd(){
+        stopTimer();
+        setDisplayResults(true);
+    }
+    
+    function resetGame(){
+        setDisplayResults(false);
+        resetTimer();
+        textContainerRef.current.value = "";
+        clearDisplay();
+    }
 
     /**
      * Changes the game state according to the current text progress.
@@ -31,15 +44,17 @@ function TypingScreen() {
         const currentText = e.target.value;
         if (currentText.length === 1) {
             startTimer();
-            // gameTimer.start();
-        } else if (textToDisplay.length === currentText.length && gameTimer.isStarted()) {
-            stopTimer();
-            // todo: display game results and reset the timer
-            // gameTimer.stop();
-            textContainerRef.current.value = "";
-            cleanVirtualKeyboard();
+        } else if (textToDisplay.length === currentText.length) {
+            handleGameEnd();
         }
         renderLetters(currentText, userDisplay);
+    }
+
+    function clearDisplay(){
+        userDisplay.forEach(letter => {
+            letter.current = false;
+            letter.type = "none";
+        });
     }
 
     /**
@@ -105,16 +120,13 @@ function TypingScreen() {
             <Chronometer seconds={displayTime}/>
             <GameText display={userDisplay} />
             <VirtualKeyboard currentKeys={keyboard} />
-            {/* <SoloGameResult
-                setGameState={setGameState}
-                gameState={gameState}
-                userDisplay={userDisplay}
-                timer={timer}
-                setTimer={setTimer}
-                setDisplayTime={setDisplayTime}
-                textRef={textContainerRef}
-                textDisplay={textToDisplay}
-            /> */}
+            <SoloGameResult
+                isOpen={displayResults}
+                displayText={userDisplay}
+                timer={timer.current}
+                originalText={textToDisplay}
+                closeWindow={resetGame}
+            />
             <input type="text" 
                 className="text-container"
                 ref={textContainerRef}

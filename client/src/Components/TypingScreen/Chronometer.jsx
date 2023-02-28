@@ -22,7 +22,6 @@ function useChronometer(setSeconds){
     const [timerState, setTimerState] = useState("stopped");
     const intervalID = useRef();
     useEffect(() => {
-        console.log(timerState);
         if(timerState === "started" && !timer.current.isStarted()){
             timer.current.start();
             intervalID.current = setInterval(() => {
@@ -58,7 +57,7 @@ function useChronometer(setSeconds){
         setTimerState("stopped");
     }
 
-    return {startTimer, stopTimer, resetTimer}
+    return {startTimer, stopTimer, resetTimer, timer }
 }
 
 export default Chronometer;

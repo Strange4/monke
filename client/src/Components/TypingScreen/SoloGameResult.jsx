@@ -1,93 +1,41 @@
 import './Layout/SoloGameResult.css';
 import { useEffect, useState } from 'react';
 import Popup from "reactjs-popup";
-import Timer from "timer-machine";
 import * as FetchModule from '../../Controller/FetchModule';
 
-function SoloGameResult(props) {
+function SoloGameResult({isOpen, closeWindow, timer, originalText, displayText}) {
     const [userStats, setUserStats] = useState({ "time": 0, "wpm": 0, "accuracy": 0 });
-    const [popup, setPopup] = useState(false);
-    const updateRate = 1000;
-
-    useEffect(() => {
-        handleTimer();
-    }, [props.gameState]);
-
-    /**
-     * Handles when the timer should start, stop & reset
-     * @param {*} newInput 
-     */
-    function handleTimer() {
-        if (props.gameState === "reset") {
-            setupTimer();
-        } else if (props.gameState === "started") {
-            props.timer.start();
-        } else if (props.gameState === "stopped") {
-            props.timer.stop();
-            props.setGameState("reset");
+    useEffect(()=> {
+        if(isOpen === true){
+            const results = computeResults(timer.time().s, originalText, displayText);
+            setUserStats(results);
+            postUserStats(results);
         }
-    }
-
-    /**
-     * Sets up the different listeners for the timer (start, stop and time)
-     * Resets the solo game on stop and sends data to api for posting
-     */
-    function setupTimer() {
-        let interval;
-        props.timer.on('start', function () {
-            props.setDisplayTime({ "seconds": Math.floor(props.timer.time() / updateRate) });
-            interval = setInterval(props.timer.emitTime.bind(props.timer), updateRate);
-            setPopup(false);
-        });
-        props.timer.on('stop', function () {
-            props.setDisplayTime({ "seconds": Math.floor(props.timer.time() / updateRate) });
-            props.setTimer(new Timer());
-            clearInterval(interval);
-            computeResults();
-            setPopup(true);
-            cleanTypingScreen()
-        });
-        props.timer.on('time', function (time) {
-            props.setDisplayTime({ "seconds": Math.floor(time / updateRate) });
-        });
-    }
-
-    /**
-     * Resets the timer and text, sets the text to empty and unfocuses 
-     * the text container in order to prepare for the next game.
-     */
-    function cleanTypingScreen() {
-        props.textRef.current.value = "";
-        props.textRef.current.blur();
-        props.setDisplayTime({ "seconds": 0 });
-        props.userDisplay.forEach(letter => {
-            letter.type = "none"
-        });
-    }
+    }, [isOpen]);
 
     /**
      * Compute the results for the solo game upon end and post them
      */
-    function computeResults() {
-        let nbWords = props.textDisplay.split(" ").length;
-        let minutes = props.timer.time() / 60000;
+    function computeResults(numberOfSeconds, text, typedText) {
+        let nbWords = text.split(" ").length;
+        let minutes = numberOfSeconds / 60;
         let wpm = nbWords / minutes;
         let result = {
-            "time": Math.round(props.timer.time() / 1000 * 100) / 100,
-            "wpm": Math.round(wpm * 100) / 100,
-            "accuracy": Math.round(computeAccuracy() * 100) / 100
+            time: Math.round(numberOfSeconds * 100) / 100,
+            wpm: Math.round(wpm * 100) / 100,
+            accuracy: Math.round(computeAccuracy(typedText) * 100) / 100
         }
-        postUserStats(result);
+        return result;
     }
 
     /**
      * computes the accuracy and returns it to the results computation
      * @returns {number}
      */
-    function computeAccuracy() {
+    function computeAccuracy(typedText) {
         let wrongCount = 0;
         let rightCount = 0;
-        props.userDisplay.forEach(letter => {
+        typedText.forEach(letter => {
             if (letter.type === "right") {
                 ++rightCount;
             } else if (letter.type === "wrong") {
@@ -110,18 +58,17 @@ function SoloGameResult(props) {
     function postUserStats(result) {
         setUserStats(result);
         let userStats = {
-            "username": "john",
-            "wpm": result.wpm,
-            "accuracy": result.accuracy,
-            "win": 0,
-            "lose": 0,
-            "draw": 0
+            username: "john",
+            wpm: result.wpm,
+            accuracy: result.accuracy,
+            win: 0,
+            lose: 0,
+            draw: 0
         };
         FetchModule.postUserStatAPI("/api/user_stat", userStats);
     }
-
     return (
-        <Popup open={popup} position="center" modal>
+        <Popup open={isOpen} position="center" onClose={closeWindow} modal>
             <div id="solo-game-result">
                 <h1>END Solo Game Popup</h1>
                 <p>time: {userStats.time} seconds </p>
