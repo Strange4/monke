@@ -1,24 +1,16 @@
 import "./Layout/VirtualKey.css";
-import { useRef, useEffect } from "react";
 
 /**
  * Displays a single virtual key with its value
- * @param {*} props 
+ * @param {{letter: string; isPressed: boolean; }} props 
  * @returns {ReactElement}
  */
-function VirtualKey(props) {
-
-    const keyRef = useRef();
-
-    useEffect(() => {
-        props.mapKeys(props.keyCode, keyRef);
-    }, [props.keyCode]);
+function VirtualKey({keyValue, classValue, isPressed}) {
 
     return (
         <div
-            ref={keyRef}
-            className={`keyboard-key ${props.classValue}`}
-            id={props.keyCode}> {props.keyValue}
+            className={`keyboard-key ${classValue} ${isPressed ? "pressed" : undefined}`}>
+            {keyValue}
         </div>
     );
 }

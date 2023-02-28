@@ -1,43 +1,28 @@
 import './Layout/TypingScreen.css';
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import VirtualKeyboard from './VirtualKeyboard';
-import TextContainer from './TextContainer';
 import keyboardKeys from "../../Data/keyboard_keys.json";
-import useGameText from '../GameText';
+import GameText from '../GameText';
 import Chronometer from './Chronometer';
 import Timer from "timer-machine";
 import SoloGameResult from './SoloGameResult';
-import { useFetch } from '../../Controller/FetchModule';
 
+const allShiftKeys = keyboardKeys.english.upper;
+const allRegKeys = keyboardKeys.english.lower;
 /**
  * Container for the Textarea and the virtual keyboard
  * @returns {ReactElement}
  */
 function TypingScreen() {
-    // const textToDisplay = "Lorem ipsum dolor sit amet consectetur adipisicing elit.";
-    const [loadingSpinner, textToDisplay] = useFetch("gameQuote", "/api/quote");
-    // const textToDisplay = undefined;
-    const allShiftKeys = keyboardKeys.english.upper;
-    const allRegKeys = keyboardKeys.english.lower;
-    const [keyboard, setKeyboard] = useState(allRegKeys);
+    const textToDisplay = "Lorem ipsum dolor sit amet consectetur adipisicing elit.";
+    const [keyboard, setKeyboard] = useState(mapKeyToKeyboard(allRegKeys));
     const [gameState, setGameState] = useState("reset");
     const [timer, setTimer] = useState(new Timer());
     const [displayTime, setDisplayTime] = useState({ "seconds": 0 });
-    const [userDisplay, setUserDisplayText] = useState(
-        getDefaultUserDisplay(textToDisplay ? textToDisplay.body : undefined));
-    const [GameText, updateGameText] = useGameText(userDisplay, setUserDisplayText);
-    let textContainerRef = useRef();
-    const keyRefs = useRef(new Map());
 
-    /**
-     * maps each letter code to its virtual key on the keyboard
-     * @param {*} letter 
-     * @param {*} virtualKey 
-     */
-    function mapKeys(letter, virtualKey) {
-        keyRefs.current.set(letter, virtualKey);
-    }
-
+    // there we don't user the setter because modifying the state directly is faster
+    const [userDisplay,] = useState(getDefaultUserDisplay(textToDisplay));
+    const textContainerRef = useRef();
     /**
      * Changes the game state according to the current text progress.
      * @param {InputEvent} e 
@@ -50,89 +35,93 @@ function TypingScreen() {
             setGameState("stopped");
             cleanVirtualKeyboard();
         }
-        updateGameText(currentText);
-    }
-
-    /**
-     * Get's the default user display filler with letter object with type none.
-     * @returns {Object[]}
-     */
-    function getDefaultUserDisplay(stringToDisplay) {
-        if(!stringToDisplay){
-            return [];
-        }
-        console.log(stringToDisplay)
-        const display = Array.from(stringToDisplay).map((letter) => {
-            // the type of a displayed letter can only be right | wrong | none
-            return {
-                letter,
-                type: "none",
-                current: false
-            }
-        });
-
-        display[0].current = true;
-
-        return display;
+        renderLetters(currentText, userDisplay);
     }
 
     /**
      * Cleans the state of the virtual keyboard and marks each key as unpressed.
      */
     function cleanVirtualKeyboard() {
-        keyRefs.current.forEach(key => {
-            key.current.classList.remove("pressed");
-        });
+        const newKeyboard = keyboard.slice();
+        newKeyboard.forEach(row => {
+            row.forEach(key => {
+                key.isPressed = false;
+            })
+        })
+        setKeyboard(newKeyboard);
     }
 
-    // function handleKeyUp(e){
+    /**
+     * handles the key up event and sets keyboard
+     * according to shift and caps states.
+     * @param {Event} e 
+     */
+    function handlekeyUp(e) {
+        const keyValue = e.nativeEvent.key;
+        let newKeyboard = keyboard.slice();
+        if (keyValue === "Shift") {
+            newKeyboard = mapKeyToKeyboard(allRegKeys, newKeyboard);
+        }
+        newKeyboard.forEach(row => {
+            row.forEach(key => {
+                if(key.keyValue === keyValue){
+                    key.isPressed = false;
+                }
+            });
+        });
+        setKeyboard(newKeyboard);
+    }
 
-    // }
-
-    // function handleKeyDown(e){
-        
-    // }
+    /**
+     * handles the key down event and sets keyboard
+     * according to shift and caps states.
+     * @param {Event} e 
+     */
+    function handleKeyDown(e) {
+        const keyValue = e.nativeEvent.key;
+        let newKeyboard = keyboard.slice();
+        if (keyValue === "Shift") {
+            newKeyboard = mapKeyToKeyboard(allShiftKeys, newKeyboard);
+        }
+        newKeyboard.forEach(row => {
+            row.forEach(key => {
+                if(key.keyValue === keyValue){
+                    key.isPressed = true;
+                }
+            });
+        });
+        setKeyboard(newKeyboard);
+    }
 
     
 
     return (
         
         <div className='vertical-center'>
-            {
-                loadingSpinner || 
-                <>
-                    <Chronometer seconds={displayTime.seconds} state={displayTime.state} />
-                    {GameText}
-                    <TextContainer
-                        textRef={textContainerRef}
-                        keyRefs={keyRefs}
-                        currentKeys={keyboard}
-                        allRegKeys={allRegKeys}
-                        allShiftKeys={allShiftKeys}
-                        setKeyboard={setKeyboard}
-                        onChangeText={onChangeText}
-                    />
-                    <VirtualKeyboard currentKeys={keyboard} mapKeys={mapKeys} />
-                    <SoloGameResult
-                        setGameState={setGameState}
-                        gameState={gameState}
-                        userDisplay={userDisplay}
-                        timer={timer}
-                        setTimer={setTimer}
-                        setDisplayTime={setDisplayTime}
-                        textRef={textContainerRef}
-                        textDisplay={textToDisplay}
-                    />
-                </>
-            }
-            {/* <input type="text" 
+            <Chronometer seconds={displayTime.seconds} state={displayTime.state} />
+            <GameText display={userDisplay} />
+            <VirtualKeyboard currentKeys={keyboard} />
+            {/* <SoloGameResult
+                setGameState={setGameState}
+                gameState={gameState}
+                userDisplay={userDisplay}
+                timer={timer}
+                setTimer={setTimer}
+                setDisplayTime={setDisplayTime}
+                textRef={textContainerRef}
+                textDisplay={textToDisplay}
+            /> */}
+            <input type="text" 
                 className="text-container"
+                ref={textContainerRef}
+                onChange={onChangeText}
+                onKeyDown={handleKeyDown}
+                onKeyUp={handlekeyUp}
                 onPaste={preventDefaultBehavior}
                 onDrag={preventDefaultBehavior}
                 onDrop={preventDefaultBehavior}
                 onCopy={preventDefaultBehavior}
-                onChange={onChangeText}
-            /> */}
+            />
         </div>
     );
 }
@@ -141,8 +130,90 @@ function TypingScreen() {
  * prevents the deafult behavior from an event
  * @param {Event} e the event to prevent
  */
-// function preventDefaultBehavior(e){
-//     e.preventDefault();
-// }
+function preventDefaultBehavior(e){
+    e.preventDefault();
+}
+
+
+/**
+ * changes the type (right | wrong | none) of the display of letters based on the user input
+ * @param {string} newInput the new input that has been changed by the user
+ * @param {{ letter: string; type: string; current: boolean; }[]} display the current display state
+ */
+function renderLetters(newInput, display) {
+    const newLetterIndex = newInput.length - 1;
+    const newDisplay = display;
+
+    // are are setting all the next letters that could posibly be deleted to none.
+    for (let i = newLetterIndex + 1; i < newDisplay.length; i++) {
+        newDisplay[i].type = "none";
+        newDisplay[i].current = false;
+    }
+    
+    const inputIsEmpty = newInput.length === 0;
+    const inputIsDone = newInput.length > newDisplay.length;
+    // if the input is done don't do anything
+    if(inputIsDone){
+        return display;
+    }
+    const nextLetter = newDisplay[newLetterIndex + 1];
+    if(nextLetter){
+        nextLetter.current = true;
+    }
+
+    if(!inputIsEmpty){
+        const newLetter = newDisplay[newLetterIndex];
+        newLetter.current = false;
+        if(newLetter.letter === newInput[newLetterIndex]){
+            newLetter.type = "right";
+        } else {
+            newLetter.type = "wrong";
+        }
+    }
+    return newDisplay;
+}
+
+/**
+ * Get's the default user display filler with letter object with type none.
+ * @param {string} stringToDisplay the original string that needs to be transformed
+ */
+function getDefaultUserDisplay(stringToDisplay) {
+    if(!stringToDisplay){
+        return [];
+    }
+    const display = Array.from(stringToDisplay).map((letter) => {
+        // the type of a displayed letter can only be right | wrong | none
+        return {
+            letter,
+            type: "none",
+            current: false
+        }
+    });
+    display[0].current = true;
+    return display;
+}
+
+/**
+ * maps keyboard keys to an array of pressed and unpressed keys
+ * if a prevous state if defined, maps the new keys to the previous state (pressed or unpressed)
+ * @param {string[][]} keys the keys that need to me mapped
+ * @param {{ keyValue: string; isPressed: boolean; }[][]?} previousState
+ */
+function mapKeyToKeyboard(keys, previousState){
+    return keys.map((row, rowIndex) => {
+        return row.map((keyValue, keyValueIndex) => {
+            if(previousState){
+                return {
+                    keyValue,
+                    isPressed: previousState[rowIndex][keyValueIndex].isPressed
+                }
+            }
+            return {
+                keyValue,
+                isPressed: false
+            }
+        })
+    })
+}
 
 export default TypingScreen;

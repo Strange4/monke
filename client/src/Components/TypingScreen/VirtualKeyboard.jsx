@@ -1,8 +1,11 @@
-import { cleanUpLetter } from "../../Controller/ConversionHelper";
 import VirtualKey from "./VirtualKey";
 
-function VirtualKeyboard(props) {
-
+/**
+ * 
+ * @param {{currentKeys: {letter: string; isPressed: boolean; }[][]}} param
+ * @returns 
+ */
+function VirtualKeyboard({currentKeys}) {
     function getKeyType(key) {
         switch (key) {
         case " ":
@@ -16,16 +19,15 @@ function VirtualKeyboard(props) {
     
     return (
         <div className="keyboard-container vertical">
-            {props.currentKeys.map((row, i) => {
+            {currentKeys.map((row, i) => {
                 return (
                     <div key={i} className="horizontal">
                         {row.map((key, i) =>
                             <VirtualKey
-                                mapKeys={props.mapKeys}
                                 key={i}
-                                classValue={`${getKeyType(key)}`}
-                                keyValue={key}
-                                keyCode={cleanUpLetter(key)} />
+                                isPressed={key.isPressed}
+                                keyValue={key.keyValue}
+                                classValue={`${getKeyType(key.keyValue)}`}/>
                         )}
                     </div>
                 );
