@@ -1,8 +1,7 @@
-import VirtualKey from "./VirtualKey";
-
+import './Layout/VirtualKey.css'
 /**
  * 
- * @param {{currentKeys: {letter: string; isPressed: boolean; }[][]}} param
+ * @param {{currentKeys: {keyValue: string; isPressed: boolean; }[][]}} param
  * @returns 
  */
 function VirtualKeyboard({currentKeys}) {
@@ -23,11 +22,15 @@ function VirtualKeyboard({currentKeys}) {
                 return (
                     <div key={i} className="horizontal">
                         {row.map((key, i) =>
-                            <VirtualKey
-                                key={i}
-                                isPressed={key.isPressed}
-                                keyValue={key.keyValue}
-                                classValue={`${getKeyType(key.keyValue)}`}/>
+                            <div key={i}
+                                className={
+                                    `keyboard-key
+                                    ${getKeyType(key.keyValue)}
+                                    ${key.isPressed ? "pressed" : undefined}`
+                                }
+                            >
+                                {key.keyValue}
+                            </div>
                         )}
                     </div>
                 );
