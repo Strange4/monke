@@ -1,17 +1,14 @@
 import * as express from "express";
-
 import { OAuth2Client } from 'google-auth-library';
+import fetch from 'node-fetch'
 import session from 'express-session'
 import dotenv from 'dotenv';
 dotenv.config();
 
+
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const router = express.Router();
 router.use(express.json());
-
-//temp until we connect the database to users
-const users = new Array();
-
 
 //middleware to verify the session
 function isAuthenticated(req, res, next) {
@@ -46,19 +43,12 @@ router.post("/auth", async (req, res) => {
         //unauthorized (token invalid)
         return res.sendStatus(401);
     }
-    const user = { 
-        "name": ticket.getPayload().name, 
-        "email": ticket.getPayload().email, 
-        "picture": ticket.getPayload().picture 
+    const user = {
+        "username": ticket.getPayload().name,
+        "email": ticket.getPayload().email,
+        "pic": ticket.getPayload().picture
     };
-    const existsAlready = users.findIndex(element => element.email === ticket.getPayload().email);
-    if (existsAlready < 0) {
-        //insert
-        users.push(user);
-    } else {
-        //update
-        users[existsAlready] = user;
-    }
+    
     //create a session, using email as the unique identifier
     req.session.regenerate(function (err) {
         if (err) {
@@ -85,10 +75,10 @@ router.get("/logout", isAuthenticated, function (req, res) {
         //callback invoked after destroy returns
         if (err) {
             //server error, couldn't destroy the session
-            return res.sendStatus(500); 
+            return res.sendStatus(500);
         }
         //clear the cookie
-        res.clearCookie('id'); 
+        res.clearCookie('id');
         res.sendStatus(200);
     });
 });

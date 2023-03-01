@@ -132,11 +132,11 @@ router.put(userStat, async (req, res, next) => {
  * Get endpoint that  json object containing the user
  * and their game statistics
  */
-router.get(user, async (req, res, next) => {
+router.post(user, async (req, res, next) => {
     if (database.isConnected()) {
-        const name = req.body.name;
-        const pic = req.body.picture;
-        const email = req.body.email;
+        const name = req.body.user.username;
+        const pic = req.body.user.pic;
+        const email = req.body.user.email;
         let user = await User.findOne({ email: email })
 
         // Create the user.
@@ -168,7 +168,6 @@ router.get(user, async (req, res, next) => {
                 "draw": 0,
                 "date": null
             })
-
             try {
                 userStatSchema.parse(stats)
                 let userStatsObject = await UserStat.create(stats)
@@ -196,7 +195,6 @@ router.get(user, async (req, res, next) => {
             "draw": stats.draw,
             "date": stats.date
         };
-
         res.status(SUCCESS).json(data);
     } else {
         next(createError(INTERNAL_SE, { "error": "Database unavailable, try again later." }));
