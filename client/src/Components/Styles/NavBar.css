@@ -1,6 +1,6 @@
 #navbar {
     display: flex;
-    justify-content: space-between;
+    /* justify-content: space-between; */
     width: 90%;
     margin: auto;
     margin-top: 20px;
@@ -12,6 +12,17 @@
   list-style-type: none;
   cursor: pointer;
   font-size: 1.5em;
+  color: var(--sub-color);
+}
+
+#nav-sub {
+    display: flex;
+    width: 300px;
+    justify-content: space-between;
+}
+
+#nav-sub li {
+    display: flex;
 }
 
 #navbar li:hover, #navbar a:hover {
@@ -23,5 +34,18 @@ a:link {
 }
 
 a:visited {
-    color: #fff;
+    color: var(--sub-color);
+}
+
+#logo {
+    width: 300px;
+}
+
+#leaderboard-icon, #profile-icon {
+    width: 50px;
+    height: 50px
+}
+
+#profile-icon {
+    justify-content: right;
 }
