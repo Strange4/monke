@@ -1,10 +1,8 @@
 import NavBar from "../Components/NavBar";
 import "./Styles/Profile.css";
-import { RiImageEditFill } from "react-icons/ri";
 import AuthContext from "../Context/AuthContext";
 import { useContext, useEffect, useState } from "react";
 import * as FetchModule from "../Controller/FetchModule"
-import "./Styles/Profile.css"
 import { RiImageEditFill, RiEdit2Fill } from "react-icons/ri";
 
 const Profile = (props) => {
