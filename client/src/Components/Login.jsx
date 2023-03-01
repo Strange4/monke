@@ -12,7 +12,7 @@ function Login(props) {
         const res = await fetch("/authentication/auth", {
             method: "POST",
             body: JSON.stringify({ token: googleData.credential }),
-            headers: { "Content-Type": "application/json" }
+            headers: { 'Accept': 'application/json', "Content-Type": "application/json" },
         });
         
         const data = await res.json();

@@ -33,7 +33,7 @@ const Profile = (props) => {
             console.log(auth.userEmail)
             let data = await fetch("/api/user", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { 'Accept': 'application/json', "Content-Type": "application/json" },
                 body: JSON.stringify({ "user": { "email": auth.userEmail } })
             });
             setUserData(await data.json())

@@ -39,17 +39,18 @@ async function getQuote(difficultyVal) {
  * @param {string} name, username of the new User. 
  * @returns boolean depending on if the username exists or not. 
  */
-async function getUserStats(name) {
+async function getUserStats(email) {
     try {
-        const databaseUser = await db.findOne(USER, { username: name });
+        const databaseUser = await db.findOne(USER, { email: email });
         if (databaseUser !== null) {
             const stats = await db.findOne(USER_STAT, { user: databaseUser.id });
             return stats;
         } else {
-            console.log(`Could not find user with name: ${name}`);
+            console.log(`Could not find user with email: ${email}`);
         }
     } catch (err) {
         console.error(err);
+        
     }
 }
 

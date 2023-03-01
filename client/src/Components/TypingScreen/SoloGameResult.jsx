@@ -13,6 +13,7 @@ function SoloGameResult(props) {
     const auth = useContext(AuthContext);
     const [userData, setUserData] = useState({
         username: "",
+        email: auth.userEmail,
         image:
         "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
         wpm: 0,
@@ -27,10 +28,9 @@ function SoloGameResult(props) {
 
     useEffect(() => {
         (async () => {
-            console.log(auth.userEmail)
             let data = await fetch("/api/user", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { 'Accept': 'application/json', "Content-Type": "application/json" },
                 body: JSON.stringify({ "user": { "email": auth.userEmail } })
             });
             setUserData(await data.json())
@@ -41,7 +41,7 @@ function SoloGameResult(props) {
         handleTimer();
     }, [props.gameState]);
 
-    /**
+    /** 
      * Handles when the timer should start, stop & reset
      * @param {*} newInput 
      */
@@ -142,15 +142,16 @@ function SoloGameResult(props) {
         let data = await fetch("/api/user", {
             method: "POST",
             body: JSON.stringify({ "user": { "email": auth.userEmail } }),
-            headers: { "Content-Type": "application/json" }
+            headers: { 'Accept': 'application/json', "Content-Type": "application/json" },
         });
         console.log(data)
 
         setUserStats(result);
-        console.log(auth)
+        console.log(auth.userEmail)
         let userStats = {
             "username": userData.username,
-            "wpm": result.wpm,
+            "email": auth.userEmail,
+            "wpm": result.wpm, 
             "accuracy": result.accuracy,
             "win": 0,
             "lose": 0,
@@ -159,7 +160,7 @@ function SoloGameResult(props) {
         FetchModule.postUserStatAPI("/api/user_stat", userStats);
     }
 
-    return (
+    return ( 
         <Popup open={popup} position="center" modal>
             <div id="solo-game-result">
                 <h1>END Solo Game Popup</h1>

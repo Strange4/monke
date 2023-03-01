@@ -53,7 +53,7 @@ function getAverage(stat, newStat, games) {
 
 router.put(userStat, async (req, res, next) => {
     console.log(req.body)
-    let name = req.body.username;
+    let email = req.body.username;
     let newWpm = req.body.wpm;
     let newAccuracy = req.body.accuracy;
     let win = req.body.win;
@@ -61,12 +61,14 @@ router.put(userStat, async (req, res, next) => {
     let draw = req.body.draw;
 
     if (database.isConnected()) {
-        const user = await database.findOne(USER, { username: name });
+        // user = await User.findOne({ email: email });
+        const user = await User.findOne({email: email});
 
         // check if user exists
+        console.log("HE")
         console.log(user)
         if (user?.id !== undefined) {
-            const previousStats = await getUserStats(name);
+            const previousStats = await getUserStats(email);
             const filter = { user: user.id, id: previousStats.id }
 
             let update;
@@ -125,7 +127,7 @@ router.put(userStat, async (req, res, next) => {
             await UserStat.findOneAndUpdate(filter, update);
             res.status(SUCCESS).json({ message: "Stats updated" })
         } else {
-            next(createError(ERROR, { "error": "Username does not exist on database." }));
+            next(createError(ERROR, { "error": "Username does not exist on database. " }));
         }
     } else {
         next(INTERNAL_SE, { "error": "Database unavailable, try again later." });
@@ -186,7 +188,7 @@ router.post(user, async (req, res, next) => {
         console.log("HERE")
         console.log(user)
         // query for user's game statistics
-        const stats = await getUserStats(user.username);
+        const stats = await getUserStats(user.email);
 
         let data = {
             "username": user.username,
