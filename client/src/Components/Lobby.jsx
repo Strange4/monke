@@ -1,4 +1,5 @@
 import './Styles/Lobby.css';
+import './Styles/Popup.css'
 
 /**
  * Displays a Popup for the lobby

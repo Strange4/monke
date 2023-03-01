@@ -4,6 +4,8 @@ import { RiImageEditFill } from "react-icons/ri";
 import AuthContext from "../Context/AuthContext";
 import { useContext, useEffect, useState } from "react";
 import * as FetchModule from "../Controller/FetchModule"
+import "./Styles/Profile.css"
+import { RiImageEditFill, RiEdit2Fill } from "react-icons/ri";
 
 const Profile = (props) => {
 
@@ -40,12 +42,15 @@ const Profile = (props) => {
                             "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"}`}
                         alt="your profile image"></img>
                     <RiImageEditFill id="edit-icon" />
+                    <RiImageEditFill id="edit-pic-icon"/>
                 </div>
 
                 <div id="user-info">
                     {console.log(auth)}
                     <h2>Name: {auth.user.name}</h2>
                     <h2>Rank: {userData.rank}</h2>
+                    <h2>Name: Testing {props.username} <RiEdit2Fill id="edit-name-icon"/></h2>
+                    <h2>Rank: {props.rank}</h2>
                 </div>
                 <div id="user-stats">
                     <p>Avg. WPM: {userData.avgWpm}</p>

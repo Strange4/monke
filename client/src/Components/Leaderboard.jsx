@@ -1,4 +1,5 @@
 import './Styles/Leaderboard.css';
+import './Styles/Popup.css'
 import { useEffect, useState } from 'react';
 import RankListItem from './RankListItem';
 import * as FetchModule from "../Controller/FetchModule";
