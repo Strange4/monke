@@ -5,6 +5,7 @@
 div.letterContainer{
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
 }
 
 span.letter{

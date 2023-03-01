@@ -1,6 +1,6 @@
 import { useQuery } from "react-query";
 import Spinner from "../Components/Spinner";
-
+// importing definitions for better intellisense
 /**
  * Generic fetch function to fetch from any given
  * url and return a json object with the contained data
@@ -42,12 +42,12 @@ async function postUserStatAPI(url, userStat) {
  * fetches data using react-query and handles errors
  * @param {string} cacheKey the key used by react-query to cache the response
  * @param {string} url the url used for the fetch request
- * @param {object?} params the parameters for the fetch request
+ * @param {RequestInit?} fetchParams the parameters for the fetch request
  * @returns {[JSX.Element?, any?]}
  */
-function useFetch(cacheKey, url, params){
+function useFetch(cacheKey, url, fetchParams){
     const {data, error, isLoading} = useQuery(cacheKey, async () => {
-        const response = await fetch(url, params);
+        const response = await fetch(url, fetchParams);
         if(!response.ok){
             throw new Error("There was an error in the response");
         }

@@ -7,6 +7,7 @@ import Chronometer from './Chronometer';
 import { useChronometer } from './Chronometer';
 import SoloGameResult from './SoloGameResult';
 import { useQuery } from 'react-query';
+import Spinner from '../Spinner';
 
 const allShiftKeys = keyboardKeys.english.upper;
 const allRegKeys = keyboardKeys.english.lower;
@@ -16,19 +17,15 @@ const allRegKeys = keyboardKeys.english.lower;
  */
 function TypingScreen() {
     
-    useQuery("textToDisplay", async () => {
+    const {isLoading, error, data: textToDisplay} = useQuery("textToDisplay", async () => {
         return (await (await fetch("/api/quote")).json()).body;
     }, {onSuccess: (quote) => {
-        setUserDisplay(getDefaultUserDisplay(quote));
-        setTextToDisplay(quote);
-    }});
-    const [textToDisplay, setTextToDisplay] = useState("lorem ipsum baby");
+        setUserDisplay(getDefaultUserDisplay(quote))
+    }, refetchOnWindowFocus: false});
     const [keyboard, setKeyboard] = useState(mapKeyToKeyboard(allRegKeys));
     const [displayTime, setDisplayTime] = useState(0);
     const [displayResults, setDisplayResults] = useState(false);
     const { startTimer, stopTimer, resetTimer, timer } = useChronometer(setDisplayTime);
-
-    // there we don't user the setter because modifying the state directly is faster
     const [userDisplay, setUserDisplay] = useState(getDefaultUserDisplay(textToDisplay));
     const textContainerRef = useRef();
 
@@ -110,28 +107,33 @@ function TypingScreen() {
     
 
     return (
-        <div className='vertical-center'>
-            <Chronometer seconds={displayTime}/>
-            <GameText display={userDisplay} />
-            <VirtualKeyboard currentKeys={keyboard} />
-            <SoloGameResult
-                isOpen={displayResults}
-                displayText={userDisplay}
-                timer={timer.current}
-                originalText={textToDisplay}
-                closeWindow={resetGame}
-            />
-            <input type="text" 
-                className="text-container"
-                ref={textContainerRef}
-                onChange={onChangeText}
-                onKeyDown={handleKeyDown}
-                onKeyUp={handlekeyUp}
-                onPaste={preventDefaultBehavior}
-                onDrag={preventDefaultBehavior}
-                onDrop={preventDefaultBehavior}
-                onCopy={preventDefaultBehavior}
-            />
+        <div className='center'>
+            {isLoading || error ?
+                <Spinner/>
+                :
+                <>
+                    <Chronometer seconds={displayTime}/>
+                    <GameText display={userDisplay} />
+                    <VirtualKeyboard currentKeys={keyboard} />
+                    <SoloGameResult
+                        isOpen={displayResults}
+                        displayText={userDisplay}
+                        timer={timer.current}
+                        originalText={textToDisplay}
+                        closeWindow={resetGame}
+                    />
+                    <input type="text" 
+                        className="text-container"
+                        ref={textContainerRef}
+                        onChange={onChangeText}
+                        onKeyDown={handleKeyDown}
+                        onKeyUp={handlekeyUp}
+                        onPaste={preventDefaultBehavior}
+                        onDrag={preventDefaultBehavior}
+                        onDrop={preventDefaultBehavior}
+                        onCopy={preventDefaultBehavior}
+                    />
+                </>}
         </div>
     );
 }
@@ -199,7 +201,9 @@ function getDefaultUserDisplay(stringToDisplay) {
             current: false
         }
     });
-    display[0].current = true;
+    if(display[0]){
+        display[0].current = true;
+    }
     return display;
 }
 
