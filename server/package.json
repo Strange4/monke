@@ -21,6 +21,8 @@
     "zod": "^3.20.6"
   },
   "devDependencies": {
-    "mockingoose": "^2.16.2"
+    "jest": "^29.4.3",
+    "mockingoose": "^2.16.2",
+    "supertest": "^6.3.3"
   }
 }
