@@ -7,13 +7,12 @@ import * as express from "express";
 import User from "../database/models/user.js";
 
 import UserStat from "../database/models/userStat.js";
-import Picture from "../database/models/picture.js";
 import { userSchema, userStatSchema } from "../database/validation.js";
 import createError from "http-errors";
 import Database from "../database/mongo.js";
-import { QUOTE, USER, USER_STAT, PIC } from "../database/mongo.js";
+import { USER, USER_STAT } from "../database/mongo.js";
 
-import { getQuote, getUserStats, checkName, checkEmail } from "../controller/mongoHelper.js";
+import { getQuote, getUserStats } from "../controller/mongoHelper.js";
 
 const router = express.Router();
 const database = new Database();
@@ -56,14 +55,14 @@ router.put(userStat, async (req, res, next) => {
     let lose = req.body.lose;
     let draw = req.body.draw;
 
-    if(database.isConnected()){
+    if (database.isConnected()) {
         const user = await database.findOne(USER, { username: name });
-        
+
         // check if user exists
-        if(user?.id !== undefined){
+        if (user?.id !== undefined) {
             const previousStats = await getUserStats(name);
             const filter = { user: user.id, id: previousStats.id }
-    
+
             let update;
             if (newWpm > previousStats.max_wpm) {
                 update = {
@@ -77,7 +76,7 @@ router.put(userStat, async (req, res, next) => {
                     "draw": previousStats.draw + draw,
                     "date": Date.now()
                 }
-    
+
             } else if (newWpm === previousStats.max_wpm && newAccuracy > previousStats.max_accuracy) {
                 update = {
                     "max_wpm": newWpm,
@@ -102,26 +101,26 @@ router.put(userStat, async (req, res, next) => {
                     "date": previousStats.date
                 }
             }
-    
+
             let isValidSchema;
-            try{
+            try {
                 userStatSchema.parse(update);
                 isValidSchema = true;
-            } catch (err){
+            } catch (err) {
                 console.log(err);
                 isValidSchema = false;
-                next(createError(ERROR, {"error": "stat values do not comply with schema"} ));
+                next(createError(ERROR, { "error": "stat values do not comply with schema" }));
             }
-            if(isValidSchema){
+            if (isValidSchema) {
                 await database.findOneAndUpdate(USER_STAT, filter, update);
-                res.status(SUCCESS).json({message: "Stats updated"});
-            }            
+                res.status(SUCCESS).json({ message: "Stats updated" });
+            }
         } else {
             console.log(user);
-            next(createError(ERROR, {"error": "Username does not exist on database."}));
+            next(createError(ERROR, { "error": "Username does not exist on database." }));
         }
     } else {
-        next(INTERNAL_SE, { "error": "Database unavailable, try again later."});
+        next(INTERNAL_SE, { "error": "Database unavailable, try again later." });
     }
     userStatSchema.parse(update)
     await UserStat.findOneAndUpdate(filter, update);
@@ -134,26 +133,26 @@ router.put(userStat, async (req, res, next) => {
  * and their game statistics
  */
 router.get(user, async (req, res, next) => {
-    if(database.isConnected()){
+    if (database.isConnected()) {
         const name = req.body.name;
         const pic = req.body.picture;
         const email = req.body.email;
-        let user = await User.findOne({email: email})
-     
+        let user = await User.findOne({ email: email })
+
         // Create the user.
-        if (user === null){
+        if (user === null) {
             // create the user
             const newUser = new User({
                 "username": name,
                 "picture_url": pic,
                 "email": email
             });
-            try{
+            try {
                 userSchema.parse(newUser);
                 const userObject = await User.create(newUser);
                 await userObject.save();
             } catch (err) {
-                res.status(ERROR, { "error": "values do not comply with user schema"});
+                res.status(ERROR, { "error": "values do not comply with user schema" });
             }
 
             //Stat creation
@@ -170,12 +169,12 @@ router.get(user, async (req, res, next) => {
                 "date": null
             })
 
-            try{
+            try {
                 userStatSchema.parse(stats)
                 let userStatsObject = await UserStat.create(stats)
                 await userStatsObject.save()
             } catch (err) {
-                res.status(ERROR, { "error": "values do not comply with user stats schema"});
+                res.status(ERROR, { "error": "values do not comply with user stats schema" });
             }
         }
 
@@ -183,7 +182,7 @@ router.get(user, async (req, res, next) => {
         user = await User.findOne({ email: email });
         // query for user's game statistics
         const stats = await getUserStats(user.username);
-        
+
         let data = {
             "username": user.username,
             "image": user.picture_url,
@@ -196,11 +195,11 @@ router.get(user, async (req, res, next) => {
             "lose": stats.lose,
             "draw": stats.draw,
             "date": stats.date
-         };
-        
+        };
+
         res.status(SUCCESS).json(data);
-    }else{
-        next(createError(INTERNAL_SE, { "error": "Database unavailable, try again later."}));
+    } else {
+        next(createError(INTERNAL_SE, { "error": "Database unavailable, try again later." }));
     }
 })
 
@@ -208,21 +207,21 @@ router.get(user, async (req, res, next) => {
 /**
  * Endpoint returns a quote to the client.
  */
-router.get(quote, async (req, res, next) => { 
+router.get(quote, async (req, res, next) => {
     let statusCode = SUCCESS;
     let message;
 
     // verify if difficulty is NaN and not undefined
-    if(isNaN(req.body.difficulty) && req.body.difficulty !== undefined){
+    if (isNaN(req.body.difficulty) && req.body.difficulty !== undefined) {
         statusCode = ERROR;
         message = { "error": "Input for difficulty is not a valid number" };
-        next(createError(statusCode, message)); 
+        next(createError(statusCode, message));
     } else {
-        try{
+        try {
             message = await getQuote(req.body.difficulty);
         } catch (err) {
             // rather than return an error return a quote as per Mauricio's suggestion.
-            message = { "body": "Unable to retrieve quote from database, please try again later."};
+            message = { "body": "Unable to retrieve quote from database, please try again later." };
         }
         res.status(statusCode).json(message);
     }
@@ -278,11 +277,11 @@ function sortRank(users) {
  * leaderboard info such as rank, wpm, username and temporary profileURL
  */
 router.get(leaderboard, async (_, res, next) => {
-    if(database.isConnected()){
+    if (database.isConnected()) {
         const stats = [];
         const users = await database.find(USER);
-        for (const user of users){
-            const userStats = await database.findOne(USER_STAT, {user: user.id});
+        for (const user of users) {
+            const userStats = await database.findOne(USER_STAT, { user: user.id });
             stats.push({
                 "profilePicture": user.picture_url,
                 "username": user.username,
@@ -292,14 +291,14 @@ router.get(leaderboard, async (_, res, next) => {
         }
         res.status(SUCCESS).json(sortRank(stats));
     } else {
-        next(createError(INTERNAL_SE, { "error": "Unable to retrieve leaderboard data."} ));
+        next(createError(INTERNAL_SE, { "error": "Unable to retrieve leaderboard data." }));
     }
 });
 
 // middleware for handling errors
-router.use((error, req, res, next) => {
+router.use((error, _, res) => {
     // console.log(error);
-    res.status(error.status).json( { "error": error.error, "type": error.message } );
+    res.status(error.status).json({ "error": error.error, "type": error.message });
 });
 
 router.use(function (_, res) {
