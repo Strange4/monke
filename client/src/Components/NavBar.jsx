@@ -14,15 +14,9 @@ import { useContext } from "react";
 function NavBar(props) {
     const auth = useContext(AuthContext);
 
-
     async function handleLogout() {
-        console.log("logging out")
         await fetch("/authentication/logout");
-        auth.setUserData({
-            username: "",
-            email: "",
-            picture: ""
-        });
+        auth.setUserEmail("")
         auth.setLoginStatus(false);
     }
 
@@ -45,10 +39,10 @@ function NavBar(props) {
                 <Link to="/profile">Profile</Link>
             </li>
             <li>
-                <Popup trigger={<a> {props.loginStatus ?
+                <Popup trigger={<a> {props.loginStatus === true ?
                     <button onClick={handleLogout}> Logout </button> : "Login"}</a>}>
                     {
-                        props.loginStatus ? null :
+                        props.loginStatus === true ? null :
                             <div>
                                 <Login navbar={false} />
                             </div>

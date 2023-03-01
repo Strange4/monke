@@ -13,11 +13,15 @@ import Database from "../database/mongo.js";
 import { USER, USER_STAT } from "../database/mongo.js";
 
 import { getQuote, getUserStats } from "../controller/mongoHelper.js";
+import bodyParser from "body-parser";
 
 const router = express.Router();
 const database = new Database();
 
-router.use(express.json());
+// router.use(express.json());
+
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({ extended: false }));
 
 
 const userStat = "/user_stat";
@@ -48,6 +52,7 @@ function getAverage(stat, newStat, games) {
 
 
 router.put(userStat, async (req, res, next) => {
+    console.log(req.body)
     let name = req.body.username;
     let newWpm = req.body.wpm;
     let newAccuracy = req.body.accuracy;
@@ -59,6 +64,7 @@ router.put(userStat, async (req, res, next) => {
         const user = await database.findOne(USER, { username: name });
 
         // check if user exists
+        console.log(user)
         if (user?.id !== undefined) {
             const previousStats = await getUserStats(name);
             const filter = { user: user.id, id: previousStats.id }
@@ -115,17 +121,15 @@ router.put(userStat, async (req, res, next) => {
                 await database.findOneAndUpdate(USER_STAT, filter, update);
                 res.status(SUCCESS).json({ message: "Stats updated" });
             }
+            userStatSchema.parse(update)
+            await UserStat.findOneAndUpdate(filter, update);
+            res.status(SUCCESS).json({ message: "Stats updated" })
         } else {
-            console.log(user);
             next(createError(ERROR, { "error": "Username does not exist on database." }));
         }
     } else {
         next(INTERNAL_SE, { "error": "Database unavailable, try again later." });
     }
-    userStatSchema.parse(update)
-    await UserStat.findOneAndUpdate(filter, update);
-
-    res.status(SUCCESS).json({ message: "Stats updated" })
 })
 
 /**
@@ -134,13 +138,13 @@ router.put(userStat, async (req, res, next) => {
  */
 router.post(user, async (req, res, next) => {
     if (database.isConnected()) {
-        const name = req.body.user.username;
-        const pic = req.body.user.pic;
         const email = req.body.user.email;
         let user = await User.findOne({ email: email })
-
+        console.log(req.body)
         // Create the user.
         if (user === null) {
+            const name = req.body.user.username;
+            const pic = req.body.user.pic;
             // create the user
             const newUser = new User({
                 "username": name,
@@ -179,6 +183,8 @@ router.post(user, async (req, res, next) => {
 
         // query for user that matches username
         user = await User.findOne({ email: email });
+        console.log("HERE")
+        console.log(user)
         // query for user's game statistics
         const stats = await getUserStats(user.username);
 

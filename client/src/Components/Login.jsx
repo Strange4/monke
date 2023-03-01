@@ -11,23 +11,20 @@ function Login(props) {
     async function handleLogin(googleData) {
         const res = await fetch("/authentication/auth", {
             method: "POST",
-            body: JSON.stringify({
-                token: googleData.credential
-            }),
-            headers: {
-                "Content-Type": "application/json"
-            }
+            body: JSON.stringify({ token: googleData.credential }),
+            headers: { "Content-Type": "application/json" }
         });
+        
         const data = await res.json();
-        const userDataRes = await fetch("/api/user", {
-            method: "POST",
-            body: JSON.stringify(data),
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-        console.log(userDataRes)
-        auth.setUserData(data.user);
+        console.log(data)
+        // const userDataRes = await fetch("/api/user", {
+        //     method: "POST",
+        //     body: JSON.stringify(data),
+        //     headers: {
+        //         "Content-Type": "application/json"
+        //     }
+        // });
+        auth.setUserEmail(data.user.email);
         auth.setLoginStatus(true);
     }
 
@@ -36,7 +33,7 @@ function Login(props) {
             {props.navbar ? <NavBar /> : null}
             <div id="login">
                 <h1>Login Popup</h1>
-                <h2>Welcome {auth.checkAccess() ? auth.user.username : "Anonymous"}</h2>
+                <h2>Welcome {auth.checkAccess() ? "TEST" : "Anonymous"}</h2>
                 <GoogleLogin
                     onSuccess={handleLogin}
                     onError={() => console.log('Login Failed')} />

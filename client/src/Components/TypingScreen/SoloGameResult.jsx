@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import './Layout/SoloGameResult.css';
 import { useEffect, useState, useContext } from 'react';
 import Popup from "reactjs-popup";
@@ -10,6 +11,31 @@ function SoloGameResult(props) {
     const [popup, setPopup] = useState(false);
     const updateRate = 1000;
     const auth = useContext(AuthContext);
+    const [userData, setUserData] = useState({
+        username: "",
+        image:
+        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+        wpm: 0,
+        max_wpm: 0,
+        accuracy: 0,
+        max_accuracy: 0,
+        win: 0,
+        lose: 0,
+        draw: 0,
+        games_count: 0
+    });
+
+    useEffect(() => {
+        (async () => {
+            console.log(auth.userEmail)
+            let data = await fetch("/api/user", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ "user": { "email": auth.userEmail } })
+            });
+            setUserData(await data.json())
+        })()
+    }, [])
 
     useEffect(() => {
         handleTimer();
@@ -79,7 +105,9 @@ function SoloGameResult(props) {
             "wpm": Math.round(wpm * 100) / 100,
             "accuracy": Math.round(computeAccuracy() * 100) / 100
         }
-        postUserStats(result);
+        if (localStorage.getItem("userEmail") !== "") {
+            postUserStats(result);
+        }
     }
 
     /**
@@ -109,11 +137,19 @@ function SoloGameResult(props) {
      * once login is implemented
      * @param {Object} result 
      */
-    function postUserStats(result) {
+    async function postUserStats(result) {
+
+        let data = await fetch("/api/user", {
+            method: "POST",
+            body: JSON.stringify({ "user": { "email": auth.userEmail } }),
+            headers: { "Content-Type": "application/json" }
+        });
+        console.log(data)
+
         setUserStats(result);
         console.log(auth)
         let userStats = {
-            "username": "john",
+            "username": userData.username,
             "wpm": result.wpm,
             "accuracy": result.accuracy,
             "win": 0,

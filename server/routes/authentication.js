@@ -1,6 +1,5 @@
 import * as express from "express";
 import { OAuth2Client } from 'google-auth-library';
-import fetch from 'node-fetch'
 import session from 'express-session'
 import dotenv from 'dotenv';
 dotenv.config();

@@ -2,8 +2,8 @@ import React from 'react';
 
 let AuthContext = React.createContext(
     {
-        user: {},
-        setUserData: () => { },
+        userEmail: {},
+        setUserEmail: () => { },
         checkAccess: () => { },
         setLoginStatus: () => { }
     }

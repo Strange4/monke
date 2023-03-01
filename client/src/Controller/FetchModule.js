@@ -27,10 +27,7 @@ async function fetchData(url) {
 async function postUserStatAPI(url, userStat) {
     let response = await fetch(url, {
         method: 'PUT',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
+        headers: { 'Accept': 'application/json' },
         body: JSON.stringify(userStat)
     });
     if (!response.ok) {

@@ -13,21 +13,25 @@ import Profile from './Pages/Profile';
  */
 function App() {
     const [loginStatus, setLoginStatus] = useState();
-    const [userData, setUserData] = useState({
-        username: "",
-        email: "",
-        picture: "",
-    });
+    const [userEmail, setUserEmail] = useState(localStorage.getItem('userEmail'));
 
     useEffect(() => {
+        localStorage.setItem('userEmail', userEmail);
+    }, [userEmail]);
+
+    useEffect(() => {
+        console.log(loginStatus)
         setLoginStatus(checkAccess());
+        if (localStorage.getItem('userEmail')) {
+            setUserEmail(localStorage.getItem('userEmail'));
+        }
     }, []);
 
     return (
         <div className="App">
             <AuthContext.Provider value={{
-                user: userData,
-                setUserData: setUserData,
+                userEmail: userEmail,
+                setUserEmail: setUserEmail,
                 checkAccess: checkAccess,
                 setLoginStatus: setLoginStatus
             }}>
@@ -35,7 +39,7 @@ function App() {
                     <Routes>
                         <Route path="/" element={<Home loginStatus={loginStatus} />} />
                         <Route path="/profile" element={
-                            loginStatus ?
+                            loginStatus === true ?
                                 <Profile loginStatus={loginStatus} /> : <Login navbar={true} />
                         } />
                     </Routes>
