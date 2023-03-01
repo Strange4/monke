@@ -53,7 +53,7 @@ function getAverage(stat, newStat, games) {
 
 router.put(userStat, async (req, res, next) => {
     console.log(req.body)
-    let email = req.body.username;
+    let email = req.body.email;
     let newWpm = req.body.wpm;
     let newAccuracy = req.body.accuracy;
     let win = req.body.win;
@@ -66,6 +66,7 @@ router.put(userStat, async (req, res, next) => {
 
         // check if user exists
         console.log("HE")
+        console.log(email)
         console.log(user)
         if (user?.id !== undefined) {
             const previousStats = await getUserStats(email);
@@ -125,7 +126,7 @@ router.put(userStat, async (req, res, next) => {
             }
             userStatSchema.parse(update)
             await UserStat.findOneAndUpdate(filter, update);
-            res.status(SUCCESS).json({ message: "Stats updated" })
+            // res.status(SUCCESS).json({ message: "Stats updated" })
         } else {
             next(createError(ERROR, { "error": "Username does not exist on database. " }));
         }
@@ -159,6 +160,7 @@ router.post(user, async (req, res, next) => {
                 await userObject.save();
             } catch (err) {
                 res.status(ERROR, { "error": "values do not comply with user schema" });
+                next()
             }
 
             //Stat creation
@@ -180,6 +182,7 @@ router.post(user, async (req, res, next) => {
                 await userStatsObject.save()
             } catch (err) {
                 res.status(ERROR, { "error": "values do not comply with user stats schema" });
+                next()
             }
         }
 

@@ -5,7 +5,7 @@
  */
 
 import Database from "../database/mongo.js"
-import {QUOTE, USER, USER_STAT, PIC} from "../database/mongo.js"
+import {QUOTE, USER, USER_STAT} from "../database/mongo.js"
 
 let db = new Database();
 
@@ -50,7 +50,7 @@ async function getUserStats(email) {
         }
     } catch (err) {
         console.error(err);
-        
+
     }
 }
 
