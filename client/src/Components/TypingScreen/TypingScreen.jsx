@@ -17,7 +17,9 @@ const allRegKeys = keyboardKeys.english.lower;
  */
 function TypingScreen() {
     
-    const {isLoading, error, data: textToDisplay} = useQuery("textToDisplay", async () => {
+    const {
+        isLoading, error, data: textToDisplay, refetch 
+    } = useQuery("textToDisplay", async () => {
         return (await (await fetch("/api/quote")).json()).body;
     }, {onSuccess: (quote) => {
         setUserDisplay(getDefaultUserDisplay(quote))
@@ -38,7 +40,8 @@ function TypingScreen() {
         setDisplayResults(false);
         resetTimer();
         textContainerRef.current.value = "";
-        clearDisplay();
+        setUserDisplay([]);
+        refetch();
     }
 
     /**
@@ -53,13 +56,6 @@ function TypingScreen() {
             handleGameEnd();
         }
         renderLetters(currentText, userDisplay);
-    }
-
-    function clearDisplay(){
-        userDisplay.forEach(letter => {
-            letter.current = false;
-            letter.type = "none";
-        });
     }
 
     /**
