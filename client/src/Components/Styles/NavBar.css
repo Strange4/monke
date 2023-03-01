@@ -1,7 +1,9 @@
 #navbar {
     display: flex;
     justify-content: space-between;
-    width:100%;
+    width: 90%;
+    margin: auto;
+    margin-top: 20px;
 }
 
 #navbar li{
@@ -13,7 +15,7 @@
 }
 
 #navbar li:hover, #navbar a:hover {
-    color: #d68b49;
+    color: var(--accent-color);
 }
 
 a:link {

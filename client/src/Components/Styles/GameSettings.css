@@ -1,3 +1,12 @@
+#game-settings {
+    display: flex;
+    justify-content: space-around;
+    margin: auto;
+    margin-top: 30px;
+    background-color: var(--sub-color);
+    max-width: 700px;
+}
+
 #game-settings button{
     text-decoration: none;
     border: none;
@@ -7,13 +16,11 @@
     font-size: 1em;
 }
 
-#game-settings {
-    display: flex;
-    justify-content: space-evenly;
-    margin-top: 30px;
-}
-
 #game-settings button:hover {
     cursor: pointer;
-    color: #d68b49;
+    color: var(--accent-color);
+}
+
+#time-settings, #length-settings {
+    min-width: 220px;
 }
