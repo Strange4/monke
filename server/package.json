@@ -19,5 +19,8 @@
     "mongoose": "^6.9.1",
     "nodemon": "^2.0.20",
     "zod": "^3.20.6"
+  },
+  "devDependencies": {
+    "mockingoose": "^2.16.2"
   }
 }
