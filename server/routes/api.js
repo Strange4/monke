@@ -13,7 +13,7 @@ import Database from "../database/mongo.js";
 import { USER, USER_STAT } from "../database/mongo.js";
 import { quoteRouter } from "./quotes.js";
 
-import { getQuote, getUserStats } from "../controller/mongoHelper.js";
+import { getUserStats } from "../controller/mongoHelper.js";
 import bodyParser from "body-parser";
 
 const router = express.Router();
@@ -23,8 +23,6 @@ router.use(express.json());
 
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: false }));
-
-
 
 const userStat = "/user_stat";
 const quote = "/quote";
@@ -53,24 +51,19 @@ function getAverage(stat, newStat, games) {
     }
 }
 
-
 router.put(userStat, async (req, res, next) => {
-    console.log(req.body)
     let email = req.body.email;
     let newWpm = req.body.wpm;
-    let newAccuracy = req.body.accuracy;
+    let newAcc = req.body.accuracy;
     let win = req.body.win;
     let lose = req.body.lose;
     let draw = req.body.draw;
 
     if (database.isConnected()) {
         // user = await User.findOne({ email: email });
-        const user = await User.findOne({email: email});
+        const user = await User.findOne({ email: email });
 
         // check if user exists
-        console.log("HE")
-        console.log(email)
-        console.log(user)
         if (user?.id !== undefined) {
             const previousStats = await getUserStats(email);
             const filter = { user: user.id, id: previousStats.id }
@@ -80,8 +73,9 @@ router.put(userStat, async (req, res, next) => {
                 update = {
                     "max_wpm": newWpm,
                     "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
-                    "max_accuracy": newAccuracy,
-                    "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
+                    "max_accuracy": newAcc,
+                    "accuracy":
+                        getAverage(previousStats.accuracy, newAcc, previousStats.games_count),
                     "games_count": previousStats.games_count + 1,
                     "win": previousStats.win + win,
                     "lose": previousStats.lose + lose,
@@ -89,12 +83,13 @@ router.put(userStat, async (req, res, next) => {
                     "date": Date.now()
                 }
 
-            } else if (newWpm === previousStats.max_wpm && newAccuracy > previousStats.max_accuracy) {
+            } else if (newWpm === previousStats.max_wpm && newAcc > previousStats.max_accuracy) {
                 update = {
                     "max_wpm": newWpm,
                     "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
-                    "max_accuracy": newAccuracy,
-                    "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
+                    "max_accuracy": newAcc,
+                    "accuracy":
+                        getAverage(previousStats.accuracy, newAcc, previousStats.games_count),
                     "games_count": previousStats.games_count + 1,
                     "win": previousStats.win + win,
                     "lose": previousStats.lose + lose,
@@ -105,7 +100,8 @@ router.put(userStat, async (req, res, next) => {
                 // Update average only
                 update = {
                     "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
-                    "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
+                    "accuracy":
+                        getAverage(previousStats.accuracy, newAcc, previousStats.games_count),
                     "games_count": previousStats.games_count + 1,
                     "win": previousStats.win + win,
                     "lose": previousStats.lose + lose,
@@ -119,9 +115,10 @@ router.put(userStat, async (req, res, next) => {
                 userStatSchema.parse(update);
                 isValidSchema = true;
             } catch (err) {
-                // console.log(err);
                 isValidSchema = false;
-                next(createError(BAD_REQUEST, { "error": "stat values do not comply with schema" }));
+                next(createError(BAD_REQUEST,
+                    { "error": "stat values do not comply with schema" }
+                ));
             }
             if (isValidSchema) {
                 await database.findOneAndUpdate(USER_STAT, filter, update);
@@ -145,7 +142,6 @@ router.post(user, async (req, res, next) => {
     if (database.isConnected()) {
         const email = req.body.user.email;
         let user = await User.findOne({ email: email })
-        console.log(req.body)
         // Create the user.
         if (user === null) {
             const name = req.body.user.username;
@@ -190,23 +186,23 @@ router.post(user, async (req, res, next) => {
 
         // query for user that matches username
         user = await User.findOne({ email: email });
-        console.log("HERE")
-        console.log(user)
+
         // query for user's game statistics
         const stats = await getUserStats(user.email);
 
+        //TODO PROBLEM HERE
         let data = {
             "username": user.username,
             "image": user.picture_url,
-            "wpm": stats.wpm,
-            "max_wpm": stats.max_wpm,
-            "accuracy": stats.accuracy,
-            "max_accuracy": stats.max_accuracy,
-            "games_count": stats.games_count,
-            "win": stats.win,
-            "lose": stats.lose,
-            "draw": stats.draw,
-            "date": stats.date
+            "wpm": stats?.wpm || 0,
+            "max_wpm": stats?.max_wpm || 0,
+            "accuracy": stats?.accuracy || 0,
+            "max_accuracy": stats?.max_accuracy || 0,
+            "games_count": stats?.games_count || 0,
+            "win": stats?.win || 0,
+            "lose": stats?.lose || 0,
+            "draw": stats?.draw || 0,
+            "date": stats.date || "could not retrieve date"
         };
         res.status(SUCCESS).json(data);
     } else {
@@ -256,7 +252,6 @@ function sortRank(users) {
         });
         users.splice(index, 1);
     }
-
     return leaderboard;
 }
 
@@ -273,8 +268,8 @@ router.get(leaderboard, async (_, res, next) => {
             stats.push({
                 "profilePicture": user.picture_url,
                 "username": user.username,
-                "wpm": userStats.max_wpm,
-                "accuracy": userStats.max_accuracy
+                "wpm": userStats?.max_wpm || 0,
+                "accuracy": userStats?.max_accuracy || 0
             });
         }
         res.status(SUCCESS).json(sortRank(stats));
@@ -285,7 +280,6 @@ router.get(leaderboard, async (_, res, next) => {
 
 // middleware for handling errors
 router.use((error, _, res) => {
-    // console.log(error);
     res.status(error.status).json({ "error": error.error, "type": error.message });
 });
 

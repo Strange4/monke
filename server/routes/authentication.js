@@ -32,7 +32,6 @@ router.use(session({
 }));
 
 router.get("/refreshLogin", isAuthenticated, function(req, res) {
-    console.log(`START-${req.session.user.email}-END`)
     return res.json(req.session.user)
 });
 
