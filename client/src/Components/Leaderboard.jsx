@@ -25,10 +25,10 @@ function Leaderboard() {
                 {
                     loadingIndicator || leaderboard.map((user, i) => <RankListItem
                         user={user.username}
-                        picture={user.profilePicture}
-                        rank={user.rank}
-                        wpm={user.wpm}
-                        accuracy={user.accuracy}
+                        picture={user.picture_url}
+                        rank={i}
+                        wpm={user.user_stats.wpm}
+                        accuracy={user.user_stats.accuracy}
                         date={`${date}`}
                         key={i} />)
                 }
