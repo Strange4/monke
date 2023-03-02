@@ -13,7 +13,7 @@ let db = new Database();
  * Function will query database for quotes with given difficulty then
  * pick and return one quote randomly from resulting list.
  * If said list is length of 1, return that single quote.
- * @param {number} difficultyVal : represents difficulty level of desired quotes
+ * @param {number} difficultyVal : represents difficulty level of desired quotes (1 to 5 inclusive)
  * @returns Object, is a json that holds the body of the quote.
  */
 async function getQuote(difficultyVal) {

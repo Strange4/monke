@@ -11,6 +11,7 @@ import { userSchema, userStatSchema } from "../database/validation.js";
 import createError from "http-errors";
 import Database from "../database/mongo.js";
 import { USER, USER_STAT } from "../database/mongo.js";
+import { quoteRouter } from "./quotes.js";
 
 import { getQuote, getUserStats } from "../controller/mongoHelper.js";
 import bodyParser from "body-parser";
@@ -24,14 +25,16 @@ router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: false }));
 
 
+
 const userStat = "/user_stat";
 const quote = "/quote";
 const user = "/user";
 const leaderboard = "/leaderboard";
+router.use(quote, quoteRouter);
 
-const SUCCESS = 200;
-const ERROR = 400;
-const INTERNAL_SE = 500;
+export const SUCCESS = 200;
+export const BAD_REQUEST = 400;
+export const INTERNAL_SE = 500;
 
 /**
  * Return the average of a stat
@@ -118,7 +121,7 @@ router.put(userStat, async (req, res, next) => {
             } catch (err) {
                 // console.log(err);
                 isValidSchema = false;
-                next(createError(ERROR, { "error": "stat values do not comply with schema" }));
+                next(createError(BAD_REQUEST, { "error": "stat values do not comply with schema" }));
             }
             if (isValidSchema) {
                 await database.findOneAndUpdate(USER_STAT, filter, update);
@@ -127,7 +130,7 @@ router.put(userStat, async (req, res, next) => {
             userStatSchema.parse(update)
             await UserStat.findOneAndUpdate(filter, update);
         } else {
-            next(createError(ERROR, { "error": "Username does not exist on database. " }));
+            next(createError(BAD_REQUEST, { "error": "Username does not exist on database. " }));
         }
     } else {
         next(INTERNAL_SE, { "error": "Database unavailable, try again later." });
@@ -211,29 +214,6 @@ router.post(user, async (req, res, next) => {
     }
 })
 
-
-/**
- * Endpoint returns a quote to the client.
- */
-router.get(quote, async (req, res, next) => {
-    let statusCode = SUCCESS;
-    let message;
-
-    // verify if difficulty is NaN and not undefined
-    if (isNaN(req.body.difficulty) && req.body.difficulty !== undefined) {
-        statusCode = ERROR;
-        message = { "error": "Input for difficulty is not a valid number" };
-        next(createError(statusCode, message));
-    } else {
-        try {
-            message = await getQuote(req.body.difficulty);
-        } catch (err) {
-            // rather than return an error return a quote as per Mauricio's suggestion.
-            message = { "body": "Unable to retrieve quote from database, please try again later." };
-        }
-        res.status(statusCode).json(message);
-    }
-});
 
 /**
  * Sort the users into rank depending on wpm and accuracy, then returns the sorted leaderboard.
