@@ -13,6 +13,10 @@ function GameSettings() {
 
     const [mode, setMode] = useState(true)
 
+    /**
+     * Display correct mode settings according to button pressed
+     * @param {*} e 
+     */
     const handleClick = e => {
         if(e.target.id === "time-btn") {
             setMode(true)

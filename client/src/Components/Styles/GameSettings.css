@@ -34,3 +34,7 @@
     height: 12px;
     padding-right: 5px;
 }
+
+.active {
+    color: var(--accent-color) !important;
+}
