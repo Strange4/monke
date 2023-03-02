@@ -5,7 +5,7 @@ import Popup from "reactjs-popup";
 import * as FetchModule from '../../Controller/FetchModule';
 import AuthContext from '../../Context/AuthContext';
 
-function SoloGameResult({isOpen, closeWindow, timer, originalText, displayText}) {
+function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText }) {
     const [userStats, setUserStats] = useState({ "time": 0, "wpm": 0, "accuracy": 0 });
 
     const auth = useContext(AuthContext);
@@ -13,7 +13,7 @@ function SoloGameResult({isOpen, closeWindow, timer, originalText, displayText})
         username: "",
         email: auth.userEmail,
         image:
-        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+            "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
         wpm: 0,
         max_wpm: 0,
         accuracy: 0,
@@ -24,19 +24,31 @@ function SoloGameResult({isOpen, closeWindow, timer, originalText, displayText})
         games_count: 0
     });
 
-    useEffect(() => {
-        (async () => {
-            let data = await fetch("/api/user", {
-                method: "POST",
-                headers: { 'Accept': 'application/json', "Content-Type": "application/json" },
-                body: JSON.stringify({ "user": { "email": auth.userEmail } })
-            });
-            setUserData(await data.json())
-        })()
-    }, [])
+    //temp
+    async function fetchUserData() {
+        console.log("FETCHING USER DATA 1")
+        let data = await fetch("/api/user", {
+            method: "POST",
+            headers: { "Accept": "application/json", "Content-Type": "application/json" },
+            body: JSON.stringify({ "user": { "email": auth.userEmail } })
+        })
+        setUserData(await data.json())
+    }
 
-    useEffect(()=> {
-        if(isOpen === true){
+    // useEffect(() => {
+    // (async () => {
+    //     console.log("FETCHING USER DATA 1")
+    //     let data = await fetch("/api/user", {
+    //         method: "POST",
+    //         headers: { 'Accept': 'application/json', "Content-Type": "application/json" },
+    //         body: JSON.stringify({ "user": { "email": auth.userEmail } })
+    //     });
+    //     setUserData(await data.json())
+    // })()
+    // }, [])
+
+    useEffect(() => {
+        if (isOpen === true) {
             const results = computeResults(timer.time().s, originalText, displayText);
             setUserStats(results);
             postUserStats(results);
@@ -55,8 +67,10 @@ function SoloGameResult({isOpen, closeWindow, timer, originalText, displayText})
             wpm: Math.round(wpm * 100) / 100,
             accuracy: Math.round(computeAccuracy(typedText) * 100) / 100
         }
-        //TODO
+        //TODO ONLY POST WHEN LOGGED IN
+        console.log(auth.checkAccess())
         if (localStorage.getItem("userEmail") !== "") {
+            fetchUserData()
             postUserStats(result);
         }
         return result;
@@ -90,7 +104,7 @@ function SoloGameResult({isOpen, closeWindow, timer, originalText, displayText})
      * @param {Object} result 
      */
     async function postUserStats(result) {
-
+        console.log("FETCHING USER DATA 2")
         let data = await fetch("/api/user", {
             method: "POST",
             body: JSON.stringify({ "user": { "email": auth.userEmail } }),
@@ -103,16 +117,17 @@ function SoloGameResult({isOpen, closeWindow, timer, originalText, displayText})
         let userStats = {
             "username": userData.username,
             "email": auth.userEmail,
-            "wpm": result.wpm, 
+            "wpm": result.wpm,
             "accuracy": result.accuracy,
             "win": 0,
             "lose": 0,
             "draw": 0
         };
+        console.log("FETCHING USER DATA 3")
         FetchModule.postUserStatAPI("/api/user_stat", userStats);
     }
 
-    return ( 
+    return (
         <Popup open={isOpen} position="center" onClose={closeWindow} modal>
             <div id="solo-game-result">
                 <h1>END Solo Game Popup</h1>

@@ -31,6 +31,7 @@ const Profile = (props) => {
     useEffect(() => {
         (async () => {
             console.log(auth.userEmail)
+            console.log("FETCHING USER DATA 4")
             let data = await fetch("/api/user", {
                 method: "POST",
                 headers: { 'Accept': 'application/json', "Content-Type": "application/json" },
