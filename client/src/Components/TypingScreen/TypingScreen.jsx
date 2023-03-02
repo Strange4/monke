@@ -3,12 +3,12 @@ import { useState, useRef } from "react";
 import VirtualKeyboard from './VirtualKeyboard';
 import keyboardKeys from "../../Data/keyboard_keys.json";
 import GameText from '../GameText';
-import Chronometer, {useChronometer} from './Chronometer';
+import Chronometer, { useChronometer } from './Chronometer';
 import SoloGameResult from './SoloGameResult';
 import { useQuery } from 'react-query';
 import Spinner from '../Spinner';
-import { 
-    renderLetters, getDefaultUserDisplay, mapKeyToKeyboard, preventDefaultBehavior, 
+import {
+    renderLetters, getDefaultUserDisplay, mapKeyToKeyboard, preventDefaultBehavior,
     randomNumber
 } from './TypingUtil';
 import defaultQuotes from '../../Data/default_quotes.json';
@@ -20,17 +20,23 @@ const allRegKeys = keyboardKeys.english.lower;
  * @returns {ReactElement}
  */
 function TypingScreen() {
-    
+
     const {
-        isLoading, data: textToDisplay, refetch 
+        isLoading, data: textToDisplay, refetch
     } = useQuery("textToDisplay", async () => {
-        return (await (await fetch("/api/quote")).json()).body;
-    }, {onSuccess: (quote) => {
-        setUserDisplay(getDefaultUserDisplay(quote))
-    }, onError: () => {
-        setUserDisplay(getDefaultUserDisplay(defaultQuotes[randomNumber(0, defaultQuotes.length)]))
-    },
-    refetchOnWindowFocus: false});
+        return (await (await fetch("/api/quote",
+            {
+                headers:
+                    { 'Accept': 'application/json', "Content-Type": "application/json" }
+            })).json()).body;
+    }, {
+        onSuccess: (quote) => {
+            setUserDisplay(getDefaultUserDisplay(quote))
+        }, onError: () => {
+            setUserDisplay(getDefaultUserDisplay(defaultQuotes[randomNumber(0, defaultQuotes.length)]))
+        },
+        refetchOnWindowFocus: false
+    });
     const [keyboard, setKeyboard] = useState(mapKeyToKeyboard(allRegKeys));
     const [displayTime, setDisplayTime] = useState(0);
     const [displayResults, setDisplayResults] = useState(false);
@@ -38,14 +44,14 @@ function TypingScreen() {
     const [userDisplay, setUserDisplay] = useState(getDefaultUserDisplay(textToDisplay));
     const textContainerRef = useRef();
 
-    function handleGameEnd(){
+    function handleGameEnd() {
         stopTimer();
         setDisplayResults(true);
         setUserDisplay([]);
         refetch();
     }
-    
-    function resetGame(){
+
+    function resetGame() {
         setDisplayResults(false);
         resetTimer();
         textContainerRef.current.value = "";
@@ -78,7 +84,7 @@ function TypingScreen() {
         }
         newKeyboard.forEach(row => {
             row.forEach(key => {
-                if(key.keyValue === keyValue){
+                if (key.keyValue === keyValue) {
                     key.isPressed = false;
                 }
             });
@@ -99,7 +105,7 @@ function TypingScreen() {
         }
         newKeyboard.forEach(row => {
             row.forEach(key => {
-                if(key.keyValue === keyValue){
+                if (key.keyValue === keyValue) {
                     key.isPressed = true;
                 }
             });
@@ -107,15 +113,15 @@ function TypingScreen() {
         setKeyboard(newKeyboard);
     }
 
-    
+
 
     return (
         <div className='center'>
             {isLoading ?
-                <Spinner/>
+                <Spinner />
                 :
                 <>
-                    <Chronometer seconds={displayTime}/>
+                    <Chronometer seconds={displayTime} />
                     <GameText display={userDisplay} />
                     <VirtualKeyboard currentKeys={keyboard} />
                     <SoloGameResult
@@ -125,7 +131,7 @@ function TypingScreen() {
                         originalText={textToDisplay}
                         closeWindow={resetGame}
                     />
-                    <input type="text" 
+                    <input type="text"
                         className="text-container"
                         ref={textContainerRef}
                         onChange={onChangeText}

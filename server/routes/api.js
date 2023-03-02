@@ -18,7 +18,7 @@ import bodyParser from "body-parser";
 const router = express.Router();
 const database = new Database();
 
-// router.use(express.json());
+router.use(express.json());
 
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: false }));
@@ -116,7 +116,7 @@ router.put(userStat, async (req, res, next) => {
                 userStatSchema.parse(update);
                 isValidSchema = true;
             } catch (err) {
-                console.log(err);
+                // console.log(err);
                 isValidSchema = false;
                 next(createError(ERROR, { "error": "stat values do not comply with schema" }));
             }
@@ -158,7 +158,7 @@ router.post(user, async (req, res, next) => {
                 const userObject = await User.create(newUser);
                 await userObject.save();
             } catch (err) {
-                res.status(ERROR, { "error": "values do not comply with user schema" });
+                res.json({ "error": "values do not comply with user schema" });
                 next()
             }
 
@@ -180,7 +180,7 @@ router.post(user, async (req, res, next) => {
                 let userStatsObject = await UserStat.create(stats)
                 await userStatsObject.save()
             } catch (err) {
-                res.status(ERROR, { "error": "values do not comply with user stats schema" });
+                res.json({ "error": "values do not comply with user stats schema" });
                 next()
             }
         }

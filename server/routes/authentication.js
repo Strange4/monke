@@ -12,7 +12,7 @@ router.use(express.json());
 //middleware to verify the session
 function isAuthenticated(req, res, next) {
     if (!req.session.user) {
-        return res.status(401).send(false);
+        return res.sendStatus(401)
     }
     next();
 }
