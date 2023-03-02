@@ -27,11 +27,11 @@ async function getQuote(difficultyVal) {
         if (quotes.length > 0) {
             const quoteIndex = quotes.length > 1 ?
                 Math.floor(Math.random() * quotes.length) : 0;
-            return { "body": quotes[quoteIndex].quote };
+            return  quotes[quoteIndex].quote
         }
-        return { "body": "There are no quotes available with that difficulty." };
+        return  "There are no quotes available with that difficulty."
     }
-    return { "body": "The database is currently down so make do with this quote instead." };
+    return "The database is currently down so make do with this quote instead."
 }
 
 /**
