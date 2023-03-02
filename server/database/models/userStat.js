@@ -6,7 +6,6 @@ const Schema = mongoose.Schema;
  * Schema that represents UserStats
  */
 const UserStatSchema = new Schema({
-    "user": {type : Schema.Types.ObjectId, ref: "User"},
     "max_wpm": Number,
     "wpm": Number,
     "max_accuracy": Number,
@@ -14,8 +13,7 @@ const UserStatSchema = new Schema({
     "games_count": Number,
     "win": Number,
     "lose": Number,
-    "draw": Number,
-    "date": Date
+    "draw": Number
 });
 
 const UserStat = mongoose.model("UserStat", UserStatSchema);

@@ -12,6 +12,7 @@ import createError from "http-errors";
 import Database from "../database/mongo.js";
 import { USER, USER_STAT } from "../database/mongo.js";
 import { quoteRouter } from "./quotes.js";
+import { getAverage } from "./util.js";
 
 import { getQuote, getUserStats } from "../controller/mongoHelper.js";
 import bodyParser from "body-parser";
@@ -35,24 +36,6 @@ router.use(quote, quoteRouter);
 export const SUCCESS = 200;
 export const BAD_REQUEST = 400;
 export const INTERNAL_SE = 500;
-
-/**
- * Return the average of a stat
- * @param {Number} stat, the previous average of the stat.
- * @param {Number} newStat, the new stat obtain after a game has been complete. 
- * @param {Number} games, the total number of games.
- * @returns Average of the stat
- */
-function getAverage(stat, newStat, games) {
-    if (games === 0) {
-        return newStat;
-    } else {
-        let unAverage = stat * games;
-        let newTotal = unAverage + newStat;
-        return newTotal / (games + 1);
-    }
-}
-
 
 router.put(userStat, async (req, res, next) => {
     console.log(req.body)
@@ -266,18 +249,38 @@ function sortRank(users) {
  */
 router.get(leaderboard, async (_, res, next) => {
     if (database.isConnected()) {
-        const stats = [];
-        const users = await database.find(USER);
-        for (const user of users) {
-            const userStats = await database.findOne(USER_STAT, { user: user.id });
-            stats.push({
-                "profilePicture": user.picture_url,
-                "username": user.username,
-                "wpm": userStats.max_wpm,
-                "accuracy": userStats.max_accuracy
+        User.find({}).populate({
+            path: "user_stats",
+            select: ["wpm", "accuracy"]
+        }).exec((error, users)=>{
+            const leaderboard = [];
+            users.forEach(user => {
+                const leaderboardEntry = {
+                    profilePicture: user.picture_url,
+                    username: user.username,
+                }
+                leaderboardEntry.wpm = 0,
+                leaderboardEntry.accuracy = 0
+                if(user.user_stats){
+                    leaderboardEntry.wpm = user.user_stats.wpm;
+                    leaderboardEntry.accuracy = user.user_stats.accuracy;
+                }
+                console.log(leaderboardEntry);
+                leaderboard.push(leaderboardEntry);
             });
-        }
-        res.status(SUCCESS).json(sortRank(stats));
+            res.status(SUCCESS).json(leaderboard);
+        })
+        // const users = (await database.find(USER_STAT)).sort({ "wpm": 'desc'});
+        // for (const user of users) {
+            
+        //     stats.push({
+        //         "profilePicture": user.picture_url,
+        //         "username": user.username,
+        //         "wpm": user.user_stat,
+        //         "accuracy": userStats.max_accuracy
+        //     });
+        // }
+
     } else {
         next(createError(INTERNAL_SE, { "error": "Unable to retrieve leaderboard data." }));
     }
