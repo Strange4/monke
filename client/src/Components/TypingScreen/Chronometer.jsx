@@ -1,6 +1,7 @@
 import "./Layout/Chronometer.css";
 import { Timer } from "timer-node";
 import { useEffect, useRef, useState } from "react";
+import { MdTimer } from 'react-icons/md'
 
 /**
  * Renders a timer displaying the number of seconds
@@ -11,7 +12,7 @@ import { useEffect, useRef, useState } from "react";
 function Chronometer({ seconds }) {
     return (
         <div id="chronometer">
-            <p><span id="seconds">{seconds}</span></p>
+            <p><MdTimer id="timer-icon"/><span id="seconds">{seconds}</span></p>
         </div>
     );
 }

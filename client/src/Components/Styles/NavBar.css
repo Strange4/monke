@@ -2,6 +2,7 @@
     display: flex;
     justify-content: space-between;
     width: 90%;
+    min-width: 480px;
     margin: auto;
     margin-top: 20px;
 }
@@ -17,7 +18,10 @@
 
 #nav-sub {
     display: flex;
-    width: 450px;
+    width: 80%;
+    max-width: 450px;
+    min-width: 100px;
+    margin-right: 20px;
     justify-content: left;
     justify-content: space-between;
 }
