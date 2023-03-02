@@ -18,16 +18,14 @@ function App() {
     const [userEmail, setUserEmail] = useState();
 
     useEffect(() => {
-
-    }, []);
-
-    useEffect(() => {
         (async () => {
-            let userData = await fetch("/authentication/refreshLogin")
-            setUserEmail(userData.email)
-            console.log(userEmail)
-        })()
-    }, [userEmail])
+            if (!userEmail) {
+                let userData = await fetch("/authentication/refreshLogin")
+                let newEmail = await userData.json()
+                setUserEmail(newEmail.email)
+            }
+        })();
+    }, [userEmail]);
 
     return (
         <div className="App">
