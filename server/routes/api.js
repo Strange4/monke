@@ -126,7 +126,6 @@ router.put(userStat, async (req, res, next) => {
             }
             userStatSchema.parse(update)
             await UserStat.findOneAndUpdate(filter, update);
-            // res.status(SUCCESS).json({ message: "Stats updated" })
         } else {
             next(createError(ERROR, { "error": "Username does not exist on database. " }));
         }

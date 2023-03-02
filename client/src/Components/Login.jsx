@@ -14,16 +14,7 @@ function Login(props) {
             body: JSON.stringify({ token: googleData.credential }),
             headers: { 'Accept': 'application/json', "Content-Type": "application/json" },
         });
-        
         const data = await res.json();
-        console.log(data)
-        // const userDataRes = await fetch("/api/user", {
-        //     method: "POST",
-        //     body: JSON.stringify(data),
-        //     headers: {
-        //         "Content-Type": "application/json"
-        //     }
-        // });
         auth.setUserEmail(data.user.email);
         auth.setLoginStatus(true);
     }

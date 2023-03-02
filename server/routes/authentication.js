@@ -39,7 +39,6 @@ router.post("/auth", async (req, res) => {
         audience: process.env.GOOGLE_CLIENT_ID
     });
     if (!ticket) {
-        //unauthorized (token invalid)
         return res.sendStatus(401);
     }
     const user = {
@@ -53,7 +52,6 @@ router.post("/auth", async (req, res) => {
         if (err) {
             return res.sendStatus(500);
         }
-        //store the user's info in the session
         req.session.user = user;
         res.json({ user: user });
     });
@@ -63,7 +61,6 @@ router.post("/auth", async (req, res) => {
 router.get("/protected",
     isAuthenticated,
     function (_, res) {
-        //would actually be doing something
         res.sendStatus(200);
     }
 );
