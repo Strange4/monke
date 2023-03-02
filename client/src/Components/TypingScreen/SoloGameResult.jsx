@@ -26,7 +26,6 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
 
     //temp
     async function fetchUserData() {
-        console.log("FETCHING USER DATA 1")
         let data = await fetch("/api/user", {
             method: "POST",
             headers: { "Accept": "application/json", "Content-Type": "application/json" },
@@ -34,18 +33,6 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
         })
         setUserData(await data.json())
     }
-
-    // useEffect(() => {
-    // (async () => {
-    //     console.log("FETCHING USER DATA 1")
-    //     let data = await fetch("/api/user", {
-    //         method: "POST",
-    //         headers: { 'Accept': 'application/json', "Content-Type": "application/json" },
-    //         body: JSON.stringify({ "user": { "email": auth.userEmail } })
-    //     });
-    //     setUserData(await data.json())
-    // })()
-    // }, [])
 
     useEffect(() => {
         (async () => {
@@ -72,11 +59,11 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
         //TODO ONLY POST WHEN LOGGED IN
         let loggedIn = await auth.checkAccess()
         if (loggedIn) {
-            console.log("logged in")
+            console.log(`logged in as ${auth.userEmail}, posting result`)
             fetchUserData()
             postUserStats(result);
         } else {
-            console.log("not logged in")
+            console.log("not logged in, skipping user stats posting")
         }
         return result;
     }
@@ -109,7 +96,6 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
      * @param {Object} result 
      */
     async function postUserStats(result) {
-        console.log("FETCHING USER DATA 2")
         let data = await fetch("/api/user", {
             method: "POST",
             body: JSON.stringify({ "user": { "email": auth.userEmail } }),
@@ -118,7 +104,7 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
         // console.log(data)
 
         setUserStats(result);
-        // console.log(auth.userEmail)
+
         let userStats = {
             "username": userData.username,
             "email": auth.userEmail,
@@ -128,7 +114,7 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
             "lose": 0,
             "draw": 0
         };
-        console.log("FETCHING USER DATA 3")
+
         FetchModule.postUserStatAPI("/api/user_stat", userStats);
     }
 

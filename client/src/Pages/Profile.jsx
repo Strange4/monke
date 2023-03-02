@@ -33,7 +33,7 @@ const Profile = () => {
                 });
                 setProfileData(await data.json());
             } else {
-                console.log("PROFILE: user not logged in");
+                console.log("PROFILE: user NOT logged in");
             }
         })();
     }, []);
