@@ -25,7 +25,7 @@ async function fetchData(url) {
  * @param userInput 
  */
 async function postUserStatAPI(url, userStat) {
-    console.log(userStat)
+    // console.log(userStat)
     let response = await fetch(url, {
         method: 'PUT',
         headers: { 'Accept': 'application/json', "Content-Type": "application/json" },

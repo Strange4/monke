@@ -8,7 +8,7 @@ import { RiImageEditFill, RiEdit2Fill } from "react-icons/ri";
 const Profile = (props) => {
     const auth = useContext(AuthContext);
 
-    const [userData, setUserData] = useState({
+    const [profileData, setProfileData] = useState({
         username: "",
         image:
         "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
@@ -22,23 +22,20 @@ const Profile = (props) => {
         games_count: 0
     });
 
-    // useEffect(() => {
-    //     sendRequest((data) => {
-    //         setUserData(data);
-    //     });
-    // })
-
     useEffect(() => {
         (async () => {
-            console.log(auth.userEmail)
-            console.log("FETCHING USER DATA 4")
-            let data = await fetch("/api/user", {
-                method: "POST",
-                headers: { 'Accept': 'application/json', "Content-Type": "application/json" },
-                body: JSON.stringify({ "user": { "email": auth.userEmail } })
-            });
-            setUserData(await data.json())
-        })()
+            if (auth.userEmail) {
+                console.log(`PROFILE: user logged in [${auth.userEmail}]`)
+                let data = await fetch("/api/user", {
+                    method: "POST",
+                    headers: { 'Accept': 'application/json', "Content-Type": "application/json" },
+                    body: JSON.stringify({ "user": { "email": auth.userEmail } })
+                });
+                setProfileData(await data.json());
+            } else {
+                console.log("PROFILE: user not logged in");
+            }
+        })();
     }, []);
 
     return (
@@ -47,8 +44,8 @@ const Profile = (props) => {
             <div id="profile">
                 <div id="image">
                     <img id="profile-pic"
-                        src={`${userData.image ?
-                            userData.image :
+                        src={`${profileData.image ?
+                            profileData.image :
                             // eslint-disable-next-line max-len
                             "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"}`}
                         alt="your profile image"></img>
@@ -57,16 +54,16 @@ const Profile = (props) => {
                 </div>
 
                 <div id="user-info">
-                    <h2>Name: {userData.username} <RiEdit2Fill id="edit-name-icon" /></h2>
-                    <h2>Rank: {userData.rank}</h2>
+                    <h2>Name: {profileData.username} <RiEdit2Fill id="edit-name-icon" /></h2>
+                    <h2>Rank: {profileData.rank}</h2>
                 </div>
                 <div id="user-stats">
-                    <p>Avg. WPM: {userData.wpm}</p>
-                    <p>Avg. ACC: {userData.accuracy}</p>
-                    <p>Games: {userData.games_count}</p>
-                    <p>Wins: {userData.win}</p>
-                    <p>Loses: {userData.lose}</p>
-                    <p>Draws: {userData.draw}</p>
+                    <p>Avg. WPM: {profileData.wpm}</p>
+                    <p>Avg. ACC: {profileData.accuracy}</p>
+                    <p>Games: {profileData.games_count}</p>
+                    <p>Wins: {profileData.win}</p>
+                    <p>Loses: {profileData.lose}</p>
+                    <p>Draws: {profileData.draw}</p>
                 </div>
             </div>
         </div>

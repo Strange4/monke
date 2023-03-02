@@ -15,20 +15,20 @@ const queryClient = new QueryClient();
  * @returns {ReactElement}
  */
 function App() {
-    const [loginStatus, setLoginStatus] = useState();
-    const [userEmail, setUserEmail] = useState(localStorage.getItem('userEmail'));
-
-    useEffect(() => {
-        localStorage.setItem('userEmail', userEmail);
-    }, [userEmail]);
+    const [userEmail, setUserEmail] = useState();
 
     useEffect(() => {
         console.log(loginStatus)
         setLoginStatus(checkAccess());
-        if (localStorage.getItem('userEmail')) {
-            setUserEmail(localStorage.getItem('userEmail'));
-        }
     }, []);
+
+    useEffect(() => {
+        (async () => {
+            let userData = await fetch("/authentication/refreshLogin")
+            setUserEmail(userData.email)
+            console.log(userEmail)
+        })()
+    }, [userEmail])
 
     return (
         <div className="App">
@@ -38,18 +38,6 @@ function App() {
                 checkAccess: checkAccess,
                 setLoginStatus: setLoginStatus
             }}>
-                {/* <Router>
-                    <Routes> */}
-                {/* <Route path="/" element={<Home loginStatus={loginStatus} />} />
-                <Route path="/profile" element={
-                    loginStatus === true ?
-                        <Profile loginStatus={loginStatus} /> : <Login navbar={true} />
-                } /> */}
-                {/* </Routes>
-                </Router> */}
-                {/* <div id="popup-root" /> */}
-                {/* </AuthContext.Provider> */}
-
                 <QueryClientProvider client={queryClient}>
                     <Router>
                         <Routes>
@@ -57,7 +45,9 @@ function App() {
                             <Route path="/profile"
                                 element={
                                     loginStatus === true ?
-                                        <Profile loginStatus={loginStatus} /> : <Login navbar={true} />
+                                        <Profile loginStatus={loginStatus} />
+                                        :
+                                        <Login navbar={true} />
                                 } />
                         </Routes>
                     </Router>

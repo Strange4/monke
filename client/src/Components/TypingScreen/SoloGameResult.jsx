@@ -115,10 +115,10 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
             body: JSON.stringify({ "user": { "email": auth.userEmail } }),
             headers: { 'Accept': 'application/json', "Content-Type": "application/json" },
         });
-        console.log(data)
+        // console.log(data)
 
         setUserStats(result);
-        console.log(auth.userEmail)
+        // console.log(auth.userEmail)
         let userStats = {
             "username": userData.username,
             "email": auth.userEmail,
