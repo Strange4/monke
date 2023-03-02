@@ -23,7 +23,7 @@ function Login(props) {
             {props.navbar ? <NavBar /> : null}
             <div id="login">
                 <h1>Login Popup</h1>
-                <h2>Welcome {auth.checkAccess() ? "TEST" : "Anonymous"}</h2>
+                <h2>Welcome</h2>
                 <GoogleLogin
                     onSuccess={handleLogin}
                     onError={() => console.log('Login Failed')} />

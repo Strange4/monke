@@ -13,7 +13,7 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
         username: "",
         email: auth.userEmail,
         image:
-            "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
         wpm: 0,
         max_wpm: 0,
         accuracy: 0,
@@ -96,15 +96,7 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
      * @param {Object} result 
      */
     async function postUserStats(result) {
-        let data = await fetch("/api/user", {
-            method: "POST",
-            body: JSON.stringify({ "user": { "email": auth.userEmail } }),
-            headers: { 'Accept': 'application/json', "Content-Type": "application/json" },
-        });
-        // console.log(data)
-
         setUserStats(result);
-
         let userStats = {
             "username": userData.username,
             "email": auth.userEmail,
