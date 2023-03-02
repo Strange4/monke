@@ -15,49 +15,35 @@ const queryClient = new QueryClient();
  * @returns {ReactElement}
  */
 function App() {
-    const [loginStatus, setLoginStatus] = useState();
-    const [userEmail, setUserEmail] = useState(localStorage.getItem('userEmail'));
+    const [userEmail, setUserEmail] = useState();
 
     useEffect(() => {
-        localStorage.setItem('userEmail', userEmail);
+        (async () => {
+            if (!userEmail) {
+                let userData = await fetch("/authentication/refreshLogin")
+                let newEmail = await userData.json()
+                setUserEmail(newEmail.email)
+            }
+        })();
     }, [userEmail]);
-
-    useEffect(() => {
-        console.log(loginStatus)
-        setLoginStatus(checkAccess());
-        if (localStorage.getItem('userEmail')) {
-            setUserEmail(localStorage.getItem('userEmail'));
-        }
-    }, []);
 
     return (
         <div className="App">
             <AuthContext.Provider value={{
                 userEmail: userEmail,
                 setUserEmail: setUserEmail,
-                checkAccess: checkAccess,
-                setLoginStatus: setLoginStatus
+                checkAccess: checkAccess
             }}>
-                {/* <Router>
-                    <Routes> */}
-                {/* <Route path="/" element={<Home loginStatus={loginStatus} />} />
-                <Route path="/profile" element={
-                    loginStatus === true ?
-                        <Profile loginStatus={loginStatus} /> : <Login navbar={true} />
-                } /> */}
-                {/* </Routes>
-                </Router> */}
-                {/* <div id="popup-root" /> */}
-                {/* </AuthContext.Provider> */}
-
                 <QueryClientProvider client={queryClient}>
                     <Router>
                         <Routes>
-                            <Route path="/" element={<Home loginStatus={loginStatus} />} />
+                            <Route path="/" element={<Home />} />
                             <Route path="/profile"
                                 element={
-                                    loginStatus === true ?
-                                        <Profile loginStatus={loginStatus} /> : <Login navbar={true} />
+                                    userEmail ?
+                                        <Profile />
+                                        :
+                                        <Login navbar={true} />
                                 } />
                         </Routes>
                     </Router>

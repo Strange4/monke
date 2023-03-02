@@ -2,10 +2,10 @@ import NavBar from "../Components/NavBar";
 import TypingScreen from "../Components/TypingScreen/TypingScreen";
 import GameSettings from "../Components/GameSettings";
 
-const Home = (props) => {
+const Home = () => {
     return (
         <div id="home">
-            <NavBar loginStatus={props.loginStatus} />
+            <NavBar />
             <h1>Home Page</h1>
             <div id="game-component">
                 <GameSettings />

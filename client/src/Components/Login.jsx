@@ -16,7 +16,6 @@ function Login(props) {
         });
         const data = await res.json();
         auth.setUserEmail(data.user.email);
-        auth.setLoginStatus(true);
     }
 
     return (

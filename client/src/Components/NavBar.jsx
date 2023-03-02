@@ -11,13 +11,12 @@ import { useContext } from "react";
  * Navigation bar to be used on all pages
  * @returns {ReactElement}
  */
-function NavBar(props) {
+function NavBar() {
     const auth = useContext(AuthContext);
 
     async function handleLogout() {
         await fetch("/authentication/logout");
         auth.setUserEmail("")
-        auth.setLoginStatus(false);
     }
 
     return (
@@ -39,10 +38,10 @@ function NavBar(props) {
                 <Link to="/profile">Profile</Link>
             </li>
             <li>
-                <Popup trigger={<a> {props.loginStatus === true ?
+                <Popup trigger={<a> {auth.userEmail ?
                     <button onClick={handleLogout}> Logout </button> : "Login"}</a>}>
                     {
-                        props.loginStatus === true ? null :
+                        auth.userEmail ? null :
                             <div>
                                 <Login navbar={false} />
                             </div>

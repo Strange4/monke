@@ -31,6 +31,10 @@ router.use(session({
     }
 }));
 
+router.get("/refreshLogin", isAuthenticated, function(req, res) {
+    return res.json(req.session.user)
+});
+
 router.post("/auth", async (req, res) => {
     //TODO: should validate that the token was sent first
     const { token } = req.body;
