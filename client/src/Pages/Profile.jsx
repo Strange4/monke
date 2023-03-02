@@ -5,7 +5,7 @@ import AuthContext from "../Context/AuthContext";
 import { useContext, useEffect, useState } from "react";
 import { RiImageEditFill, RiEdit2Fill } from "react-icons/ri";
 
-const Profile = (props) => {
+const Profile = () => {
     const auth = useContext(AuthContext);
 
     const [profileData, setProfileData] = useState({
@@ -40,7 +40,7 @@ const Profile = (props) => {
 
     return (
         <div id="home">
-            <NavBar loginStatus={props.loginStatus} />
+            <NavBar />
             <div id="profile">
                 <div id="image">
                     <img id="profile-pic"

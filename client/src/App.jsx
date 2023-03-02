@@ -18,8 +18,7 @@ function App() {
     const [userEmail, setUserEmail] = useState();
 
     useEffect(() => {
-        console.log(loginStatus)
-        setLoginStatus(checkAccess());
+
     }, []);
 
     useEffect(() => {
@@ -35,17 +34,16 @@ function App() {
             <AuthContext.Provider value={{
                 userEmail: userEmail,
                 setUserEmail: setUserEmail,
-                checkAccess: checkAccess,
-                setLoginStatus: setLoginStatus
+                checkAccess: checkAccess
             }}>
                 <QueryClientProvider client={queryClient}>
                     <Router>
                         <Routes>
-                            <Route path="/" element={<Home loginStatus={loginStatus} />} />
+                            <Route path="/" element={<Home />} />
                             <Route path="/profile"
                                 element={
-                                    loginStatus === true ?
-                                        <Profile loginStatus={loginStatus} />
+                                    userEmail ?
+                                        <Profile />
                                         :
                                         <Login navbar={true} />
                                 } />
