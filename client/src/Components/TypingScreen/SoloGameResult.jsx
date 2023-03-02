@@ -48,17 +48,19 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
     // }, [])
 
     useEffect(() => {
-        if (isOpen === true) {
-            const results = computeResults(timer.time().s, originalText, displayText);
-            setUserStats(results);
-            postUserStats(results);
-        }
+        (async () => {
+            if (isOpen === true) {
+                const results = await computeResults(timer.time().s, originalText, displayText);
+                setUserStats(results);
+                // postUserStats(results);
+            }
+        })()
     }, [isOpen]);
 
     /**
      * Compute the results for the solo game upon end and post them
      */
-    function computeResults(numberOfSeconds, text, typedText) {
+    async function computeResults(numberOfSeconds, text, typedText) {
         let nbWords = text.split(" ").length;
         let minutes = numberOfSeconds / 60;
         let wpm = nbWords / minutes;
@@ -68,10 +70,13 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
             accuracy: Math.round(computeAccuracy(typedText) * 100) / 100
         }
         //TODO ONLY POST WHEN LOGGED IN
-        console.log(auth.checkAccess())
-        if (localStorage.getItem("userEmail") !== "") {
+        let loggedIn = await auth.checkAccess()
+        if (loggedIn) {
+            console.log("logged in")
             fetchUserData()
             postUserStats(result);
+        } else {
+            console.log("not logged in")
         }
         return result;
     }
