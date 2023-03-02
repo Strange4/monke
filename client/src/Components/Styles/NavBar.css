@@ -1,6 +1,6 @@
 #navbar {
     display: flex;
-    /* justify-content: space-between; */
+    justify-content: space-between;
     width: 90%;
     margin: auto;
     margin-top: 20px;
@@ -17,7 +17,8 @@
 
 #nav-sub {
     display: flex;
-    width: 300px;
+    width: 450px;
+    justify-content: left;
     justify-content: space-between;
 }
 
@@ -26,7 +27,7 @@
 }
 
 #navbar li:hover, #navbar a:hover {
-    color: var(--accent-color);
+    color: var(--text-color);
 }
 
 a:link {
@@ -37,15 +38,15 @@ a:visited {
     color: var(--sub-color);
 }
 
+#navbar li:active, #navbar a:active {
+    color: var(--accent-color);
+}
+
 #logo {
-    width: 300px;
+    width: 250px;
 }
 
-#leaderboard-icon, #profile-icon {
-    width: 50px;
-    height: 50px
-}
-
-#profile-icon {
-    justify-content: right;
+#leaderboard-icon, #profile-icon, #lobby-icon {
+    width: 40px;
+    height: 40px
 }

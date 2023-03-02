@@ -7,6 +7,7 @@ import Login from './Login';
 import logo from "../Assets/keyboard-champions-logo/svg/logo-no-background.svg"
 import { GiCrenelCrown } from "react-icons/gi";
 import { CgProfile } from "react-icons/cg";
+import { HiUserGroup } from "react-icons/hi"
 
 /**
  * Navigation bar to be used on all pages
@@ -15,24 +16,24 @@ import { CgProfile } from "react-icons/cg";
 function NavBar() {
     return (
         <div id="navbar">
-            <li>
-                <Link to="/">
-                    <img src={logo} id="logo"></img>
-                </Link>
-            </li>
             <div id="nav-sub">
+
+                <li>
+                    <Link to="/">
+                        <img src={logo} id="logo"></img>
+                    </Link>
+                </li>
                 <li>
                     <Popup trigger={<a><GiCrenelCrown id="leaderboard-icon"/></a>} modal>
                         <Leaderboard />
                     </Popup>
                 </li>
                 <li>
-                    <Popup trigger={<a>Lobby</a>} modal>
+                    <Popup trigger={<a><HiUserGroup id="lobby-icon"/></a>} modal>
                         <Lobby />
                     </Popup>
                 </li>
             </div>
-
             <li>
                 {/* popup and link work at same time for now, 
                 will be changed to show right one depending on login status */}

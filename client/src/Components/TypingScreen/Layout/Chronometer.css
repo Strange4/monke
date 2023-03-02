@@ -1,4 +1,6 @@
 #chronometer {
   display: flex;
   align-self:flex-start;
+  color: var(--accent-color);
+  font-size: 1.7em;
 }
