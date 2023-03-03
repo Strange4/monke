@@ -10,7 +10,7 @@ import UserStat from "../database/models/userStat.js";
 import { userSchema, userStatSchema } from "../database/validation.js";
 import createError from "http-errors";
 import Database from "../database/mongo.js";
-import { USER, USER_STAT } from "../database/mongo.js";
+import { USER_STAT } from "../database/mongo.js";
 import { quoteRouter } from "./quotes.js";
 import { getAverage } from "./util.js";
 
@@ -200,8 +200,7 @@ router.post(userEnpoint, async (req, res, next) => {
  * leaderboard info such as rank, wpm, username and temporary profileURL
  */
 router.get(leaderboardEndpoint, async (_, res, next) => {
-    const dbIsConnected = mongoose.connection.readyState == 1;
-    if(!dbIsConnected){        
+    if(!dbIsConnected()){        
         next(new createError.InternalServerError("Error while getting the leaderboard"));
         return;
     }
@@ -211,11 +210,15 @@ router.get(leaderboardEndpoint, async (_, res, next) => {
             console.log(`there is a fucky wucky when fetching the leader board`);
             console.error(error);
             next(new createError.InternalServerError("Error while getting the leaderboard"));
-            return;''
+            return;
         }
         res.status(SUCCESS).json(users);
     });
 });
+
+function dbIsConnected(){
+    return mongoose.connection.readyState === 1;
+}
 
 function handleHttpErrors(error, _, res, next){
     if(error instanceof createHttpError.HttpError){
