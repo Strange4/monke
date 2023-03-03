@@ -6,7 +6,6 @@ const Home = () => {
     return (
         <div id="home">
             <NavBar />
-            <h1>Home Page</h1>
             <div id="game-component">
                 <GameSettings />
                 <TypingScreen />

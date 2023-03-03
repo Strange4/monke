@@ -123,17 +123,20 @@ function TypingScreen() {
                 <Spinner />
                 :
                 <>
-                    <Chronometer seconds={displayTime} />
-                    <GameText display={userDisplay} />
-                    <VirtualKeyboard currentKeys={keyboard} />
-                    <SoloGameResult
-                        isOpen={displayResults}
-                        displayText={userDisplay}
-                        timer={timer.current}
-                        originalText={textToDisplay}
-                        closeWindow={resetGame}
-                    />
-                    <input type="text"
+                    <div>
+                        <Chronometer seconds={displayTime}/>
+                        <GameText display={userDisplay} />
+                        <VirtualKeyboard currentKeys={keyboard} />
+                        <SoloGameResult
+                            isOpen={displayResults}
+                            displayText={userDisplay}
+                            timer={timer.current}
+                            originalText={textToDisplay}
+                            closeWindow={resetGame}
+                        />
+                    </div>
+
+                    <input type="text" 
                         className="text-container"
                         ref={textContainerRef}
                         onChange={onChangeText}

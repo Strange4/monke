@@ -5,8 +5,8 @@ function GameText({ display }) {
     const caret = <span id="inputCaret"></span>;
 
     return (
-        <div className="letterContainer">
-
+        <div className="letter-container">
+            
             {
                 display.map((letter, index) => {
                     return (

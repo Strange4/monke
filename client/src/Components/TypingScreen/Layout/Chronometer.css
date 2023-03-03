@@ -1,4 +1,15 @@
 #chronometer {
   display: flex;
-  align-self:flex-start;
+  align-self: flex-start;
+  color: var(--accent-color);
+  font-size: 1.7em;
+  padding: 0;
+}
+
+#seconds {
+    padding: 0;
+}
+
+#timer-icon {
+    margin-right: 10px;
 }
