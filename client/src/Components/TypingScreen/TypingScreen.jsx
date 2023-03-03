@@ -33,7 +33,9 @@ function TypingScreen() {
         onSuccess: (quote) => {
             setUserDisplay(getDefaultUserDisplay(quote))
         }, onError: () => {
-            setUserDisplay(getDefaultUserDisplay(defaultQuotes[randomNumber(0, defaultQuotes.length)]))
+            setUserDisplay(
+                getDefaultUserDisplay(defaultQuotes[randomNumber(0, defaultQuotes.length)])
+            )
         },
         refetchOnWindowFocus: false
     });
