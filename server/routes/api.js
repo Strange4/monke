@@ -131,24 +131,9 @@ router.post(userEnpoint, async (req, res, next) => {
         if (user === null) {
             const name = req.body.user.username;
             const pic = req.body.user.pic;
-            // create the user
-            const newUser = new User({
-                "username": name,
-                "picture_url": pic,
-                "email": email
-            });
-            try {
-                userSchema.parse(newUser);
-                const userObject = await User.create(newUser);
-                await userObject.save();
-            } catch (err) {
-                res.json({ "error": "values do not comply with user schema" });
-                next()
-            }
 
             //Stat creation
             const stats = new UserStat({
-                "user": newUser.id,
                 "max_wpm": 0,
                 "wpm": 0,
                 "max_accuracy": 0,
@@ -158,20 +143,42 @@ router.post(userEnpoint, async (req, res, next) => {
                 "lose": 0,
                 "draw": 0,
                 "date": null
-            })
+            });
+
+            // create the user
+            const newUser = new User({
+                "username": name,
+                "picture_url": pic,
+                "email": email,
+                "user_stats": stats
+            });
+
+            try {
+                userSchema.parse(newUser);
+                const userObject = await User.create(newUser);
+                await userObject.save();
+                console.log("AAAAAA")
+            } catch (err) {
+                console.log(err)
+                res.json({ "error": "values do not comply with user schema" });
+                return;
+            }
+
             try {
                 userStatSchema.parse(stats)
                 let userStatsObject = await UserStat.create(stats)
                 await userStatsObject.save()
+                console.log("BBBBBB")
             } catch (err) {
                 res.json({ "error": "values do not comply with user stats schema" });
-                next()
+                return;
             }
         }
 
+        // console.log(email)
         // query for user that matches username
         user = await User.findOne({ email: email });
-
+        console.log(user)
         // query for user's game statistics
         const stats = await getUserStats(user.email);
 
@@ -200,7 +207,7 @@ router.post(userEnpoint, async (req, res, next) => {
  * leaderboard info such as rank, wpm, username and temporary profileURL
  */
 router.get(leaderboardEndpoint, async (_, res, next) => {
-    if(!dbIsConnected()){        
+    if (!dbIsConnected()) {
         next(new createError.InternalServerError("Error while getting the leaderboard"));
         return;
     }
@@ -216,12 +223,12 @@ router.get(leaderboardEndpoint, async (_, res, next) => {
     });
 });
 
-function dbIsConnected(){
+function dbIsConnected() {
     return mongoose.connection.readyState === 1;
 }
 
-function handleHttpErrors(error, _, res, next){
-    if(error instanceof createHttpError.HttpError){
+function handleHttpErrors(error, _, res, next) {
+    if (error instanceof createHttpError.HttpError) {
         res.status(error.status).json({ "error": error.message });
         return;
     }

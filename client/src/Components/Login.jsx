@@ -15,6 +15,26 @@ function Login(props) {
             headers: { 'Accept': 'application/json', "Content-Type": "application/json" },
         });
         const data = await res.json();
+
+        await setUserData(data)
+    }
+
+    async function setUserData(data) {
+        console.log(data)
+        const res = await fetch("/api/user", {
+            method: "POST",
+            body: JSON.stringify({
+                "user": {
+                    "username": data.user.username,
+                    "pic": data.user.pic,
+                    "email": data.user.email
+                }
+            }),
+            headers: { 'Accept': 'application/json', "Content-Type": "application/json" },
+        });
+
+        console.log(res)
+
         auth.setUserEmail(data.user.email);
     }
 
