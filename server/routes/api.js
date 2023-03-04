@@ -51,7 +51,7 @@ router.put(userStatEnpoint, async (req, res, next) => {
         // check if user exists
         if (user?.id !== undefined) {
             const previousStats = await getUserStats(email);
-            const filter = { user: user.id, id: previousStats.id }
+            const filter = { _id: previousStats._id }
 
             let update;
             if (newWpm > previousStats.max_wpm) {
@@ -145,40 +145,35 @@ router.post(userEnpoint, async (req, res, next) => {
                 "date": null
             });
 
-            // create the user
-            const newUser = new User({
-                "username": name,
-                "picture_url": pic,
-                "email": email,
-                "user_stats": stats
-            });
-
-            try {
-                userSchema.parse(newUser);
-                const userObject = await User.create(newUser);
-                await userObject.save();
-                console.log("AAAAAA")
-            } catch (err) {
-                console.log(err)
-                res.json({ "error": "values do not comply with user schema" });
-                return;
-            }
-
             try {
                 userStatSchema.parse(stats)
                 let userStatsObject = await UserStat.create(stats)
                 await userStatsObject.save()
-                console.log("BBBBBB")
+                // create the user  
+                const newUser = new User({
+                    "username": name,
+                    "picture_url": pic,
+                    "email": email,
+                    "user_stats": userStatsObject._id
+                });
+
+                try {
+                    userSchema.parse(newUser);
+                    const userObject = await User.create(newUser);
+                    await userObject.save();
+                } catch (err) {
+                    console.log(err)
+                    res.json({ "error": "values do not comply with user schema" });
+                    return;
+                }
             } catch (err) {
                 res.json({ "error": "values do not comply with user stats schema" });
                 return;
             }
         }
 
-        // console.log(email)
         // query for user that matches username
         user = await User.findOne({ email: email });
-        console.log(user)
         // query for user's game statistics
         const stats = await getUserStats(user.email);
 
@@ -212,7 +207,9 @@ router.get(leaderboardEndpoint, async (_, res, next) => {
         return;
     }
     // todo: set a max number of users to return
-    User.find({}).populate({ path: "user_stats", select: ["wpm", "accuracy"] }).lean().exec((error, users) => {
+    User.find({}).populate({
+        path: "user_stats", select: ["wpm", "accuracy"]
+    }).lean().exec((error, users) => {
         if (error) {
             console.log(`there is a fucky wucky when fetching the leader board`);
             console.error(error);

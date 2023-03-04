@@ -43,32 +43,10 @@ async function getUserStats(email) {
     try {
         const databaseUser = await db.findOne(USER, { email: email });
         if (databaseUser !== null) {
-            const stats = await db.findOne(USER_STAT, { user: databaseUser.id });
+            const stats = await db.findOne(USER_STAT, { _id: databaseUser.user_stats});
             return stats;
         } else {
             console.log(`Could not find user with email: ${email}`);
-        }
-    } catch (err) {
-        console.error(err);
-
-    }
-}
-
-/**
- * Check to see in the database if the username exists or not.
- * @param {string} name, username of the new User. 
- * @returns boolean depending on if the username exists or not. 
- */
-async function checkName(name) {
-    try {
-        const nameQuery = await db.findOne(USER, { username: name });
-        // Name exists.
-        if (nameQuery !== null) {
-            return true;
-            // Name does not exists.
-        } else {
-            console.log(`Could not find user with name: ${name}`);
-            return false;
         }
     } catch (err) {
         console.error(err);
@@ -96,4 +74,4 @@ async function checkEmail(newEmail) {
     }
 }
 
-export { getQuote, getUserStats, checkName, checkEmail };
+export { getQuote, getUserStats, checkEmail };
