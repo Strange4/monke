@@ -11,7 +11,7 @@ import Database from "../database/mongo.js";
 import express from "express"
 import dotenv from 'dotenv';
 dotenv.config();
-const PORT = process.env.EXPRESS_PORT || 3001;
+const PORT = process.env.EXPRESS_PORT || 8080;
 
 (async ()=> {
     let db = new Database();
