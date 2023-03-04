@@ -21,4 +21,25 @@ const userStatSchema = z.object({
     //"date": z.date().nullable()
 });
 
+export const Constraints = {
+    positiveNumber: (any) => {
+        return catchFunction(() => z.number().nonnegative().parse(any));
+    },
+    positiveInt: (any) => {
+        return catchFunction(() => z.number().nonnegative().int().parse(any));
+    }
+}
+/**
+ * @template T 
+ * @param {() => T} someFunction 
+ * @returns {T | undefined}
+ */
+function catchFunction(someFunction){
+    try{
+        return someFunction()
+    } catch(_){
+        return undefined;
+    }
+}
+
 export {userSchema, userStatSchema};
