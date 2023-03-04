@@ -7,7 +7,7 @@ import * as express from "express";
 import User from "../database/models/user.js";
 import mongoose from "mongoose";
 import UserStat from "../database/models/userStat.js";
-import { userSchema, userStatSchema } from "../database/validation.js";
+import { Constraints, userSchema, userStatSchema } from "../database/validation.js";
 import createError from "http-errors";
 import Database from "../database/mongo.js";
 import { USER_STAT } from "../database/mongo.js";
@@ -201,13 +201,15 @@ router.post(userEnpoint, async (req, res, next) => {
  * Get endpoint that returns a hardcoded json object containing
  * leaderboard info such as rank, wpm, username and temporary profileURL
  */
-router.get(leaderboardEndpoint, async (_, res, next) => {
+router.get(leaderboardEndpoint, async (req, res, next) => {
     if (!dbIsConnected()) {
         next(new createError.InternalServerError("Error while getting the leaderboard"));
         return;
     }
+    const maxItems = Constraints.positiveInt(req.query.max) || 10;
+    
     // todo: set a max number of users to return
-    User.find({}).populate({
+    User.find({}).limit(maxItems).populate({
         path: "user_stats", select: ["wpm", "accuracy"]
     }).lean().exec((error, users) => {
         if (error) {
@@ -216,7 +218,7 @@ router.get(leaderboardEndpoint, async (_, res, next) => {
             next(new createError.InternalServerError("Error while getting the leaderboard"));
             return;
         }
-        res.status(SUCCESS).json(users);
+        res.status(SUCCESS).json(users.sort({wpm: "desc"}));
     });
 });
 
