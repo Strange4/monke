@@ -14,12 +14,9 @@ dotenv.config();
 const PORT = process.env.EXPRESS_PORT || 8080;
 
 (async ()=> {
-    console.log(process.env.EXPRESS_PORT)
-    console.log(PORT)
     let db = new Database();
     await db.connectToDatabase();
     const buildPath = path.resolve(__dirname, "..", "..", "client", "build");
-    console.log(buildPath)
     app.use(express.static(buildPath));
     app.listen(PORT, () => {
         console.log("Server Started on port: http://localhost:" + PORT);
