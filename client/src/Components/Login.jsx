@@ -1,4 +1,4 @@
-import './Styles/Login.css';
+import './Styles/AccessOptions.css';
 import { GoogleLogin } from '@react-oauth/google';
 import { useContext } from "react";
 import AuthContext from "../Context/AuthContext";
@@ -41,9 +41,8 @@ function Login(props) {
     return (
         <>
             {props.navbar ? <NavBar /> : null}
-            <div id="login">
-                <h1>Login Popup</h1>
-                <h2>Welcome</h2>
+            <div className="access">
+                <h2>Login</h2>
                 <GoogleLogin
                     onSuccess={handleLogin}
                     onError={() => console.log('Login Failed')} />

@@ -44,13 +44,19 @@ function NavBar() {
                 </li>
             </div>
             <li>
-                <Link to="/profile"><CgProfile id="profile-icon"/></Link>
-            </li>
-            <li>
-                <Popup trigger={<a> 
-                    {auth.userEmail ?
-                        <button onClick={handleLogout}> Logout </button> : "Login"}
-                </a>}>
+                <Popup trigger={<a><CgProfile id="profile-icon"/></a>}>
+                    {auth.userEmail ? 
+                        <div className='access'>
+                            <Link to='/profile'>
+                                <button className='logged-in'>Profile</button>
+                            </Link>
+                            <Link to='/'>
+                                <button onClick={handleLogout} className='logged-in'> 
+                                    Logout 
+                                </button>
+                            </Link>
+                        </div>
+                        : ""}
                     {
                         auth.userEmail ? null :
                             <div>
