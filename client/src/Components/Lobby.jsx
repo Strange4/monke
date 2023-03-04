@@ -7,7 +7,7 @@ import './Styles/Popup.css'
  */
 function Lobby() {
     return (
-        <div id="lobby">
+        <div id="lobby" className='popup'>
             <h1>Lobby Popup</h1>
         </div>
     );

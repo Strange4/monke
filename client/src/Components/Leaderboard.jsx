@@ -12,7 +12,7 @@ function Leaderboard() {
     const date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
     const [loadingIndicator, leaderboard] = useFetch("leaderboard", "/api/leaderboard")
     return (
-        <div id="leaderboard">
+        <div id="leaderboard" className='popup'>
             <h1>Leaderboard</h1>
             <div id="rankings">
                 <div id="leaderboard-header">
@@ -25,10 +25,10 @@ function Leaderboard() {
                 {
                     loadingIndicator || leaderboard.map((user, i) => <RankListItem
                         user={user.username}
-                        picture={user.profilePicture}
-                        rank={user.rank}
-                        wpm={user.wpm}
-                        accuracy={user.accuracy}
+                        picture={user.picture_url}
+                        rank={i + 1}
+                        wpm={user.user_stats.wpm}
+                        accuracy={user.user_stats.accuracy}
                         date={`${date}`}
                         key={i} />)
                 }

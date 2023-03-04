@@ -27,10 +27,7 @@ async function fetchData(url) {
 async function postUserStatAPI(url, userStat) {
     let response = await fetch(url, {
         method: 'PUT',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
+        headers: { 'Accept': 'application/json', "Content-Type": "application/json" },
         body: JSON.stringify(userStat)
     });
     if (!response.ok) {
@@ -45,18 +42,18 @@ async function postUserStatAPI(url, userStat) {
  * @param {RequestInit?} fetchParams the parameters for the fetch request
  * @returns {[JSX.Element?, any?]}
  */
-function useFetch(cacheKey, url, fetchParams){
-    const {data, error, isLoading} = useQuery(cacheKey, async () => {
+function useFetch(cacheKey, url, fetchParams) {
+    const { data, error, isLoading } = useQuery(cacheKey, async () => {
         const response = await fetch(url, fetchParams);
-        if(!response.ok){
+        if (!response.ok) {
             throw new Error("There was an error in the response");
         }
         return await transformData(response);
     });
-    if(isLoading){
-        return [<Spinner key="spinner"/>, undefined];
+    if (isLoading) {
+        return [<Spinner key="spinner" />, undefined];
     }
-    if(error){
+    if (error) {
         return (
             [<div key="spinner">
                 <h1>There was an error contacting the server. Please try again later</h1>
@@ -70,11 +67,11 @@ function useFetch(cacheKey, url, fetchParams){
  * transforms the data type from a fetch response to it's sent content type
  * @param {Response} data the data that needs to be transformed to it's data type
  */
-async function transformData(response){
+async function transformData(response) {
     const contentType = response.headers.get("Content-Type");
-    if(contentType.match("json")){
+    if (contentType.match("json")) {
         return await response.json();
-    } else if(contentType.match("text")){
+    } else if (contentType.match("text")) {
         return await response.text()
     }
     return await response.blob();
