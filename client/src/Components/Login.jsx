@@ -1,10 +1,11 @@
 import './Styles/Login.css';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
     return (
         <div id="login">
             <h1>Login Popup</h1>
-            <button id="login-btn">Google Login Button</button>
+            <Link to="/profile" id="login-btn">Google Login Button</Link>
         </div>
     );
 };
