@@ -172,14 +172,14 @@ router.get(leaderboardEndpoint, async (req, res, next) => {
     // todo: set a max number of users to return
     User.find({}).limit(maxItems).populate({
         path: "user_stats", select: ["wpm", "accuracy"]
-    }).lean().exec((error, users) => {
+    }).sort({"user_stats.wpm": "desc"}).exec((error, users) => {
         if (error) {
             console.log(`there is a fucky wucky when fetching the leader board`);
             console.error(error);
             next(new createError.InternalServerError("Error while getting the leaderboard"));
             return;
         }
-        res.status(SUCCESS).json(users.sort({wpm: "desc"}));
+        res.status(SUCCESS).json(users);
     });
 });
 
