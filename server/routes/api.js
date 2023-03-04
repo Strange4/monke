@@ -15,27 +15,22 @@ import { quoteRouter } from "./quotes.js";
 import { getAverage } from "./util.js";
 
 import { getUserStats } from "../controller/mongoHelper.js";
-import bodyParser from "body-parser";
 import createHttpError from "http-errors";
 
 const router = express.Router();
 const database = new Database();
 
-router.use(express.json());
-
-router.use(bodyParser.json());
-router.use(bodyParser.urlencoded({ extended: false }));
-
 const userStatEnpoint = "/user_stat";
 const quoteEnpoint = "/quote";
 const userEnpoint = "/user";
 const leaderboardEndpoint = "/leaderboard";
-router.use(quoteEnpoint, quoteRouter);
 
 export const SUCCESS = 200;
 export const BAD_REQUEST = 400;
 export const INTERNAL_SE = 500;
 
+router.use(express.json());
+router.use(quoteEnpoint, quoteRouter);
 router.put(userStatEnpoint, async (req, res, next) => {
     let email = req.body.email;
     let newWpm = req.body.wpm;
