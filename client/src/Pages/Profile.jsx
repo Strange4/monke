@@ -63,12 +63,12 @@ const Profile = () => {
 
 
                 <div id="user-stats">
-                    <p>Avg. WPM: {profileData.wpm}</p>
-                    <p>Avg. ACC: {profileData.accuracy}</p>
-                    <p>Games: {profileData.games_count}</p>
-                    <p>Wins: {profileData.win}</p>
-                    <p>Loses: {profileData.lose}</p>
-                    <p>Draws: {profileData.draw}</p>
+                    <p><span className="label">Avg. WPM: </span> {profileData.wpm}</p>
+                    <p><span className="label">Avg. ACC: </span> {profileData.accuracy}</p>
+                    <p><span className="label">Games: </span> {profileData.games_count}</p>
+                    <p><span className="label">Wins: </span> {profileData.win}</p>
+                    <p><span className="label">Loses: </span> {profileData.lose}</p>
+                    <p><span className="label">Draws: </span> {profileData.draw}</p>
                 </div>
             </div>
         </div>

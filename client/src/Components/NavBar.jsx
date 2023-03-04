@@ -65,19 +65,6 @@ function NavBar() {
                     }
                 </Popup>
             </li>
-            {/* <li>
-                <Popup trigger={<a> 
-                    {auth.userEmail ?
-                        <button onClick={handleLogout}> Logout </button> : "Login"}
-                </a>}>
-                    {
-                        auth.userEmail ? null :
-                            <div>
-                                <Login navbar={false} />
-                            </div>
-                    }
-                </Popup>
-            </li> */}
         </div>
     );
 }
