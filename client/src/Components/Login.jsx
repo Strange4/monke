@@ -24,11 +24,9 @@ function Login(props) {
         const res = await fetch("/api/user", {
             method: "POST",
             body: JSON.stringify({
-                "user": {
-                    "username": data.user.username,
-                    "pic": data.user.pic,
-                    "email": data.user.email
-                }
+                username: data.user.username,
+                email: data.user.email,
+                "picture_url": data.user.pic,
             }),
             headers: { 'Accept': 'application/json', "Content-Type": "application/json" },
         });
