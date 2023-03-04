@@ -22,13 +22,16 @@ const userStatSchema = z.object({
 });
 
 export const Constraints = {
-    positiveNumber: (any) => {
-        return catchFunction(() => z.number().nonnegative().parse(any));
-    },
-    positiveInt: (any) => {
-        return catchFunction(() => z.number().nonnegative().int().parse(any));
-    }
+    positiveNumber: (any) => !isNaN(z.number().nonnegative().parse(any)),
+    positiveInt: (any) =>  !isNaN(z.number().nonnegative().int().parse(any)),
+    email: (any) => z.string().email().parse(any),
+    url: (any) => z.string().url().parse(any),
+    string: (any) => z.string().parse(any),
+    percentage: (any) => !isNaN(z.number().nonnegative().lte(100).parse(any)),
 }
+
+
+
 /**
  * @template T 
  * @param {() => T} someFunction 
