@@ -5,7 +5,7 @@
  */
 
 import Database from "../database/mongo.js"
-import {QUOTE, USER, USER_STAT, PIC} from "../database/mongo.js"
+import {QUOTE, USER, USER_STAT} from "../database/mongo.js"
 
 let db = new Database();
 
@@ -13,7 +13,7 @@ let db = new Database();
  * Function will query database for quotes with given difficulty then
  * pick and return one quote randomly from resulting list.
  * If said list is length of 1, return that single quote.
- * @param {number} difficultyVal : represents difficulty level of desired quotes
+ * @param {number} difficultyVal : represents difficulty level of desired quotes (1 to 5 inclusive)
  * @returns Object, is a json that holds the body of the quote.
  */
 async function getQuote(difficultyVal) {
@@ -27,11 +27,11 @@ async function getQuote(difficultyVal) {
         if (quotes.length > 0) {
             const quoteIndex = quotes.length > 1 ?
                 Math.floor(Math.random() * quotes.length) : 0;
-            return { "body": quotes[quoteIndex].quote };
+            return  quotes[quoteIndex].quote
         }
-        return { "body": "There are no quotes available with that difficulty." };
+        return  "There are no quotes available with that difficulty."
     }
-    return { "body": "The database is currently down so make do with this quote instead." };
+    return "The database is currently down so make do with this quote instead."
 }
 
 /**
@@ -39,35 +39,14 @@ async function getQuote(difficultyVal) {
  * @param {string} name, username of the new User. 
  * @returns boolean depending on if the username exists or not. 
  */
-async function getUserStats(name) {
+async function getUserStats(email) {
     try {
-        const databaseUser = await db.findOne(USER, { username: name });
+        const databaseUser = await db.findOne(USER, { email: email });
         if (databaseUser !== null) {
-            const stats = await db.findOne(USER_STAT, { user: databaseUser.id });
+            const stats = await db.findOne(USER_STAT, { _id: databaseUser.user_stats});
             return stats;
         } else {
-            console.log(`Could not find user with name: ${name}`);
-        }
-    } catch (err) {
-        console.error(err);
-    }
-}
-
-/**
- * Check to see in the database if the username exists or not.
- * @param {string} name, username of the new User. 
- * @returns boolean depending on if the username exists or not. 
- */
-async function checkName(name) {
-    try {
-        const nameQuery = await db.findOne(USER, { username: name });
-        // Name exists.
-        if (nameQuery !== null) {
-            return true;
-            // Name does not exists.
-        } else {
-            console.log(`Could not find user with name: ${name}`);
-            return false;
+            console.log(`Could not find user with email: ${email}`);
         }
     } catch (err) {
         console.error(err);
@@ -95,4 +74,4 @@ async function checkEmail(newEmail) {
     }
 }
 
-export { getQuote, getUserStats, checkName, checkEmail };
+export { getQuote, getUserStats, checkEmail };

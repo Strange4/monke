@@ -1,6 +1,6 @@
 import './Styles/GameText.css';
 
-function GameText({display}) {
+function GameText({ display }) {
 
     const caret = <span id="inputCaret"></span>;
 
@@ -10,7 +10,7 @@ function GameText({display}) {
             {
                 display.map((letter, index) => {
                     return (
-                        <span 
+                        <span
                             key={index}
                             className={`${letter.type} letter ${letter.current}`} >
                             {letter.current ? caret : undefined}

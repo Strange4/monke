@@ -4,6 +4,7 @@
  */
 
 import api from "./api.js";
+import authentication from "./authentication.js"
 import express from "express";
 
 const app = express();
@@ -19,6 +20,7 @@ function html (req, _, next) {
 }
 
 app.use("/api", api);
+app.use("/authentication", authentication);
 
 app.get("*", html, function(_, res) {
     res.sendFile("index.html", {root: "./client/build/"})
