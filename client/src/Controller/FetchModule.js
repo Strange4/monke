@@ -84,22 +84,20 @@ async function transformData(response) {
  * @param validateForm 
  * @param postImage 
  */
-function readImage(image, email, postImage) {
+function readImage(image, email, validateForm, postImage) {
+    console.log(image)
     if (validateForm(image)) {
         const fr = new FileReader();
         fr.readAsArrayBuffer(image);
 
         fr.onload = function () {
-            let formData = new FormData
+            let formData = new FormData()
             formData.append('image', image);
-            formData.append('username', username);
-            formData.append("fileName", image.name);
-            // let formData = {
-            //     image: image,
-            //     fileName: image.name,
-            //     email: email
-            // }
-            console.log(formData)
+            formData.append('email', email);
+            formData.append('fileName', image.name);
+            // console.log(formData.get('image'))
+            
+            // console.log(formData)
             postImage(formData);
         }
     }
@@ -108,9 +106,10 @@ function readImage(image, email, postImage) {
 
 async function postImageAPI(url, userInput) {
     let response = await fetch(url, {
-        method: 'PUT',
-        headers: { 'Accept': 'application/json', "Content-Type": "application/json" },
-        body: JSON.stringify(userInput)
+        method: 'POST',
+        headers: { 
+        },
+        body: userInput
     });
     if (response.ok) {
         console.log(`sent data successfully: ${JSON.stringify(userInput)}`);

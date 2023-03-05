@@ -86,11 +86,11 @@ const Profile = () => {
     const saveAvatar = async (e) => {
         e.preventDefault()
         let image = e.target.image.files[0]
-        // if (validateImageForm(image)) {
-        FetchModule.readImage(image, auth.userEmail, validateImageForm, postImage);
-        e.target.reset();
-        setEditingAvatar(false)
-        // }
+        if (validateImageForm(image)) {
+            FetchModule.readImage(image, auth.userEmail, validateImageForm, postImage);
+            // e.target.reset();
+            // setEditingAvatar(false)
+        }
     }
 
     async function postImage(data) {
