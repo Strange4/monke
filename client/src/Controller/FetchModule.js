@@ -77,5 +77,40 @@ async function transformData(response) {
     return await response.blob();
 }
 
+/**
+ * Helper function to read the given image, convert it and post it
+ * @param image 
+ * @param username 
+ * @param validateForm 
+ * @param postImage 
+ */
+function readImage(image, email, postImage) {
+    const fr = new FileReader();
+    fr.readAsArrayBuffer(image);
 
-export { fetchData, postUserStatAPI, useFetch };
+    fr.onload = function () {
+        let formData = new FormData();
+        formData.append('image', image);
+        formData.append("fileName", image.name);
+        formData.append("email", email)
+        postImage(formData);
+    }
+}
+
+async function postImageAPI(url, userInput) {
+    console.log(userInput)
+    let response = await fetch(url, {
+        method: 'POST',
+        headers: {
+        },
+        body: userInput
+    });
+    if (response.ok) {
+        console.log(`sent data successfully: ${JSON.stringify(userInput)}`);
+    } else {
+        throw Error("Something Went wrong posting data");
+    }
+}
+
+
+export { fetchData, postUserStatAPI, useFetch, readImage, postImageAPI };

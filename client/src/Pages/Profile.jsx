@@ -4,7 +4,8 @@ import NavBar from "../Components/NavBar";
 import "./Styles/Profile.css";
 import AuthContext from "../Context/AuthContext";
 import { useContext, useEffect, useState, useRef } from "react";
-import { RiImageEditFill, RiEdit2Fill, RiSave3Line } from "react-icons/ri";
+import { RiImageEditFill, RiEdit2Fill, RiSave3Line, RiCloseCircleLine } from "react-icons/ri";
+import * as FetchModule from "../Controller/FetchModule"
 
 const Profile = () => {
     const auth = useContext(AuthContext);
@@ -22,8 +23,10 @@ const Profile = () => {
         draw: 0,
         games_count: 0
     });
-    const [Editing, setEditing] = useState(false)
-    const [Feedback, setFeedback] = useState("")
+    const [EditingUsername, setEditingUsername] = useState(false)
+    const [EditingAvatar, setEditingAvatar] = useState(false)
+    const [UsernameFeedback, setUsernameFeedback] = useState("")
+    const [AvatarFeedback, setAvatarFeedback] = useState("")
     const usernameField = useRef()
 
     useEffect(() => {
@@ -43,14 +46,12 @@ const Profile = () => {
     }, []);
 
     function editUsername() {
-        console.log("modifying...")
-        setEditing(true)
+        setEditingUsername(true)
     }
 
     async function saveUsername() {
         if (validateUsername()) {
-            console.log("it was valid")
-            setEditing(false)
+            setEditingUsername(false)
             let newUsername = usernameField.current.textContent;
             let data = await fetch("/api/update_username", {
                 method: "PUT",
@@ -59,8 +60,7 @@ const Profile = () => {
             });
             setProfileData(await data.json());
         } else {
-            console.log("invalid")
-            setFeedback("Invalid username: \n * Usernames can consist of lowercase and capitals \n",
+            setUsernameFeedback("Invalid username: \n * Usernames can consist of lowercase and capitals \n",
                 "Usernames can consist of alphanumeric characters \n",
                 "Usernames can consist of underscore and hyphens and spaces\n",
                 "Cannot be two underscores, two hypens or two spaces in a row\n",
@@ -72,22 +72,51 @@ const Profile = () => {
         const username = usernameField.current.textContent;
         const usernameRegex = /^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$/;
         var validUsername = username.match(usernameRegex);
-        console.log("-" + username + "-")
         if (validUsername === null) {
             return false;
         }
-        setFeedback("")
+        setUsernameFeedback("")
         return true
     }
 
     function editAvatar() {
         console.log("editing avatar")
+        setEditingAvatar(true)
     }
 
     function saveAvatar(e) {
         e.preventDefault()
-        console.log("saving avatar")
-        console.log(e.target)
+        let image = e.target.image.files[0]
+        if (validateImageForm(image)) {
+            setEditingAvatar(false)
+        }
+        
+        FetchModule.readImage(image, auth.userEmail, validateImageForm, postImage);
+
+        e.target.reset();
+    }
+
+    async function postImage(data) {
+        await FetchModule.postImageAPI("/api/update_avatar", data);
+    }
+
+    /**
+     * Validates the given image form fields and sets the image feedback accordingly
+     * @param image 
+     * @returns 
+     */
+    function validateImageForm(image) {
+        if (!image?.image) {
+            setAvatarFeedback("Please select a valid image");
+            return false;
+        } else {
+            setAvatarFeedback("");
+            return true;
+        }
+    }
+
+    function cancelAvatar() {
+        setEditingAvatar(false)
     }
 
     return (
@@ -102,29 +131,42 @@ const Profile = () => {
                                 // eslint-disable-next-line max-len
                                 "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"}`}
                             alt="your profile image"></img>
-                        <RiImageEditFill id="edit-pic-icon" onClick={editAvatar} />
-
+                        {
+                            EditingAvatar ?
+                                <RiCloseCircleLine id="edit-pic-icon" onClick={cancelAvatar} />
+                                :
+                                <RiImageEditFill id="edit-pic-icon" onClick={editAvatar} />
+                        }
                     </div>
                     <div id="update-avatar">
                         <span className="label">Edit Profile: </span>
-                        <form id="image-picker-form" onSubmit={(e) => saveAvatar(e) }>
-                            <input type="file" id="avatar" name="image" accept="image/png, image/jpeg, image/jpg" />
-                            <input type="submit" id="imageSubmit" className="submit-btn" value="Save" />
-                        </form>
+                        {
+                            EditingAvatar ?
+                                <>
+                                    <form id="image-picker-form" onSubmit={(e) => saveAvatar(e)}>
+                                        <input type="file" id="avatar" name="image" accept="image/png, image/jpeg, image/jpg" />
+                                        <input type="submit" id="imageSubmit" className="submit-btn" value="Save" />
+                                    </form>
+                                    <p> {AvatarFeedback} </p>
+                                </>
+                                :
+                                null
+                        }
+
                     </div>
                     <div id="user-info">
                         <div id="username-info">
                             {
-                                Editing ?
+                                EditingUsername ?
                                     <>
                                         <RiSave3Line onClick={saveUsername} />
-                                        <p>{Feedback}</p>
+                                        <p>{UsernameFeedback}</p>
                                     </>
                                     :
                                     <RiEdit2Fill id="edit-name-icon" onClick={editUsername} />
                             }
                             <h2><span className="label">Name: </span></h2>
-                            <h2 contentEditable={Editing} ref={usernameField}>{profileData.username}</h2>
+                            <h2 contentEditable={EditingUsername} ref={usernameField}>{profileData.username}</h2>
                         </div>
                         <h2> <span className="label">Rank: </span> {profileData.rank}</h2>
                     </div>
