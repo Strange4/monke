@@ -28,6 +28,7 @@ export const Constraints = {
     url: (any) => catchFunction(() => z.string().url().parse(any)),
     string: (any) => catchFunction(() => z.string().parse(any)),
     percentage: (any) => catchFunction(() => !isNaN(z.number().nonnegative().lte(100).parse(any))),
+    date: (any) => catchFunction(() => z.date().parse(any))
 }
 
 

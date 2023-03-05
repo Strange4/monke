@@ -11,17 +11,18 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
     const auth = useContext(AuthContext);
     const [userData, setUserData] = useState({
         username: "",
-        email: auth.userEmail,
-        image:
+        picture_url:
         "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
-        wpm: 0,
-        max_wpm: 0,
-        accuracy: 0,
-        max_accuracy: 0,
-        win: 0,
-        lose: 0,
-        draw: 0,
-        games_count: 0
+        user_stats: {
+            wpm: 0,
+            max_wpm: 0,
+            accuracy: 0,
+            max_accuracy: 0,
+            win: 0,
+            lose: 0,
+            draw: 0,
+            games_count: 0
+        }
     });
 
     //temp
@@ -97,14 +98,11 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
      */
     async function postUserStats(result) {
         setUserStats(result);
-        let userStats = {
-            "username": userData.username,
-            "email": auth.userEmail,
-            "wpm": result.wpm,
-            "accuracy": result.accuracy,
-            "win": 0,
-            "lose": 0,
-            "draw": 0
+        const userStats = {
+            username: userData.username,
+            email: auth.userEmail,
+            wpm: result.wpm,
+            accuracy: result.accuracy
         };
 
         FetchModule.postUserStatAPI("/api/user_stat", userStats);
