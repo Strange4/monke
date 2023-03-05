@@ -155,7 +155,12 @@ router.post(userEnpoint, async (req, res, next) => {
             return;
         }
     }
-    res.status(SUCCESS).json((await user.populate("user_stats")).toObject());
+    user = await (await user.populate("user_stats")).toObject();
+    const rank = await UserStat.countDocuments({wpm: { "$lte": user.user_stats.wpm }});
+    res.status(SUCCESS).json({
+        rank,
+        ...user
+    });
 })
 
 /**
@@ -168,17 +173,11 @@ router.get(leaderboardEndpoint, async (req, res, next) => {
         return;
     }
     const maxItems = Constraints.positiveInt(req.query.max) || 10;
-
-    // todo: set a max number of users to return
+    
     User.find({}).limit(maxItems).populate({
-        path: "user_stats", select: ["wpm", "accuracy"]
-    }).sort({ "user_stats.wpm": "desc" }).exec((error, users) => {
-        if (error) {
-            console.log(`there is a fucky wucky when fetching the leader board`);
-            console.error(error);
-            next(new createError.InternalServerError("Error while getting the leaderboard"));
-            return;
-        }
+        path: "user_stats", select: ["wpm", "accuracy"],
+        options: { sort: {"user_stats.wpm": -1} }
+    }).lean().exec((_, users) => {
         res.status(SUCCESS).json(users);
     });
 });
