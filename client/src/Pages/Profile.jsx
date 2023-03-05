@@ -62,9 +62,10 @@ const Profile = () => {
         var validUsername = username.match(usernameRegex);
 
         if (validUsername === null) {
-            console.log("invalid");
+            setFeedback("Invalid username: \n * must have ... \n * must ...")
             return false;
-        } 
+        }
+        setFeedback("")
         return true
     }
 
@@ -86,7 +87,10 @@ const Profile = () => {
                         <div id="username-info">
                             {
                                 Editing ?
-                                    <RiSave3Line onClick={saveUsername} />
+                                    <>
+                                        <RiSave3Line onClick={saveUsername} />
+                                        <p>{Feedback}</p>
+                                    </>
                                     :
                                     <RiEdit2Fill id="edit-name-icon" onClick={editUsername} />
                             }
