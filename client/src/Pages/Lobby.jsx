@@ -21,7 +21,8 @@ const Home = () => {
             <NavBar />
             <div id="lobby-info">
                 <div id="players">
-                    <PlayerItem name="Katharina Helene Orfanidis"/>
+                    {/* tobe replaced with a dynamic list as players join */}
+                    <PlayerItem name="Name"/>
                     <PlayerItem name="Name"/>
                     <PlayerItem name="Name"/>
                     <PlayerItem name="Name"/>

@@ -8,6 +8,7 @@ const MultiplayerGame = () => {
         <div id="home">
             <NavBar />
             <div id="playing-players">
+                {/* to be replaced with a list of the players playing */}
                 <PlayerItem name="name"/>
                 <PlayerItem/>
                 <PlayerItem/>
@@ -18,7 +19,7 @@ const MultiplayerGame = () => {
                 <div id="mode-indicator">
                     <p>A time or percentage indicator will appear here depending on game mode</p>
                 </div>
-                <TypingScreen />
+                <TypingScreen/>
             </div>
         </div>
     );
