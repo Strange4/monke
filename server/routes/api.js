@@ -6,7 +6,6 @@
 import * as express from "express";
 import User from "../database/models/user.js";
 import mongoose from "mongoose";
-import UserStat from "../database/models/userStat.js";
 import { Constraints, userStatSchema } from "../database/validation.js";
 import createError from "http-errors";
 import Database from "../database/mongo.js";
@@ -16,6 +15,7 @@ import { getAverage } from "./util.js";
 
 import { getUserStats } from "../controller/mongoHelper.js";
 import createHttpError from "http-errors";
+import UserStatSchema from "../database/models/userStat.js";
 
 const router = express.Router();
 const database = new Database();
@@ -133,12 +133,11 @@ router.post(userEnpoint, async (req, res, next) => {
     if (user === null) {
         const username = req.body.username;
         const picture_url = req.body.picture_url;
-        const stats = await new UserStat().save();
+        
         user = new User({
             username,
             picture_url,
             email,
-            user_stats: stats._id
         });
         try {
             await user.save();
@@ -150,8 +149,8 @@ router.post(userEnpoint, async (req, res, next) => {
             return;
         }
     }
-    user = await (await user.populate("user_stats")).toObject();
-    const rank = await UserStat.countDocuments({wpm: { "$lte": user.user_stats.wpm }});
+    user = await user.toObject();
+    const rank = await User.countDocuments({wpm: { "$lte": user.user_stats.wpm }});
     res.status(SUCCESS).json({
         rank,
         ...user
@@ -168,13 +167,8 @@ router.get(leaderboardEndpoint, async (req, res, next) => {
         return;
     }
     const maxItems = Constraints.positiveInt(req.query.max) || 10;
-    
-    User.find({}).limit(maxItems).populate({
-        path: "user_stats", select: ["wpm", "accuracy"],
-        options: { sort: {"user_stats.wpm": -1} }
-    }).lean().exec((_,users) => {
-        res.status(SUCCESS).json(users);
-    });
+    const users = await User.find().limit(maxItems).sort({wpm: 'desc'}).lean();
+    res.status(SUCCESS).json(users);
 });
 
 function dbIsConnected() {

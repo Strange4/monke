@@ -18,5 +18,4 @@ const UserStatSchema = new Schema({
     "draw": { type: Number, default: 0, required: true, validate: Constraints.positiveInt },
 });
 
-const UserStat = mongoose.model("UserStat", UserStatSchema);
-export default UserStat;
+export default UserStatSchema;

@@ -34,7 +34,9 @@ const Profile = () => {
                     headers: { 'Accept': 'application/json', "Content-Type": "application/json" },
                     body: JSON.stringify({"email": auth.userEmail })
                 });
-                setProfileData(await data.json());
+                data = await data.json()
+                console.log(data);
+                setProfileData(data);
             } else {
                 console.log("PROFILE: user NOT logged in");
             }
