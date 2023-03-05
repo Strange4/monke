@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react';
 import checkAccess from './Controller/AuthHelper';
 import Profile from './Pages/Profile';
 import Lobby from './Pages/Lobby';
+import MultiplayerGame from './Pages/MultiplayerGame';
 
 const queryClient = new QueryClient();
 /**
@@ -46,6 +47,8 @@ function App() {
                                         <Login navbar={true} />
                                 } />
                             <Route path='/lobby' element={<Lobby/>}/>
+                            <Route path='/multiplayer-game' element={<MultiplayerGame/>}/>
+
                         </Routes>
                     </Router>
                     <div id="popup-root" />

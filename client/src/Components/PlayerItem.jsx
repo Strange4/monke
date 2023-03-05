@@ -8,7 +8,7 @@ import './Styles/PlayerItem.css';
 function PlayerItem(props) {
     return (
         <div className="player-info">
-            <img className="player-image" src={`${props.picture}`} /><p>{props.user}</p>
+            <img className="player-image" src={`${props.picture}`} />
             <p className='player-name'>{props.name}</p>
         </div>
     );

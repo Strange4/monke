@@ -1,0 +1,42 @@
+#playing-players {
+    display: flex;
+    flex-flow: row;
+    border: 2px solid white;
+    width: 80%;
+    height: 120px;
+    margin: auto;
+    margin-top: 20px;
+}
+
+#playing-players > div.player-info > img.player-name {
+    width: 10px;
+}
+
+#playing-players > div.player-info {
+    display: flex;
+    flex-flow: column;
+    border: none;
+    margin-top: 7px;
+}
+
+#mode-indicator {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+    height: 150px;
+}
+
+#multiplayer-info > div.center > div > div#chronometer{
+    visibility: hidden;
+    height: 0;
+}
+
+#multiplayer-info > div.center{
+    height: 300px;
+}
+
+/* use if wanting to hide popup */
+/* .App > #popup-root {
+    visibility: hidden;
+} */

@@ -3,7 +3,7 @@ import NavBar from "../Components/NavBar";
 import TypingScreen from "../Components/TypingScreen/TypingScreen";
 import GameSettings from "../Components/GameSettings";
 import { AiFillSetting } from "react-icons/ai"
-import PlayerItem from '../Components/Player';
+import PlayerItem from '../Components/PlayerItem';
 import { useState } from 'react';
 
 const Home = () => {
