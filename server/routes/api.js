@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /**
  * this module exports a router containing routes that will query
  * a mongo database and return the info as json to the user
@@ -176,6 +177,42 @@ router.get(leaderboardEndpoint, async (req, res, next) => {
         }
         res.status(SUCCESS).json(users);
     });
+});
+
+router.put("/update_user", async (req, res) => {
+    if (!dbIsConnected()) {
+        next(new createError.InternalServerError("Database is unavailable"));
+        return;
+    }
+    const email = Constraints.email(req.body.email);
+    if (!email) {
+        next(new createHttpError.BadRequest("Can't find or update the user because no email was provided"));
+        return;
+    }
+    let user = await User.findOne({ email: email });
+    // Create the user.
+    if (user) {
+        console.log(user)
+        // const username = req.body.username;
+        // const picture_url = req.body.picture_url;
+
+        // user = new User({
+        //     username,
+        //     picture_url,
+        //     email,
+        //     user_stats: user.user_stats
+        // });
+        // try {
+        //     await user.save();
+        // } catch (error) {
+        //     next(new createHttpError.BadRequest({
+        //         message: "values do not comply with user schema",
+        //         error: error.message
+        //     }));
+        //     return;
+        // }
+    }
+    res.status(SUCCESS).json("user updated");
 });
 
 function dbIsConnected() {
