@@ -58,11 +58,16 @@ const Profile = () => {
 
     function validateUsername() {
         const username = usernameField.current.textContent;
-        const usernameRegex = /^[a-zA-Z0-9]+$/;
+        const usernameRegex = /^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$/;
         var validUsername = username.match(usernameRegex);
-
+        console.log("-" + username + "-")
         if (validUsername === null) {
-            setFeedback("Invalid username: \n * must have ... \n * must ...")
+            console.log("invalid")
+            setFeedback("Invalid username: \n * Usernames can consist of lowercase and capitals \n",
+                "Usernames can consist of alphanumeric characters \n",
+                "Usernames can consist of underscore and hyphens and spaces\n",
+                "Cannot be two underscores, two hypens or two spaces in a row\n",
+                "Cannot have a underscore, hypen or space at the start or end")
             return false;
         }
         setFeedback("")
@@ -95,7 +100,7 @@ const Profile = () => {
                                     <RiEdit2Fill id="edit-name-icon" onClick={editUsername} />
                             }
                             <h2><span className="label">Name: </span></h2>
-                            <h2 contentEditable={Editing} ref={usernameField}> {profileData.username} </h2>
+                            <h2 contentEditable={Editing} ref={usernameField}>{profileData.username}</h2>
                         </div>
                         <h2> <span className="label">Rank: </span> {profileData.rank}</h2>
                     </div>
