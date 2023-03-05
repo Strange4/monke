@@ -80,6 +80,16 @@ const Profile = () => {
         return true
     }
 
+    function editAvatar() {
+        console.log("editing avatar")
+    }
+
+    function saveAvatar(e) {
+        e.preventDefault()
+        console.log("saving avatar")
+        console.log(e.target)
+    }
+
     return (
         <div id="home">
             <NavBar />
@@ -92,7 +102,15 @@ const Profile = () => {
                                 // eslint-disable-next-line max-len
                                 "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"}`}
                             alt="your profile image"></img>
-                        <RiImageEditFill id="edit-pic-icon" onClick={editUsername} />
+                        <RiImageEditFill id="edit-pic-icon" onClick={editAvatar} />
+
+                    </div>
+                    <div id="update-avatar">
+                        <span className="label">Edit Profile: </span>
+                        <form id="image-picker-form" onSubmit={(e) => saveAvatar(e) }>
+                            <input type="file" id="avatar" name="image" accept="image/png, image/jpeg, image/jpg" />
+                            <input type="submit" id="imageSubmit" className="submit-btn" value="Save" />
+                        </form>
                     </div>
                     <div id="user-info">
                         <div id="username-info">
@@ -120,13 +138,6 @@ const Profile = () => {
                     <p><span className="label">Wins: </span> {profileData.win}</p>
                     <p><span className="label">Loses: </span> {profileData.lose}</p>
                     <p><span className="label">Draws: </span> {profileData.draw}</p>
-                </div>
-                <div id="update-user">
-                    <span className="label">Edit Profile: </span>
-                    <form id="image-picker-form" onSubmit={(e) => { handleSubmit(e) }}>
-                        <input type="file" id="avatar" name="image" accept="image/png, image/jpeg, image/jpg" />
-                        <input type="submit" id="imageSubmit" className="submit-btn" value="Submit" />
-                    </form>
                 </div>
             </div>
         </div>
