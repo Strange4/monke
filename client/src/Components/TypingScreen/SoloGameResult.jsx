@@ -29,7 +29,7 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
         let data = await fetch("/api/user", {
             method: "POST",
             headers: { "Accept": "application/json", "Content-Type": "application/json" },
-            body: JSON.stringify({ "user": { "email": auth.userEmail } })
+            body: JSON.stringify({ "email": auth.userEmail })
         })
         setUserData(await data.json())
     }

@@ -7,7 +7,7 @@ import * as express from "express";
 import User from "../database/models/user.js";
 import mongoose from "mongoose";
 import UserStat from "../database/models/userStat.js";
-import { userSchema, userStatSchema } from "../database/validation.js";
+import { Constraints, userStatSchema } from "../database/validation.js";
 import createError from "http-errors";
 import Database from "../database/mongo.js";
 import { USER_STAT } from "../database/mongo.js";
@@ -15,27 +15,22 @@ import { quoteRouter } from "./quotes.js";
 import { getAverage } from "./util.js";
 
 import { getUserStats } from "../controller/mongoHelper.js";
-import bodyParser from "body-parser";
 import createHttpError from "http-errors";
 
 const router = express.Router();
 const database = new Database();
 
-router.use(express.json());
-
-router.use(bodyParser.json());
-router.use(bodyParser.urlencoded({ extended: false }));
-
 const userStatEnpoint = "/user_stat";
 const quoteEnpoint = "/quote";
 const userEnpoint = "/user";
 const leaderboardEndpoint = "/leaderboard";
-router.use(quoteEnpoint, quoteRouter);
 
 export const SUCCESS = 200;
 export const BAD_REQUEST = 400;
 export const INTERNAL_SE = 500;
 
+router.use(express.json());
+router.use(quoteEnpoint, quoteRouter);
 router.put(userStatEnpoint, async (req, res, next) => {
     let email = req.body.email;
     let newWpm = req.body.wpm;
@@ -124,92 +119,55 @@ router.put(userStatEnpoint, async (req, res, next) => {
  * and their game statistics
  */
 router.post(userEnpoint, async (req, res, next) => {
-    if (database.isConnected()) {
-        const email = req.body.user.email;
-        let user = await User.findOne({ email: email })
-        // Create the user.
-        if (user === null) {
-            const name = req.body.user.username;
-            const pic = req.body.user.pic;
-
-            //Stat creation
-            const stats = new UserStat({
-                "max_wpm": 0,
-                "wpm": 0,
-                "max_accuracy": 0,
-                "accuracy": 0,
-                "games_count": 0,
-                "win": 0,
-                "lose": 0,
-                "draw": 0,
-                "date": null
-            });
-
-            try {
-                userStatSchema.parse(stats)
-                let userStatsObject = await UserStat.create(stats)
-                await userStatsObject.save()
-                // create the user  
-                const newUser = new User({
-                    "username": name,
-                    "picture_url": pic,
-                    "email": email,
-                    "user_stats": userStatsObject._id
-                });
-
-                try {
-                    userSchema.parse(newUser);
-                    const userObject = await User.create(newUser);
-                    await userObject.save();
-                } catch (err) {
-                    console.log(err)
-                    res.json({ "error": "values do not comply with user schema" });
-                    return;
-                }
-            } catch (err) {
-                res.json({ "error": "values do not comply with user stats schema" });
-                return;
-            }
-        }
-
-        // query for user that matches username
-        user = await User.findOne({ email: email });
-        // query for user's game statistics
-        const stats = await getUserStats(user.email);
-
-        //TODO PROBLEM HERE
-        let data = {
-            "username": user.username,
-            "image": user.picture_url,
-            "wpm": stats?.wpm || 0,
-            "max_wpm": stats?.max_wpm || 0,
-            "accuracy": stats?.accuracy || 0,
-            "max_accuracy": stats?.max_accuracy || 0,
-            "games_count": stats?.games_count || 0,
-            "win": stats?.win || 0,
-            "lose": stats?.lose || 0,
-            "draw": stats?.draw || 0,
-            "date": stats.date || "could not retrieve date"
-        };
-        res.status(SUCCESS).json(data);
-    } else {
-        next(createError(INTERNAL_SE, { "error": "Database unavailable, try again later." }));
+    if (!dbIsConnected()) {
+        next(new createError.InternalServerError("Database is unavailable"));
+        return;
     }
+    const email = Constraints.email(req.body.email);
+    if(!email){
+        next(new createHttpError.BadRequest("Can't find or create the user because no email was provided"));
+        return;
+    }
+    let user = await User.findOne({ email: email });
+    // Create the user.
+    if (user === null) {
+        const username = req.body.username;
+        const picture_url = req.body.picture_url;
+        const stats = await new UserStat().save();
+        user = new User({
+            username,
+            picture_url,
+            email,
+            user_stats: stats._id
+        });
+        try {
+            await user.save();
+        } catch (error) {
+            next(new createHttpError.BadRequest({
+                message: "values do not comply with user stats schema",
+                error: error.message
+            }));
+            return;
+        }
+    }
+    res.status(SUCCESS).json((await user.populate("user_stats")).toObject());
 })
 
 /**
  * Get endpoint that returns a hardcoded json object containing
  * leaderboard info such as rank, wpm, username and temporary profileURL
  */
-router.get(leaderboardEndpoint, async (_, res, next) => {
+router.get(leaderboardEndpoint, async (req, res, next) => {
     if (!dbIsConnected()) {
         next(new createError.InternalServerError("Error while getting the leaderboard"));
         return;
     }
+    const maxItems = Constraints.positiveInt(req.query.max) || 10;
+    
     // todo: set a max number of users to return
-    User.find({}).populate({
+    User.find({}).limit(maxItems).populate({
         path: "user_stats", select: ["wpm", "accuracy"]
-    }).lean().exec((error, users) => {
+    }).sort({"user_stats.wpm": "desc"}).exec((error, users) => {
         if (error) {
             console.log(`there is a fucky wucky when fetching the leader board`);
             console.error(error);
