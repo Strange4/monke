@@ -7,7 +7,7 @@ import AuthContext from './Context/AuthContext';
 import { useState, useEffect } from 'react';
 import checkAccess from './Controller/AuthHelper';
 import Profile from './Pages/Profile';
-
+import Lobby from './Pages/Lobby';
 
 const queryClient = new QueryClient();
 /**
@@ -45,6 +45,7 @@ function App() {
                                         :
                                         <Login navbar={true} />
                                 } />
+                            <Route path='/lobby' element={<Lobby/>}/>
                         </Routes>
                     </Router>
                     <div id="popup-root" />

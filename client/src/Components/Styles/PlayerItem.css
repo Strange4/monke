@@ -1,0 +1,23 @@
+.player-info {
+    display: flex;
+    flex-wrap: wrap;
+    flex-flow: row;
+    border: 2px solid white;
+    align-items: center;
+    max-height: 84px;
+    min-width: 200px;
+}
+
+.player-image {
+    width: 80px;
+    min-width: 80px;
+    height: 80px;
+    min-height: 80px;
+    border: 2px solid white;
+}
+
+.player-name {
+    max-width: 300px;
+    min-width: 120px;
+    margin: 5px;
+}

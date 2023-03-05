@@ -1,0 +1,50 @@
+#lobby-info {
+    position: relative;
+    display: flex;
+    border: 2px solid white;
+    width: 100%;
+    min-width: 400px;
+    max-width: 1000px;
+    height: 50vh;
+    min-height: 500px;
+    max-height: 500px;
+    margin: auto;
+    margin-top: 20px;
+}
+
+#players {
+    position: relative;
+    border: 2px solid white;
+    width: 30%;
+    min-width: 200px;
+}
+
+#lobby-settings-icon {
+    position: absolute;
+    right: 0;
+    margin: 10px;
+    width: 2em;
+    height: 2em;
+}
+
+#invite-btn {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    font-size: 2em;
+    width: 100%;
+    height: 56px;
+}
+
+#play-btn {
+    position: absolute;
+    bottom: 0;
+    width: 150px;
+    height: 56px;
+    right: 0;
+    font-size: 2em;
+}
+
+#lobby-settings {
+    margin-right: 70px;
+}

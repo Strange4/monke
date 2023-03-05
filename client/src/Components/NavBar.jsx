@@ -2,7 +2,7 @@ import './Styles/NavBar.css';
 import { Link } from 'react-router-dom';
 import Popup from 'reactjs-popup';
 import Leaderboard from './Leaderboard';
-import Lobby from './Lobby';
+import Lobby from './LobbyPopup';
 import Login from './Login';
 import logo from "../Assets/keyboard-champions-logo/svg/logo-no-background.svg"
 import { GiCrenelCrown } from "react-icons/gi";
