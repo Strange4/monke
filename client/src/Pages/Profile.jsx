@@ -83,14 +83,14 @@ const Profile = () => {
         setEditingAvatar(true)
     }
 
-    function saveAvatar(e) {
+    const saveAvatar = async (e) => {
         e.preventDefault()
         let image = e.target.image.files[0]
-        if (validateImageForm(image)) {
-            setEditingAvatar(false)
-            FetchModule.readImage(image, auth.userEmail, postImage);
-            e.target.reset();
-        }
+        // if (validateImageForm(image)) {
+        FetchModule.readImage(image, auth.userEmail, validateImageForm, postImage);
+        e.target.reset();
+        setEditingAvatar(false)
+        // }
     }
 
     async function postImage(data) {

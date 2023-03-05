@@ -85,18 +85,25 @@ async function transformData(response) {
  * @param postImage 
  */
 function readImage(image, email, postImage) {
-    const fr = new FileReader();
-    console.log(image)
-    fr.readAsArrayBuffer(image);
-    console.log(image)
-    fr.onload = function () {
-        let formData = {
-            image: image,
-            fileName: image.name,
-            email: email
+    if (validateForm(image)) {
+        const fr = new FileReader();
+        fr.readAsArrayBuffer(image);
+
+        fr.onload = function () {
+            let formData = new FormData
+            formData.append('image', image);
+            formData.append('username', username);
+            formData.append("fileName", image.name);
+            // let formData = {
+            //     image: image,
+            //     fileName: image.name,
+            //     email: email
+            // }
+            console.log(formData)
+            postImage(formData);
         }
-        postImage(formData);
     }
+
 }
 
 async function postImageAPI(url, userInput) {

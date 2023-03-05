@@ -14,10 +14,14 @@ import Database from "../database/mongo.js";
 import { USER_STAT } from "../database/mongo.js";
 import { quoteRouter } from "./quotes.js";
 import { getAverage } from "./util.js";
+import { ImgParser } from "./validation.js";
 
 import { getUserStats } from "../controller/mongoHelper.js";
 import createHttpError from "http-errors";
-
+import { Azure } from "../database/azure.js"
+import multer from 'multer';
+const upload = multer();
+const azure = Azure.getAzureInstance();
 const router = express.Router();
 const database = new Database();
 
@@ -179,12 +183,57 @@ router.get(leaderboardEndpoint, async (req, res, next) => {
     });
 });
 
-router.put("/update_avatar", async (req, res) => {
+router.post("/update_avatar", upload.single('image'), async (req, res) => {
     if (!dbIsConnected()) {
         next(new createError.InternalServerError("Database is unavailable"));
         return;
     }
-    console.log(req.body)
+    //Image validation
+    if (req.file === undefined) {
+        console.log("Image is undefined.");
+        res.status(400).send(`<h1>400! Picture could not be uploaded to the database. Please selected a good image.</h1>`);
+    } else {
+        console.log(req.file)
+        try {
+            ImgParser.parse(req.file);
+
+            // Upload to azure
+            const blobName = req.body.fileName;
+            const blobClient = azure.getContainerClient().getBlockBlobClient(blobName);
+            //set mimetype as determined from browser with file upload control
+            const options = { blobHTTPHeaders: { blobContentType: req.file.mimetype } };
+            await blobClient.uploadData(req.file.buffer, options);
+
+            console.log("Picture uploaded to Azure successfully");
+
+            // Uploading data to mongodb.
+            let url = azure.getBlobPublicUrl() + blobName;
+            // let data;
+            // let mongoData = {
+            //     username: req.body.username,
+            //     pictureURI: url
+            // }
+            console.log(url)
+            // try {
+            // data = ImageURLParser.parse(mongoData);
+            // } catch (err) {
+            //     return;
+            // }
+            // let mongoPicture = await PictureModel.create(data);
+            //DO UPDATING HERE
+            // await mongoPicture.save();
+
+            console.log("picture URL upload to mongo succesful");
+            const message = "Picture uploaded to Azure and Mongo successfully";
+            console.log(message);
+            res.status(200).send(message);
+        }
+        catch (err) {
+            console.error(`Image validation error: ${err}`);
+            res.status(400).send(`<h1>400! Picture could not be uploaded to the database. Please selected a good image.</h1>`);
+        }
+    }
+
 })
 
 router.put("/update_username", async (req, res) => {
