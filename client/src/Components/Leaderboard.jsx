@@ -12,7 +12,7 @@ function Leaderboard() {
     const date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
     const [loadingIndicator, leaderboard] = useFetch("leaderboard", "/api/leaderboard")
     return (
-        <div id="leaderboard">
+        <div id="leaderboard" className='popup'>
             <h1>Leaderboard</h1>
             <div id="rankings">
                 <div id="leaderboard-header">

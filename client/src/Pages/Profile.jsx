@@ -42,28 +42,33 @@ const Profile = () => {
         <div id="home">
             <NavBar />
             <div id="profile">
-                <div id="image">
-                    <img id="profile-pic"
-                        src={`${profileData.image ?
-                            profileData.image :
+                <div id="user">
+                    <div id="image">
+                        <img id="profile-pic"
+                            src={`${profileData.image ?
+                                profileData.image :
                             // eslint-disable-next-line max-len
-                            "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"}`}
-                        alt="your profile image"></img>
-                    <RiImageEditFill id="edit-icon" />
-                    <RiImageEditFill id="edit-pic-icon" />
+                                "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"}`}
+                            alt="your profile image"></img>
+                        <RiImageEditFill id="edit-pic-icon" />
+                    </div>
+                    <div id="user-info">
+                        <h2> 
+                            <span className="label">Name: </span> 
+                            {profileData.username} <RiEdit2Fill id="edit-name-icon" />
+                        </h2>
+                        <h2> <span className="label">Rank: </span> {profileData.rank}</h2>
+                    </div>
                 </div>
 
-                <div id="user-info">
-                    <h2>Name: {profileData.username} <RiEdit2Fill id="edit-name-icon" /></h2>
-                    <h2>Rank: {profileData.rank}</h2>
-                </div>
+
                 <div id="user-stats">
-                    <p>Avg. WPM: {profileData.wpm}</p>
-                    <p>Avg. ACC: {profileData.accuracy}</p>
-                    <p>Games: {profileData.games_count}</p>
-                    <p>Wins: {profileData.win}</p>
-                    <p>Loses: {profileData.lose}</p>
-                    <p>Draws: {profileData.draw}</p>
+                    <p><span className="label">Avg. WPM: </span> {profileData.wpm}</p>
+                    <p><span className="label">Avg. ACC: </span> {profileData.accuracy}</p>
+                    <p><span className="label">Games: </span> {profileData.games_count}</p>
+                    <p><span className="label">Wins: </span> {profileData.win}</p>
+                    <p><span className="label">Loses: </span> {profileData.lose}</p>
+                    <p><span className="label">Draws: </span> {profileData.draw}</p>
                 </div>
             </div>
         </div>
