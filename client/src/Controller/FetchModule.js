@@ -86,24 +86,24 @@ async function transformData(response) {
  */
 function readImage(image, email, postImage) {
     const fr = new FileReader();
+    console.log(image)
     fr.readAsArrayBuffer(image);
-
+    console.log(image)
     fr.onload = function () {
-        let formData = new FormData();
-        formData.append('image', image);
-        formData.append("fileName", image.name);
-        formData.append("email", email)
+        let formData = {
+            image: image,
+            fileName: image.name,
+            email: email
+        }
         postImage(formData);
     }
 }
 
 async function postImageAPI(url, userInput) {
-    console.log(userInput)
     let response = await fetch(url, {
-        method: 'POST',
-        headers: {
-        },
-        body: userInput
+        method: 'PUT',
+        headers: { 'Accept': 'application/json', "Content-Type": "application/json" },
+        body: JSON.stringify(userInput)
     });
     if (response.ok) {
         console.log(`sent data successfully: ${JSON.stringify(userInput)}`);

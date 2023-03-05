@@ -179,6 +179,14 @@ router.get(leaderboardEndpoint, async (req, res, next) => {
     });
 });
 
+router.put("/update_avatar", async (req, res) => {
+    if (!dbIsConnected()) {
+        next(new createError.InternalServerError("Database is unavailable"));
+        return;
+    }
+    console.log(req.body)
+})
+
 router.put("/update_username", async (req, res) => {
     if (!dbIsConnected()) {
         next(new createError.InternalServerError("Database is unavailable"));
@@ -198,10 +206,9 @@ router.put("/update_username", async (req, res) => {
         let user = await User.findOneAndUpdate(
             { email: email }, { username: newUsername }, { returnNewDocument: true }
         );
-        
+
         try {
             await user.save();
-            console.log(user)
         } catch (error) {
             next(new createHttpError.BadRequest({
                 message: "values do not comply with user stats schema",
@@ -211,8 +218,6 @@ router.put("/update_username", async (req, res) => {
         }
         res.status(SUCCESS).json("user updated");
     } else {
-        console.log("failed")
-        console.log(newUsername)
         next(
             new createHttpError.BadRequest(
                 "Can't update the user because the username provided was invalid"

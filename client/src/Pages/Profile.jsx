@@ -80,7 +80,6 @@ const Profile = () => {
     }
 
     function editAvatar() {
-        console.log("editing avatar")
         setEditingAvatar(true)
     }
 
@@ -89,11 +88,9 @@ const Profile = () => {
         let image = e.target.image.files[0]
         if (validateImageForm(image)) {
             setEditingAvatar(false)
+            FetchModule.readImage(image, auth.userEmail, postImage);
+            e.target.reset();
         }
-        
-        FetchModule.readImage(image, auth.userEmail, validateImageForm, postImage);
-
-        e.target.reset();
     }
 
     async function postImage(data) {
@@ -106,7 +103,7 @@ const Profile = () => {
      * @returns 
      */
     function validateImageForm(image) {
-        if (!image?.image) {
+        if (!image) {
             setAvatarFeedback("Please select a valid image");
             return false;
         } else {
@@ -139,7 +136,6 @@ const Profile = () => {
                         }
                     </div>
                     <div id="update-avatar">
-                        <span className="label">Edit Profile: </span>
                         {
                             EditingAvatar ?
                                 <>
