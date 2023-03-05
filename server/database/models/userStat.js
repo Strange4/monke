@@ -15,7 +15,7 @@ const UserStatSchema = new Schema({
     "games_count": { type: Number, default: 0, required: true, validate: Constraints.positiveInt },
     "win": { type: Number, default: 0, required: true, validate: Constraints.positiveInt },
     "lose": { type: Number, default: 0, required: true, validate: Constraints.positiveInt },
-    "draw": { type: Number, default: 0, required: true, validate: Constraints.positiveInt }
+    "draw": { type: Number, default: 0, required: true, validate: Constraints.positiveInt },
 });
 
 const UserStat = mongoose.model("UserStat", UserStatSchema);
