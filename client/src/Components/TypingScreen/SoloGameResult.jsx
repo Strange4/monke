@@ -39,7 +39,6 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
             if (isOpen === true) {
                 const results = await computeResults(timer.time().s, originalText, displayText);
                 setUserStats(results);
-                // postUserStats(results);
             }
         })()
     }, [isOpen]);
@@ -60,7 +59,7 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
         let loggedIn = await auth.checkAccess()
         if (loggedIn) {
             console.log(`logged in as ${auth.userEmail}, posting result`)
-            fetchUserData()
+            await fetchUserData()
             postUserStats(result);
         } else {
             console.log("not logged in, skipping user stats posting")

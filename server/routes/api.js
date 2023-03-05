@@ -125,7 +125,7 @@ router.post(userEnpoint, async (req, res, next) => {
         return;
     }
     const email = Constraints.email(req.body.email);
-    if(!email){
+    if (!email) {
         next(new createHttpError.BadRequest("Can't find or create the user because no email was provided"));
         return;
     }
@@ -164,11 +164,11 @@ router.get(leaderboardEndpoint, async (req, res, next) => {
         return;
     }
     const maxItems = Constraints.positiveInt(req.query.max) || 10;
-    
+
     // todo: set a max number of users to return
     User.find({}).limit(maxItems).populate({
         path: "user_stats", select: ["wpm", "accuracy"]
-    }).sort({"user_stats.wpm": "desc"}).exec((error, users) => {
+    }).sort({ "user_stats.wpm": "desc" }).exec((error, users) => {
         if (error) {
             console.log(`there is a fucky wucky when fetching the leader board`);
             console.error(error);
@@ -179,40 +179,47 @@ router.get(leaderboardEndpoint, async (req, res, next) => {
     });
 });
 
-router.put("/update_user", async (req, res) => {
+router.put("/update_username", async (req, res) => {
     if (!dbIsConnected()) {
         next(new createError.InternalServerError("Database is unavailable"));
         return;
     }
     const email = Constraints.email(req.body.email);
     if (!email) {
-        next(new createHttpError.BadRequest("Can't find or update the user because no email was provided"));
+        next(
+            new createHttpError.BadRequest(
+                "Can't find or update the user because no email was provided"
+            )
+        );
         return;
     }
-    let user = await User.findOne({ email: email });
-    // Create the user.
-    if (user) {
-        console.log(user)
-        // const username = req.body.username;
-        // const picture_url = req.body.picture_url;
-
-        // user = new User({
-        //     username,
-        //     picture_url,
-        //     email,
-        //     user_stats: user.user_stats
-        // });
-        // try {
-        //     await user.save();
-        // } catch (error) {
-        //     next(new createHttpError.BadRequest({
-        //         message: "values do not comply with user schema",
-        //         error: error.message
-        //     }));
-        //     return;
-        // }
+    let newUsername = req.body.username;
+    if (newUsername) {
+        let user = await User.findOneAndUpdate(
+            { email: email }, { username: newUsername }, { returnNewDocument: true }
+        );
+        
+        try {
+            await user.save();
+            console.log(user)
+        } catch (error) {
+            next(new createHttpError.BadRequest({
+                message: "values do not comply with user stats schema",
+                error: error.message
+            }));
+            return;
+        }
+        res.status(SUCCESS).json("user updated");
+    } else {
+        console.log("failed")
+        console.log(newUsername)
+        next(
+            new createHttpError.BadRequest(
+                "Can't update the user because the username provided was invalid"
+            )
+        );
+        return;
     }
-    res.status(SUCCESS).json("user updated");
 });
 
 function dbIsConnected() {

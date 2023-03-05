@@ -47,12 +47,24 @@ const Profile = () => {
         setEditing(true)
     }
 
-    function saveUsername() {
+    async function saveUsername() {
         if (validateUsername()) {
             console.log("it was valid")
             setEditing(false)
+            let newUsername = usernameField.current.textContent;
+            let data = await fetch("/api/update_username", {
+                method: "PUT",
+                headers: { 'Accept': 'application/json', "Content-Type": "application/json" },
+                body: JSON.stringify({ email: auth.userEmail, username: newUsername })
+            });
+            setProfileData(await data.json());
         } else {
-            //TODO display warning to the user
+            console.log("invalid")
+            setFeedback("Invalid username: \n * Usernames can consist of lowercase and capitals \n",
+                "Usernames can consist of alphanumeric characters \n",
+                "Usernames can consist of underscore and hyphens and spaces\n",
+                "Cannot be two underscores, two hypens or two spaces in a row\n",
+                "Cannot have a underscore, hypen or space at the start or end")
         }
     }
 
@@ -62,12 +74,6 @@ const Profile = () => {
         var validUsername = username.match(usernameRegex);
         console.log("-" + username + "-")
         if (validUsername === null) {
-            console.log("invalid")
-            setFeedback("Invalid username: \n * Usernames can consist of lowercase and capitals \n",
-                "Usernames can consist of alphanumeric characters \n",
-                "Usernames can consist of underscore and hyphens and spaces\n",
-                "Cannot be two underscores, two hypens or two spaces in a row\n",
-                "Cannot have a underscore, hypen or space at the start or end")
             return false;
         }
         setFeedback("")
