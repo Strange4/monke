@@ -4,10 +4,10 @@ import { useContext } from "react";
 import AuthContext from "../Context/AuthContext";
 import NavBar from './NavBar';
 
+
 function Login(props) {
-
     const auth = useContext(AuthContext);
-
+    
     async function handleLogin(googleData) {
         auth.setToken(googleData.credential)
         const res = await fetch("/authentication/auth", {
@@ -19,10 +19,8 @@ function Login(props) {
             },
         });
         console.log(res.status)
-        // if (res.status === 200) {
         const data = await res.json();
         await setUserData(data)
-        // }
     }
 
     async function setUserData(data) {

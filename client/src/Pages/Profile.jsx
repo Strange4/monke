@@ -6,10 +6,13 @@ import AuthContext from "../Context/AuthContext";
 import { useContext, useEffect, useState, useRef } from "react";
 import { RiImageEditFill, RiEdit2Fill, RiSave3Line, RiCloseCircleLine } from "react-icons/ri";
 import * as FetchModule from "../Controller/FetchModule"
+import { useNavigate } from "react-router-dom";
+// import { useHistory } from 'react-router-dom';
+// import { withRouter } from "react-router-dom";
 
-const Profile = () => {
+const Profile = (props) => {
     const auth = useContext(AuthContext);
-
+    // const navigate = useNavigate();
     const [profileData, setProfileData] = useState({
         username: "",
         picture_url:
@@ -31,9 +34,11 @@ const Profile = () => {
     const [UsernameFeedback, setUsernameFeedback] = useState("")
     const [AvatarFeedback, setAvatarFeedback] = useState("")
     const usernameField = useRef()
+    const navigate = useNavigate()
 
     useEffect(() => {
         (async () => {
+            console.log(auth.userEmail)
             if (auth.userEmail) {
                 console.log(auth.token)
                 let data = await fetch("/api/user", {
@@ -47,6 +52,9 @@ const Profile = () => {
                 });
                 data = await data.json()
                 setProfileData(data);
+            } else if (props.redirect && !auth.userEmail) {
+                console.log("here")
+                navigate("/");
             }
         })();
     }, []);
