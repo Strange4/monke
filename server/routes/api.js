@@ -219,7 +219,7 @@ router.put("/update_username", async (req, res) => {
             }));
             return;
         }
-        res.status(SUCCESS).json("user updated");
+        res.status(200).json("user updated");
     } else {
         next(
             new createHttpError.BadRequest(
