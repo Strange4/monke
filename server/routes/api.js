@@ -46,7 +46,7 @@ router.put(userStatEnpoint, async (req, res, next) => {
     user.user_stats.games_count += 1;
 
     // updates the average of that value if it is defined only
-    const updated = {
+    let updated = {
         ...(wpm && { wpm: getAverage(user.user_stats.wpm, wpm, user.user_stats.games_count) }),
         ...(accuracy && { accuracy: getAverage(user.user_stats.accuracy, accuracy, user.user_stats.games_count) }),
         ...(win && { win: getAverage(user.user_stats.win, win, user.user_stats.games_count) }),
@@ -58,7 +58,7 @@ router.put(userStatEnpoint, async (req, res, next) => {
         updated.max_wpm = Math.max(user.user_stats.max_wpm, wpm);
         updated.max_accuracy = Math.max(user.user_stats.max_accuracy, accuracy);
     }
-    user.user_stats = {...user.user_stats, ...updated};
+    user.user_stats = updated;
     try{
         await user.save();
     } catch(error){
