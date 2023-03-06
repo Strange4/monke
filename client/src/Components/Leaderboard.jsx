@@ -1,8 +1,7 @@
 import './Styles/Leaderboard.css';
 import './Styles/Popup.css'
-import { useEffect, useState } from 'react';
 import RankListItem from './RankListItem';
-import * as FetchModule from "../Controller/FetchModule";
+import { useFetch } from '../Controller/FetchModule';
 
 /**
  * Displays the users along with their stats to the leaderboard
@@ -11,18 +10,9 @@ import * as FetchModule from "../Controller/FetchModule";
 function Leaderboard() {
     const current = new Date();
     const date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
-
-    const [leaderboard, setLeaderboard] = useState([]);
-    const { loadingPlaceHolder, sendRequest } = FetchModule.useFetch("/api/leaderboard");
-
-    useEffect(() => {
-        sendRequest((data) => {
-            setLeaderboard(data);
-        });
-    }, []);
-
+    const [loadingIndicator, leaderboard] = useFetch("leaderboard", "/api/leaderboard")
     return (
-        <div id="leaderboard">
+        <div id="leaderboard" className='popup'>
             <h1>Leaderboard</h1>
             <div id="rankings">
                 <div id="leaderboard-header">
@@ -33,13 +23,12 @@ function Leaderboard() {
                     <p>Date</p>
                 </div>
                 {
-                    loadingPlaceHolder ||
-                    leaderboard.map((user, i) => <RankListItem
+                    loadingIndicator || leaderboard.map((user, i) => <RankListItem
                         user={user.username}
-                        picture={user.profilePicture}
-                        rank={user.rank}
-                        wpm={user.wpm}
-                        accuracy={user.accuracy}
+                        picture={user.picture_url}
+                        rank={i + 1}
+                        wpm={user.user_stats.wpm}
+                        accuracy={user.user_stats.accuracy}
                         date={`${date}`}
                         key={i} />)
                 }

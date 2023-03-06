@@ -1,6 +1,6 @@
-import { useState, useCallback } from "react";
+import { useQuery } from "react-query";
 import Spinner from "../Components/Spinner";
-
+// importing definitions for better intellisense
 /**
  * Generic fetch function to fetch from any given
  * url and return a json object with the contained data
@@ -27,10 +27,7 @@ async function fetchData(url) {
 async function postUserStatAPI(url, userStat) {
     let response = await fetch(url, {
         method: 'PUT',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
+        headers: { 'Accept': 'application/json', "Content-Type": "application/json" },
         body: JSON.stringify(userStat)
     });
     if (!response.ok) {
@@ -38,43 +35,47 @@ async function postUserStatAPI(url, userStat) {
     }
 }
 
-function useFetch(url, params) {
-    const [error, setError] = useState();
-    const [isLoading, setIsLoading] = useState(false);
-    const sendRequest = useCallback(async (callback) => {
-        setIsLoading(true);
-        try{
-            const response = await fetch(url, params);
-
-            if(!response.ok){
-                setError(await response.text());
-                setIsLoading(false);
-                return;
-            }
-            const contentType = response.headers.get("Content-Type");
-            let data = null;
-            // return the right content type
-            if(contentType.match("json")){
-                data = await response.json();
-            } else if(contentType.match("text")){
-                data = await response.text()
-            } else {
-                data = await response.blob();
-            }
-            setIsLoading(false);
-            callback(data);
-        } catch (caughtError){
-            setError(caughtError);
-            setIsLoading(false);
+/**
+ * fetches data using react-query and handles errors
+ * @param {string} cacheKey the key used by react-query to cache the response
+ * @param {string} url the url used for the fetch request
+ * @param {RequestInit?} fetchParams the parameters for the fetch request
+ * @returns {[JSX.Element?, any?]}
+ */
+function useFetch(cacheKey, url, fetchParams) {
+    const { data, error, isLoading } = useQuery(cacheKey, async () => {
+        const response = await fetch(url, fetchParams);
+        if (!response.ok) {
+            throw new Error("There was an error in the response");
         }
+        return await transformData(response);
     });
-    
-    const loadingPlaceHolder = 
-        isLoading || error ?
-            <Spinner/> : undefined
+    if (isLoading) {
+        return [<Spinner key="spinner" />, undefined];
+    }
+    if (error) {
+        return (
+            [<div key="spinner">
+                <h1>There was an error contacting the server. Please try again later</h1>
+            </div>, undefined]
+        );
+    }
+    return [undefined, data];
+}
 
-    return { sendRequest, loadingPlaceHolder };
+/**
+ * transforms the data type from a fetch response to it's sent content type
+ * @param {Response} data the data that needs to be transformed to it's data type
+ */
+async function transformData(response) {
+    const contentType = response.headers.get("Content-Type");
+    if (contentType.match("json")) {
+        return await response.json();
+    } else if (contentType.match("text")) {
+        return await response.text()
+    }
+    return await response.blob();
 }
 
 
-export { fetchData, useFetch, postUserStatAPI };
+export { fetchData, postUserStatAPI, useFetch };

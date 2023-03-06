@@ -2,9 +2,11 @@
     --letter-width: 1rem;
 }
 
-div.letterContainer{
+div.letter-container{
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
+    max-width: 1000px;
 }
 
 span.letter{

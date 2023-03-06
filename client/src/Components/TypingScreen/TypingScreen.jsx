@@ -1,105 +1,153 @@
 import './Layout/TypingScreen.css';
 import { useState, useRef } from "react";
 import VirtualKeyboard from './VirtualKeyboard';
-import TextContainer from './TextContainer';
 import keyboardKeys from "../../Data/keyboard_keys.json";
-import useGameText from '../GameText';
-import Chronometer from './Chronometer';
-import Timer from "timer-machine";
+import GameText from '../GameText';
+import Chronometer, { useChronometer } from './Chronometer';
 import SoloGameResult from './SoloGameResult';
+import { useQuery } from 'react-query';
+import Spinner from '../Spinner';
+import {
+    renderLetters, getDefaultUserDisplay, mapKeyToKeyboard, preventDefaultBehavior,
+    randomNumber
+} from './TypingUtil';
+import defaultQuotes from '../../Data/default_quotes.json';
 
+const allShiftKeys = keyboardKeys.english.upper;
+const allRegKeys = keyboardKeys.english.lower;
 /**
  * Container for the Textarea and the virtual keyboard
  * @returns {ReactElement}
  */
 function TypingScreen() {
-    const textToDisplay = "Lorem ipsum dolor sit amet consectetur adipisicing elit.";
-    const allShiftKeys = keyboardKeys.english.upper;
-    const allRegKeys = keyboardKeys.english.lower;
-    const [keyboard, setKeyboard] = useState(allRegKeys);
-    const [gameState, setGameState] = useState("reset");
-    const [timer, setTimer] = useState(new Timer());
-    const [displayTime, setDisplayTime] = useState({ "seconds": 0 });
-    const [userDisplay, setUserDisplayText] = useState(getDefaultUserDisplay());
-    const [GameText, updateGameText] = useGameText(userDisplay, setUserDisplayText);
-    let textContainerRef = useRef();
-    const keyRefs = useRef(new Map());
 
-    /**
-     * maps each letter code to its virtual key on the keyboard
-     * @param {*} letter 
-     * @param {*} virtualKey 
-     */
-    function mapKeys(letter, virtualKey) {
-        keyRefs.current.set(letter, virtualKey);
+    const {
+        isLoading, data: textToDisplay, refetch
+    } = useQuery("textToDisplay", async () => {
+        return (await (await fetch("/api/quote",
+            {
+                headers:
+                    { 'Accept': 'application/json', "Content-Type": "application/json" }
+            })).json()).body;
+    }, {
+        onSuccess: (quote) => {
+            setUserDisplay(getDefaultUserDisplay(quote))
+        }, onError: () => {
+            setUserDisplay(
+                getDefaultUserDisplay(defaultQuotes[randomNumber(0, defaultQuotes.length)])
+            )
+        },
+        refetchOnWindowFocus: false
+    });
+    const [keyboard, setKeyboard] = useState(mapKeyToKeyboard(allRegKeys));
+    const [displayTime, setDisplayTime] = useState(0);
+    const [displayResults, setDisplayResults] = useState(false);
+    const { startTimer, stopTimer, resetTimer, timer } = useChronometer(setDisplayTime);
+    const [userDisplay, setUserDisplay] = useState(getDefaultUserDisplay(textToDisplay));
+    const textContainerRef = useRef();
+
+    function handleGameEnd() {
+        stopTimer();
+        setDisplayResults(true);
+        setUserDisplay([]);
+        refetch();
+    }
+
+    function resetGame() {
+        setDisplayResults(false);
+        resetTimer();
+        textContainerRef.current.value = "";
     }
 
     /**
      * Changes the game state according to the current text progress.
-     * @param {String} currentText 
+     * @param {InputEvent} e 
      */
-    function onChangeText(currentText) {
-        if (currentText.length === 1 && !timer.isStarted()) {
-            setGameState("started");
-        } else if (textToDisplay.length === currentText.length && timer.isStarted()) {
-            setGameState("stopped");
-            cleanVirtualKeyboard();
+    function onChangeText(e) {
+        const currentText = e.target.value;
+        if (currentText.length === 1) {
+            startTimer();
+        } else if (textToDisplay.length === currentText.length) {
+            handleGameEnd();
         }
-        updateGameText(currentText);
+        renderLetters(currentText, userDisplay);
     }
 
     /**
-     * Get's the default user display filler with letter object with type none.
-     * @returns {Object}
+     * handles the key up event and sets keyboard
+     * according to shift and caps states.
+     * @param {Event} e 
      */
-    function getDefaultUserDisplay() {
-        const display = Array.from(textToDisplay).map((letter) => {
-            // the type of a displayed letter can only be right | wrong | none
-            return {
-                letter,
-                type: "none",
-                current: false
-            }
+    function handlekeyUp(e) {
+        const keyValue = e.nativeEvent.key;
+        let newKeyboard = keyboard.slice();
+        if (keyValue === "Shift") {
+            newKeyboard = mapKeyToKeyboard(allRegKeys, newKeyboard);
+        }
+        newKeyboard.forEach(row => {
+            row.forEach(key => {
+                if (key.keyValue === keyValue) {
+                    key.isPressed = false;
+                }
+            });
         });
-
-        display[0].current = true;
-
-        return display;
+        setKeyboard(newKeyboard);
     }
 
     /**
-     * Cleans the state of the virtual keyboard and marks each key as unpressed.
+     * handles the key down event and sets keyboard
+     * according to shift and caps states.
+     * @param {Event} e 
      */
-    function cleanVirtualKeyboard() {
-        keyRefs.current.forEach(key => {
-            key.current.classList.remove("pressed");
+    function handleKeyDown(e) {
+        const keyValue = e.nativeEvent.key;
+        let newKeyboard = keyboard.slice();
+        if (keyValue === "Shift") {
+            newKeyboard = mapKeyToKeyboard(allShiftKeys, newKeyboard);
+        }
+        newKeyboard.forEach(row => {
+            row.forEach(key => {
+                if (key.keyValue === keyValue) {
+                    key.isPressed = true;
+                }
+            });
         });
+        setKeyboard(newKeyboard);
     }
+
+
 
     return (
-        <div className='vertical-center'>
-            <Chronometer seconds={displayTime.seconds} state={displayTime.state} />
-            {GameText}
-            <TextContainer
-                textRef={textContainerRef}
-                keyRefs={keyRefs}
-                currentKeys={keyboard}
-                allRegKeys={allRegKeys}
-                allShiftKeys={allShiftKeys}
-                setKeyboard={setKeyboard}
-                onChangeText={onChangeText}
-            />
-            <VirtualKeyboard currentKeys={keyboard} mapKeys={mapKeys} />
-            <SoloGameResult
-                setGameState={setGameState}
-                gameState={gameState}
-                userDisplay={userDisplay}
-                timer={timer}
-                setTimer={setTimer}
-                setDisplayTime={setDisplayTime}
-                textRef={textContainerRef}
-                textDisplay={textToDisplay}
-            />
+        <div className='center'>
+            {isLoading ?
+                <Spinner />
+                :
+                <>
+                    <div>
+                        <Chronometer seconds={displayTime}/>
+                        <GameText display={userDisplay} />
+                        <VirtualKeyboard currentKeys={keyboard} />
+                        <SoloGameResult
+                            isOpen={displayResults}
+                            displayText={userDisplay}
+                            timer={timer.current}
+                            originalText={textToDisplay}
+                            closeWindow={resetGame}
+                        />
+                    </div>
+
+                    <input type="text" 
+                        className="text-container"
+                        ref={textContainerRef}
+                        onChange={onChangeText}
+                        onKeyDown={handleKeyDown}
+                        onKeyUp={handlekeyUp}
+                        onPaste={preventDefaultBehavior}
+                        onDrag={preventDefaultBehavior}
+                        onDrop={preventDefaultBehavior}
+                        onCopy={preventDefaultBehavior}
+                    />
+                </>}
         </div>
     );
 }

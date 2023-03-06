@@ -1,12 +1,6 @@
 #leaderboard{
     width: 80vw;
     height: 80vh;
-    background-color: #000000da;
-    border-radius: 10px;
-    color: #fff;
-    padding: 10px;
-    backdrop-filter: blur(5px);
-    margin-top: 2vh;
 }
 
 #leaderboard-header {
