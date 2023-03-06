@@ -181,10 +181,16 @@ const Profile = () => {
 
                 <div id="user-stats">
                     <p><span className="label">Avg. WPM: </span>
-                        {profileData.user_stats.wpm}
+                        {Math.round(profileData.user_stats.wpm * 100) / 100}
                     </p>
                     <p><span className="label">Avg. ACC: </span>
-                        {profileData.user_stats.accuracy}
+                        {Math.round(profileData.user_stats.accuracy * 100) / 100}
+                    </p>
+                    <p><span className="label">Max WPM: </span>
+                        {Math.round(profileData.user_stats.max_wpm * 100) / 100}
+                    </p>
+                    <p><span className="label">Max ACC: </span>
+                        {Math.round(profileData.user_stats.max_accuracy * 100) / 100}
                     </p>
                     <p><span className="label">Games: </span>
                         {profileData.user_stats.games_count}

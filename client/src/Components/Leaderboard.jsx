@@ -27,8 +27,8 @@ function Leaderboard() {
                         user={user.username}
                         picture={user.picture_url}
                         rank={i + 1}
-                        wpm={user.user_stats.wpm}
-                        accuracy={user.user_stats.accuracy}
+                        wpm={Math.round(user.user_stats.max_wpm * 100) / 100}
+                        accuracy={Math.round(user.user_stats.max_accuracy * 100) / 100}
                         date={`${date}`}
                         key={i} />)
                 }
