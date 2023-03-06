@@ -24,10 +24,14 @@ async function fetchData(url) {
  * @param url 
  * @param userInput 
  */
-async function postUserStatAPI(url, userStat) {
+async function postUserStatAPI(url, userStat, token) {
     let response = await fetch(url, {
         method: 'PUT',
-        headers: { 'Accept': 'application/json', "Content-Type": "application/json" },
+        headers: {
+            'Accept': 'application/json',
+            "Content-Type": "application/json",
+            // 'X-CSRF-TOKEN': token
+        },
         body: JSON.stringify(userStat)
     });
     if (!response.ok) {
@@ -85,7 +89,6 @@ async function transformData(response) {
  * @param postImage 
  */
 function readImage(image, email, validateForm, postImage) {
-    console.log(image)
     if (validateForm(image)) {
         const fr = new FileReader();
         fr.readAsArrayBuffer(image);
@@ -95,19 +98,17 @@ function readImage(image, email, validateForm, postImage) {
             formData.append('image', image);
             formData.append('email', email);
             formData.append('fileName', image.name);
-            // console.log(formData.get('image'))
-            
-            // console.log(formData)
             postImage(formData);
         }
     }
 
 }
 
-async function postImageAPI(url, userInput) {
+async function postImageAPI(url, userInput, token) {
     let response = await fetch(url, {
         method: 'PUT',
-        headers: { 
+        headers: {
+            // 'X-CSRF-TOKEN': token
         },
         body: userInput
     });

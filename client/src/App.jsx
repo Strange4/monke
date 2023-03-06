@@ -16,13 +16,17 @@ const queryClient = new QueryClient();
  */
 function App() {
     const [userEmail, setUserEmail] = useState();
+    const [token, setToken] = useState();
 
     useEffect(() => {
         (async () => {
             if (!userEmail) {
                 let userData = await fetch("/authentication/refreshLogin")
-                let newEmail = await userData.json()
-                setUserEmail(newEmail.email)
+                if (userData.status === 200) {
+                    console.log(userData.status)
+                    let newEmail = await userData.json()
+                    setUserEmail(newEmail.email)
+                }
             }
         })();
     }, [userEmail]);
@@ -30,6 +34,8 @@ function App() {
     return (
         <div className="App">
             <AuthContext.Provider value={{
+                token: token,
+                setToken: setToken,
                 userEmail: userEmail,
                 setUserEmail: setUserEmail,
                 checkAccess: checkAccess

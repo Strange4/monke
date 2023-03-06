@@ -5,7 +5,7 @@
  */
 
 import Database from "../database/mongo.js"
-import {QUOTE, USER, USER_STAT} from "../database/mongo.js"
+import { QUOTE, USER, USER_STAT } from "../database/mongo.js"
 
 let db = new Database();
 
@@ -27,9 +27,9 @@ async function getQuote(difficultyVal) {
         if (quotes.length > 0) {
             const quoteIndex = quotes.length > 1 ?
                 Math.floor(Math.random() * quotes.length) : 0;
-            return  quotes[quoteIndex].quote
+            return quotes[quoteIndex].quote
         }
-        return  "There are no quotes available with that difficulty."
+        return "There are no quotes available with that difficulty."
     }
     return "The database is currently down so make do with this quote instead."
 }
@@ -43,10 +43,8 @@ async function getUserStats(email) {
     try {
         const databaseUser = await db.findOne(USER, { email: email });
         if (databaseUser !== null) {
-            const stats = await db.findOne(USER_STAT, { _id: databaseUser.user_stats});
+            const stats = await db.findOne(USER_STAT, { _id: databaseUser.user_stats });
             return stats;
-        } else {
-            console.log(`Could not find user with email: ${email}`);
         }
     } catch (err) {
         console.error(err);
@@ -61,12 +59,9 @@ async function getUserStats(email) {
 async function checkEmail(newEmail) {
     try {
         const emailQuery = await db.findOne(USER, { email: newEmail });
-        // Name exists.
         if (emailQuery !== null) {
             return true;
-            // Name does not exists.
         } else {
-            console.log(`Could not find user with email: ${newEmail}`);
             return false;
         }
     } catch (err) {

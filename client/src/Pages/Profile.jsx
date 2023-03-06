@@ -13,7 +13,7 @@ const Profile = () => {
     const [profileData, setProfileData] = useState({
         username: "",
         picture_url:
-        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+            "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
         user_stats: {
             wpm: 0,
             max_wpm: 0,
@@ -35,17 +35,17 @@ const Profile = () => {
     useEffect(() => {
         (async () => {
             if (auth.userEmail) {
-                console.log(`PROFILE: user logged in [${auth.userEmail}]`)
                 let data = await fetch("/api/user", {
                     method: "POST",
-                    headers: { 'Accept': 'application/json', "Content-Type": "application/json" },
+                    headers: {
+                        'Accept': 'application/json',
+                        "Content-Type": "application/json",
+                        // 'X-CSRF-TOKEN': auth.token
+                    },
                     body: JSON.stringify({ "email": auth.userEmail })
                 });
                 data = await data.json()
-                console.log(data);
                 setProfileData(data);
-            } else {
-                console.log("PROFILE: user NOT logged in");
             }
         })();
     }, []);
@@ -60,7 +60,11 @@ const Profile = () => {
             let newUsername = usernameField.current.textContent;
             let data = await fetch("/api/update_username", {
                 method: "PUT",
-                headers: { 'Accept': 'application/json', "Content-Type": "application/json" },
+                headers: {
+                    'Accept': 'application/json',
+                    "Content-Type": "application/json",
+                    // 'X-CSRF-TOKEN': auth.token
+                },
                 body: JSON.stringify({ email: auth.userEmail, username: newUsername })
             });
             setProfileData(await data.json());
@@ -99,7 +103,7 @@ const Profile = () => {
     }
 
     async function postImage(data) {
-        await FetchModule.postImageAPI("/api/update_avatar", data);
+        await FetchModule.postImageAPI("/api/update_avatar", data, auth.token);
     }
 
     /**
@@ -176,7 +180,7 @@ const Profile = () => {
                     <p><span className="label">Avg. WPM: </span>
                         {profileData.user_stats.wpm}
                     </p>
-                    <p><span className="label">Avg. ACC: </span> 
+                    <p><span className="label">Avg. ACC: </span>
                         {profileData.user_stats.accuracy}
                     </p>
                     <p><span className="label">Games: </span>

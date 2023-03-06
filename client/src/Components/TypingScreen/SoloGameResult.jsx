@@ -29,7 +29,11 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
     async function fetchUserData() {
         let data = await fetch("/api/user", {
             method: "POST",
-            headers: { "Accept": "application/json", "Content-Type": "application/json" },
+            headers: {
+                'Accept': 'application/json',
+                "Content-Type": "application/json",
+                // 'X-CSRF-TOKEN': auth.token
+            },
             body: JSON.stringify({ "email": auth.userEmail })
         })
         setUserData(await data.json())
@@ -56,15 +60,13 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
             wpm: Math.round(wpm * 100) / 100,
             accuracy: Math.round(computeAccuracy(typedText) * 100) / 100
         }
-        //TODO ONLY POST WHEN LOGGED IN
+
         let loggedIn = await auth.checkAccess()
         if (loggedIn) {
-            console.log(`logged in as ${auth.userEmail}, posting result`)
             await fetchUserData()
             postUserStats(result);
-        } else {
-            console.log("not logged in, skipping user stats posting")
         }
+
         return result;
     }
 
@@ -91,8 +93,6 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
 
     /**
      * Sends data to the post api for a user's solo game
-     * TODO change the username to be the real username 
-     * once login is implemented
      * @param {Object} result 
      */
     async function postUserStats(result) {
@@ -104,7 +104,7 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
             accuracy: result.accuracy
         };
 
-        FetchModule.postUserStatAPI("/api/user_stat", userStats);
+        FetchModule.postUserStatAPI("/api/user_stat", userStats, auth.token);
     }
 
     return (

@@ -12,7 +12,7 @@ router.use(express.json());
 //middleware to verify the session
 function isAuthenticated(req, res, next) {
     if (!req.session.user) {
-        return res.sendStatus(401)
+        return res.sendStatus(204)
     }
     next();
 }
@@ -31,43 +31,43 @@ router.use(session({
     }
 }));
 
-router.get("/refreshLogin", isAuthenticated, function(req, res) {
+router.get("/refreshLogin", isAuthenticated, function (req, res) {
     return res.json(req.session.user)
 });
 
 router.post("/auth", async (req, res) => {
-    //TODO: should validate that the token was sent first
+    console.log(req.body)
     const { token } = req.body;
-    const ticket = await client.verifyIdToken({
-        idToken: token,
-        audience: process.env.GOOGLE_CLIENT_ID
-    });
-    if (!ticket) {
-        return res.sendStatus(401);
-    }
-    const user = {
-        "username": ticket.getPayload().name,
-        "email": ticket.getPayload().email,
-        "pic": ticket.getPayload().picture
-    };
-    
-    //create a session, using email as the unique identifier
-    req.session.regenerate(function (err) {
-        if (err) {
-            return res.sendStatus(500);
+
+    if (token) {
+        const ticket = await client.verifyIdToken({
+            idToken: token,
+            audience: process.env.GOOGLE_CLIENT_ID
+        });
+        if (!ticket) {
+            return res.sendStatus(401);
         }
-        req.session.user = user;
-        res.json({ user: user });
-    });
+        const user = {
+            "username": ticket.getPayload().name,
+            "email": ticket.getPayload().email,
+            "pic": ticket.getPayload().picture
+        };
+
+        //create a session, using email as the unique identifier
+        req.session.regenerate(function (err) {
+            if (err) {
+                return res.sendStatus(500);
+            }
+            req.session.user = user;
+            res.json({ user: user });
+        });
+    }
 });
 
 //route for authenticated users only
-router.get("/protected",
-    isAuthenticated,
-    function (_, res) {
-        res.sendStatus(200);
-    }
-);
+router.get("/protected", isAuthenticated, function (_, res) {
+    res.sendStatus(200);
+});
 
 router.get("/logout", isAuthenticated, function (req, res) {
     //destroy the session

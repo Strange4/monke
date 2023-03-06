@@ -147,46 +147,34 @@ router.put("/update_avatar", upload.single('image'), async (req, res) => {
     if (req.file === undefined) {
         next(new createHttpError.BadRequest("Image was not sent correctly"));
         return;
-    } else {
+    }
+    try {
+        ImgParser.parse(req.file);
+
+        const blobName = req.body.fileName;
+        const blobClient = azure.getContainerClient().getBlockBlobClient(blobName);
+        const options = { blobHTTPHeaders: { blobContentType: req.file.mimetype } };
+        await blobClient.uploadData(req.file.buffer, options);
+
+        // Uploading data to mongodb.
+        let url = azure.getBlobPublicUrl() + blobName;
+        let user = await User.findOneAndUpdate(
+            { email: email }, { "picture_url": url }, { returnNewDocument: true }
+        );
+
         try {
-            ImgParser.parse(req.file);
-
-            const blobName = req.body.fileName;
-            const blobClient = azure.getContainerClient().getBlockBlobClient(blobName);
-            const options = { blobHTTPHeaders: { blobContentType: req.file.mimetype } };
-            await blobClient.uploadData(req.file.buffer, options);
-            console.log("Picture uploaded to Azure successfully");
-
-            // Uploading data to mongodb.
-            let url = azure.getBlobPublicUrl() + blobName;
-            console.log(url)
-            if (url) {
-                let user = await User.findOneAndUpdate(
-                    { email: email }, { "picture_url": url }, { returnNewDocument: true }
-                );
-
-                try {
-                    await user.save();
-                } catch (error) {
-                    next(new createHttpError.BadRequest({
-                        message: "values do not comply with user stats schema",
-                        error: error.message
-                    }));
-                    return;
-                }
-                res.status(SUCCESS).json("user updated");
-            } else {
-                next(new createHttpError.BadRequest("invalid email provided"));
-                return;
-            }
-            console.log("picture URL upload to mongo succesful");
-            const message = "Picture uploaded to Azure and Mongo successfully";
-            console.log(message);
-            res.status(200).send(message);
-        } catch (err) {
-            console.error(`Image validation error: ${err}`);
-            res.status(400).send(`<h1>400! Picture could not be uploaded to the database.</h1>`);
+            await user.save();
+        } catch (error) {
+            next(new createHttpError.BadRequest({
+                message: "values do not comply with user stats schema",
+                error: error.message
+            }));
+            return;
         }
+        res.status(200).send("Updated user profile picture successfully");
+    } catch (err) {
+        console.error(`Image validation error: ${err}`);
+        res.status(400).send(`<h1>400! Picture could not be uploaded to the database.</h1>`);
     }
 })
 
