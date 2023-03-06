@@ -160,7 +160,7 @@ router.put("/update_avatar", upload.single('image'), async (req, res) => {
         // Uploading data to mongodb.
         let url = azure.getBlobPublicUrl() + blobName;
         let user = await User.findOneAndUpdate(
-            { email: email }, { "picture_url": url }, { returnNewDocument: true }
+            { email: email }, { "picture_url": url }, {"new": true}
         );
 
         try {
@@ -172,7 +172,7 @@ router.put("/update_avatar", upload.single('image'), async (req, res) => {
             }));
             return;
         }
-        res.status(200).send("Updated user profile picture successfully");
+        res.status(200).json(user);
     } catch (err) {
         console.error(`Image validation error: ${err}`);
         res.status(400).send(`<h1>400! Picture could not be uploaded to the database.</h1>`);
@@ -196,7 +196,7 @@ router.put("/update_username", async (req, res) => {
     let newUsername = req.body.username;
     if (newUsername) {
         let user = await User.findOneAndUpdate(
-            { email: email }, { username: newUsername }, { returnNewDocument: true }
+            { email: email }, { username: newUsername }, {"new": true}
         );
 
         try {
@@ -208,7 +208,7 @@ router.put("/update_username", async (req, res) => {
             }));
             return;
         }
-        res.status(200).send(user);
+        res.status(200).json(user);
     } else {
         next(
             new createHttpError.BadRequest(

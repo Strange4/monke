@@ -115,6 +115,7 @@ async function postImageAPI(url, userInput, token) {
     });
     if (response.ok) {
         console.log(`sent data successfully: ${JSON.stringify(userInput)}`);
+        return response
     } else {
         throw Error("Something Went wrong posting data");
     }

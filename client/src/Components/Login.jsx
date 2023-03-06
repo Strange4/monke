@@ -20,9 +20,7 @@ function Login(props) {
         });
         console.log(res.status)
         // if (res.status === 200) {
-        console.log("EEE")
         const data = await res.json();
-        console.log(data)
         await setUserData(data)
         // }
     }

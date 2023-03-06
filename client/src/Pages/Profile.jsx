@@ -106,7 +106,8 @@ const Profile = () => {
     }
 
     async function postImage(data) {
-        await FetchModule.postImageAPI("/api/update_avatar", data, auth.token);
+        let newData = await FetchModule.postImageAPI("/api/update_avatar", data, auth.token);
+        setProfileData(await newData.json())
     }
 
     /**
