@@ -65,7 +65,7 @@ router.put(userStatEnpoint, async (req, res, next) => {
         updated.max_accuracy = Math.max(user.user_stats.max_accuracy, accuracy);
     }
     user.user_stats = updated;
-    try{
+    try {
         await user.save();
     } catch (error) {
         next(new createHttpError.BadRequest({
@@ -134,57 +134,60 @@ router.get(leaderboardEndpoint, async (req, res, next) => {
     res.json(users);
 });
 
-router.post("/update_avatar", upload.single('image'), async (req, res) => {
+router.put("/update_avatar", upload.single('image'), async (req, res) => {
     if (!dbIsConnected()) {
         next(new createError.InternalServerError("Database is unavailable"));
         return;
     }
-    //Image validation
+    const email = Constraints.email(req.body.email);
+    if (!email) {
+        next(new createHttpError.BadRequest("Can't find the user because no email was provided"));
+        return;
+    }
     if (req.file === undefined) {
-        console.log("Image is undefined.");
-        res.status(400).send(`<h1>400! Picture could not be uploaded to the database. Please selected a good image.</h1>`);
+        next(new createHttpError.BadRequest("Image was not sent correctly"));
+        return;
     } else {
-        console.log(req.file)
         try {
             ImgParser.parse(req.file);
 
-            // Upload to azure
             const blobName = req.body.fileName;
             const blobClient = azure.getContainerClient().getBlockBlobClient(blobName);
-            //set mimetype as determined from browser with file upload control
             const options = { blobHTTPHeaders: { blobContentType: req.file.mimetype } };
             await blobClient.uploadData(req.file.buffer, options);
-
             console.log("Picture uploaded to Azure successfully");
 
             // Uploading data to mongodb.
             let url = azure.getBlobPublicUrl() + blobName;
-            // let data;
-            // let mongoData = {
-            //     username: req.body.username,
-            //     pictureURI: url
-            // }
             console.log(url)
-            // try {
-            // data = ImageURLParser.parse(mongoData);
-            // } catch (err) {
-            //     return;
-            // }
-            // let mongoPicture = await PictureModel.create(data);
-            //DO UPDATING HERE
-            // await mongoPicture.save();
+            if (url) {
+                let user = await User.findOneAndUpdate(
+                    { email: email }, { "picture_url": url }, { returnNewDocument: true }
+                );
 
+                try {
+                    await user.save();
+                } catch (error) {
+                    next(new createHttpError.BadRequest({
+                        message: "values do not comply with user stats schema",
+                        error: error.message
+                    }));
+                    return;
+                }
+                res.status(SUCCESS).json("user updated");
+            } else {
+                next(new createHttpError.BadRequest("invalid email provided"));
+                return;
+            }
             console.log("picture URL upload to mongo succesful");
             const message = "Picture uploaded to Azure and Mongo successfully";
             console.log(message);
             res.status(200).send(message);
-        }
-        catch (err) {
+        } catch (err) {
             console.error(`Image validation error: ${err}`);
-            res.status(400).send(`<h1>400! Picture could not be uploaded to the database. Please selected a good image.</h1>`);
+            res.status(400).send(`<h1>400! Picture could not be uploaded to the database.</h1>`);
         }
     }
-
 })
 
 router.put("/update_username", async (req, res) => {

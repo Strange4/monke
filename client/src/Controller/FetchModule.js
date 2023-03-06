@@ -106,7 +106,7 @@ function readImage(image, email, validateForm, postImage) {
 
 async function postImageAPI(url, userInput) {
     let response = await fetch(url, {
-        method: 'POST',
+        method: 'PUT',
         headers: { 
         },
         body: userInput
