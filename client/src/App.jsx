@@ -23,7 +23,6 @@ function App() {
             if (!userEmail) {
                 let userData = await fetch("/authentication/refreshLogin")
                 if (userData.status === 200) {
-                    console.log(userData.status)
                     let newEmail = await userData.json()
                     setUserEmail(newEmail.email)
                 }
