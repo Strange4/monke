@@ -24,3 +24,4 @@ function catchFunction(someFunction){
         return undefined;
     }
 }
+    
