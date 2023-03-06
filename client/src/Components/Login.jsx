@@ -9,9 +9,7 @@ function Login(props) {
     const auth = useContext(AuthContext);
 
     async function handleLogin(googleData) {
-        // auth.setToken(googleData.credential)
-        // console.log(googleData.credential)
-        // console.log(auth.token)
+        auth.setToken(googleData.credential)
         const res = await fetch("/authentication/auth", {
             method: "POST",
             body: JSON.stringify({ token: googleData.credential }),
@@ -20,12 +18,17 @@ function Login(props) {
                 "Content-Type": "application/json"
             },
         });
+        console.log(res.status)
+        // if (res.status === 200) {
+        console.log("EEE")
         const data = await res.json();
         console.log(data)
         await setUserData(data)
+        // }
     }
 
     async function setUserData(data) {
+        console.log(auth.token)
         await fetch("/api/user", {
             method: "POST",
             body: JSON.stringify({

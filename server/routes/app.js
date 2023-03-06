@@ -4,8 +4,8 @@
  */
 
 import api from "./api.js";
-import authentication from "./authentication.js"
 import express from "express";
+import authentication from "./authentication.js"
 
 const app = express();
 

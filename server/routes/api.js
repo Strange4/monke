@@ -11,23 +11,27 @@ import { Constraints } from "../database/validation.js";
 import { quoteRouter } from "./quotes.js";
 import { getAverage } from "./util.js";
 import { ImgParser } from "./validation.js";
-
 import createHttpError from "http-errors";
 import { Azure } from "../database/azure.js"
 import multer from 'multer';
 const upload = multer();
 const azure = Azure.getAzureInstance();
-
 const userStatEnpoint = "/user_stat";
 const quoteEnpoint = "/quote";
 const userEnpoint = "/user";
 const leaderboardEndpoint = "/leaderboard";
+import { csrfSync } from "csrf-sync";
+const csrfProtect = csrfSync();
 
 const router = express.Router();
 router.use(express.json());
 router.use(quoteEnpoint, quoteRouter);
+//route that create a CSRF token and sends it back to the client
+router.get("/csrf-token", function (req, res) {
+    console.log("here")
+    res.json({ token: csrfProtect.generateToken(req) });
+});
 router.put(userStatEnpoint, async (req, res, next) => {
-
     if (!dbIsConnected()) {
         next(new createHttpError.InternalServerError("Database is unavailable"));
         return;
@@ -207,7 +211,7 @@ router.put("/update_username", async (req, res) => {
             }));
             return;
         }
-        res.status(200).json("user updated");
+        res.status(200).send("user updated");
     } else {
         next(
             new createHttpError.BadRequest(

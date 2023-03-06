@@ -35,6 +35,7 @@ const Profile = () => {
     useEffect(() => {
         (async () => {
             if (auth.userEmail) {
+                console.log(auth.token)
                 let data = await fetch("/api/user", {
                     method: "POST",
                     headers: {
@@ -56,6 +57,7 @@ const Profile = () => {
 
     async function saveUsername() {
         if (validateUsername()) {
+            console.log(auth.token)
             setEditingUsername(false)
             let newUsername = usernameField.current.textContent;
             let data = await fetch("/api/update_username", {
@@ -177,6 +179,7 @@ const Profile = () => {
 
 
                 <div id="user-stats">
+                    {console.log(profileData)}
                     <p><span className="label">Avg. WPM: </span>
                         {profileData.user_stats.wpm}
                     </p>

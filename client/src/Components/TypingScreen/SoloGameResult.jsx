@@ -27,6 +27,7 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
 
     //temp
     async function fetchUserData() {
+        console.log(auth.token)
         let data = await fetch("/api/user", {
             method: "POST",
             headers: {

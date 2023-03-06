@@ -25,6 +25,7 @@ async function fetchData(url) {
  * @param userInput 
  */
 async function postUserStatAPI(url, userStat, token) {
+    console.log(token)
     let response = await fetch(url, {
         method: 'PUT',
         headers: {
@@ -105,6 +106,7 @@ function readImage(image, email, validateForm, postImage) {
 }
 
 async function postImageAPI(url, userInput, token) {
+    console.log(token)
     let response = await fetch(url, {
         method: 'PUT',
         headers: {

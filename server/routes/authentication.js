@@ -4,14 +4,16 @@ import session from 'express-session'
 import dotenv from 'dotenv';
 dotenv.config();
 
-
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const router = express.Router();
 router.use(express.json());
 
 //middleware to verify the session
 function isAuthenticated(req, res, next) {
-    if (!req.session.user) {
+    console.log("AA")
+    console.log(req.session)
+    if (!req?.session?.user) {
+        console.log("no")
         return res.sendStatus(204)
     }
     next();
@@ -83,4 +85,4 @@ router.get("/logout", isAuthenticated, function (req, res) {
     });
 });
 
-export default router;
+export default router
