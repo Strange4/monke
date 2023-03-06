@@ -63,16 +63,8 @@ router.put(userStatEnpoint, async (req, res, next) => {
         updated["user_stats.max_wpm"] = Math.max(user.user_stats.max_wpm, wpm);
         updated["user_stats.max_accuracy"] = Math.max(user.user_stats.max_accuracy, accuracy);
     }
+    console.log(updated);
     await user.updateOne({$set: {...updated}});
-    try{
-        await user.save();
-    } catch(error){
-        next(new createHttpError.BadRequest({
-            message: "values do not comply with user_stats chema",
-            error
-        }));
-        return;
-    }
     res.json(user);
 });
 
