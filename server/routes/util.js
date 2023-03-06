@@ -12,5 +12,13 @@ export function getAverage(stat, newStat, games) {
     const unAverage = stat * games;
     const newTotal = unAverage + newStat;
     return newTotal / (games + 1);
-    
+}
+
+/**
+ * gets a random integer between two numbers
+ * @param {number} min inclusive
+ * @param {number} max inclusive
+ */
+export function randomInt(min, max){
+    return Math.floor(Math.random() * (max - min + 1) + min);
 }
