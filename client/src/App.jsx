@@ -7,8 +7,8 @@ import { useState, useEffect } from 'react';
 import checkAccess from './Controller/AuthHelper';
 import Profile from './Pages/Profile';
 
-
 const queryClient = new QueryClient();
+
 /**
  * Displays the Main App container
  * @returns {ReactElement}

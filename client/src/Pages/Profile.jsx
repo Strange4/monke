@@ -53,7 +53,6 @@ const Profile = (props) => {
                 data = await data.json()
                 setProfileData(data);
             } else if (props.redirect && !auth.userEmail) {
-                console.log("here")
                 navigate("/");
             }
         })();
