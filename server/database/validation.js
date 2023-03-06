@@ -24,5 +24,3 @@ function catchFunction(someFunction){
         return undefined;
     }
 }
-
-export {userSchema, userStatSchema};
