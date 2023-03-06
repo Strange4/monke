@@ -31,6 +31,12 @@ router.get("/csrf-token", function (req, res) {
     console.log("here")
     res.json({ token: csrfProtect.generateToken(req) });
 });
+
+/**
+ * Updates the stats of a user using their email.
+ * Updates only the fields sent
+ * if a field has the wrong type it will not be updated
+ */
 router.put(userStatEnpoint, async (req, res, next) => {
     if (!dbIsConnected()) {
         next(new createHttpError.InternalServerError("Database is unavailable"));
@@ -41,45 +47,36 @@ router.put(userStatEnpoint, async (req, res, next) => {
         next(new createHttpError.BadRequest("Can't find or create the user because no email was provided"));
         return;
     }
-    const user = await User.findOne({ email: email });
+
+    const user = await User.findOne({ email });
 
     if (user === null) {
         next(new createHttpError.BadRequest("user with that email does not exist on database"));
         return;
     }
-    const wpm = req.body.wpm;
-    const accuracy = req.body.accuracy;
-    const win = req.body.win;
-    const lose = req.body.lose;
-    const draw = req.body.draw;
-
+    const wpm = Constraints.positiveNumber(req.body.wpm);
+    const accuracy = Constraints.positiveNumber(req.body.accuracy);
+    const win = Constraints.positiveInt(req.body.win);
+    const lose = Constraints.positiveInt(req.body.lose);
+    const draw = Constraints.positiveInt(req.body.draw);
 
     // updates the average of that value if it is defined only
     const updated = {
-        ...(wpm && { wpm: getAverage(user.user_stats.wpm, wpm, user.user_stats.games_count) }),
-        ...(accuracy && { accuracy: getAverage(user.user_stats.accuracy, accuracy, user.user_stats.games_count) }),
-        ...(win && { win: getAverage(user.user_stats.win, win, user.user_stats.games_count) }),
-        ...(lose && { lose: getAverage(user.user_stats.lose, lose, user.user_stats.games_count) }),
-        ...(draw && { draw: getAverage(user.user_stats.draw, draw, user.user_stats.games_count) }),
-        games_count: user.user_stats.games_count + 1
+        ...(wpm && { "user_stats.wpm": getAverage(user.user_stats.wpm, wpm, user.user_stats.games_count) }),
+        ...(accuracy && { "user_stats.accuracy": getAverage(user.user_stats.accuracy, accuracy, user.user_stats.games_count) }),
+        ...(win && { "user_stats.win": getAverage(user.user_stats.win, win, user.user_stats.games_count) }),
+        ...(lose && { "user_stats.lose": getAverage(user.user_stats.lose, lose, user.user_stats.games_count) }),
+        ...(draw && { "user_stats.draw": getAverage(user.user_stats.draw, draw, user.user_stats.games_count) }),
+        "user_stats.games_count": user.user_stats.games_count + 1
     }
-    if (wpm > user.user_stats.wpm) {
-        updated.date = new Date();
-        updated.max_wpm = Math.max(user.user_stats.max_wpm, wpm);
-        updated.max_accuracy = Math.max(user.user_stats.max_accuracy, accuracy);
+    if (wpm > user.user_stats.max_wpm) {
+        updated["user_stats.date"] = new Date();
+        updated["user_stats.max_wpm"] = Math.max(user.user_stats.max_wpm, wpm);
+        updated["user_stats.max_accuracy"] = Math.max(user.user_stats.max_accuracy, accuracy);
     }
-    user.user_stats = updated;
-    try {
-        await user.save();
-    } catch (error) {
-        next(new createHttpError.BadRequest({
-            message: "values do not comply with user_stats chema",
-            error
-        }));
-        return;
-    }
+    await user.updateOne({ $set: { ...updated } });
     res.json(user);
-})
+});
 
 /**
  * Get endpoint that  json object containing the user
@@ -211,7 +208,7 @@ router.put("/update_username", async (req, res) => {
             }));
             return;
         }
-        res.status(200).send("user updated");
+        res.status(200).send(user);
     } else {
         next(
             new createHttpError.BadRequest(

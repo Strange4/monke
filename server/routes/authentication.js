@@ -10,10 +10,7 @@ router.use(express.json());
 
 //middleware to verify the session
 function isAuthenticated(req, res, next) {
-    console.log("AA")
-    console.log(req.session)
     if (!req?.session?.user) {
-        console.log("no")
         return res.sendStatus(204)
     }
     next();

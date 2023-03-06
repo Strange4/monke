@@ -102,7 +102,6 @@ function readImage(image, email, validateForm, postImage) {
             postImage(formData);
         }
     }
-
 }
 
 async function postImageAPI(url, userInput, token) {

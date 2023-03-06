@@ -3,6 +3,7 @@
 import NavBar from "../Components/NavBar";
 import "./Styles/Profile.css";
 import AuthContext from "../Context/AuthContext";
+import { useFetch } from "../Controller/FetchModule";
 import { useContext, useEffect, useState, useRef } from "react";
 import { RiImageEditFill, RiEdit2Fill, RiSave3Line, RiCloseCircleLine } from "react-icons/ri";
 import * as FetchModule from "../Controller/FetchModule"
@@ -99,8 +100,8 @@ const Profile = () => {
         let image = e.target.image.files[0]
         if (validateImageForm(image)) {
             FetchModule.readImage(image, auth.userEmail, validateImageForm, postImage);
-            // e.target.reset();
-            // setEditingAvatar(false)
+            e.target.reset();
+            setEditingAvatar(false)
         }
     }
 
@@ -177,9 +178,7 @@ const Profile = () => {
                     </div>
                 </div>
 
-
                 <div id="user-stats">
-                    {console.log(profileData)}
                     <p><span className="label">Avg. WPM: </span>
                         {profileData.user_stats.wpm}
                     </p>

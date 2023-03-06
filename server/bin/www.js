@@ -7,15 +7,15 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 import app from "../routes/app.js";
-import Database from "../database/mongo.js";
 import express from "express"
 import dotenv from 'dotenv';
+import mongoose from 'mongoose';
 dotenv.config();
 const PORT = process.env.EXPRESS_PORT || 8080;
 
 (async ()=> {
-    let db = new Database();
-    await db.connectToDatabase();
+    mongoose.set("strictQuery", true);
+    await mongoose.connect(process.env.ATLAS_URI, {dbName: "QuotesDatabase"});
     const buildPath = path.resolve(__dirname, "..", "..", "client", "build");
     app.use(express.static(buildPath));
     app.listen(PORT, () => {
