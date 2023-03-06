@@ -11,6 +11,6 @@ export function getAverage(stat, newStat, games) {
     }
     const unAverage = stat * games;
     const newTotal = unAverage + newStat;
-    return newTotal / (games + 1);
+    return newTotal / games;
     
 }
