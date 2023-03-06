@@ -8,9 +8,9 @@
 export function getAverage(stat, newStat, games) {
     if (games === 0) {
         return newStat;
-    } else {
-        let unAverage = stat * games;
-        let newTotal = unAverage + newStat;
-        return newTotal / (games + 1);
     }
+    const unAverage = stat * games;
+    const newTotal = unAverage + newStat;
+    return newTotal / (games + 1);
+    
 }

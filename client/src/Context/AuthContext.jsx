@@ -1,10 +1,10 @@
 import React from 'react';
 
-let AuthContext = React.createContext(
+const AuthContext = React.createContext(
     {
         userEmail: {},
         setUserEmail: () => { },
-        checkAccess: () => { },
+        checkAccess: async () => { },
     }
 );
 

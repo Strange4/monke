@@ -4,119 +4,78 @@
  * a mongo database and return the info as json to the user
  */
 
-import * as express from "express";
+import express from "express";
 import User from "../database/models/user.js";
 import mongoose from "mongoose";
-import UserStat from "../database/models/userStat.js";
-import { Constraints, userStatSchema } from "../database/validation.js";
-import createError from "http-errors";
-import Database from "../database/mongo.js";
-import { USER_STAT } from "../database/mongo.js";
+import { Constraints } from "../database/validation.js";
 import { quoteRouter } from "./quotes.js";
 import { getAverage } from "./util.js";
 import { ImgParser } from "./validation.js";
 
-import { getUserStats } from "../controller/mongoHelper.js";
 import createHttpError from "http-errors";
 import { Azure } from "../database/azure.js"
 import multer from 'multer';
 const upload = multer();
 const azure = Azure.getAzureInstance();
-const router = express.Router();
-const database = new Database();
 
 const userStatEnpoint = "/user_stat";
 const quoteEnpoint = "/quote";
 const userEnpoint = "/user";
 const leaderboardEndpoint = "/leaderboard";
 
-export const SUCCESS = 200;
-export const BAD_REQUEST = 400;
-export const INTERNAL_SE = 500;
-
+const router = express.Router();
 router.use(express.json());
 router.use(quoteEnpoint, quoteRouter);
 router.put(userStatEnpoint, async (req, res, next) => {
-    let email = req.body.email;
-    let newWpm = req.body.wpm;
-    let newAcc = req.body.accuracy;
-    let win = req.body.win;
-    let lose = req.body.lose;
-    let draw = req.body.draw;
 
-    if (database.isConnected()) {
-        // user = await User.findOne({ email: email });
-        const user = await User.findOne({ email: email });
-
-        // check if user exists
-        if (user?.id !== undefined) {
-            const previousStats = await getUserStats(email);
-            const filter = { _id: previousStats._id }
-
-            let update;
-            if (newWpm > previousStats.max_wpm) {
-                update = {
-                    "max_wpm": newWpm,
-                    "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
-                    "max_accuracy": newAcc,
-                    "accuracy":
-                        getAverage(previousStats.accuracy, newAcc, previousStats.games_count),
-                    "games_count": previousStats.games_count + 1,
-                    "win": previousStats.win + win,
-                    "lose": previousStats.lose + lose,
-                    "draw": previousStats.draw + draw,
-                    "date": Date.now()
-                }
-
-            } else if (newWpm === previousStats.max_wpm && newAcc > previousStats.max_accuracy) {
-                update = {
-                    "max_wpm": newWpm,
-                    "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
-                    "max_accuracy": newAcc,
-                    "accuracy":
-                        getAverage(previousStats.accuracy, newAcc, previousStats.games_count),
-                    "games_count": previousStats.games_count + 1,
-                    "win": previousStats.win + win,
-                    "lose": previousStats.lose + lose,
-                    "draw": previousStats.draw + draw,
-                    "date": Date.now()
-                }
-            } else {
-                // Update average only
-                update = {
-                    "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
-                    "accuracy":
-                        getAverage(previousStats.accuracy, newAcc, previousStats.games_count),
-                    "games_count": previousStats.games_count + 1,
-                    "win": previousStats.win + win,
-                    "lose": previousStats.lose + lose,
-                    "draw": previousStats.draw + draw,
-                    "date": previousStats.date
-                }
-            }
-
-            let isValidSchema;
-            try {
-                userStatSchema.parse(update);
-                isValidSchema = true;
-            } catch (err) {
-                isValidSchema = false;
-                next(createError(BAD_REQUEST,
-                    { "error": "stat values do not comply with schema" }
-                ));
-            }
-            if (isValidSchema) {
-                await database.findOneAndUpdate(USER_STAT, filter, update);
-                res.status(SUCCESS).json({ message: "Stats updated" });
-            }
-            userStatSchema.parse(update)
-            await UserStat.findOneAndUpdate(filter, update);
-        } else {
-            next(createError(BAD_REQUEST, { "error": "Username does not exist on database. " }));
-        }
-    } else {
-        next(INTERNAL_SE, { "error": "Database unavailable, try again later." });
+    if (!dbIsConnected()) {
+        next(new createHttpError.InternalServerError("Database is unavailable"));
+        return;
     }
+    const email = Constraints.email(req.body.email);
+    if (!email) {
+        next(new createHttpError.BadRequest("Can't find or create the user because no email was provided"));
+        return;
+    }
+    const user = await User.findOne({ email: email });
+
+    if (user === null) {
+        next(new createHttpError.BadRequest("user with that email does not exist on database"));
+        return;
+    }
+    const wpm = req.body.wpm;
+    const accuracy = req.body.accuracy;
+    const win = req.body.win;
+    const lose = req.body.lose;
+    const draw = req.body.draw;
+
+
+    user.user_stats.games_count += 1;
+
+    // updates the average of that value if it is defined only
+    let updated = {
+        ...(wpm && { wpm: getAverage(user.user_stats.wpm, wpm, user.user_stats.games_count) }),
+        ...(accuracy && { accuracy: getAverage(user.user_stats.accuracy, accuracy, user.user_stats.games_count) }),
+        ...(win && { win: getAverage(user.user_stats.win, win, user.user_stats.games_count) }),
+        ...(lose && { lose: getAverage(user.user_stats.lose, lose, user.user_stats.games_count) }),
+        ...(draw && { draw: getAverage(user.user_stats.draw, draw, user.user_stats.games_count) }),
+    }
+    if (wpm > user.user_stats.wpm) {
+        updated.date = new Date();
+        updated.max_wpm = Math.max(user.user_stats.max_wpm, wpm);
+        updated.max_accuracy = Math.max(user.user_stats.max_accuracy, accuracy);
+    }
+    user.user_stats = updated;
+    try {
+        await user.save();
+    } catch (error) {
+        next(new createHttpError.BadRequest({
+            message: "values do not comply with user_stats chema",
+            error
+        }));
+        return;
+    }
+    res.json({ message: "Stats updated" });
 })
 
 /**
@@ -125,7 +84,7 @@ router.put(userStatEnpoint, async (req, res, next) => {
  */
 router.post(userEnpoint, async (req, res, next) => {
     if (!dbIsConnected()) {
-        next(new createError.InternalServerError("Database is unavailable"));
+        next(new createHttpError.InternalServerError("Database is unavailable"));
         return;
     }
     const email = Constraints.email(req.body.email);
@@ -138,12 +97,11 @@ router.post(userEnpoint, async (req, res, next) => {
     if (user === null) {
         const username = req.body.username;
         const picture_url = req.body.picture_url;
-        const stats = await new UserStat().save();
+
         user = new User({
             username,
             picture_url,
             email,
-            user_stats: stats._id
         });
         try {
             await user.save();
@@ -155,9 +113,9 @@ router.post(userEnpoint, async (req, res, next) => {
             return;
         }
     }
-    user = await (await user.populate("user_stats")).toObject();
-    const rank = await UserStat.countDocuments({wpm: { "$lte": user.user_stats.wpm }});
-    res.status(SUCCESS).json({
+    user = await user.toObject();
+    const rank = await User.countDocuments({ wpm: { "$lte": user.user_stats.wpm } });
+    res.json({
         rank,
         ...user
     });
@@ -169,17 +127,12 @@ router.post(userEnpoint, async (req, res, next) => {
  */
 router.get(leaderboardEndpoint, async (req, res, next) => {
     if (!dbIsConnected()) {
-        next(new createError.InternalServerError("Error while getting the leaderboard"));
+        next(new createHttpError.InternalServerError("Error while getting the leaderboard"));
         return;
     }
     const maxItems = Constraints.positiveInt(req.query.max) || 10;
-    
-    User.find({}).limit(maxItems).populate({
-        path: "user_stats", select: ["wpm", "accuracy"],
-        options: { sort: {"user_stats.wpm": -1} }
-    }).lean().exec((_, users) => {
-        res.status(SUCCESS).json(users);
-    });
+    const users = await User.find().limit(maxItems).sort({ wpm: 'desc' }).lean();
+    res.json(users);
 });
 
 router.post("/update_avatar", upload.single('image'), async (req, res) => {
