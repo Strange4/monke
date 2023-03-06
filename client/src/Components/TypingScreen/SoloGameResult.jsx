@@ -79,6 +79,7 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
         let wrongCount = 0;
         let rightCount = 0;
         typedText.forEach(letter => {
+            console.log(letter)
             if (letter.type === "right") {
                 ++rightCount;
             } else if (letter.type === "wrong") {

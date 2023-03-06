@@ -3,7 +3,6 @@
 import NavBar from "../Components/NavBar";
 import "./Styles/Profile.css";
 import AuthContext from "../Context/AuthContext";
-import { useFetch } from "../Controller/FetchModule";
 import { useContext, useEffect, useState, useRef } from "react";
 import { RiImageEditFill, RiEdit2Fill, RiSave3Line, RiCloseCircleLine } from "react-icons/ri";
 import * as FetchModule from "../Controller/FetchModule"

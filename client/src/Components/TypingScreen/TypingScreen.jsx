@@ -49,7 +49,6 @@ function TypingScreen() {
     function handleGameEnd() {
         stopTimer();
         setDisplayResults(true);
-        setUserDisplay([]);
         refetch();
     }
 
