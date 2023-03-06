@@ -10,16 +10,19 @@ const Profile = () => {
 
     const [profileData, setProfileData] = useState({
         username: "",
-        image:
+        picture_url:
         "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
-        wpm: 0,
-        max_wpm: 0,
-        accuracy: 0,
-        max_accuracy: 0,
-        win: 0,
-        lose: 0,
-        draw: 0,
-        games_count: 0
+        user_stats: {
+            wpm: 0,
+            max_wpm: 0,
+            accuracy: 0,
+            max_accuracy: 0,
+            win: 0,
+            lose: 0,
+            draw: 0,
+            games_count: 0
+        },
+        rank: 0
     });
 
     useEffect(() => {
@@ -29,9 +32,11 @@ const Profile = () => {
                 let data = await fetch("/api/user", {
                     method: "POST",
                     headers: { 'Accept': 'application/json', "Content-Type": "application/json" },
-                    body: JSON.stringify({ "user": { "email": auth.userEmail } })
+                    body: JSON.stringify({"email": auth.userEmail })
                 });
-                setProfileData(await data.json());
+                data = await data.json()
+                console.log(data);
+                setProfileData(data);
             } else {
                 console.log("PROFILE: user NOT logged in");
             }
@@ -45,10 +50,8 @@ const Profile = () => {
                 <div id="user">
                     <div id="image">
                         <img id="profile-pic"
-                            src={`${profileData.image ?
-                                profileData.image :
                             // eslint-disable-next-line max-len
-                                "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"}`}
+                            src={`${profileData.picture_url || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"}`}
                             alt="your profile image"></img>
                         <RiImageEditFill id="edit-pic-icon" />
                     </div>
@@ -63,12 +66,24 @@ const Profile = () => {
 
 
                 <div id="user-stats">
-                    <p><span className="label">Avg. WPM: </span> {profileData.wpm}</p>
-                    <p><span className="label">Avg. ACC: </span> {profileData.accuracy}</p>
-                    <p><span className="label">Games: </span> {profileData.games_count}</p>
-                    <p><span className="label">Wins: </span> {profileData.win}</p>
-                    <p><span className="label">Loses: </span> {profileData.lose}</p>
-                    <p><span className="label">Draws: </span> {profileData.draw}</p>
+                    <p><span className="label">Avg. WPM: </span>
+                        {profileData.user_stats.wpm}
+                    </p>
+                    <p><span className="label">Avg. ACC: </span> 
+                        {profileData.user_stats.accuracy}
+                    </p>
+                    <p><span className="label">Games: </span>
+                        {profileData.user_stats.games_count}
+                    </p>
+                    <p><span className="label">Wins: </span>
+                        {profileData.user_stats.win}
+                    </p>
+                    <p><span className="label">Loses: </span>
+                        {profileData.user_stats.lose}
+                    </p>
+                    <p><span className="label">Draws: </span>
+                        {profileData.user_stats.draw}
+                    </p>
                 </div>
             </div>
         </div>
