@@ -173,7 +173,7 @@ const Profile = () => {
                                     <RiEdit2Fill id="edit-name-icon" onClick={editUsername} />
                             }
                             <h2><span className="label">Name: </span></h2>
-                            <h2 contentEditable={EditingUsername} ref={usernameField}>{profileData.username}</h2>
+                            <h2 contentEditable={EditingUsername} suppressContentEditableWarning={true} ref={usernameField}>{profileData.username}</h2>
                         </div>
                         <h2> <span className="label">Rank: </span> {profileData.rank}</h2>
                     </div>
