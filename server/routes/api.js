@@ -43,15 +43,13 @@ router.put(userStatEnpoint, async (req, res, next) => {
     const draw = req.body.draw;
 
 
-    const games_count = user.user_stats.games_count += 1;
     // updates the average of that value if it is defined only
     const updated = {
-        ...(wpm && { wpm: getAverage(user.user_stats.wpm, wpm, games_count) }),
-        ...(accuracy && { accuracy: getAverage(user.user_stats.accuracy, accuracy, games_count) }),
-        ...(win && { win: getAverage(user.user_stats.win, win, games_count) }),
-        ...(lose && { lose: getAverage(user.user_stats.lose, lose, games_count) }),
-        ...(draw && { draw: getAverage(user.user_stats.draw, draw, games_count) }),
-        games_count
+        ...(wpm && { wpm: getAverage(user.user_stats.wpm, wpm, user.user_stats.games_count) }),
+        ...(accuracy && { accuracy: getAverage(user.user_stats.accuracy, accuracy, user.user_stats.games_count) }),
+        ...(win && { win: getAverage(user.user_stats.win, win, user.user_stats.games_count) }),
+        ...(lose && { lose: getAverage(user.user_stats.lose, lose, user.user_stats.games_count) }),
+        ...(draw && { draw: getAverage(user.user_stats.draw, draw, user.user_stats.games_count) }),
     }
     if(wpm > user.user_stats.wpm){
         updated.date = new Date();
@@ -59,6 +57,7 @@ router.put(userStatEnpoint, async (req, res, next) => {
         updated.max_accuracy = Math.max(user.user_stats.max_accuracy, accuracy);
     }
     user.user_stats = updated;
+    user.user_stats.games_count += 1;
     try{
         await user.save();
     } catch(error){

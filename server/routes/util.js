@@ -2,7 +2,7 @@
  * Return the average of a stat
  * @param {Number} stat, the previous average of the stat.
  * @param {Number} newStat, the new stat obtain after a game has been complete. 
- * @param {Number} games, the total number of games.
+ * @param {Number} games, the total number of games BEFORE this new stat
  * @returns Average of the stat
  */
 export function getAverage(stat, newStat, games) {
@@ -11,6 +11,6 @@ export function getAverage(stat, newStat, games) {
     }
     const unAverage = stat * games;
     const newTotal = unAverage + newStat;
-    return newTotal / games;
+    return newTotal / (games + 1);
     
 }
