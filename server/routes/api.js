@@ -44,7 +44,6 @@ router.put(userStatEnpoint, async (req, res, next) => {
 
 
     const games_count = user.user_stats.games_count += 1;
-
     // updates the average of that value if it is defined only
     const updated = {
         ...(wpm && { wpm: getAverage(user.user_stats.wpm, wpm, games_count) }),
