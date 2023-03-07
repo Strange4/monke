@@ -37,11 +37,11 @@ function GameSettings() {
             <div id="game-mode">
                 <button id="time-btn" onClick={handleClick}>
                     <CiTimer className="game-setting-icon"/>
-                    Time Based
+                    Time
                 </button>
                 <button id="length-btn" onClick={handleClick}>
                     <CgPassword className="game-setting-icon"/>
-                    Length Based
+                    Length
                 </button>
             </div>
             

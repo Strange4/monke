@@ -6,8 +6,8 @@
     min-width: 400px;
     max-width: 1000px;
     height: 50vh;
-    min-height: 500px;
-    max-height: 500px;
+    min-height: 200px;
+    max-height: 250px;
     margin: auto;
     margin-top: 20px;
 }
@@ -17,6 +17,7 @@
     border: 2px solid white;
     width: 30%;
     min-width: 200px;
+    min-height: 200px;
 }
 
 #lobby-settings-icon {
@@ -47,4 +48,39 @@
 
 #lobby-settings {
     margin-right: 70px;
+}
+
+#practice > div.center > div > div#chronometer {
+    visibility: hidden;
+    height: 0;
+}
+
+#practice > div.center{
+    height: 350px;
+}
+
+#lobby-info > div#game-settings {
+    min-width: 100px;
+    /* margin: 10px; */
+    max-height: 100px;
+}
+
+#lobby-info > div#game-settings > div#game-mode {
+    display: flex;
+    flex-flow: row wrap;
+    max-width: 80px;
+    height: 80px;
+    padding: 0;
+}
+
+#lobby-info > div#game-settings > div {
+    min-width: 60px;
+}
+
+#lobby-info > div#game-settings > div#length-settings, #lobby-info > div#game-settings > div#time-settings {
+    display: flex;
+    flex-flow: row wrap;
+    max-width: 50px;
+    min-height: 10px;
+    height: 50px;
 }
