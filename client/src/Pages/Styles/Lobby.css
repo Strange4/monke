@@ -7,7 +7,7 @@
     max-width: 1000px;
     height: 50vh;
     min-height: 200px;
-    max-height: 250px;
+    max-height: 400px;
     margin: auto;
     margin-top: 20px;
 }
@@ -18,14 +18,24 @@
     width: 30%;
     min-width: 200px;
     min-height: 200px;
+    margin-right: 20px;
 }
 
 #lobby-settings-icon {
+    color: var(--sub-color);
     position: absolute;
     right: 0;
     margin: 10px;
     width: 2em;
     height: 2em;
+}
+
+#lobby-settings-icon:hover {
+    color: var(--text-color);
+}
+
+#lobby-settings-icon:active {
+    color: var(--accent-color);
 }
 
 #invite-btn {
@@ -50,6 +60,10 @@
     margin-right: 70px;
 }
 
+#practice {
+    margin-top: 30px;
+}
+
 #practice > div.center > div > div#chronometer {
     visibility: hidden;
     height: 0;
@@ -59,28 +73,29 @@
     height: 350px;
 }
 
-#lobby-info > div#game-settings {
-    min-width: 100px;
-    /* margin: 10px; */
-    max-height: 100px;
-}
-
-#lobby-info > div#game-settings > div#game-mode {
+#lobby-info > div#settings {
     display: flex;
     flex-flow: row wrap;
-    max-width: 80px;
-    height: 80px;
-    padding: 0;
+    max-width: 350px;
+    min-width: 200px;
+    box-shadow: 0 0 5px var(--sub-color);
+    margin-right: 50px;
 }
 
-#lobby-info > div#game-settings > div {
+#lobby-info > div#game-settings > div#game-mode > button {
+    /* margin: 0; */
+}
+
+#lobby-info > div#settings > div {
     min-width: 60px;
 }
 
-#lobby-info > div#game-settings > div#length-settings, #lobby-info > div#game-settings > div#time-settings {
-    display: flex;
-    flex-flow: row wrap;
-    max-width: 50px;
-    min-height: 10px;
-    height: 50px;
+#lobby-info > div#settings > div#length-settings {
+    min-width: 100px;
+    max-height: 50px;
+}
+
+#lobby-info > div#settings > div#global-settings {
+    min-width: 100px;
+    max-height: 50px;
 }

@@ -1,7 +1,7 @@
 import './Styles/Lobby.css'
 import NavBar from "../Components/NavBar";
 import TypingScreen from "../Components/TypingScreen/TypingScreen";
-import GameSettings from "../Components/GameSettings";
+import LobbySettings from '../Components/LobbySettings';
 import { AiFillSetting } from "react-icons/ai"
 import PlayerItem from '../Components/PlayerItem';
 import { useState } from 'react';
@@ -33,7 +33,7 @@ const Home = () => {
                 <Link to="/multiplayer-game">
                     <button id="play-btn">PLAY</button>
                 </Link>
-                {settings && <GameSettings id="lobby-settings"/> }
+                {settings && <LobbySettings/> }
                 <AiFillSetting id="lobby-settings-icon" onClick={handleClick}/>
             </div>
 

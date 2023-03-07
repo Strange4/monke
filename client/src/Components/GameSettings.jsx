@@ -1,4 +1,4 @@
-import './Styles/GameSettings.css';
+import './Styles/Settings.css';
 import TimeSettings from './TimeSettings';
 import LengthSettings from './LengthSettings';
 import { useState } from 'react';
@@ -26,7 +26,7 @@ function GameSettings() {
     }
 
     return (
-        <div id="game-settings">
+        <div id="settings">
 
             <div id="global-settings">
                 <button>
