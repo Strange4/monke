@@ -6,7 +6,6 @@ import { randomInt } from './util.js';
 
 export const quoteRouter = express.Router();
 
-
 quoteRouter.get("/", async (req, res, next) => {
     const total = await Quote.count();
     if(!req.query.difficulty){
@@ -14,7 +13,7 @@ quoteRouter.get("/", async (req, res, next) => {
         res.json({ body: quote.quote });
         return;
     }
-    const difficulty = req.query.difficulty;
+    let difficulty = req.query.difficulty;
     try{
         difficulty = z.number().gte(1).int().lte(5);
     } catch(_){

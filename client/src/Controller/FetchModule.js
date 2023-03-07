@@ -24,14 +24,12 @@ async function fetchData(url) {
  * @param url 
  * @param userInput 
  */
-async function postUserStatAPI(url, userStat, token) {
-    console.log(token)
+async function postUserStatAPI(url, userStat) {
     let response = await fetch(url, {
         method: 'PUT',
         headers: {
             'Accept': 'application/json',
             "Content-Type": "application/json",
-            // 'X-CSRF-TOKEN': token
         },
         body: JSON.stringify(userStat)
     });
@@ -104,12 +102,10 @@ function readImage(image, email, validateForm, postImage) {
     }
 }
 
-async function postImageAPI(url, userInput, token) {
-    console.log(token)
+async function postImageAPI(url, userInput) {
     let response = await fetch(url, {
         method: 'PUT',
         headers: {
-            // 'X-CSRF-TOKEN': token
         },
         body: userInput
     });

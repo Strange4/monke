@@ -9,7 +9,6 @@ function Login(props) {
     const auth = useContext(AuthContext);
     
     async function handleLogin(googleData) {
-        auth.setToken(googleData.credential)
         const res = await fetch("/authentication/auth", {
             method: "POST",
             body: JSON.stringify({ token: googleData.credential }),
@@ -24,7 +23,6 @@ function Login(props) {
     }
 
     async function setUserData(data) {
-        console.log(auth.token)
         await fetch("/api/user", {
             method: "POST",
             body: JSON.stringify({
@@ -35,7 +33,6 @@ function Login(props) {
             headers: {
                 'Accept': 'application/json',
                 "Content-Type": "application/json",
-                // 'X-CSRF-TOKEN': auth.token
             },
         });
 

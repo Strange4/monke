@@ -27,13 +27,11 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
 
     //temp
     async function fetchUserData() {
-        console.log(auth.token)
         let data = await fetch("/api/user", {
             method: "POST",
             headers: {
                 'Accept': 'application/json',
                 "Content-Type": "application/json",
-                // 'X-CSRF-TOKEN': auth.token
             },
             body: JSON.stringify({ "email": auth.userEmail })
         })
@@ -105,7 +103,7 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
             accuracy: result.accuracy
         };
 
-        FetchModule.postUserStatAPI("/api/user_stat", userStats, auth.token);
+        FetchModule.postUserStatAPI("/api/user_stat", userStats);
     }
 
     return (

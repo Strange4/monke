@@ -40,13 +40,11 @@ const Profile = (props) => {
         (async () => {
             console.log(auth.userEmail)
             if (auth.userEmail) {
-                console.log(auth.token)
                 let data = await fetch("/api/user", {
                     method: "POST",
                     headers: {
                         'Accept': 'application/json',
                         "Content-Type": "application/json",
-                        // 'X-CSRF-TOKEN': auth.token
                     },
                     body: JSON.stringify({ "email": auth.userEmail })
                 });
@@ -64,18 +62,18 @@ const Profile = (props) => {
 
     async function saveUsername() {
         if (validateUsername()) {
-            console.log(auth.token)
             setEditingUsername(false)
             let newUsername = usernameField.current.textContent;
+            
             let data = await fetch("/api/update_username", {
                 method: "PUT",
                 headers: {
                     'Accept': 'application/json',
                     "Content-Type": "application/json",
-                    // 'X-CSRF-TOKEN': auth.token
                 },
                 body: JSON.stringify({ email: auth.userEmail, username: newUsername })
             });
+            console.log(data)
             setProfileData(await data.json());
         } else {
             setUsernameFeedback("Invalid username: \n * Usernames can consist of lowercase and capitals \n",
@@ -112,7 +110,8 @@ const Profile = (props) => {
     }
 
     async function postImage(data) {
-        let newData = await FetchModule.postImageAPI("/api/update_avatar", data, auth.token);
+        let newData = await FetchModule.postImageAPI("/api/update_avatar", data);
+        console.log(newData)
         setProfileData(await newData.json())
     }
 

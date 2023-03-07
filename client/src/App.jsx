@@ -15,7 +15,6 @@ const queryClient = new QueryClient();
  */
 function App() {
     const [userEmail, setUserEmail] = useState();
-    const [token, setToken] = useState();
 
     useEffect(() => {
         (async () => {
@@ -32,8 +31,6 @@ function App() {
     return (
         <div className="App">
             <AuthContext.Provider value={{
-                token: token,
-                setToken: setToken,
                 userEmail: userEmail,
                 setUserEmail: setUserEmail,
                 checkAccess: checkAccess

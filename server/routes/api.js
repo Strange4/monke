@@ -8,36 +8,23 @@ import express from "express";
 import User from "../database/models/user.js";
 import mongoose from "mongoose";
 import { Constraints } from "../database/validation.js";
-import { quoteRouter } from "./quotes.js";
 import { getAverage } from "./util.js";
 import { ImgParser } from "./validation.js";
 import createHttpError from "http-errors";
 import { Azure } from "../database/azure.js"
 import multer from 'multer';
+
 const upload = multer();
 const azure = Azure.getAzureInstance();
-const userStatEnpoint = "/user_stat";
-const quoteEnpoint = "/quote";
-const userEnpoint = "/user";
-const leaderboardEndpoint = "/leaderboard";
-import { csrfSync } from "csrf-sync";
-const csrfProtect = csrfSync();
-
 const router = express.Router();
 router.use(express.json());
-router.use(quoteEnpoint, quoteRouter);
-//route that create a CSRF token and sends it back to the client
-router.get("/csrf-token", function (req, res) {
-    console.log("here")
-    res.json({ token: csrfProtect.generateToken(req) });
-});
 
 /**
  * Updates the stats of a user using their email.
  * Updates only the fields sent
  * if a field has the wrong type it will not be updated
  */
-router.put(userStatEnpoint, async (req, res, next) => {
+router.put("/user_stat", async (req, res, next) => {
     if (!dbIsConnected()) {
         next(new createHttpError.InternalServerError("Database is unavailable"));
         return;
@@ -82,7 +69,7 @@ router.put(userStatEnpoint, async (req, res, next) => {
  * Get endpoint that  json object containing the user
  * and their game statistics
  */
-router.post(userEnpoint, async (req, res, next) => {
+router.post("/user", async (req, res, next) => {
     if (!dbIsConnected()) {
         next(new createHttpError.InternalServerError("Database is unavailable"));
         return;
@@ -125,7 +112,7 @@ router.post(userEnpoint, async (req, res, next) => {
  * Get endpoint that returns a hardcoded json object containing
  * leaderboard info such as rank, wpm, username and temporary profileURL
  */
-router.get(leaderboardEndpoint, async (req, res, next) => {
+router.get("/leaderboard", async (req, res, next) => {
     if (!dbIsConnected()) {
         next(new createHttpError.InternalServerError("Error while getting the leaderboard"));
         return;
