@@ -38,13 +38,23 @@
     color: var(--accent-color);
 }
 
-#invite-btn {
-    position: absolute;
-    left: 0;
-    bottom: 0;
+#invite-code {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+    /* position: absolute; */
+    /* left: 0; */
+    /* bottom: 0; */
     font-size: 2em;
     width: 100%;
-    height: 56px;
+    height: 80px;
+    margin: auto;
+    /* margin: 0; */
+}
+
+#copy-icon:hover {
+    cursor: pointer;
 }
 
 #play-btn {
