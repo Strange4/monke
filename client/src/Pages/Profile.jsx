@@ -92,6 +92,7 @@ const Profile = () => {
     const saveAvatar = async (e) => {
         e.preventDefault()
         let image = e.target.image.files[0]
+        console.log(image)
         if (validateImageForm(image)) {
             FetchModule.readImage(image, auth.userEmail, validateImageForm, postImage);
             e.target.reset();
@@ -104,6 +105,7 @@ const Profile = () => {
      */
     function cancelAvatarEdit() {
         setEditingAvatar(false)
+        setAvatarFeedback("");
         avatarField.current.src = profileData.picture_url
     }
 
@@ -124,6 +126,9 @@ const Profile = () => {
     function validateImageForm(image) {
         if (!image) {
             setAvatarFeedback("Please select a valid image");
+            return false;
+        } else if (image.size / 1048576 > 5 ) {
+            setAvatarFeedback("Image to big, select a different image");
             return false;
         } else {
             setAvatarFeedback("");
