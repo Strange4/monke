@@ -4,6 +4,7 @@ import { useEffect, useState, useContext } from 'react';
 import Popup from "reactjs-popup";
 import * as FetchModule from '../../Controller/FetchModule';
 import AuthContext from '../../Context/AuthContext';
+import { postData } from '../../Controller/FetchModule';
 
 function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText }) {
     const [userStats, setUserStats] = useState({ "time": 0, "wpm": 0, "accuracy": 0 });
@@ -12,7 +13,7 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
     const [userData, setUserData] = useState({
         username: "",
         picture_url:
-        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+            "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
         user_stats: {
             wpm: 0,
             max_wpm: 0,
@@ -25,22 +26,11 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
         }
     });
 
-    //temp
-    async function fetchUserData() {
-        let data = await fetch("/api/user", {
-            method: "POST",
-            headers: { "Accept": "application/json", "Content-Type": "application/json" },
-            body: JSON.stringify({ "email": auth.userEmail })
-        })
-        setUserData(await data.json())
-    }
-
     useEffect(() => {
         (async () => {
             if (isOpen === true) {
                 const results = await computeResults(timer.time().s, originalText, displayText);
                 setUserStats(results);
-                // postUserStats(results);
             }
         })()
     }, [isOpen]);
@@ -49,23 +39,22 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
      * Compute the results for the solo game upon end and post them
      */
     async function computeResults(numberOfSeconds, text, typedText) {
-        let nbWords = text.split(" ").length;
-        let minutes = numberOfSeconds / 60;
-        let wpm = nbWords / minutes;
-        let result = {
+        const nbWords = text.split(" ").length;
+        const minutes = numberOfSeconds / 60;
+        const wpm = nbWords / minutes;
+        const result = {
             time: Math.round(numberOfSeconds * 100) / 100,
             wpm: Math.round(wpm * 100) / 100,
             accuracy: Math.round(computeAccuracy(typedText) * 100) / 100
         }
-        //TODO ONLY POST WHEN LOGGED IN
-        let loggedIn = await auth.checkAccess()
+
+        const loggedIn = await auth.checkAccess()
         if (loggedIn) {
-            console.log(`logged in as ${auth.userEmail}, posting result`)
-            fetchUserData()
+            const data = await postData("/api/user", { email: auth.userEmail }, "POST")
+            setUserData(data)
             postUserStats(result);
-        } else {
-            console.log("not logged in, skipping user stats posting")
         }
+
         return result;
     }
 
@@ -92,8 +81,6 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
 
     /**
      * Sends data to the post api for a user's solo game
-     * TODO change the username to be the real username 
-     * once login is implemented
      * @param {Object} result 
      */
     async function postUserStats(result) {
@@ -105,7 +92,7 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
             accuracy: result.accuracy
         };
 
-        FetchModule.postUserStatAPI("/api/user_stat", userStats);
+        FetchModule.postData("/api/user_stat", userStats, "PUT")
     }
 
     return (

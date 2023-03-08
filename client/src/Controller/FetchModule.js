@@ -1,6 +1,7 @@
 import { useQuery } from "react-query";
 import Spinner from "../Components/Spinner";
 // importing definitions for better intellisense
+
 /**
  * Generic fetch function to fetch from any given
  * url and return a json object with the contained data
@@ -10,7 +11,7 @@ import Spinner from "../Components/Spinner";
  */
 async function fetchData(url) {
     let data;
-    let response = await fetch(url);
+    const response = await fetch(url);
     if (response.ok) {
         data = await response.json();
         return data;
@@ -19,20 +20,17 @@ async function fetchData(url) {
     }
 }
 
-/**
- * Post the user stat to the api
- * @param url 
- * @param userInput 
- */
-async function postUserStatAPI(url, userStat) {
-    let response = await fetch(url, {
-        method: 'PUT',
-        headers: { 'Accept': 'application/json', "Content-Type": "application/json" },
-        body: JSON.stringify(userStat)
+async function postData(url, body, method) {
+    const res = await fetch(url, {
+        method: method,
+        body: JSON.stringify(body),
+        headers: {
+            'Accept': 'application/json',
+            "Content-Type": "application/json"
+        },
     });
-    if (!response.ok) {
-        throw Error("Something Went wrong posting data");
-    }
+    const data = await res.json();
+    return data
 }
 
 /**
@@ -77,5 +75,41 @@ async function transformData(response) {
     return await response.blob();
 }
 
+/**
+ * Helper function to read the given image, convert it and post it
+ * @param image 
+ * @param username 
+ * @param validateForm 
+ * @param postImage 
+ */
+function readImage(image, email, validateForm, postImage) {
+    if (validateForm(image)) {
+        const fr = new FileReader();
+        fr.readAsArrayBuffer(image);
 
-export { fetchData, postUserStatAPI, useFetch };
+        fr.onload = function () {
+            const formData = new FormData()
+            formData.append('image', image);
+            formData.append('email', email);
+            formData.append('fileName', image.name);
+            postImage(formData);
+        }
+    }
+}
+
+async function postImageAPI(url, userInput) {
+    const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+        },
+        body: userInput
+    });
+    if (response.ok) {
+        const data = await response.json()
+        return data
+    } else {
+        throw Error("Something Went wrong posting data");
+    }
+}
+
+export { fetchData, postData, useFetch, readImage, postImageAPI };

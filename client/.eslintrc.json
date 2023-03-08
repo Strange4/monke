@@ -45,7 +45,7 @@
     ////////// Style //////////
     "array-bracket-spacing": ["warn", "never"],
     "array-bracket-newline": ["warn", "consistent"],
-    "camelcase": "error",
+    "camelcase": "warn",
     "comma-spacing": ["warn", { "before": false, "after": true }],
     "comma-style": ["warn", "last"],
     "brace-style": ["warn"],

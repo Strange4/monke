@@ -2,14 +2,13 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './styles/App.css';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import Home from './Pages/Home';
-import Login from './Components/Login';
 import AuthContext from './Context/AuthContext';
 import { useState, useEffect } from 'react';
 import checkAccess from './Controller/AuthHelper';
 import Profile from './Pages/Profile';
 
-
 const queryClient = new QueryClient();
+
 /**
  * Displays the Main App container
  * @returns {ReactElement}
@@ -20,9 +19,11 @@ function App() {
     useEffect(() => {
         (async () => {
             if (!userEmail) {
-                let userData = await fetch("/authentication/refreshLogin")
-                let newEmail = await userData.json()
-                setUserEmail(newEmail.email)
+                const userData = await fetch("/authentication/refreshLogin")
+                if (userData.status === 200) {
+                    const newEmail = await userData.json()
+                    setUserEmail(newEmail.email)
+                }
             }
         })();
     }, [userEmail]);
@@ -38,13 +39,12 @@ function App() {
                     <Router>
                         <Routes>
                             <Route path="/" element={<Home />} />
-                            <Route path="/profile"
-                                element={
-                                    userEmail ?
-                                        <Profile />
-                                        :
-                                        <Login navbar={true} />
-                                } />
+                            <Route path="/profile" element={
+                                userEmail ?
+                                    <Profile redirect={userEmail ? false : true} />
+                                    :
+                                    <></>
+                            } />
                         </Routes>
                     </Router>
                     <div id="popup-root" />
