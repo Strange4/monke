@@ -12,7 +12,7 @@ const Profile = () => {
     const [profileData, setProfileData] = useState({
         username: "",
         picture_url:
-        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+            "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
         user_stats: {
             wpm: 0,
             max_wpm: 0,
@@ -30,12 +30,15 @@ const Profile = () => {
     const [UsernameFeedback, setUsernameFeedback] = useState("")
     const [AvatarFeedback, setAvatarFeedback] = useState("")
     const usernameField = useRef()
+    const avatarField = useRef()
     const navigate = useNavigate()
+    const DefaultPicture = 
+        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
 
     useEffect(() => {
         (async () => {
             if (auth.userEmail) {
-                let data = await FetchModule.postData("/api/user", {email: auth.userEmail}, "POST")
+                let data = await FetchModule.postData("/api/user", { email: auth.userEmail }, "POST")
                 setProfileData(data);
             } else {
                 navigate("/");
@@ -61,6 +64,11 @@ const Profile = () => {
                 "Cannot be two underscores, two hypens or two spaces in a row\n",
                 "Cannot have a underscore, hypen or space at the start or end")
         }
+    }
+
+    function editUsername() {
+        setEditingUsername(true)
+        usernameField.current.focus()
     }
 
     /**
@@ -116,6 +124,15 @@ const Profile = () => {
         }
     }
 
+    function readURL(e) {
+        let img = e.target.files[0]
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            avatarField.current.src = e.target.result
+        }
+        reader.readAsDataURL(img);
+    }
+
     return (
         <div id="home">
             <NavBar />
@@ -123,7 +140,8 @@ const Profile = () => {
                 <div id="user">
                     <div id="image">
                         <img id="profile-pic"
-                            src={`${profileData.picture_url || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"}`}
+                            ref={avatarField}
+                            src={`${profileData.picture_url || DefaultPicture}`}
                             alt="your profile image"></img>
                         {
                             EditingAvatar ?
@@ -140,13 +158,17 @@ const Profile = () => {
                         {
                             EditingAvatar ? <>
                                 <form id="image-picker-form" onSubmit={async (e) => await saveAvatar(e)}>
-                                    <input type="file" id="avatar" name="image" accept="image/png, image/jpeg, image/jpg" />
+                                    <input
+                                        type="file"
+                                        id="avatar" name="image"
+                                        accept="image/png, image/jpeg, image/jpg"
+                                        onChange={(e) => { readURL(e) }} />
                                     <input type="submit" id="imageSubmit" className="submit-btn" value="Save" />
                                 </form>
                                 <p> {AvatarFeedback} </p>
                             </>
                                 :
-                                null
+                                <></>
                         }
 
                     </div>
@@ -161,11 +183,13 @@ const Profile = () => {
                                     :
                                     <RiEdit2Fill
                                         id="edit-name-icon"
-                                        onClick={() => { setEditingUsername(true) }} />
+                                        onClick={editUsername} />
                             }
                             <h2><span className="label">Name: </span></h2>
                             <h2 contentEditable={EditingUsername}
+                                className={EditingUsername ? "editable" : ""}
                                 suppressContentEditableWarning={true}
+                                onFocus={(e) => e.persist()}
                                 ref={usernameField}>
                                 {profileData.username}
                             </h2>
