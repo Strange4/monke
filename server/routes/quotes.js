@@ -11,6 +11,7 @@ quoteRouter.get("/", async (req, res, next) => {
     const total = await Quote.count();
     if(!req.query.difficulty){
         const quote = await Quote.findOne().skip(randomInt(0, total - 1)).lean();
+        console.log(quote);
         res.json({ body: quote.quote });
         return;
     }
