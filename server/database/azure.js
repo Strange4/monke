@@ -10,33 +10,18 @@ const containerName = process.env.containerName;
 const storageAccountName = process.env.storageAccountName;
 const blobPublicUrl = `https://${storageAccountName}.blob.core.windows.net/${containerName}/`;
 
-export class Azure {
+// Prevent calling with new.
+blobService = new BlobServiceClient(
+    `https://${storageAccountName}.blob.core.windows.net/?${sasToken}`
+);
+blobContainer = blobService.getContainerClient(containerName);
 
-    static instance;
+// Get the container client
+export function getContainerClient() {
+    return blobContainer;
+}
 
-    // Prevent calling with new.
-    constructor() {
-        blobService = new BlobServiceClient(
-            `https://${storageAccountName}.blob.core.windows.net/?${sasToken}`
-        );
-        blobContainer = blobService.getContainerClient(containerName);
-    }
-
-    // Singleton
-    static getAzureInstance() {
-        if (!Azure.instance) {
-            Azure.instance = new Azure();
-        }
-        return Azure.instance;
-    }
-
-    // Get the container client
-    getContainerClient() {
-        return blobContainer;
-    }
-
-    // Get the public url for the container
-    getBlobPublicUrl() {
-        return blobPublicUrl;
-    }
+// Get the public url for the container
+export function getBlobPublicUrl() {
+    return blobPublicUrl;
 }

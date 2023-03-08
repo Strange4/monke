@@ -11,7 +11,7 @@ import { Constraints } from "../database/validation.js";
 import { getAverage } from "../controller/util.js";
 import { ImgParser } from "../controller/validation.js";
 import createHttpError from "http-errors";
-import { Azure } from "../database/azure.js"
+import * as Azure from "../database/azure.js"
 import multer from 'multer';
 
 const upload = multer({
@@ -24,7 +24,6 @@ const upload = multer({
     }
 });
 
-const azure = Azure.getAzureInstance();
 const router = express.Router();
 router.use(express.json());
 
@@ -152,12 +151,12 @@ router.put("/update_avatar", upload.single('image'), async (req, res) => {
     try {
         ImgParser.parse(req.file);
         const blobName = req.body.fileName;
-        const blobClient = azure.getContainerClient().getBlockBlobClient(blobName);
+        const blobClient = Azure.getContainerClient().getBlockBlobClient(blobName);
         const options = { blobHTTPHeaders: { blobContentType: req.file.mimetype } };
         await blobClient.uploadData(req.file.buffer, options);
 
         // Uploading data to mongodb.
-        const url = azure.getBlobPublicUrl() + blobName;
+        const url = Azure.getBlobPublicUrl() + blobName;
         const user = await User.findOneAndUpdate({email}, { "picture_url": url }, { "new": true });
 
         try {
