@@ -178,25 +178,20 @@ router.put("/update_username", async (req, res) => {
     const email = Constraints.email(req.body.email);
     const newName = req.body.username;
     if (!email || !newName) {
-        next(new createHttpError.BadRequest("no email was provided"));
+        next(new createHttpError.BadRequest("no email or username was provided"));
         return;
     }
-    if (newName) {
-        const user = await User.findOneAndUpdate({ email }, { username: newName }, { "new": true });
-        try {
-            await user.save();
-        } catch (error) {
-            next(new createHttpError.BadRequest({
-                message: "values do not comply with user stats schema",
-                error: error.message
-            }));
-            return;
-        }
-        res.status(200).json(user);
-    } else {
-        next(new createHttpError.BadRequest("new username provided was invalid"));
+    const user = await User.findOneAndUpdate({ email }, { username: newName }, { "new": true });
+    try {
+        await user.save();
+    } catch (error) {
+        next(new createHttpError.BadRequest({
+            message: "values do not comply with user stats schema",
+            error: error.message
+        }));
         return;
     }
+    res.status(200).json(user);
 });
 
 function dbIsConnected() {
