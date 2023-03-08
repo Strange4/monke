@@ -56,7 +56,6 @@ deploy-job:
   only:
     - main
     - staging
-    - 33-allow-user-to-update-picture-and-username
   stage: deploy
   image: mcr.microsoft.com/azure-cli
   dependencies:
