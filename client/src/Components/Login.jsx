@@ -3,36 +3,24 @@ import { GoogleLogin } from '@react-oauth/google';
 import { useContext } from "react";
 import AuthContext from "../Context/AuthContext";
 import NavBar from './NavBar';
+import { postData } from '../Controller/FetchModule';
+
 
 function Login(props) {
-
     const auth = useContext(AuthContext);
 
     async function handleLogin(googleData) {
-        const res = await fetch("/authentication/auth", {
-            method: "POST",
-            body: JSON.stringify({ token: googleData.credential }),
-            headers: { 'Accept': 'application/json', "Content-Type": "application/json" },
-        });
-        const data = await res.json();
-
+        const data = await postData("/authentication/login", {token: googleData.credential}, "POST")
         await setUserData(data)
     }
 
     async function setUserData(data) {
-        console.log(data)
-        const res = await fetch("/api/user", {
-            method: "POST",
-            body: JSON.stringify({
-                username: data.user.username,
-                email: data.user.email,
-                "picture_url": data.user.pic,
-            }),
-            headers: { 'Accept': 'application/json', "Content-Type": "application/json" },
-        });
-
-        console.log(res)
-
+        const userData = {
+            username: data.user.username,
+            email: data.user.email,
+            "picture_url": data.user.pic,
+        }
+        await postData("/api/user", userData, "POST")
         auth.setUserEmail(data.user.email);
     }
 

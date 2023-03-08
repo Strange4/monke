@@ -24,7 +24,7 @@ function TypingScreen() {
     const {
         isLoading, data: textToDisplay, refetch
     } = useQuery("textToDisplay", async () => {
-        return (await (await fetch("/api/quote",
+        return (await (await fetch("/quote",
             {
                 headers:
                     { 'Accept': 'application/json', "Content-Type": "application/json" }
@@ -49,7 +49,6 @@ function TypingScreen() {
     function handleGameEnd() {
         stopTimer();
         setDisplayResults(true);
-        setUserDisplay([]);
         refetch();
     }
 
@@ -114,8 +113,6 @@ function TypingScreen() {
         });
         setKeyboard(newKeyboard);
     }
-
-
 
     return (
         <div className='center'>
