@@ -32,13 +32,14 @@ const Profile = () => {
     const usernameField = useRef()
     const avatarField = useRef()
     const navigate = useNavigate()
-    const DefaultPicture = 
+    const DefaultPicture =
         "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
 
     useEffect(() => {
         (async () => {
             if (auth.userEmail) {
-                let data = await FetchModule.postData("/api/user", { email: auth.userEmail }, "POST")
+                const url = "/api/user"
+                const data = await FetchModule.postData(url, { email: auth.userEmail }, "POST")
                 setProfileData(data);
             } else {
                 navigate("/");
@@ -52,9 +53,9 @@ const Profile = () => {
     async function saveUsername() {
         if (validateUsername()) {
             setEditingUsername(false)
-            let newUsername = usernameField.current.textContent;
-            let body = { email: auth.userEmail, username: newUsername }
-            let data = await FetchModule.postData("/api/update_username", body, "PUT")
+            const newUsername = usernameField.current.textContent;
+            const body = { email: auth.userEmail, username: newUsername }
+            const data = await FetchModule.postData("/api/update_username", body, "PUT")
             setProfileData(data);
         } else {
             setUsernameFeedback(
@@ -91,7 +92,7 @@ const Profile = () => {
      */
     const saveAvatar = async (e) => {
         e.preventDefault()
-        let image = e.target.image.files[0]
+        const image = e.target.image.files[0]
         if (validateImageForm(image)) {
             FetchModule.readImage(image, auth.userEmail, validateImageForm, postImage);
             e.target.reset();
@@ -113,7 +114,7 @@ const Profile = () => {
      * @param {*} data 
      */
     async function postImage(data) {
-        let newData = await FetchModule.postImageAPI("/api/update_avatar", data);
+        const newData = await FetchModule.postImageAPI("/api/update_avatar", data);
         setProfileData(newData)
     }
 
@@ -126,7 +127,7 @@ const Profile = () => {
         if (!image) {
             setAvatarFeedback("Please select a valid image");
             return false;
-        } else if (image.size / 1048576 > 5 ) {
+        } else if (image.size / 1048576 > 5) {
             setAvatarFeedback("Image to big, select a different image");
             return false;
         } else {
@@ -136,7 +137,7 @@ const Profile = () => {
     }
 
     function readURL(e) {
-        let img = e.target.files[0]
+        const img = e.target.files[0]
         var reader = new FileReader();
         reader.onload = function (e) {
             avatarField.current.src = e.target.result

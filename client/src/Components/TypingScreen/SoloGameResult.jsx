@@ -39,18 +39,18 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
      * Compute the results for the solo game upon end and post them
      */
     async function computeResults(numberOfSeconds, text, typedText) {
-        let nbWords = text.split(" ").length;
-        let minutes = numberOfSeconds / 60;
-        let wpm = nbWords / minutes;
-        let result = {
+        const nbWords = text.split(" ").length;
+        const minutes = numberOfSeconds / 60;
+        const wpm = nbWords / minutes;
+        const result = {
             time: Math.round(numberOfSeconds * 100) / 100,
             wpm: Math.round(wpm * 100) / 100,
             accuracy: Math.round(computeAccuracy(typedText) * 100) / 100
         }
 
-        let loggedIn = await auth.checkAccess()
+        const loggedIn = await auth.checkAccess()
         if (loggedIn) {
-            let data = await postData("/api/user", { email: auth.userEmail }, "POST")
+            const data = await postData("/api/user", { email: auth.userEmail }, "POST")
             setUserData(data)
             postUserStats(result);
         }

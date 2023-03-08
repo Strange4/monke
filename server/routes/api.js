@@ -148,8 +148,8 @@ router.put("/update_avatar", upload.single('image'), async (req, res) => {
         await blobClient.uploadData(req.file.buffer, options);
 
         // Uploading data to mongodb.
-        let url = azure.getBlobPublicUrl() + blobName;
-        let user = await User.findOneAndUpdate({ email }, { "picture_url": url }, { "new": true });
+        const url = azure.getBlobPublicUrl() + blobName;
+        const user = await User.findOneAndUpdate({ email }, { "picture_url": url }, { "new": true });
 
         try {
             await user.save();
@@ -176,13 +176,13 @@ router.put("/update_username", async (req, res) => {
         return;
     }
     const email = Constraints.email(req.body.email);
-    let newName = req.body.username;
+    const newName = req.body.username;
     if (!email || !newName) {
         next(new createHttpError.BadRequest("no email was provided"));
         return;
     }
     if (newName) {
-        let user = await User.findOneAndUpdate({ email }, { username: newName }, { "new": true });
+        const user = await User.findOneAndUpdate({ email }, { username: newName }, { "new": true });
         try {
             await user.save();
         } catch (error) {

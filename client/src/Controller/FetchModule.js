@@ -11,7 +11,7 @@ import Spinner from "../Components/Spinner";
  */
 async function fetchData(url) {
     let data;
-    let response = await fetch(url);
+    const response = await fetch(url);
     if (response.ok) {
         data = await response.json();
         return data;
@@ -88,7 +88,7 @@ function readImage(image, email, validateForm, postImage) {
         fr.readAsArrayBuffer(image);
 
         fr.onload = function () {
-            let formData = new FormData()
+            const formData = new FormData()
             formData.append('image', image);
             formData.append('email', email);
             formData.append('fileName', image.name);
@@ -98,14 +98,14 @@ function readImage(image, email, validateForm, postImage) {
 }
 
 async function postImageAPI(url, userInput) {
-    let response = await fetch(url, {
+    const response = await fetch(url, {
         method: 'PUT',
         headers: {
         },
         body: userInput
     });
     if (response.ok) {
-        let data = await response.json()
+        const data = await response.json()
         return data
     } else {
         throw Error("Something Went wrong posting data");

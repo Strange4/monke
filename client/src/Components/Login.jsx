@@ -10,12 +10,12 @@ function Login(props) {
     const auth = useContext(AuthContext);
 
     async function handleLogin(googleData) {
-        let data = await postData("/authentication/login", {token: googleData.credential}, "POST")
+        const data = await postData("/authentication/login", {token: googleData.credential}, "POST")
         await setUserData(data)
     }
 
     async function setUserData(data) {
-        let userData = {
+        const userData = {
             username: data.user.username,
             email: data.user.email,
             "picture_url": data.user.pic,

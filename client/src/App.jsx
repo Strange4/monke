@@ -19,9 +19,9 @@ function App() {
     useEffect(() => {
         (async () => {
             if (!userEmail) {
-                let userData = await fetch("/authentication/refreshLogin")
+                const userData = await fetch("/authentication/refreshLogin")
                 if (userData.status === 200) {
-                    let newEmail = await userData.json()
+                    const newEmail = await userData.json()
                     setUserEmail(newEmail.email)
                 }
             }
