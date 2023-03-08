@@ -6,6 +6,9 @@ import AuthContext from './Context/AuthContext';
 import { useState, useEffect } from 'react';
 import checkAccess from './Controller/AuthHelper';
 import Profile from './Pages/Profile';
+import Lobby from './Pages/Lobby';
+import MultiplayerGame from './Pages/MultiplayerGame';
+import Login from './Components/Login';
 
 const queryClient = new QueryClient();
 
@@ -39,6 +42,16 @@ function App() {
                     <Router>
                         <Routes>
                             <Route path="/" element={<Home />} />
+                            <Route path="/profile"
+                                element={
+                                    userEmail ?
+                                        <Profile />
+                                        :
+                                        <Login navbar={true} />
+                                } />
+                            <Route path='/lobby' element={<Lobby/>}/>
+                            <Route path='/multiplayer-game' element={<MultiplayerGame/>}/>
+
                             <Route path="/profile" element={
                                 userEmail ?
                                     <Profile redirect={userEmail ? false : true} />

@@ -1,4 +1,4 @@
-#game-settings {
+#settings {
     display: flex;
     justify-content: space-around;
     margin: auto;
@@ -9,7 +9,7 @@
     border-radius: 20px;
 }
 
-#game-settings button{
+#settings button{
     text-decoration: none;
     border: none;
     background-color: transparent;
@@ -18,7 +18,7 @@
     font-size: 0.9em;
 }
 
-#game-settings button:hover {
+#settings button:hover {
     cursor: pointer;
     color: var(--text-color);
 }
@@ -26,7 +26,6 @@
 #time-settings, #length-settings {
     display: flex;
     min-width: 200px;
-
 }
 
 .game-setting-icon {

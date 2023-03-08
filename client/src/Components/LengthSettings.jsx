@@ -1,4 +1,4 @@
-import './Styles/GameSettings.css';
+import './Styles/Settings.css';
 
 /**
  * Displays time specific settings
