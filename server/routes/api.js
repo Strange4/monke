@@ -14,7 +14,16 @@ import createHttpError from "http-errors";
 import { Azure } from "../database/azure.js"
 import multer from 'multer';
 
-const upload = multer();
+const upload = multer({
+    limits: {fieldSize: 5242880},
+    fileFilter: (_, file, callback) => {
+        if (file.mimetype.startsWith("image/")) {
+            return callback(null, true)
+        }
+        callback(new Error("Error occured with uploading"))
+    }
+});
+
 const azure = Azure.getAzureInstance();
 const router = express.Router();
 router.use(express.json());
@@ -149,7 +158,7 @@ router.put("/update_avatar", upload.single('image'), async (req, res) => {
 
         // Uploading data to mongodb.
         const url = azure.getBlobPublicUrl() + blobName;
-        const user = await User.findOneAndUpdate({ email }, { "picture_url": url }, { "new": true });
+        const user = await User.findOneAndUpdate({email}, { "picture_url": url }, { "new": true });
 
         try {
             await user.save();
