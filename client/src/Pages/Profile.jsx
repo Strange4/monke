@@ -12,7 +12,7 @@ const Profile = () => {
     const [profileData, setProfileData] = useState({
         username: "",
         picture_url:
-            "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
         user_stats: {
             wpm: 0,
             max_wpm: 0,
@@ -35,7 +35,7 @@ const Profile = () => {
     useEffect(() => {
         (async () => {
             if (auth.userEmail) {
-                let data = await FetchModule.postData("/api/user", { "email": auth.userEmail }, "POST")
+                let data = await FetchModule.postData("/api/user", {email: auth.userEmail}, "POST")
                 setProfileData(data);
             } else {
                 navigate("/");
@@ -43,6 +43,9 @@ const Profile = () => {
         })();
     }, []);
 
+    /**
+     * Saves the username after it is validated else provides proper feedback
+     */
     async function saveUsername() {
         if (validateUsername()) {
             setEditingUsername(false)
@@ -60,6 +63,10 @@ const Profile = () => {
         }
     }
 
+    /**
+     * validates username with regex pattern
+     * @returns {boolean}
+     */
     function validateUsername() {
         const username = usernameField.current.textContent;
         const usernameRegex = /^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$/;
@@ -71,16 +78,24 @@ const Profile = () => {
         return true
     }
 
+    /**
+     * Validates the image and updates the profile picture
+     * @param {Event} e 
+     */
     const saveAvatar = async (e) => {
         e.preventDefault()
         let image = e.target.image.files[0]
         if (validateImageForm(image)) {
-            await FetchModule.readImage(image, auth.userEmail, validateImageForm, postImage);
+            FetchModule.readImage(image, auth.userEmail, validateImageForm, postImage);
             e.target.reset();
             setEditingAvatar(false)
         }
     }
 
+    /**
+     * 
+     * @param {*} data 
+     */
     async function postImage(data) {
         let newData = await FetchModule.postImageAPI("/api/update_avatar", data);
         setProfileData(newData)
