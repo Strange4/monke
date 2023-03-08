@@ -68,7 +68,6 @@ const Profile = () => {
 
     function editUsername() {
         setEditingUsername(true)
-        usernameField.current.focus()
     }
 
     /**
@@ -98,6 +97,14 @@ const Profile = () => {
             e.target.reset();
             setEditingAvatar(false)
         }
+    }
+
+    /**
+     * Cancels the editing of the avatar and resets it back to previously saved one
+     */
+    function cancelAvatarEdit() {
+        setEditingAvatar(false)
+        avatarField.current.src = profileData.picture_url
     }
 
     /**
@@ -147,7 +154,7 @@ const Profile = () => {
                             EditingAvatar ?
                                 <RiCloseCircleLine
                                     id="edit-pic-icon"
-                                    onClick={() => setEditingAvatar(false)} />
+                                    onClick={cancelAvatarEdit} />
                                 :
                                 <RiImageEditFill
                                     id="edit-pic-icon"
@@ -189,7 +196,6 @@ const Profile = () => {
                             <h2 contentEditable={EditingUsername}
                                 className={EditingUsername ? "editable" : ""}
                                 suppressContentEditableWarning={true}
-                                onFocus={(e) => e.persist()}
                                 ref={usernameField}>
                                 {profileData.username}
                             </h2>

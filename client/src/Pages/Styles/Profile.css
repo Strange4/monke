@@ -61,6 +61,7 @@
 
 .editable {
     text-decoration-line: underline;
+    color: white;
 }
 
 #edit-name-icon :hover, #edit-pic-icon :hover {
