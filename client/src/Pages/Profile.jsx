@@ -92,7 +92,6 @@ const Profile = () => {
     const saveAvatar = async (e) => {
         e.preventDefault()
         let image = e.target.image.files[0]
-        console.log(image)
         if (validateImageForm(image)) {
             FetchModule.readImage(image, auth.userEmail, validateImageForm, postImage);
             e.target.reset();
