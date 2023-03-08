@@ -59,6 +59,10 @@
     color: var(--text-color);
 }
 
+#edit-name-icon :hover, #edit-pic-icon :hover {
+    cursor: pointer;
+}
+
 #user-info {
     display: flex;
     flex-flow: column wrap;
