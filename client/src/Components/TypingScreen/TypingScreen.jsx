@@ -114,8 +114,6 @@ function TypingScreen() {
         setKeyboard(newKeyboard);
     }
 
-
-
     return (
         <div className='center'>
             {isLoading ?

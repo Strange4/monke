@@ -1,6 +1,5 @@
 import {z} from 'zod';
 
-
 /**
  * Validation for the imageURL when receiving from the Post method.
  */

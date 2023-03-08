@@ -8,8 +8,8 @@ import express from "express";
 import User from "../database/models/user.js";
 import mongoose from "mongoose";
 import { Constraints } from "../database/validation.js";
-import { getAverage } from "./util.js";
-import { ImgParser } from "./validation.js";
+import { getAverage } from "../controller/util.js";
+import { ImgParser } from "../controller/validation.js";
 import createHttpError from "http-errors";
 import { Azure } from "../database/azure.js"
 import multer from 'multer';
@@ -66,7 +66,7 @@ router.put("/user_stat", async (req, res, next) => {
 });
 
 /**
- * Get endpoint that  json object containing the user
+ * Get endpoint that json object containing the user
  * and their game statistics
  */
 router.post("/user", async (req, res, next) => {
@@ -122,6 +122,10 @@ router.get("/leaderboard", async (req, res, next) => {
     res.json(users);
 });
 
+/**
+ * Put endpoint used to update the profile picture of a user.
+ * The user email and new Image is sent, newly updated user is returned
+ */
 router.put("/update_avatar", upload.single('image'), async (req, res) => {
     if (!dbIsConnected()) {
         next(new createError.InternalServerError("Database is unavailable"));
@@ -138,7 +142,6 @@ router.put("/update_avatar", upload.single('image'), async (req, res) => {
     }
     try {
         ImgParser.parse(req.file);
-
         const blobName = req.body.fileName;
         const blobClient = azure.getContainerClient().getBlockBlobClient(blobName);
         const options = { blobHTTPHeaders: { blobContentType: req.file.mimetype } };
@@ -146,9 +149,7 @@ router.put("/update_avatar", upload.single('image'), async (req, res) => {
 
         // Uploading data to mongodb.
         let url = azure.getBlobPublicUrl() + blobName;
-        let user = await User.findOneAndUpdate(
-            { email: email }, { "picture_url": url }, {"new": true}
-        );
+        let user = await User.findOneAndUpdate({ email }, { "picture_url": url }, { "new": true });
 
         try {
             await user.save();
@@ -161,31 +162,27 @@ router.put("/update_avatar", upload.single('image'), async (req, res) => {
         }
         res.status(200).json(user);
     } catch (err) {
-        console.error(`Image validation error: ${err}`);
         res.status(400).send(`<h1>400! Picture could not be uploaded to the database.</h1>`);
     }
 })
 
+/**
+ * Put endpoint used to update the username of a user.
+ * The user email and new username is sent, newly updated user is returned
+ */
 router.put("/update_username", async (req, res) => {
     if (!dbIsConnected()) {
         next(new createError.InternalServerError("Database is unavailable"));
         return;
     }
     const email = Constraints.email(req.body.email);
-    if (!email) {
-        next(
-            new createHttpError.BadRequest(
-                "Can't find or update the user because no email was provided"
-            )
-        );
+    let newName = req.body.username;
+    if (!email || !newName) {
+        next(new createHttpError.BadRequest("no email was provided"));
         return;
     }
-    let newUsername = req.body.username;
-    if (newUsername) {
-        let user = await User.findOneAndUpdate(
-            { email: email }, { username: newUsername }, {"new": true}
-        );
-
+    if (newName) {
+        let user = await User.findOneAndUpdate({ email }, { username: newName }, { "new": true });
         try {
             await user.save();
         } catch (error) {
@@ -197,11 +194,7 @@ router.put("/update_username", async (req, res) => {
         }
         res.status(200).json(user);
     } else {
-        next(
-            new createHttpError.BadRequest(
-                "Can't update the user because the username provided was invalid"
-            )
-        );
+        next(new createHttpError.BadRequest("new username provided was invalid"));
         return;
     }
 });

@@ -1,6 +1,7 @@
 import { useQuery } from "react-query";
 import Spinner from "../Components/Spinner";
 // importing definitions for better intellisense
+
 /**
  * Generic fetch function to fetch from any given
  * url and return a json object with the contained data
@@ -19,23 +20,17 @@ async function fetchData(url) {
     }
 }
 
-/**
- * Post the user stat to the api
- * @param url 
- * @param userInput 
- */
-async function postUserStatAPI(url, userStat) {
-    let response = await fetch(url, {
-        method: 'PUT',
+async function postData(url, body, method) {
+    const res = await fetch(url, {
+        method: method,
+        body: JSON.stringify(body),
         headers: {
             'Accept': 'application/json',
-            "Content-Type": "application/json",
+            "Content-Type": "application/json"
         },
-        body: JSON.stringify(userStat)
     });
-    if (!response.ok) {
-        throw Error("Something Went wrong posting data");
-    }
+    const data = await res.json();
+    return data
 }
 
 /**
@@ -110,12 +105,11 @@ async function postImageAPI(url, userInput) {
         body: userInput
     });
     if (response.ok) {
-        console.log(`sent data successfully: ${JSON.stringify(userInput)}`);
-        return response
+        let data = await response.json()
+        return data
     } else {
         throw Error("Something Went wrong posting data");
     }
 }
 
-
-export { fetchData, postUserStatAPI, useFetch, readImage, postImageAPI };
+export { fetchData, postData, useFetch, readImage, postImageAPI };

@@ -10,7 +10,6 @@ const containerName = process.env.containerName;
 const storageAccountName = process.env.storageAccountName;
 const blobPublicUrl = `https://${storageAccountName}.blob.core.windows.net/${containerName}/`;
 
-
 export class Azure {
 
     static instance;
@@ -30,7 +29,6 @@ export class Azure {
         }
         return Azure.instance;
     }
-
 
     // Get the container client
     getContainerClient() {

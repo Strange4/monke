@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 /* eslint-disable camelcase */
 import NavBar from "../Components/NavBar";
 import "./Styles/Profile.css";
@@ -7,12 +6,9 @@ import { useContext, useEffect, useState, useRef } from "react";
 import { RiImageEditFill, RiEdit2Fill, RiSave3Line, RiCloseCircleLine } from "react-icons/ri";
 import * as FetchModule from "../Controller/FetchModule"
 import { useNavigate } from "react-router-dom";
-// import { useHistory } from 'react-router-dom';
-// import { withRouter } from "react-router-dom";
 
-const Profile = (props) => {
+const Profile = () => {
     const auth = useContext(AuthContext);
-    // const navigate = useNavigate();
     const [profileData, setProfileData] = useState({
         username: "",
         picture_url:
@@ -38,45 +34,25 @@ const Profile = (props) => {
 
     useEffect(() => {
         (async () => {
-            console.log(auth.userEmail)
             if (auth.userEmail) {
-                let data = await fetch("/api/user", {
-                    method: "POST",
-                    headers: {
-                        'Accept': 'application/json',
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ "email": auth.userEmail })
-                });
-                data = await data.json()
+                let data = await FetchModule.postData("/api/user", { "email": auth.userEmail }, "POST")
                 setProfileData(data);
-            } else if (props.redirect && !auth.userEmail) {
+            } else {
                 navigate("/");
             }
         })();
     }, []);
 
-    function editUsername() {
-        setEditingUsername(true)
-    }
-
     async function saveUsername() {
         if (validateUsername()) {
             setEditingUsername(false)
             let newUsername = usernameField.current.textContent;
-            
-            let data = await fetch("/api/update_username", {
-                method: "PUT",
-                headers: {
-                    'Accept': 'application/json',
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email: auth.userEmail, username: newUsername })
-            });
-            console.log(data)
-            setProfileData(await data.json());
+            let body = { email: auth.userEmail, username: newUsername }
+            let data = await FetchModule.postData("/api/update_username", body, "PUT")
+            setProfileData(data);
         } else {
-            setUsernameFeedback("Invalid username: \n * Usernames can consist of lowercase and capitals \n",
+            setUsernameFeedback(
+                "Invalid username: \n * Usernames can consist of lowercase and capitals \n",
                 "Usernames can consist of alphanumeric characters \n",
                 "Usernames can consist of underscore and hyphens and spaces\n",
                 "Cannot be two underscores, two hypens or two spaces in a row\n",
@@ -95,15 +71,11 @@ const Profile = (props) => {
         return true
     }
 
-    function editAvatar() {
-        setEditingAvatar(true)
-    }
-
     const saveAvatar = async (e) => {
         e.preventDefault()
         let image = e.target.image.files[0]
         if (validateImageForm(image)) {
-            FetchModule.readImage(image, auth.userEmail, validateImageForm, postImage);
+            await FetchModule.readImage(image, auth.userEmail, validateImageForm, postImage);
             e.target.reset();
             setEditingAvatar(false)
         }
@@ -111,8 +83,7 @@ const Profile = (props) => {
 
     async function postImage(data) {
         let newData = await FetchModule.postImageAPI("/api/update_avatar", data);
-        console.log(newData)
-        setProfileData(await newData.json())
+        setProfileData(newData)
     }
 
     /**
@@ -130,10 +101,6 @@ const Profile = (props) => {
         }
     }
 
-    function cancelAvatar() {
-        setEditingAvatar(false)
-    }
-
     return (
         <div id="home">
             <NavBar />
@@ -141,26 +108,28 @@ const Profile = (props) => {
                 <div id="user">
                     <div id="image">
                         <img id="profile-pic"
-                            // eslint-disable-next-line max-len
                             src={`${profileData.picture_url || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"}`}
                             alt="your profile image"></img>
                         {
                             EditingAvatar ?
-                                <RiCloseCircleLine id="edit-pic-icon" onClick={cancelAvatar} />
+                                <RiCloseCircleLine
+                                    id="edit-pic-icon"
+                                    onClick={() => setEditingAvatar(false)} />
                                 :
-                                <RiImageEditFill id="edit-pic-icon" onClick={editAvatar} />
+                                <RiImageEditFill
+                                    id="edit-pic-icon"
+                                    onClick={() => { setEditingAvatar(true) }} />
                         }
                     </div>
                     <div id="update-avatar">
                         {
-                            EditingAvatar ?
-                                <>
-                                    <form id="image-picker-form" onSubmit={(e) => saveAvatar(e)}>
-                                        <input type="file" id="avatar" name="image" accept="image/png, image/jpeg, image/jpg" />
-                                        <input type="submit" id="imageSubmit" className="submit-btn" value="Save" />
-                                    </form>
-                                    <p> {AvatarFeedback} </p>
-                                </>
+                            EditingAvatar ? <>
+                                <form id="image-picker-form" onSubmit={async (e) => await saveAvatar(e)}>
+                                    <input type="file" id="avatar" name="image" accept="image/png, image/jpeg, image/jpg" />
+                                    <input type="submit" id="imageSubmit" className="submit-btn" value="Save" />
+                                </form>
+                                <p> {AvatarFeedback} </p>
+                            </>
                                 :
                                 null
                         }
@@ -175,10 +144,16 @@ const Profile = (props) => {
                                         <p>{UsernameFeedback}</p>
                                     </>
                                     :
-                                    <RiEdit2Fill id="edit-name-icon" onClick={editUsername} />
+                                    <RiEdit2Fill
+                                        id="edit-name-icon"
+                                        onClick={() => { setEditingUsername(true) }} />
                             }
                             <h2><span className="label">Name: </span></h2>
-                            <h2 contentEditable={EditingUsername} suppressContentEditableWarning={true} ref={usernameField}>{profileData.username}</h2>
+                            <h2 contentEditable={EditingUsername}
+                                suppressContentEditableWarning={true}
+                                ref={usernameField}>
+                                {profileData.username}
+                            </h2>
                         </div>
                         <h2> <span className="label">Rank: </span> {profileData.rank}</h2>
                     </div>
