@@ -7,6 +7,10 @@ stages:
   - deploy
 
 eslint-job:
+  only:
+    - staging
+    - main
+    - merge_requests
   stage: lint
   cache:
     paths:
@@ -21,6 +25,10 @@ eslint-job:
     - echo "The code passes the vibes check 💅"
 
 client-build-job:
+  only:
+    - staging
+    - main
+    - merge_requests
   stage: build
   script:
     - echo "Building client 🔨"
@@ -35,6 +43,10 @@ client-build-job:
       - client/node_modules
 
 server-build-job:
+  only:
+    - staging
+    - main
+    - merge_requests
   stage: build
   script:
     - echo "Building server 🔨"
@@ -47,6 +59,10 @@ server-build-job:
       - server/node_modules
 
 test-job:
+  only:
+    - staging
+    - main
+    - merge_requests
   stage: test
   script:
     - echo "Testing 🧪🔬"
