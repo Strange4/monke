@@ -130,6 +130,6 @@ h2 {
 }
 
 #update-avatar {
+    display: flex;
     position: absolute;
-    width: 100%;
 }
