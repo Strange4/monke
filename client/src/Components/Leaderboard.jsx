@@ -8,8 +8,6 @@ import { useFetch } from '../Controller/FetchModule';
  * @returns {ReactElement}
  */
 function Leaderboard() {
-    const current = new Date();
-    const date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
     const [loadingIndicator, leaderboard] = useFetch("leaderboard", "/api/leaderboard")
     return (
         <div id="leaderboard" className='popup'>
@@ -29,7 +27,7 @@ function Leaderboard() {
                         rank={i + 1}
                         wpm={Math.round(user.user_stats.max_wpm * 100) / 100}
                         accuracy={Math.round(user.user_stats.max_accuracy * 100) / 100}
-                        date={`${date}`}
+                        date={`${user.user_stats.date.split("T")[0]}`}
                         key={i} />)
                 }
             </div>
