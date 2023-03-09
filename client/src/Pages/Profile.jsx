@@ -12,6 +12,7 @@ const Profile = () => {
     const [profileData, setProfileData] = useState({
         username: "",
         picture_url:
+            // eslint-disable-next-line max-len
             "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
         user_stats: {
             wpm: 0,
@@ -25,15 +26,16 @@ const Profile = () => {
         },
         rank: 0
     });
-    const [EditingUsername, setEditingUsername] = useState(false)
-    const [EditingAvatar, setEditingAvatar] = useState(false)
-    const [UsernameFeedback, setUsernameFeedback] = useState("")
-    const [AvatarFeedback, setAvatarFeedback] = useState("")
-    const usernameField = useRef()
-    const avatarField = useRef()
-    const navigate = useNavigate()
+
+    const [EditingUsername, setEditingUsername] = useState(false);
+    const [EditingAvatar, setEditingAvatar] = useState(false);
+    const [UsernameFeedback, setUsernameFeedback] = useState("");
+    const [AvatarFeedback, setAvatarFeedback] = useState("");
+    const usernameField = useRef();
+    const avatarField = useRef();
+    const navigate = useNavigate();
     const DefaultPicture =
-        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
 
     useEffect(() => {
         (async () => {
@@ -128,7 +130,7 @@ const Profile = () => {
             setAvatarFeedback("Please select a valid image");
             return false;
         } else if (image.size / 1048576 > 5) {
-            setAvatarFeedback("Image to big, select a different image");
+            setAvatarFeedback("Image too big, select a different image");
             return false;
         } else {
             setAvatarFeedback("");
@@ -163,19 +165,28 @@ const Profile = () => {
                                 :
                                 <RiImageEditFill
                                     id="edit-pic-icon"
-                                    onClick={() => { setEditingAvatar(true) }} />
+                                    onClick={() => { 
+                                        setEditingAvatar(true) 
+                                    }} />
                         }
                     </div>
                     <div id="update-avatar">
                         {
                             EditingAvatar ? <>
-                                <form id="image-picker-form" onSubmit={async (e) => await saveAvatar(e)}>
+                                <form id="image-picker-form" 
+                                    onSubmit={async (e) => await saveAvatar(e)}>
                                     <input
                                         type="file"
                                         id="avatar" name="image"
                                         accept="image/png, image/jpeg, image/jpg"
-                                        onChange={(e) => { readURL(e) }} />
-                                    <input type="submit" id="imageSubmit" className="submit-btn" value="Save" />
+                                        onChange={(e) => {
+                                            readURL(e) 
+                                        }} />
+                                    <input 
+                                        type="submit" 
+                                        id="imageSubmit" 
+                                        className="submit-btn" 
+                                        value="Save" />
                                 </form>
                                 <p> {AvatarFeedback} </p>
                             </>
@@ -186,6 +197,14 @@ const Profile = () => {
                     </div>
                     <div id="user-info">
                         <div id="username-info">
+
+                            <h2><span className="label">Name: </span></h2>
+                            <h2 contentEditable={EditingUsername}
+                                className={EditingUsername ? "editable" : ""}
+                                suppressContentEditableWarning={true}
+                                ref={usernameField}>
+                                {profileData.username}
+                            </h2>
                             {
                                 EditingUsername ?
                                     <>
@@ -197,15 +216,11 @@ const Profile = () => {
                                         id="edit-name-icon"
                                         onClick={editUsername} />
                             }
-                            <h2><span className="label">Name: </span></h2>
-                            <h2 contentEditable={EditingUsername}
-                                className={EditingUsername ? "editable" : ""}
-                                suppressContentEditableWarning={true}
-                                ref={usernameField}>
-                                {profileData.username}
-                            </h2>
                         </div>
-                        <h2> <span className="label">Rank: </span> {profileData.rank}</h2>
+                        <div id="rank-info">
+                            <h2> <span className="label">Rank: </span></h2>
+                            <h2>{profileData.rank}</h2>
+                        </div>
                     </div>
                 </div>
 
