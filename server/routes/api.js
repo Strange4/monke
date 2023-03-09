@@ -120,13 +120,13 @@ router.post("/user", async (req, res, next) => {
  * Get endpoint that returns a hardcoded json object containing
  * leaderboard info such as rank, wpm, username and temporary profileURL
  */
-router.get("/leaderboard", async (req, res, next) => {
+router.get("/leaderboard", async (req, res) => {
     if (!dbIsConnected()) {
         next(new createHttpError.InternalServerError("Error while getting the leaderboard"));
         return;
     }
     const maxItems = Constraints.positiveInt(req.query.max) || 10;
-    const users = await User.find().limit(maxItems).sort({ wpm: 'desc' }).lean();
+    const users = await User.find().limit(maxItems).sort({"user_stats.max_wpm": 'desc'}).lean();
     res.json(users);
 });
 
