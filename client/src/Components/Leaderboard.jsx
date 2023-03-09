@@ -11,6 +11,8 @@ function Leaderboard() {
     const current = new Date();
     const date = `${current.getDate()}/${current.getMonth() + 1}/${current.getFullYear()}`;
     const [loadingIndicator, leaderboard] = useFetch("leaderboard", "/api/leaderboard")
+    const sortLeaderboard = (p1, p2) => (p1 < p2) - (p1 > p2)
+
     return (
         <div id="leaderboard" className='popup'>
             <h1>Leaderboard</h1>
@@ -23,7 +25,12 @@ function Leaderboard() {
                     <p>Date</p>
                 </div>
                 {
-                    loadingIndicator || leaderboard.map((user, i) => <RankListItem
+                    loadingIndicator || leaderboard.sort(function (p1, p2) {
+                        return sortLeaderboard(
+                            p1.user_stats.max_wpm, p2.user_stats.max_wpm) ||
+                            sortLeaderboard(p1.user_stats.max_accuracy, p2.user_stats.max_accuracy
+                            )
+                    }).map((user, i) => <RankListItem
                         user={user.username}
                         picture={user.picture_url}
                         rank={i + 1}
