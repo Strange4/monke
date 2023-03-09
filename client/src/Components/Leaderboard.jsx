@@ -24,8 +24,7 @@ function Leaderboard() {
                 </div>
                 {
                     loadingIndicator || leaderboard.sort(function (p1, p2) {
-                        return sortLeaderboard(
-                            p1.user_stats.max_wpm, p2.user_stats.max_wpm) ||
+                        return sortLeaderboard(p1.user_stats.max_wpm, p2.user_stats.max_wpm) ||
                             sortLeaderboard(p1.user_stats.max_accuracy, p2.user_stats.max_accuracy
                             )
                     }).map((user, i) => <RankListItem
