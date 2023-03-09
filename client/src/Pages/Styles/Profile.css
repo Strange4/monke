@@ -132,4 +132,10 @@ h2 {
 #update-avatar {
     display: flex;
     position: absolute;
+    flex-direction: row;
+}
+
+#avatar-settings {
+    display: flex;
+    flex-direction: row;
 }
