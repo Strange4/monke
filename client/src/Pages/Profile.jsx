@@ -31,9 +31,16 @@ const Profile = () => {
     const [AvatarFeedback, setAvatarFeedback] = useState("")
     const usernameField = useRef()
     const avatarField = useRef()
+    // const inputFile = useRef();
     const navigate = useNavigate()
     const DefaultPicture =
         "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+
+
+    //test start
+    const [image, setImage] = useState("");
+    const inputFile = useRef();
+    //test end
 
     useEffect(() => {
         (async () => {
@@ -90,12 +97,13 @@ const Profile = () => {
      * Validates the image and updates the profile picture
      * @param {Event} e 
      */
-    const saveAvatar = async (e) => {
-        e.preventDefault()
-        const image = e.target.image.files[0]
+    const saveAvatar = async () => {
+        // e.preventDefault()
+        // const image = e.target.image.files[0]
+        console.log(image)
         if (validateImageForm(image)) {
             FetchModule.readImage(image, auth.userEmail, validateImageForm, postImage);
-            e.target.reset();
+            // e.target.reset();
             setEditingAvatar(false)
         }
     }
@@ -145,6 +153,24 @@ const Profile = () => {
         reader.readAsDataURL(img);
     }
 
+    //test start
+    const handleFileUpload = e => {
+        const { files } = e.target;
+        console.log(files[0])
+        if (files && files.length) {
+            readURL(e)
+            setEditingAvatar(true)
+            setImage(files[0])
+        } 
+    };
+
+    const onButtonClick = () => {
+        inputFile.current.click();
+    };
+
+    //test end
+
+
     return (
         <div id="home">
             <NavBar />
@@ -157,30 +183,41 @@ const Profile = () => {
                             alt="your profile image"></img>
                         {
                             EditingAvatar ?
-                                <RiCloseCircleLine
-                                    id="edit-pic-icon"
-                                    onClick={cancelAvatarEdit} />
+                                <div id="avatar-settings">
+                                    <RiCloseCircleLine
+                                        onClick={cancelAvatarEdit} />
+                                    <RiSave3Line onClick={(e) => { saveAvatar(e) }} />
+                                </div>
                                 :
                                 <RiImageEditFill
                                     id="edit-pic-icon"
-                                    onClick={() => { setEditingAvatar(true) }} />
+                                    onClick={onButtonClick} />
                         }
                     </div>
+
                     <div id="update-avatar">
                         {
-                            EditingAvatar ? <>
+                            // EditingAvatar ? 
+                            <>
                                 <form id="image-picker-form" onSubmit={async (e) => await saveAvatar(e)}>
-                                    <input
+                                    {/* <input
                                         type="file"
                                         id="avatar" name="image"
                                         accept="image/png, image/jpeg, image/jpg"
-                                        onChange={(e) => { readURL(e) }} />
-                                    <input type="submit" id="imageSubmit" className="submit-btn" value="Save" />
+                                        style={{ display: "none" }}
+                                        ref={inputFile}
+                                        onChange={(e) => { handleFileUpload(e) }} /> */}
+                                    <input
+                                        style={{ display: "none" }}
+                                        ref={inputFile}
+                                        // id="avatar" name="image"
+                                        accept="image/png, image/jpeg, image/jpg"
+                                        onChange={(e) => { handleFileUpload(e) }}
+                                        type="file"
+                                    />
                                 </form>
                                 <p> {AvatarFeedback} </p>
                             </>
-                                :
-                                <></>
                         }
 
                     </div>
