@@ -8,6 +8,8 @@ stages:
 
 eslint-job:
   only:
+    - staging
+    - main
     - merge_requests
   stage: lint
   cache:
@@ -24,6 +26,8 @@ eslint-job:
 
 client-build-job:
   only:
+    - staging
+    - main
     - merge_requests
   stage: build
   script:
@@ -40,6 +44,8 @@ client-build-job:
 
 server-build-job:
   only:
+    - staging
+    - main
     - merge_requests
   stage: build
   script:
@@ -53,6 +59,10 @@ server-build-job:
       - server/node_modules
 
 test-job:
+  only:
+    - staging
+    - main
+    - merge_requests
   stage: test
   script:
     - echo "Testing 🧪🔬"
