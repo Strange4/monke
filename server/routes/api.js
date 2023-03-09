@@ -126,7 +126,7 @@ router.get("/leaderboard", async (req, res) => {
         return;
     }
     const maxItems = Constraints.positiveInt(req.query.max) || 10;
-    const users = await User.find().limit(maxItems).sort({"user_stats.max_wpm": 'desc'}).lean();
+    const users = await User.find().limit(maxItems).sort({"user_stats.max_wpm": 'desc', "user_stats.max_accuracy": "desc"}).lean();
     res.json(users);
 });
 
