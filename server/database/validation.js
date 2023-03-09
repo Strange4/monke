@@ -10,8 +10,6 @@ export const Constraints = {
     date: (any) => catchFunction(() => z.date().parse(any)),
 }
 
-
-
 /**
  * @template T 
  * @param {() => T} someFunction 
@@ -24,3 +22,4 @@ function catchFunction(someFunction){
         return undefined;
     }
 }
+    

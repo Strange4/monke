@@ -1,4 +1,4 @@
-import './Styles/GameSettings.css';
+import './Styles/Settings.css';
 import TimeSettings from './TimeSettings';
 import LengthSettings from './LengthSettings';
 import { useState } from 'react';
@@ -26,7 +26,7 @@ function GameSettings() {
     }
 
     return (
-        <div id="game-settings">
+        <div id="settings">
 
             <div id="global-settings">
                 <button>
@@ -37,11 +37,11 @@ function GameSettings() {
             <div id="game-mode">
                 <button id="time-btn" onClick={handleClick}>
                     <CiTimer className="game-setting-icon"/>
-                    Time Based
+                    Time
                 </button>
                 <button id="length-btn" onClick={handleClick}>
                     <CgPassword className="game-setting-icon"/>
-                    Length Based
+                    Length
                 </button>
             </div>
             

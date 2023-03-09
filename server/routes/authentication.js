@@ -4,20 +4,25 @@ import session from 'express-session'
 import dotenv from 'dotenv';
 dotenv.config();
 
-
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-const router = express.Router();
-router.use(express.json());
+export const authRouter = express.Router();
+authRouter.use(express.json());
 
-//middleware to verify the session
-function isAuthenticated(req, res, next) {
-    if (!req.session.user) {
-        return res.sendStatus(401)
+/**
+ * middleware to verify the session
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ * @returns 
+ */
+export function isAuthenticated(req, res, next) {
+    if (!req?.session?.user) {
+        return res.sendStatus(204)
     }
     next();
 }
 
-router.use(session({
+authRouter.use(session({
     secret: process.env.SECRET,
     name: 'id',
     saveUninitialized: false,
@@ -31,56 +36,61 @@ router.use(session({
     }
 }));
 
-router.get("/refreshLogin", isAuthenticated, function(req, res) {
+/**
+ * Get endpoint that returns the session user
+ * Makes sure to log back in the user when page is refreshed
+ */
+authRouter.get("/refreshLogin", isAuthenticated, function (req, res) {
     return res.json(req.session.user)
 });
 
-router.post("/auth", async (req, res) => {
-    //TODO: should validate that the token was sent first
+/**
+ * Post endpoint to login / authenticate the user
+ * Creates a session using user email as unique id
+ */
+authRouter.post("/login", async (req, res) => {
     const { token } = req.body;
-    const ticket = await client.verifyIdToken({
-        idToken: token,
-        audience: process.env.GOOGLE_CLIENT_ID
-    });
-    if (!ticket) {
-        return res.sendStatus(401);
-    }
-    const user = {
-        "username": ticket.getPayload().name,
-        "email": ticket.getPayload().email,
-        "pic": ticket.getPayload().picture
-    };
-    
-    //create a session, using email as the unique identifier
-    req.session.regenerate(function (err) {
-        if (err) {
-            return res.sendStatus(500);
+
+    if (token) {
+        const ticket = await client.verifyIdToken({
+            idToken: token,
+            audience: process.env.GOOGLE_CLIENT_ID
+        });
+        if (!ticket) {
+            return res.sendStatus(401);
         }
-        req.session.user = user;
-        res.json({ user: user });
-    });
+        const user = {
+            username: ticket.getPayload().name,
+            email: ticket.getPayload().email,
+            pic: ticket.getPayload().picture
+        };
+
+        req.session.regenerate(function (err) {
+            if (err) {
+                return res.sendStatus(500);
+            }
+            req.session.user = user;
+            res.json({ user: user });
+        });
+    }
 });
 
-//route for authenticated users only
-router.get("/protected",
-    isAuthenticated,
-    function (_, res) {
-        res.sendStatus(200);
-    }
-);
+/**
+ * Get endpoint to be used by client side to check if user is authenticated
+ */
+authRouter.get("/protected", isAuthenticated, function (_, res) {
+    res.sendStatus(200);
+});
 
-router.get("/logout", isAuthenticated, function (req, res) {
-    //destroy the session
+/**
+ * Get endpoint to logout the authenticated user
+ */
+authRouter.get("/logout", isAuthenticated, function (req, res) {
     req.session.destroy(function (err) {
-        //callback invoked after destroy returns
         if (err) {
-            //server error, couldn't destroy the session
             return res.sendStatus(500);
         }
-        //clear the cookie
         res.clearCookie('id');
         res.sendStatus(200);
     });
 });
-
-export default router;

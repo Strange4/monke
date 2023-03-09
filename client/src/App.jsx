@@ -2,14 +2,16 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './styles/App.css';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import Home from './Pages/Home';
-import Login from './Components/Login';
 import AuthContext from './Context/AuthContext';
 import { useState, useEffect } from 'react';
 import checkAccess from './Controller/AuthHelper';
 import Profile from './Pages/Profile';
-
+import Lobby from './Pages/Lobby';
+import MultiplayerGame from './Pages/MultiplayerGame';
+import Login from './Components/Login';
 
 const queryClient = new QueryClient();
+
 /**
  * Displays the Main App container
  * @returns {ReactElement}
@@ -20,9 +22,11 @@ function App() {
     useEffect(() => {
         (async () => {
             if (!userEmail) {
-                let userData = await fetch("/authentication/refreshLogin")
-                let newEmail = await userData.json()
-                setUserEmail(newEmail.email)
+                const userData = await fetch("/authentication/refreshLogin")
+                if (userData.status === 200) {
+                    const newEmail = await userData.json()
+                    setUserEmail(newEmail.email)
+                }
             }
         })();
     }, [userEmail]);
@@ -45,6 +49,15 @@ function App() {
                                         :
                                         <Login navbar={true} />
                                 } />
+                            <Route path='/lobby' element={<Lobby/>}/>
+                            <Route path='/multiplayer-game' element={<MultiplayerGame/>}/>
+
+                            <Route path="/profile" element={
+                                userEmail ?
+                                    <Profile redirect={userEmail ? false : true} />
+                                    :
+                                    <></>
+                            } />
                         </Routes>
                     </Router>
                     <div id="popup-root" />

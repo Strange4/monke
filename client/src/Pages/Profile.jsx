@@ -2,16 +2,17 @@
 import NavBar from "../Components/NavBar";
 import "./Styles/Profile.css";
 import AuthContext from "../Context/AuthContext";
-import { useContext, useEffect, useState } from "react";
-import { RiImageEditFill, RiEdit2Fill } from "react-icons/ri";
+import { useContext, useEffect, useState, useRef } from "react";
+import { RiImageEditFill, RiEdit2Fill, RiSave3Line, RiCloseCircleLine } from "react-icons/ri";
+import * as FetchModule from "../Controller/FetchModule"
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
     const auth = useContext(AuthContext);
-
     const [profileData, setProfileData] = useState({
         username: "",
         picture_url:
-        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+            "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
         user_stats: {
             wpm: 0,
             max_wpm: 0,
@@ -24,24 +25,125 @@ const Profile = () => {
         },
         rank: 0
     });
+    const [EditingUsername, setEditingUsername] = useState(false)
+    const [EditingAvatar, setEditingAvatar] = useState(false)
+    const [UsernameFeedback, setUsernameFeedback] = useState("")
+    const [AvatarFeedback, setAvatarFeedback] = useState("")
+    const usernameField = useRef()
+    const avatarField = useRef()
+    const navigate = useNavigate()
+    const DefaultPicture =
+        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
 
     useEffect(() => {
         (async () => {
             if (auth.userEmail) {
-                console.log(`PROFILE: user logged in [${auth.userEmail}]`)
-                let data = await fetch("/api/user", {
-                    method: "POST",
-                    headers: { 'Accept': 'application/json', "Content-Type": "application/json" },
-                    body: JSON.stringify({"email": auth.userEmail })
-                });
-                data = await data.json()
-                console.log(data);
+                const url = "/api/user"
+                const data = await FetchModule.postData(url, { email: auth.userEmail }, "POST")
                 setProfileData(data);
             } else {
-                console.log("PROFILE: user NOT logged in");
+                navigate("/");
             }
         })();
     }, []);
+
+    /**
+     * Saves the username after it is validated else provides proper feedback
+     */
+    async function saveUsername() {
+        if (validateUsername()) {
+            setEditingUsername(false)
+            const newUsername = usernameField.current.textContent;
+            const body = { email: auth.userEmail, username: newUsername }
+            const data = await FetchModule.postData("/api/update_username", body, "PUT")
+            setProfileData(data);
+        } else {
+            setUsernameFeedback(
+                "Invalid username: \n * Usernames can consist of lowercase and capitals \n",
+                "Usernames can consist of alphanumeric characters \n",
+                "Usernames can consist of underscore and hyphens and spaces\n",
+                "Cannot be two underscores, two hypens or two spaces in a row\n",
+                "Cannot have a underscore, hypen or space at the start or end")
+        }
+    }
+
+    function editUsername() {
+        setEditingUsername(true)
+    }
+
+    /**
+     * validates username with regex pattern
+     * @returns {boolean}
+     */
+    function validateUsername() {
+        const username = usernameField.current.textContent;
+        const usernameRegex = /^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$/;
+        var validUsername = username.match(usernameRegex);
+        if (validUsername === null) {
+            return false;
+        }
+        setUsernameFeedback("")
+        return true
+    }
+
+    /**
+     * Validates the image and updates the profile picture
+     * @param {Event} e 
+     */
+    const saveAvatar = async (e) => {
+        e.preventDefault()
+        const image = e.target.image.files[0]
+        if (validateImageForm(image)) {
+            FetchModule.readImage(image, auth.userEmail, validateImageForm, postImage);
+            e.target.reset();
+            setEditingAvatar(false)
+        }
+    }
+
+    /**
+     * Cancels the editing of the avatar and resets it back to previously saved one
+     */
+    function cancelAvatarEdit() {
+        setEditingAvatar(false)
+        setAvatarFeedback("");
+        avatarField.current.src = profileData.picture_url
+    }
+
+    /**
+     * 
+     * @param {*} data 
+     */
+    async function postImage(data) {
+        const newData = await FetchModule.postImageAPI("/api/update_avatar", data);
+        setProfileData(newData)
+    }
+
+    /**
+     * Validates the given image form fields and sets the image feedback accordingly
+     * @param image 
+     * @returns 
+     */
+    function validateImageForm(image) {
+        if (!image) {
+            setAvatarFeedback("Please select a valid image");
+            return false;
+        } else if (image.size / 1048576 > 5) {
+            setAvatarFeedback("Image to big, select a different image");
+            return false;
+        } else {
+            setAvatarFeedback("");
+            return true;
+        }
+    }
+
+    function readURL(e) {
+        const img = e.target.files[0]
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            avatarField.current.src = e.target.result
+        }
+        reader.readAsDataURL(img);
+    }
 
     return (
         <div id="home">
@@ -50,27 +152,75 @@ const Profile = () => {
                 <div id="user">
                     <div id="image">
                         <img id="profile-pic"
-                            // eslint-disable-next-line max-len
-                            src={`${profileData.picture_url || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"}`}
+                            ref={avatarField}
+                            src={`${profileData.picture_url || DefaultPicture}`}
                             alt="your profile image"></img>
-                        <RiImageEditFill id="edit-pic-icon" />
+                        {
+                            EditingAvatar ?
+                                <RiCloseCircleLine
+                                    id="edit-pic-icon"
+                                    onClick={cancelAvatarEdit} />
+                                :
+                                <RiImageEditFill
+                                    id="edit-pic-icon"
+                                    onClick={() => { setEditingAvatar(true) }} />
+                        }
+                    </div>
+                    <div id="update-avatar">
+                        {
+                            EditingAvatar ? <>
+                                <form id="image-picker-form" onSubmit={async (e) => await saveAvatar(e)}>
+                                    <input
+                                        type="file"
+                                        id="avatar" name="image"
+                                        accept="image/png, image/jpeg, image/jpg"
+                                        onChange={(e) => { readURL(e) }} />
+                                    <input type="submit" id="imageSubmit" className="submit-btn" value="Save" />
+                                </form>
+                                <p> {AvatarFeedback} </p>
+                            </>
+                                :
+                                <></>
+                        }
+
                     </div>
                     <div id="user-info">
-                        <h2> 
-                            <span className="label">Name: </span> 
-                            {profileData.username} <RiEdit2Fill id="edit-name-icon" />
-                        </h2>
+                        <div id="username-info">
+                            {
+                                EditingUsername ?
+                                    <>
+                                        <RiSave3Line onClick={saveUsername} />
+                                        <p>{UsernameFeedback}</p>
+                                    </>
+                                    :
+                                    <RiEdit2Fill
+                                        id="edit-name-icon"
+                                        onClick={editUsername} />
+                            }
+                            <h2><span className="label">Name: </span></h2>
+                            <h2 contentEditable={EditingUsername}
+                                className={EditingUsername ? "editable" : ""}
+                                suppressContentEditableWarning={true}
+                                ref={usernameField}>
+                                {profileData.username}
+                            </h2>
+                        </div>
                         <h2> <span className="label">Rank: </span> {profileData.rank}</h2>
                     </div>
                 </div>
 
-
                 <div id="user-stats">
                     <p><span className="label">Avg. WPM: </span>
-                        {profileData.user_stats.wpm}
+                        {Math.round(profileData.user_stats.wpm * 100) / 100}
                     </p>
-                    <p><span className="label">Avg. ACC: </span> 
-                        {profileData.user_stats.accuracy}
+                    <p><span className="label">Avg. ACC: </span>
+                        {Math.round(profileData.user_stats.accuracy * 100) / 100}
+                    </p>
+                    <p><span className="label">Max WPM: </span>
+                        {Math.round(profileData.user_stats.max_wpm * 100) / 100}
+                    </p>
+                    <p><span className="label">Max ACC: </span>
+                        {Math.round(profileData.user_stats.max_accuracy * 100) / 100}
                     </p>
                     <p><span className="label">Games: </span>
                         {profileData.user_stats.games_count}
