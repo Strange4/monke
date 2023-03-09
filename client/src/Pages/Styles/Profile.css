@@ -14,6 +14,7 @@
 }
 
 #user {
+    position: relative;
     display: flex;
     justify-content: center;
     align-content: center;
@@ -38,6 +39,8 @@
 #profile-pic {
     position: relative;
     border-radius: 30px;
+    max-width: 220px;
+    max-height: 220px;
 }
 
 #edit-pic-icon {
@@ -124,4 +127,9 @@ h2 {
 
 #username-info h2, #rank-info h2 {
     margin-left: 20px;
+}
+
+#update-avatar {
+    position: absolute;
+    width: 100%;
 }
