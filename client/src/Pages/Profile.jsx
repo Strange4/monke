@@ -224,7 +224,9 @@ const Profile = () => {
                             {
                                 EditingUsername ?
                                     <>
-                                        <RiSave3Line onClick={saveUsername} />
+                                        <RiSave3Line
+                                            id="edit-name-icon"
+                                            onClick={saveUsername} />
                                         <p>{UsernameFeedback}</p>
                                     </>
                                     :
