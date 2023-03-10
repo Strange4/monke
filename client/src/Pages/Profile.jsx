@@ -35,6 +35,9 @@ const Profile = () => {
     const DefaultPicture =
         "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
 
+    const [image, setImage] = useState("");
+    const inputFile = useRef();
+
     useEffect(() => {
         (async () => {
             if (auth.userEmail) {
@@ -67,10 +70,6 @@ const Profile = () => {
         }
     }
 
-    function editUsername() {
-        setEditingUsername(true)
-    }
-
     /**
      * validates username with regex pattern
      * @returns {boolean}
@@ -90,12 +89,10 @@ const Profile = () => {
      * Validates the image and updates the profile picture
      * @param {Event} e 
      */
-    const saveAvatar = async (e) => {
-        e.preventDefault()
-        const image = e.target.image.files[0]
+    const saveAvatar = async () => {
+        console.log(image)
         if (validateImageForm(image)) {
             FetchModule.readImage(image, auth.userEmail, validateImageForm, postImage);
-            e.target.reset();
             setEditingAvatar(false)
         }
     }
@@ -109,10 +106,6 @@ const Profile = () => {
         avatarField.current.src = profileData.picture_url
     }
 
-    /**
-     * 
-     * @param {*} data 
-     */
     async function postImage(data) {
         const newData = await FetchModule.postImageAPI("/api/update_avatar", data);
         setProfileData(newData)
@@ -145,6 +138,16 @@ const Profile = () => {
         reader.readAsDataURL(img);
     }
 
+    const handleFileUpload = e => {
+        const { files } = e.target;
+        console.log(files[0])
+        if (files && files.length) {
+            readURL(e)
+            setEditingAvatar(true)
+            setImage(files[0])
+        }
+    };
+
     return (
         <div id="home">
             <NavBar />
@@ -157,30 +160,32 @@ const Profile = () => {
                             alt="your profile image"></img>
                         {
                             EditingAvatar ?
-                                <RiCloseCircleLine
-                                    id="edit-pic-icon"
-                                    onClick={cancelAvatarEdit} />
+                                <div id="avatar-settings">
+                                    <RiCloseCircleLine
+                                        onClick={cancelAvatarEdit} />
+                                    <RiSave3Line onClick={(e) => { saveAvatar(e) }} />
+                                </div>
                                 :
                                 <RiImageEditFill
                                     id="edit-pic-icon"
-                                    onClick={() => { setEditingAvatar(true) }} />
+                                    onClick={() => { inputFile.current.click() }} />
                         }
                     </div>
+
                     <div id="update-avatar">
                         {
-                            EditingAvatar ? <>
+                            <>
                                 <form id="image-picker-form" onSubmit={async (e) => await saveAvatar(e)}>
                                     <input
-                                        type="file"
-                                        id="avatar" name="image"
+                                        style={{ display: "none" }}
+                                        ref={inputFile}
                                         accept="image/png, image/jpeg, image/jpg"
-                                        onChange={(e) => { readURL(e) }} />
-                                    <input type="submit" id="imageSubmit" className="submit-btn" value="Save" />
+                                        onChange={(e) => { handleFileUpload(e) }}
+                                        type="file"
+                                    />
                                 </form>
                                 <p> {AvatarFeedback} </p>
                             </>
-                                :
-                                <></>
                         }
 
                     </div>
@@ -195,7 +200,7 @@ const Profile = () => {
                                     :
                                     <RiEdit2Fill
                                         id="edit-name-icon"
-                                        onClick={editUsername} />
+                                        onClick={() => { setEditingUsername(true) }} />
                             }
                             <h2><span className="label">Name: </span></h2>
                             <h2 contentEditable={EditingUsername}
