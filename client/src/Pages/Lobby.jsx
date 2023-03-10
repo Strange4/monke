@@ -4,19 +4,24 @@ import TypingScreen from "../Components/TypingScreen/TypingScreen";
 import LobbySettings from '../Components/LobbySettings';
 import { AiFillSetting } from "react-icons/ai"
 import PlayerItem from '../Components/PlayerItem';
-import { useState, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { BiCopy } from 'react-icons/bi'
 
 function Lobby() {
 
     const [settings, showSettings] = useState(false);
+    const roomCode = useRef()
     const location = useLocation()
     // add state to handle wheter a user is the lobby creator
     // Will show additional info/settings if they are
 
     const handleClick = () => {
         showSettings(current => !current)
+    }
+
+    function copyCode() {
+        navigator.clipboard.writeText(roomCode.current.textContent)
     }
 
     return (
@@ -32,7 +37,7 @@ function Lobby() {
                     <PlayerItem name="Name" />
 
                     {/* icon will have a copy function to copy the lobby code */}
-                    <p id="invite-code">{location.state.roomCode}<BiCopy id="copy-icon" /></p>
+                    <p ref={roomCode} id="invite-code">{location.state.roomCode}<BiCopy id="copy-icon" onClick={copyCode}/></p>
 
                 </div>
                 <Link to="/multiplayer-game">
