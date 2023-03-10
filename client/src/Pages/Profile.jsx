@@ -176,10 +176,13 @@ const Profile = () => {
                             EditingAvatar ?
                                 <div id="avatar-settings">
                                     <RiCloseCircleLine
-                                        onClick={cancelAvatarEdit} />
-                                    <RiSave3Line onClick={(e) => { 
-                                        saveAvatar(e) 
-                                    }} />
+                                        id="cancle-avatar-btn"
+                                        onClick={cancelAvatarEdit}/>
+                                    <RiSave3Line
+                                        id="save-avatar-btn"
+                                        onClick={(e) => { 
+                                            saveAvatar(e) 
+                                        }}/>
                                 </div>
                                 :
                                 <RiImageEditFill
