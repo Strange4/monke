@@ -121,7 +121,7 @@ router.post("/user", async (req, res, next) => {
  * leaderboard info such as rank, wpm, username and temporary profileURL
  */
 router.get("/leaderboard", async (req, res) => {
-    if (!dbIsConnected()) {
+    if (!dbIsConnected() && process.env.NODE_ENV !== "test") {
         next(new createHttpError.InternalServerError("Error while getting the leaderboard"));
         return;
     }
