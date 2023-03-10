@@ -14,7 +14,6 @@
 }
 
 #user {
-    /* position: relative; */
     display: flex;
     flex-flow: row;
     flex-wrap: wrap;
@@ -22,11 +21,9 @@
     align-content: center;
     border-radius: 20px;
     background-color: var(--sub-color-transparent);
-    /* padding: 40px; */
     width: 100%;
     min-width: 550px;
     height: 40%;
-    /* max-height: 300px; */
 }
 
 #image {
@@ -41,7 +38,6 @@
 }
 
 #profile-pic {
-    /* position: relative; */
     border-radius: 50%;
     width: 100%;
     height: 100%;
@@ -98,7 +94,6 @@
 #user-info {
     display: flex;
     flex-flow: column wrap;
-    /* justify-content: space-evenly; */
     justify-content: center;
     width: 30%;
     min-width: 0px;
@@ -123,22 +118,17 @@
     flex-flow: column wrap;
     flex-wrap: wrap;
     justify-content: center;
-    /* justify-content: space-around; */
     width: 80%;
     max-width: 400px;
     min-width: 200px;
     height: 8vh;
     min-height: 200px;
-    /* margin: auto; */
-    /* margin-bottom: 40px; */
-    /* background-color: var(--sub-color-transparent); */
+
     border-radius: 20px;
-    /* padding: 30px; */
 }
 
 #user-stats p, #update-user p {
     font-size: 1em;
-    /* padding: 5px; */
 }
 
 h2 {
