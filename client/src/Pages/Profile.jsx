@@ -72,10 +72,6 @@ const Profile = () => {
         }
     }
 
-    function editUsername() {
-        setEditingUsername(true)
-    }
-
     /**
      * validates username with regex pattern
      * @returns {boolean}
@@ -112,10 +108,6 @@ const Profile = () => {
         avatarField.current.src = profileData.picture_url
     }
 
-    /**
-     * 
-     * @param {*} data 
-     */
     async function postImage(data) {
         const newData = await FetchModule.postImageAPI("/api/update_avatar", data);
         setProfileData(newData)
@@ -158,10 +150,6 @@ const Profile = () => {
         }
     };
 
-    const onButtonClick = () => {
-        inputFile.current.click();
-    };
-
     return (
         <div id="home">
             <NavBar />
@@ -187,7 +175,7 @@ const Profile = () => {
                                 :
                                 <RiImageEditFill
                                     id="edit-pic-icon"
-                                    onClick={onButtonClick} />
+                                    onClick={() => { inputFile.current.click() }} />
                         }
                     </div>
 
@@ -214,6 +202,7 @@ const Profile = () => {
                     <div id="user-info">
                         <div id="username-info">
 
+
                             <h2><span className="label">Name: </span></h2>
                             <h2 contentEditable={EditingUsername}
                                 className={EditingUsername ? "editable" : ""}
@@ -232,7 +221,9 @@ const Profile = () => {
                                     :
                                     <RiEdit2Fill
                                         id="edit-name-icon"
-                                        onClick={editUsername} />
+                                        onClick={() => { 
+                                            setEditingUsername(true) 
+                                        }}/>
                             }
                         </div>
                         <div id="rank-info">
