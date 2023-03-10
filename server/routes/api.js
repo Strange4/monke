@@ -78,7 +78,7 @@ router.put("/user_stat", async (req, res, next) => {
  * and their game statistics
  */
 router.post("/user", async (req, res, next) => {
-    if (!dbIsConnected()) {
+    if (!dbIsConnected() && process.env.NODE_ENV !== "test") {
         next(new createHttpError.InternalServerError("Database is unavailable"));
         return;
     }
