@@ -175,7 +175,9 @@ const Profile = () => {
                                 :
                                 <RiImageEditFill
                                     id="edit-pic-icon"
-                                    onClick={() => { inputFile.current.click() }} />
+                                    onClick={() => {
+                                        inputFile.current.click() 
+                                    }} />
                         }
                     </div>
 
@@ -203,8 +205,8 @@ const Profile = () => {
                         <div id="username-info">
 
 
-                            <h2><span className="label">Name: </span></h2>
-                            <h2 contentEditable={EditingUsername}
+                            <h2><span className="user-label">Name: </span></h2>
+                            <h2 id="user-name" contentEditable={EditingUsername}
                                 className={EditingUsername ? "editable" : ""}
                                 suppressContentEditableWarning={true}
                                 ref={usernameField}>
@@ -227,38 +229,38 @@ const Profile = () => {
                             }
                         </div>
                         <div id="rank-info">
-                            <h2> <span className="label">Rank: </span></h2>
+                            <h2> <span className="user-label">Rank: </span></h2>
                             <h2>{profileData.rank}</h2>
                         </div>
                     </div>
+                    <div id="user-stats">
+                        <p><span className="label">Avg. WPM: </span>
+                            {Math.round(profileData.user_stats.wpm * 100) / 100}
+                        </p>
+                        <p><span className="label">Avg. ACC: </span>
+                            {Math.round(profileData.user_stats.accuracy * 100) / 100}
+                        </p>
+                        <p><span className="label">Max WPM: </span>
+                            {Math.round(profileData.user_stats.max_wpm * 100) / 100}
+                        </p>
+                        <p><span className="label">Max ACC: </span>
+                            {Math.round(profileData.user_stats.max_accuracy * 100) / 100}
+                        </p>
+                        <p><span className="label">Games: </span>
+                            {profileData.user_stats.games_count}
+                        </p>
+                        <p><span className="label">Wins: </span>
+                            {profileData.user_stats.win}
+                        </p>
+                        <p><span className="label">Loses: </span>
+                            {profileData.user_stats.lose}
+                        </p>
+                        <p><span className="label">Draws: </span>
+                            {profileData.user_stats.draw}
+                        </p>
+                    </div>
                 </div>
 
-                <div id="user-stats">
-                    <p><span className="label">Avg. WPM: </span>
-                        {Math.round(profileData.user_stats.wpm * 100) / 100}
-                    </p>
-                    <p><span className="label">Avg. ACC: </span>
-                        {Math.round(profileData.user_stats.accuracy * 100) / 100}
-                    </p>
-                    <p><span className="label">Max WPM: </span>
-                        {Math.round(profileData.user_stats.max_wpm * 100) / 100}
-                    </p>
-                    <p><span className="label">Max ACC: </span>
-                        {Math.round(profileData.user_stats.max_accuracy * 100) / 100}
-                    </p>
-                    <p><span className="label">Games: </span>
-                        {profileData.user_stats.games_count}
-                    </p>
-                    <p><span className="label">Wins: </span>
-                        {profileData.user_stats.win}
-                    </p>
-                    <p><span className="label">Loses: </span>
-                        {profileData.user_stats.lose}
-                    </p>
-                    <p><span className="label">Draws: </span>
-                        {profileData.user_stats.draw}
-                    </p>
-                </div>
             </div>
         </div>
     );
