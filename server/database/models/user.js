@@ -15,7 +15,7 @@ const UserSchema = new Schema({
 }, {
     methods: {
         async getRank(){
-            return await User.countDocuments({ wpm: { "$lte": this.user_stats.wpm } });
+            return await User.countDocuments({ "user_stats.max_wpm": { "$gte": this.user_stats.max_wpm } });
         }
     }
 });
