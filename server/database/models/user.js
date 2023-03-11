@@ -12,6 +12,12 @@ const UserSchema = new Schema({
     picture_url: {type: String, required: true, validate: Constraints.url},
     email: {type: String, required: true, validate: Constraints.email },
     user_stats: {type : UserStatSchema, required: true, default: () => ({}) },
+}, {
+    methods: {
+        async getRank(){
+            return await User.countDocuments({ wpm: { "$lte": this.user_stats.wpm } });
+        }
+    }
 });
 
 const User = mongoose.model("User", UserSchema);
