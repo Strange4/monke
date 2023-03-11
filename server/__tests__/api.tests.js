@@ -106,19 +106,21 @@ describe("GET /api/leaderboard", () => {
 
 describe("POST /api/user", () => {
     const ENDPOINT_URL = API_ROUTE + "/user";
+    let inputEmail = TEST_USERS[2].email
     it("enter an email and receive a user+stats with code 200", async () => {
         // result for user
         mockingoose(User).toReturn(
-            TEST_USERS[0],
+            TEST_USERS[2],
             "findOne"
         );
         // result for rank
         mockingoose(User).toReturn(
             5, "countDocuments"
         );
-        const RESPONSE = await REQUEST.post(ENDPOINT_URL).send({email: "123aaaa@gmail.com"});
+        const RESPONSE = await REQUEST.post(ENDPOINT_URL).send({email: inputEmail});
         expect(RESPONSE.status).toBe(SUCCESS);
         expect(RESPONSE.body.rank).toBeDefined();
+        expect(RESPONSE.body.email).toBe(inputEmail);
         expect(validateUser(RESPONSE.body)).toBe(true);
         expect(validateUsrStats(RESPONSE.body.user_stats)).toBeDefined();
     });
