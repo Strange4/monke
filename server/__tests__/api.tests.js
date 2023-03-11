@@ -81,11 +81,11 @@ describe("GET /api/quote", () => {
         expect(RESPONSE.body.body).toBeDefined();
     });
 
-    // it("set 'a' for difficulty, must return a message with status code 400", async () => {
-    //     const RESPONSE = await REQUEST.get("/quote?difficulty=nepnep");
+    it("set 'a' for difficulty, must return a message with status code 400", async () => {
+        const RESPONSE = await REQUEST.get("/quote?difficulty=nepnep");
         
-    //     expect(RESPONSE.status).toBe(ERROR);
-    // });
+        expect(RESPONSE.status).toBe(ERROR);
+    });
 });
 
 
