@@ -70,7 +70,11 @@ router.put("/user_stat", async (req, res, next) => {
         updated["user_stats.max_accuracy"] = Math.max(user.user_stats.max_accuracy, accuracy);
     }
     await user.updateOne({ $set: { ...updated } });
-    res.json(user);
+    const rank = await user.getRank();
+    res.json({
+        rank,
+        ...user.toObject()
+    });
 });
 
 /**
@@ -108,11 +112,10 @@ router.post("/user", async (req, res, next) => {
             return;
         }
     }
-    user = await user.toObject();
-    const rank = await User.countDocuments({ wpm: { "$lte": user.user_stats.wpm } });
+    const rank = await user.getRank();
     res.json({
         rank,
-        ...user
+        ...user.toObject()
     });
 })
 
@@ -168,7 +171,11 @@ router.put("/update_avatar", upload.single('image'), async (req, res) => {
             }));
             return;
         }
-        res.status(200).json(user);
+        const rank = await user.getRank();
+        res.json({
+            rank,
+            ...user.toObject()
+        });
     } catch (err) {
         res.status(400).send(`<h1>400! Picture could not be uploaded to the database.</h1>`);
     }
@@ -199,7 +206,11 @@ router.put("/update_username", async (req, res) => {
         }));
         return;
     }
-    res.status(200).json(user);
+    const rank = await user.getRank();
+    res.json({
+        rank,
+        ...user.toObject()
+    });
 });
 
 function dbIsConnected() {
