@@ -16,6 +16,7 @@ function LobbyPopup() {
     const roomCode = useRef()
     const navigate = useNavigate()
     const auth = useContext(AuthContext);
+    let userList
     let socket
 
     const handleClick = () => {
@@ -23,17 +24,16 @@ function LobbyPopup() {
     }
 
     const joinLobby = () => {
-        navigate("/lobby", { state: { roomCode: roomCode.current.value } });
-        console.log(roomCode.current.value)
         socket = io("", { query: { roomCode: roomCode.current.value }, auth: { userEmail: auth.userEmail } })
 
-        socket.on("join-room", (users) => {
-            // users.push({ username: userData.username })
+        socket.on("change-room", (users) => {
             console.log("JOINED ROOM")
             console.log(users)
-            // socket.emit("join-room", userData, roomID)
+            console.log(users)
+            userList = users
+            navigate("/lobby", { state: { roomCode: roomCode.current.value , users: userList} });
         })
-
+        
         // socket.on("leave-room", (userData, roomID, users) => {
         //     users.filter(user => user != userData.username)
         // })
@@ -42,15 +42,14 @@ function LobbyPopup() {
     function createLobby() {
         (async () => {
             let newRoomCode = await FetchModule.fetchData("/api/lobby")
-            navigate("/lobby", { state: { roomCode: newRoomCode } });
+            
             socket = io("", { query: { roomCode: newRoomCode }, auth: { userEmail: auth.userEmail } })
 
-            socket.on("join-room", (users) => {
-                // userList.push({ username: userData.username })
+            socket.on("change-room", (users) => {
                 console.log("CREATED AND JOINED ROOM")
-                // socket.emit("join-room", userData, roomID)
-                // console.log(userList)
                 console.log(users)
+                userList = users
+                navigate("/lobby", { state: { roomCode: newRoomCode, users: userList} });
             })
         })()
     }

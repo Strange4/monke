@@ -2,11 +2,11 @@ import { Server } from "socket.io"
 
 export function setUp(server) {
     const io = new Server(server, { cors: { origin: "http://localhost:3000" } })
-    let userList = []
+    let userDict = {}
 
     io.on("connection", (socket) => {
         console.log("CONNECTED")
-        
+
         let roomCode = socket.handshake.query.roomCode
         let userData = { username: "" }
 
@@ -20,7 +20,17 @@ export function setUp(server) {
         }
 
         socket.join(roomCode);
-        userList.push({username: userData.username})
-        io.to(roomCode).emit("join-room", userList)
+
+        if (!userDict[roomCode]) {
+            userDict[roomCode] = []
+        }
+
+        userDict[roomCode].push(userData)
+        io.to(roomCode).emit("change-room", userDict[roomCode])
+
+        io.on("disconnect", (socket) => {
+            console.log("DISCONNECT")
+        })
     });
+
 }

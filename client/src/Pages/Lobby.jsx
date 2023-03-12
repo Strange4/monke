@@ -36,11 +36,11 @@ function Lobby() {
             <div id="lobby-info">
                 <div id="players">
                     {/* to be replaced with a dynamic list as players join */}
-                    <PlayerItem name="Name" />
-                    <PlayerItem name="Name" />
-                    <PlayerItem name="Name" />
-                    <PlayerItem name="Name" />
-                    <PlayerItem name="Name" />
+                    {console.log(location.state.users)}
+                    {location.state.users.map((user, i) => {
+                        console.log(user)
+                        return <PlayerItem key={i} name={user.username} />
+                    })}
 
                     {/* icon will have a copy function to copy the lobby code */}
                     <p ref={roomCode} id="invite-code">{location.state.roomCode}<BiCopy id="copy-icon" onClick={copyCode}/></p>
