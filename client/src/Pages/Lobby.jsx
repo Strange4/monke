@@ -4,15 +4,17 @@ import TypingScreen from "../Components/TypingScreen/TypingScreen";
 import LobbySettings from '../Components/LobbySettings';
 import { AiFillSetting } from "react-icons/ai"
 import PlayerItem from '../Components/PlayerItem';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { BiCopy } from 'react-icons/bi'
+import { BiCopy } from 'react-icons/bi';
+
 
 function Lobby() {
 
     const [settings, showSettings] = useState(false);
     const roomCode = useRef()
     const location = useLocation()
+    
     // add state to handle wheter a user is the lobby creator
     // Will show additional info/settings if they are
 
@@ -23,6 +25,10 @@ function Lobby() {
     function copyCode() {
         navigator.clipboard.writeText(roomCode.current.textContent)
     }
+
+    // useEffect(() => {
+    //     console.log(socket)
+    // })
 
     return (
         <div id="home">

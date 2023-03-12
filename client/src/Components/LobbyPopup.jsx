@@ -1,9 +1,12 @@
 import './Styles/LobbyPopup.css';
 import './Styles/Popup.css'
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import AuthContext from '../Context/AuthContext';
 import * as FetchModule from "../Controller/FetchModule"
 import { useNavigate } from "react-router-dom";
+import { io } from "socket.io-client";
+
 /**
  * Displays a Popup for the lobby
  * @returns {ReactElement}
@@ -11,6 +14,8 @@ import { useNavigate } from "react-router-dom";
 function LobbyPopup() {
     const [code, enterCode] = useState(false);
     const navigate = useNavigate()
+    const auth = useContext(AuthContext);
+    let socket
 
     const handleClick = () => {
         enterCode(current => !current)
@@ -20,6 +25,12 @@ function LobbyPopup() {
         (async () => {
             let newRoomCode = await FetchModule.fetchData("/api/lobby")
             navigate("/lobby", { state: { roomCode: newRoomCode } });
+            console.log(auth)
+            socket = io("", { query: { roomCode: newRoomCode }, auth: { userEmail: auth.userEmail } })
+            socket.on("connect", () => {
+
+                console.log(socket)
+            })
         })()
     }
 
