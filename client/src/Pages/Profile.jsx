@@ -12,6 +12,7 @@ const Profile = () => {
     const [profileData, setProfileData] = useState({
         username: "",
         picture_url:
+            // eslint-disable-next-line max-len
             "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
         user_stats: {
             wpm: 0,
@@ -163,30 +164,35 @@ const Profile = () => {
                                 <div id="avatar-settings">
                                     <RiCloseCircleLine
                                         onClick={cancelAvatarEdit} />
-                                    <RiSave3Line onClick={(e) => { saveAvatar(e) }} />
+                                    <RiSave3Line onClick={(e) => {
+                                        saveAvatar(e) 
+                                    }} />
                                 </div>
                                 :
                                 <RiImageEditFill
                                     id="edit-pic-icon"
-                                    onClick={() => { inputFile.current.click() }} />
+                                    onClick={() => {
+                                        inputFile.current.click() 
+                                    }} />
                         }
                     </div>
 
                     <div id="update-avatar">
-                        {
-                            <>
-                                <form id="image-picker-form" onSubmit={async (e) => await saveAvatar(e)}>
-                                    <input
-                                        style={{ display: "none" }}
-                                        ref={inputFile}
-                                        accept="image/png, image/jpeg, image/jpg"
-                                        onChange={(e) => { handleFileUpload(e) }}
-                                        type="file"
-                                    />
-                                </form>
-                                <p> {AvatarFeedback} </p>
-                            </>
-                        }
+                        {<>
+                            <form id="image-picker-form" 
+                                onSubmit={async (e) => await saveAvatar(e)}>
+                                <input
+                                    style={{ display: "none" }}
+                                    ref={inputFile}
+                                    accept="image/png, image/jpeg, image/jpg"
+                                    onChange={(e) => {
+                                        handleFileUpload(e) 
+                                    }}
+                                    type="file"
+                                />
+                            </form>
+                            <p> {AvatarFeedback} </p>
+                        </>}
 
                     </div>
                     <div id="user-info">
@@ -200,7 +206,9 @@ const Profile = () => {
                                     :
                                     <RiEdit2Fill
                                         id="edit-name-icon"
-                                        onClick={() => { setEditingUsername(true) }} />
+                                        onClick={() => {
+                                            setEditingUsername(true) 
+                                        }} />
                             }
                             <h2><span className="label">Name: </span></h2>
                             <h2 contentEditable={EditingUsername}
