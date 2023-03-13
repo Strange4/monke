@@ -175,28 +175,28 @@ const Profile = () => {
                                 :
                                 <RiImageEditFill
                                     id="edit-pic-icon"
-                                    onClick={() => { inputFile.current.click() }} />
+                                    onClick={() => {
+                                        inputFile.current.click() 
+                                    }} />
                         }
                     </div>
 
                     <div id="update-avatar">
-                        {
-                            <>
-                                <form id="image-picker-form" 
-                                    onSubmit={async (e) => await saveAvatar(e)}>
-                                    <input
-                                        style={{ display: "none" }}
-                                        ref={inputFile}
-                                        accept="image/png, image/jpeg, image/jpg"
-                                        onChange={(e) => { 
-                                            handleFileUpload(e) 
-                                        }}
-                                        type="file"
-                                    />
-                                </form>
-                                <p> {AvatarFeedback} </p>
-                            </>
-                        }
+                        {<>
+                            <form id="image-picker-form" 
+                                onSubmit={async (e) => await saveAvatar(e)}>
+                                <input
+                                    style={{ display: "none" }}
+                                    ref={inputFile}
+                                    accept="image/png, image/jpeg, image/jpg"
+                                    onChange={(e) => {
+                                        handleFileUpload(e) 
+                                    }}
+                                    type="file"
+                                />
+                            </form>
+                            <p> {AvatarFeedback} </p>
+                        </>}
 
                     </div>
                     <div id="user-info">
