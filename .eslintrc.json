@@ -15,15 +15,16 @@
       "ecmaVersion": "latest",
       "sourceType": "module"
   },
+  "ecmaFeatures": {"jsx": true},
+  "ignorePatterns": [
+    "**/node_modules/**",
+    "client/build"
+  ],
   "overrides": [ {
-    "files": ["*.mjs", 
-    "*.cjs", 
-    "**/modules/*.js", 
-    "**/__tests__/*.js", 
-    "**/api/*.js",
-    "**/src/**/*.js",
-    "**/controllers/*.js",
-    "**/server/**/*.js"],
+    "files": [
+    "./**/*.js",
+    "./**/*.jsx"
+    ],
     "parserOptions": {
       "sourceType":"module"
     }
