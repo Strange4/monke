@@ -11,10 +11,11 @@ import { BiCopy } from 'react-icons/bi';
 
 function Lobby() {
 
-    const [settings, showSettings] = useState(false);
     const roomCode = useRef()
     const location = useLocation()
-    
+    const [settings, showSettings] = useState(false);
+    const [userList, setUserList] = useState(location.state.users)
+
     // add state to handle wheter a user is the lobby creator
     // Will show additional info/settings if they are
 
@@ -26,25 +27,20 @@ function Lobby() {
         navigator.clipboard.writeText(roomCode.current.textContent)
     }
 
-    // useEffect(() => {
-    //     console.log(socket)
-    // })
+    useEffect(() => {
+        console.log("CREATING")
+        setUserList(location.state.users)
+    }, [location.state.users])
 
     return (
         <div id="home">
             <NavBar />
             <div id="lobby-info">
                 <div id="players">
-                    {/* to be replaced with a dynamic list as players join */}
-                    {console.log(location.state.users)}
-                    {location.state.users.map((user, i) => {
-                        console.log(user)
+                    {userList.map((user, i) => {
                         return <PlayerItem key={i} name={user.username} />
                     })}
-
-                    {/* icon will have a copy function to copy the lobby code */}
-                    <p ref={roomCode} id="invite-code">{location.state.roomCode}<BiCopy id="copy-icon" onClick={copyCode}/></p>
-
+                    <p ref={roomCode} id="invite-code">{location.state.roomCode}<BiCopy id="copy-icon" onClick={copyCode} /></p>
                 </div>
                 <Link to="/multiplayer-game">
                     <button id="play-btn">PLAY</button>

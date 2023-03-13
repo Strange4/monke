@@ -1,7 +1,7 @@
 import './Styles/LobbyPopup.css';
 import './Styles/Popup.css'
-import { Link } from 'react-router-dom';
 import { useState, useContext, useRef } from 'react';
+
 import AuthContext from '../Context/AuthContext';
 import * as FetchModule from "../Controller/FetchModule"
 import { useNavigate } from "react-router-dom";
@@ -16,7 +16,7 @@ function LobbyPopup() {
     const roomCode = useRef()
     const navigate = useNavigate()
     const auth = useContext(AuthContext);
-    let userList
+    let userList = []
     let socket
 
     const handleClick = () => {
@@ -24,36 +24,46 @@ function LobbyPopup() {
     }
 
     const joinLobby = () => {
-        socket = io("", { query: { roomCode: roomCode.current.value }, auth: { userEmail: auth.userEmail } })
+        if (userList.length < 3) {
+            socket = io("", { query: { roomCode: roomCode.current.value }, auth: { userEmail: auth.userEmail } })
 
-        socket.on("change-room", (users) => {
-            console.log("JOINED ROOM")
-            console.log(users)
-            console.log(users)
-            userList = users
-            navigate("/lobby", { state: { roomCode: roomCode.current.value , users: userList} });
-        })
-        
-        // socket.on("leave-room", (userData, roomID, users) => {
-        //     users.filter(user => user != userData.username)
-        // })
+            socket.on("join-room", (users, roomCode) => {
+                console.log("UPDATED ROOM")
+                userList = users
+                navigate("/lobby", { state: { roomCode: roomCode, users: users } });
+            })
+            socket.on("leave-room", (users, roomCode, leave) => {
+                userList = users
+                navigate("/lobby", { state: { roomCode: roomCode, users: users } });
+            })
+            socket.on("kickUser", () => {
+                navigate("/");
+            })
+        } else {
+            console.log("Can't join, room is full")
+        }
     }
 
     function createLobby() {
         (async () => {
             let newRoomCode = await FetchModule.fetchData("/api/lobby")
-            
+
             socket = io("", { query: { roomCode: newRoomCode }, auth: { userEmail: auth.userEmail } })
 
-            socket.on("change-room", (users) => {
+            socket.on("join-room", (users, roomCode) => {
                 console.log("CREATED AND JOINED ROOM")
-                console.log(users)
                 userList = users
-                navigate("/lobby", { state: { roomCode: newRoomCode, users: userList} });
+                navigate("/lobby", { state: { roomCode: roomCode, users: users } });
+            })
+            socket.on("leave-room", (users, roomCode, leave) => {
+                userList = users
+                navigate("/lobby", { state: { roomCode: roomCode, users: users } });
+            })
+            socket.on("kickUser", () => {
+                navigate("/");
             })
         })()
     }
-
 
     return (
         <div id="lobby" className='popup'>

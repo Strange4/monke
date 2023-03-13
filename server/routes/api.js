@@ -203,16 +203,9 @@ router.put("/update_username", async (req, res) => {
     res.status(200).json(user);
 });
 
-router.get("/lobby", (req, res) => {
-    console.log("HERE IN LOBBY")
+router.get("/lobby", (_, res) => {
     let roomID = v4()
-    console.log(roomID)
-    // res.redirect(`/lobby/${roomID}`)
     res.json(roomID)
-});
-
-router.get("/lobby/:room", (req, res) => {
-    console.log("HERE IN ROOM")
 });
 
 function dbIsConnected() {

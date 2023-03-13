@@ -1,4 +1,5 @@
 import { Server } from "socket.io"
+import { v4 } from "uuid";
 
 export function setUp(server) {
     const io = new Server(server, { cors: { origin: "http://localhost:3000" } })
@@ -8,17 +9,11 @@ export function setUp(server) {
         console.log("CONNECTED")
 
         let roomCode = socket.handshake.query.roomCode
-        let userData = { username: "" }
+        let userData = { username: "", id: "", avatar: "" }
 
-        if (socket.handshake.auth.userEmail) {
-            console.log(`LOGGED IN as ${socket.handshake.auth.userEmail}`)
-            userData["username"] = socket.handshake.auth.userEmail
-        } else {
-            //TODO set random name and picture here
-            console.log("not logged in")
-            userData["username"] = "GUEST"
-        }
+        userData["username"] = socket.handshake.auth.userEmail || "GUEST"
 
+        userData["id"] = v4()
         socket.join(roomCode);
 
         if (!userDict[roomCode]) {
@@ -26,10 +21,21 @@ export function setUp(server) {
         }
 
         userDict[roomCode].push(userData)
-        io.to(roomCode).emit("change-room", userDict[roomCode])
 
-        io.on("disconnect", (socket) => {
-            console.log("DISCONNECT")
+        io.to(roomCode).emit("join-room", userDict[roomCode], roomCode)
+
+        socket.on("disconnect", (reason) => {
+            console.log(`DISCONNECT ${reason}`)
+            try {
+                userDict[roomCode] = userDict[roomCode].filter(user => user.id !== userData.id)
+            } catch (err) {
+                console.log(err)
+            }
+            io.to(roomCode).emit("leave-room", userDict[roomCode], roomCode)
+            socket._cleanup()
+        })
+        socket.on("disconnecting", () => {
+            socket.emit("kickUser")
         })
     });
 
