@@ -9,9 +9,9 @@ const Schema = mongoose.Schema;
  */
 const UserSchema = new Schema({
     username: { type: String, required: true, },
-    picture_url: {type: String, required: true, validate: Constraints.url},
+    "picture_url": {type: String, required: true, validate: Constraints.url},
     email: {type: String, required: true, validate: Constraints.email },
-    user_stats: {type : UserStatSchema, required: true, default: () => ({}) },
+    "user_stats": {type : UserStatSchema, required: true, default: () => ({}) },
 }, {
     methods: {
         async getRank(){

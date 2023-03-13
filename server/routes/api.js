@@ -40,7 +40,9 @@ router.put("/user_stat", async (req, res, next) => {
     }
     const email = Constraints.email(req.body.email);
     if (!email) {
-        next(new createHttpError.BadRequest("Can't find or create the user because no email was provided"));
+        next(new createHttpError.BadRequest(
+            "Can't find or create the user because no email was provided"
+        ));
         return;
     }
 
@@ -55,15 +57,21 @@ router.put("/user_stat", async (req, res, next) => {
     const win = Constraints.positiveInt(req.body.win);
     const lose = Constraints.positiveInt(req.body.lose);
     const draw = Constraints.positiveInt(req.body.draw);
+    const gameCount = user.user_stats.games_count;
 
     // updates the average of that value if it is defined only
     const updated = {
-        ...(wpm && { "user_stats.wpm": getAverage(user.user_stats.wpm, wpm, user.user_stats.games_count) }),
-        ...(accuracy && { "user_stats.accuracy": getAverage(user.user_stats.accuracy, accuracy, user.user_stats.games_count) }),
-        ...(win && { "user_stats.win": getAverage(user.user_stats.win, win, user.user_stats.games_count) }),
-        ...(lose && { "user_stats.lose": getAverage(user.user_stats.lose, lose, user.user_stats.games_count) }),
-        ...(draw && { "user_stats.draw": getAverage(user.user_stats.draw, draw, user.user_stats.games_count) }),
-        "user_stats.games_count": user.user_stats.games_count + 1
+        ...wpm && { 
+            "user_stats.wpm": getAverage(user.user_stats.wpm, wpm, gameCount) },
+        ...accuracy && { 
+            "user_stats.accuracy": getAverage(user.user_stats.accuracy, accuracy, gameCount) },
+        ...win && { 
+            "user_stats.win": getAverage(user.user_stats.win, win, gameCount) },
+        ...lose && { 
+            "user_stats.lose": getAverage(user.user_stats.lose, lose, gameCount) },
+        ...draw && { 
+            "user_stats.draw": getAverage(user.user_stats.draw, draw, gameCount) },
+        "user_stats.games_count": gameCount + 1
     }
     if (wpm > user.user_stats.max_wpm) {
         updated["user_stats.date"] = new Date();
@@ -89,7 +97,9 @@ router.post("/user", async (req, res, next) => {
     }
     const email = Constraints.email(req.body.email);
     if (!email) {
-        next(new createHttpError.BadRequest("Can't find or create the user because no email was provided"));
+        next(new createHttpError.BadRequest(
+            "Can't find or create the user because no email was provided"
+        ));
         return;
     }
     let user = await User.findOne({ email: email });
@@ -130,7 +140,9 @@ router.get("/leaderboard", async (req, res) => {
         return;
     }
     const maxItems = Constraints.positiveInt(req.query.max) || 10;
-    const users = await User.find().limit(maxItems).sort({"user_stats.max_wpm": 'desc', "user_stats.max_accuracy": "desc"}).lean();
+    const users = await User
+        .find().limit(maxItems)
+        .sort({"user_stats.max_wpm": 'desc', "user_stats.max_accuracy": "desc"}).lean();
     res.json(users);
 });
 

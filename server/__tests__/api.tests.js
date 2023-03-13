@@ -15,14 +15,14 @@ const ERROR = 400;
 const TEST_USERS = [
     {
         username: "nice person",
-        picture_url: "https://itsnotreal.org/images/2",
+        "picture_url": "https://itsnotreal.org/images/2",
         email: "nice@mail.com",
-        user_stats: {
-            max_wpm: 150,
+        "user_stats": {
+            "max_wpm": 150,
             wpm: 122,
-            max_accuracy: 100,
+            "max_accuracy": 100,
             accuracy: 89,
-            games_count: 10,
+            "games_count": 10,
             win: 10,
             lose: 0,
             draw: 0,
@@ -31,14 +31,14 @@ const TEST_USERS = [
     },
     {
         username: "bad person",
-        picture_url: "https://itsnotreal.org/images/2",
+        "picture_url": "https://itsnotreal.org/images/2",
         email: "notnice@mail.com",
-        user_stats: {
-            max_wpm: 120,
+        "user_stats": {
+            "max_wpm": 120,
             wpm: 79,
-            max_accuracy: 100,
+            "max_accuracy": 100,
             accuracy: 77,
-            games_count: 10,
+            "games_count": 10,
             win: 0,
             lose: 10,
             draw: 0,
@@ -47,14 +47,14 @@ const TEST_USERS = [
     },
     {
         username: "joe",
-        picture_url: "https://notareallink/images/none",
+        "picture_url": "https://notareallink/images/none",
         email: "123aaaa@gmail.com",
-        user_stats: {
-            max_wpm: 150,
+        "user_stats": {
+            "max_wpm": 150,
             wpm: 122,
-            max_accuracy: 100,
+            "max_accuracy": 100,
             accuracy: 89,
-            games_count: 10,
+            "games_count": 10,
             win: 10,
             lose: 0,
             draw: 0,
@@ -132,7 +132,7 @@ describe("POST /api/user", () => {
             {
                 email: "meraha@muhooha.com",
                 username: "derphdd",
-                picture_url: "https://food.com/image/tacos"
+                "picture_url": "https://food.com/image/tacos"
             }
         );
         expect(RESPONSE.status).toBe(SUCCESS);
