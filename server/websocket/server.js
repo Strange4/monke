@@ -20,17 +20,20 @@ export function setUp(server) {
             userDict[roomCode] = []
         }
 
-        userDict[roomCode].push(userData)
-
-        io.to(roomCode).emit("join-room", userDict[roomCode], roomCode)
+        socket.on("try-join", () => {
+            if (userDict[roomCode].length < 2) {
+                console.log("room is NOT full")
+                userDict[roomCode].push(userData)
+                io.to(roomCode).emit("join-room", userDict[roomCode], roomCode)
+            } else {
+                console.log("room is full")
+                socket.emit("full-room")
+            }
+        })
 
         socket.on("disconnect", (reason) => {
             console.log(`DISCONNECT ${reason}`)
-            try {
-                userDict[roomCode] = userDict[roomCode].filter(user => user.id !== userData.id)
-            } catch (err) {
-                console.log(err)
-            }
+            userDict[roomCode] = userDict[roomCode].filter(user => user.id !== userData.id)
             io.to(roomCode).emit("leave-room", userDict[roomCode], roomCode)
             socket._cleanup()
         })

@@ -14,54 +14,49 @@ import { io } from "socket.io-client";
 function LobbyPopup() {
     const [code, enterCode] = useState(false);
     const roomCode = useRef()
+    const feedback = useRef()
     const navigate = useNavigate()
     const auth = useContext(AuthContext);
-    let userList = []
     let socket
 
-    const handleClick = () => {
-        enterCode(current => !current)
+    const joinLobby = () => {
+        if (!socket) {
+            socket = io("", { query: { roomCode: roomCode.current.value }, auth: { userEmail: auth.userEmail } })
+            setSocketListeners()
+        }
+        socket.emit("try-join")
     }
 
-    const joinLobby = () => {
-        if (userList.length < 3) {
-            socket = io("", { query: { roomCode: roomCode.current.value }, auth: { userEmail: auth.userEmail } })
-
-            socket.on("join-room", (users, roomCode) => {
-                console.log("UPDATED ROOM")
-                userList = users
-                navigate("/lobby", { state: { roomCode: roomCode, users: users } });
-            })
-            socket.on("leave-room", (users, roomCode, leave) => {
-                userList = users
-                navigate("/lobby", { state: { roomCode: roomCode, users: users } });
-            })
-            socket.on("kickUser", () => {
-                navigate("/");
-            })
-        } else {
-            console.log("Can't join, room is full")
-        }
+    function setSocketListeners() {
+        socket.on("join-room", (users, roomCode) => {
+            console.log("JOINED ROOM")
+            navigate("/lobby", { state: { roomCode: roomCode, users: users } });
+        })
+        socket.on("leave-room", (users, roomCode) => {
+            console.log("leaving room")
+            navigate("/lobby", { state: { roomCode: roomCode, users: users } });
+        })
+        socket.on("kickUser", () => {
+            console.log("kicking user")
+            navigate("/");
+        })
+        socket.on("full-room", () => {
+            console.log("room full")
+            feedback.current.textContent = "ROOM FULL, enter a different room"
+            socket.disconnect()
+            socket = undefined
+        });
     }
 
     function createLobby() {
         (async () => {
             let newRoomCode = await FetchModule.fetchData("/api/lobby")
 
-            socket = io("", { query: { roomCode: newRoomCode }, auth: { userEmail: auth.userEmail } })
-
-            socket.on("join-room", (users, roomCode) => {
-                console.log("CREATED AND JOINED ROOM")
-                userList = users
-                navigate("/lobby", { state: { roomCode: roomCode, users: users } });
-            })
-            socket.on("leave-room", (users, roomCode, leave) => {
-                userList = users
-                navigate("/lobby", { state: { roomCode: roomCode, users: users } });
-            })
-            socket.on("kickUser", () => {
-                navigate("/");
-            })
+            if (!socket) {
+                socket = io("", { query: { roomCode: newRoomCode }, auth: { userEmail: auth.userEmail } })
+                setSocketListeners()
+            }
+            socket.emit("try-join")
         })()
     }
 
@@ -69,11 +64,12 @@ function LobbyPopup() {
         <div id="lobby" className='popup'>
             <h1>Lobby Popup</h1>
             <button onClick={createLobby}>Create</button>
-            <button onClick={handleClick}>Join</button>
+            <button onClick={() => { enterCode(current => !current) }}>Join</button>
             {code &&
                 <div>
                     <input ref={roomCode} type="text" name="code" />
                     <button onClick={joinLobby}>Enter game</button>
+                    <p ref={feedback}></p>
                 </div>
             }
         </div>

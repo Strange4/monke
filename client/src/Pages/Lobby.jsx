@@ -28,7 +28,6 @@ function Lobby() {
     }
 
     useEffect(() => {
-        console.log("CREATING")
         setUserList(location.state.users)
     }, [location.state.users])
 
@@ -44,6 +43,9 @@ function Lobby() {
                 </div>
                 <Link to="/multiplayer-game">
                     <button id="play-btn">PLAY</button>
+                </Link>
+                <Link to="/">
+                    <button id="leave-btn">LEAVE</button>
                 </Link>
                 {settings && <LobbySettings />}
                 <AiFillSetting id="lobby-settings-icon" onClick={handleClick} />
