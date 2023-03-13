@@ -4,17 +4,20 @@ import TypingScreen from "../Components/TypingScreen/TypingScreen";
 import LobbySettings from '../Components/LobbySettings';
 import { AiFillSetting } from "react-icons/ai"
 import PlayerItem from '../Components/PlayerItem';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useContext } from 'react';
+import { useNavigate } from "react-router-dom";
 import { Link, useLocation } from 'react-router-dom';
 import { BiCopy } from 'react-icons/bi';
+import AuthContext from '../Context/AuthContext';
 
 
 function Lobby() {
-
+    const navigate = useNavigate()
     const roomCode = useRef()
     const location = useLocation()
     const [settings, showSettings] = useState(false);
     const [userList, setUserList] = useState(location.state.users)
+    const auth = useContext(AuthContext);
 
     // add state to handle wheter a user is the lobby creator
     // Will show additional info/settings if they are
@@ -31,6 +34,12 @@ function Lobby() {
         setUserList(location.state.users)
     }, [location.state.users])
 
+    function leave() {
+        auth.socket.current.disconnect()
+        auth.socket.current = undefined
+        navigate("/")
+    }
+
     return (
         <div id="home">
             <NavBar />
@@ -44,9 +53,7 @@ function Lobby() {
                 <Link to="/multiplayer-game">
                     <button id="play-btn">PLAY</button>
                 </Link>
-                <Link to="/">
-                    <button id="leave-btn">LEAVE</button>
-                </Link>
+                <button id="leave-btn" onClick={leave}>LEAVE</button>
                 {settings && <LobbySettings />}
                 <AiFillSetting id="lobby-settings-icon" onClick={handleClick} />
             </div>

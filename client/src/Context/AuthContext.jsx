@@ -5,6 +5,7 @@ const AuthContext = React.createContext(
         userEmail: {},
         setUserEmail: () => { },
         checkAccess: async () => { },
+        socket: {}
     }
 );
 

@@ -3,7 +3,7 @@ import './styles/App.css';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import Home from './Pages/Home';
 import AuthContext from './Context/AuthContext';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import checkAccess from './Controller/AuthHelper';
 import Profile from './Pages/Profile';
 import Lobby from './Pages/Lobby';
@@ -18,6 +18,7 @@ const queryClient = new QueryClient();
  */
 function App() {
     const [userEmail, setUserEmail] = useState();
+    const socket = useRef();
 
     useEffect(() => {
         (async () => {
@@ -36,7 +37,8 @@ function App() {
             <AuthContext.Provider value={{
                 userEmail: userEmail,
                 setUserEmail: setUserEmail,
-                checkAccess: checkAccess
+                checkAccess: checkAccess,
+                socket: socket,
             }}>
                 <QueryClientProvider client={queryClient}>
                     <Router>

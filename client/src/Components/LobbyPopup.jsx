@@ -17,34 +17,33 @@ function LobbyPopup() {
     const feedback = useRef()
     const navigate = useNavigate()
     const auth = useContext(AuthContext);
-    let socket
 
     const joinLobby = () => {
-        if (!socket) {
-            socket = io("", { query: { roomCode: roomCode.current.value }, auth: { userEmail: auth.userEmail } })
+        if (!auth.socket.current) {
+            auth.socket.current = io("", { query: { roomCode: roomCode.current.value }, auth: { userEmail: auth.userEmail } })
             setSocketListeners()
         }
-        socket.emit("try-join")
+        auth.socket.current.emit("try-join")
     }
 
     function setSocketListeners() {
-        socket.on("join-room", (users, roomCode) => {
+        auth.socket.current.on("join-room", (users, roomCode) => {
             console.log("JOINED ROOM")
             navigate("/lobby", { state: { roomCode: roomCode, users: users } });
         })
-        socket.on("leave-room", (users, roomCode) => {
+        auth.socket.current.on("leave-room", (users, roomCode) => {
             console.log("leaving room")
             navigate("/lobby", { state: { roomCode: roomCode, users: users } });
         })
-        socket.on("kickUser", () => {
+        auth.socket.current.on("kickUser", () => {
             console.log("kicking user")
             navigate("/");
         })
-        socket.on("full-room", () => {
+        auth.socket.current.on("full-room", () => {
             console.log("room full")
             feedback.current.textContent = "ROOM FULL, enter a different room"
-            socket.disconnect()
-            socket = undefined
+            auth.socket.current.disconnect()
+            auth.socket.current = undefined
         });
     }
 
@@ -52,11 +51,11 @@ function LobbyPopup() {
         (async () => {
             let newRoomCode = await FetchModule.fetchData("/api/lobby")
 
-            if (!socket) {
-                socket = io("", { query: { roomCode: newRoomCode }, auth: { userEmail: auth.userEmail } })
+            if (!auth.socket.current) {
+                auth.socket.current = io("", { query: { roomCode: newRoomCode }, auth: { userEmail: auth.userEmail } })
                 setSocketListeners()
             }
-            socket.emit("try-join")
+            auth.socket.current.emit("try-join")
         })()
     }
 
