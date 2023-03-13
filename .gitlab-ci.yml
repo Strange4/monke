@@ -6,11 +6,14 @@ stages:
   - test
   - deploy
 
-eslint-job:
+.important-branches:
   only:
     - staging
     - main
     - merge_requests
+
+eslint-job:
+  extends: .important-branches
   stage: lint
   cache:
     paths:
@@ -21,14 +24,11 @@ eslint-job:
     - cd client && npm install --save-dev eslint-plugin-security@latest eslint-plugin-react@latest
   script:
     - echo "Running eslint to see if everything is pretty 💅"
-    - eslint --ext .js .
+    - eslint .
     - echo "The code passes the vibes check 💅"
 
 client-build-job:
-  only:
-    - staging
-    - main
-    - merge_requests
+  extends: .important-branches
   stage: build
   script:
     - echo "Building client 🔨"
@@ -43,10 +43,7 @@ client-build-job:
       - client/node_modules
 
 server-build-job:
-  only:
-    - staging
-    - main
-    - merge_requests
+  extends: .important-branches
   stage: build
   script:
     - echo "Building server 🔨"
@@ -59,10 +56,7 @@ server-build-job:
       - server/node_modules
 
 test-job:
-  only:
-    - staging
-    - main
-    - merge_requests
+  extends: .important-branches
   stage: test
   script:
     - echo "Testing 🧪🔬"
