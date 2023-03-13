@@ -19,11 +19,9 @@ eslint-job:
     paths:
       - ./node_modules
       - ./client/node_modules
-  before_script:
-    - npm install
   script:
     - echo "Running eslint to see if everything is pretty 💅"
-    - eslint .
+    - npx eslist .
     - echo "The code passes the vibes check 💅"
 
 client-build-job:
