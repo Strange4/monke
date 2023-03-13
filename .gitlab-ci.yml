@@ -20,8 +20,7 @@ eslint-job:
       - ./node_modules
       - ./client/node_modules
   before_script:
-    - npm install -g eslint
-    - cd client && npm install --save-dev eslint-plugin-security@latest eslint-plugin-react@latest
+    - npm install
   script:
     - echo "Running eslint to see if everything is pretty 💅"
     - eslint .
@@ -30,6 +29,10 @@ eslint-job:
 client-build-job:
   extends: .important-branches
   stage: build
+  only:
+    changes:
+      - client/*
+
   script:
     - echo "Building client 🔨"
     - cd client
@@ -45,6 +48,9 @@ client-build-job:
 server-build-job:
   extends: .important-branches
   stage: build
+  only:
+    changes:
+      - server/*
   script:
     - echo "Building server 🔨"
     - cd server
