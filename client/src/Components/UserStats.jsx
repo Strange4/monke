@@ -1,6 +1,3 @@
-import AuthContext from "../Context/AuthContext";
-import { useContext, useEffect, useState, useRef } from "react";
-
 /**
  * Displays a single user's stats
  * @param {*} props 
