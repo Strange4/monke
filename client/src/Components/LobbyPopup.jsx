@@ -39,21 +39,23 @@ function LobbyPopup() {
     }
 
     async function setUpSocket(roomCode) {
-        if (!auth.socket.current) {
-            let userData = {
-                userEmail: auth.userEmail,
-                avatar: "",
-                username: ""
-            }
-            if (auth.userEmail) {
-                const url = "/api/user"
-                const data = await FetchModule.postData(url, { email: auth.userEmail }, "POST")
-                userData["avatar"] = data.picture_url
-                userData["username"] = data.username
-            }
-            auth.socket.current = io("", { query: { roomCode: roomCode }, auth: { userData } })
-            setSocketListeners()
+        if (auth.socket.current) {
+            auth.socket.current.disconnect()
+            auth.socket.current = undefined
         }
+        let userData = {
+            userEmail: auth.userEmail,
+            avatar: "",
+            username: ""
+        }
+        if (auth.userEmail) {
+            const url = "/api/user"
+            const data = await FetchModule.postData(url, { email: auth.userEmail }, "POST")
+            userData["avatar"] = data.picture_url
+            userData["username"] = data.username
+        }
+        auth.socket.current = io("", { query: { roomCode: roomCode }, auth: { userData } })
+        setSocketListeners()
         auth.socket.current.emit("try-join")
     }
 
