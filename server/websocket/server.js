@@ -6,8 +6,6 @@ export function setUp(server) {
     let userDict = {}
 
     io.on("connection", (socket) => {
-        console.log("CONNECTED")
-
         let roomCode = socket.handshake.query.roomCode
         let userData = { username: "", id: "", avatar: "" }
 
@@ -22,23 +20,17 @@ export function setUp(server) {
 
         socket.on("try-join", () => {
             if (userDict[roomCode].length < 2) {
-                console.log("room is NOT full")
                 userDict[roomCode].push(userData)
                 io.to(roomCode).emit("join-room", userDict[roomCode], roomCode)
             } else {
-                console.log("room is full")
                 socket.emit("full-room")
             }
         })
 
-        socket.on("disconnect", (reason) => {
-            console.log(`DISCONNECT ${reason}`)
+        socket.on("disconnect", () => {
             userDict[roomCode] = userDict[roomCode].filter(user => user.id !== userData.id)
             io.to(roomCode).emit("leave-room", userDict[roomCode], roomCode)
             socket._cleanup()
-        })
-        socket.on("disconnecting", () => {
-            socket.emit("kickUser")
         })
     });
 
