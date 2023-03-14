@@ -55,7 +55,10 @@ function Lobby() {
                     {userList.map((user, i) => {
                         return <PlayerItem key={i} name={user.username} avatar={user.avatar} />
                     })}
-                    <p ref={roomCode} id="invite-code">{location.state.roomCode}<BiCopy id="copy-icon" onClick={copyCode} /></p>
+                    <p ref={roomCode} id="invite-code">
+                        {location.state.roomCode}
+                        <BiCopy id="copy-icon" onClick={copyCode} />
+                    </p>
                 </div>
                 <Link to="/multiplayer-game">
                     <button id="play-btn">PLAY</button>

@@ -11,7 +11,6 @@ export function setUp(server) {
         let roomCode = socket.handshake.query.roomCode
         let userData = { username: "", id: "", avatar: "" }
 
-        console.log(socket.handshake.auth)
         userData["username"] = socket.handshake.auth.userData?.username || "GUEST"
         userData["avatar"] = socket.handshake.auth.userData?.avatar || defaultAvatar
         userData["id"] = v4()

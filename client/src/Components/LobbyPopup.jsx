@@ -21,22 +21,6 @@ function LobbyPopup() {
     const joinLobby = () => {
         (async () => {
             await setUpSocket(roomCode.current.value)
-            // if (!auth.socket.current) { 
-            //     let userData = {
-            //         userEmail: auth.userEmail
-            //     }
-            //     if (auth.userEmail) {
-            //         const url = "/api/user"
-            //         const data = await FetchModule.postData(url, { email: auth.userEmail }, "POST")
-            //         console.log(data)
-            //         userData["avatar"] = data.picture_url
-            //         userData["username"] = data.username
-            //     }
-            //     console.log(userData)
-            //     auth.socket.current = io("", { query: { roomCode: roomCode.current.value }, auth: { userData } })
-            //     setSocketListeners()
-            // }
-            // auth.socket.current.emit("try-join")
         })()
     }
 
@@ -55,7 +39,7 @@ function LobbyPopup() {
     }
 
     async function setUpSocket(roomCode) {
-        if (!auth.socket.current) { 
+        if (!auth.socket.current) {
             let userData = {
                 userEmail: auth.userEmail,
                 avatar: "",
@@ -64,11 +48,9 @@ function LobbyPopup() {
             if (auth.userEmail) {
                 const url = "/api/user"
                 const data = await FetchModule.postData(url, { email: auth.userEmail }, "POST")
-                console.log(data)
                 userData["avatar"] = data.picture_url
                 userData["username"] = data.username
             }
-            console.log(userData)
             auth.socket.current = io("", { query: { roomCode: roomCode }, auth: { userData } })
             setSocketListeners()
         }
@@ -79,11 +61,6 @@ function LobbyPopup() {
         (async () => {
             let newRoomCode = await FetchModule.fetchData("/api/lobby")
             await setUpSocket(newRoomCode)
-            // if (!auth.socket.current) {
-            //     auth.socket.current = io("", { query: { roomCode: newRoomCode }, auth: { userEmail: auth.userEmail } })
-            //     setSocketListeners()
-            // }
-            // auth.socket.current.emit("try-join")
         })()
     }
 
@@ -91,7 +68,9 @@ function LobbyPopup() {
         <div id="lobby" className='popup'>
             <h1>Lobby Popup</h1>
             <button onClick={createLobby}>Create</button>
-            <button onClick={() => { enterCode(current => !current) }}>Join</button>
+            <button onClick={() => {
+                enterCode(current => !current)
+            }}>Join</button>
             {code &&
                 <div>
                     <input ref={roomCode} type="text" name="code" />
