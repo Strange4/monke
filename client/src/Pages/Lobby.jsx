@@ -22,6 +22,13 @@ function Lobby() {
     // add state to handle wheter a user is the lobby creator
     // Will show additional info/settings if they are
 
+    useEffect(() => {
+        if (location.pathname !== "/lobby") {
+            auth.socket.current.disconnect()
+            auth.socket.current = undefined
+        }
+    }, [location]);
+
     const handleClick = () => {
         showSettings(current => !current)
     }

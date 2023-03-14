@@ -28,19 +28,14 @@ function LobbyPopup() {
 
     function setSocketListeners() {
         auth.socket.current.on("join-room", (users, roomCode) => {
-            console.log("JOINED ROOM")
+            console.log("joining")
             navigate("/lobby", { state: { roomCode: roomCode, users: users } });
         })
         auth.socket.current.on("leave-room", (users, roomCode) => {
-            console.log("leaving room")
+            console.log("leaving")
             navigate("/lobby", { state: { roomCode: roomCode, users: users } });
         })
-        auth.socket.current.on("kickUser", () => {
-            console.log("kicking user")
-            navigate("/");
-        })
         auth.socket.current.on("full-room", () => {
-            console.log("room full")
             feedback.current.textContent = "ROOM FULL, enter a different room"
             auth.socket.current.disconnect()
             auth.socket.current = undefined
