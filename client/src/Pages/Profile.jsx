@@ -26,15 +26,16 @@ const Profile = () => {
         },
         rank: 0
     });
-    const [EditingUsername, setEditingUsername] = useState(false)
-    const [EditingAvatar, setEditingAvatar] = useState(false)
-    const [UsernameFeedback, setUsernameFeedback] = useState("")
-    const [AvatarFeedback, setAvatarFeedback] = useState("")
-    const usernameField = useRef()
-    const avatarField = useRef()
-    const navigate = useNavigate()
+
+    const [EditingUsername, setEditingUsername] = useState(false);
+    const [EditingAvatar, setEditingAvatar] = useState(false);
+    const [UsernameFeedback, setUsernameFeedback] = useState("");
+    const [AvatarFeedback, setAvatarFeedback] = useState("");
+    const usernameField = useRef();
+    const avatarField = useRef();
+    const navigate = useNavigate();
     const DefaultPicture =
-        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
 
     const [image, setImage] = useState("");
     const inputFile = useRef();
@@ -122,7 +123,7 @@ const Profile = () => {
             setAvatarFeedback("Please select a valid image");
             return false;
         } else if (image.size / 1048576 > 5) {
-            setAvatarFeedback("Image to big, select a different image");
+            setAvatarFeedback("Image too big, select a different image");
             return false;
         } else {
             setAvatarFeedback("");
@@ -163,10 +164,13 @@ const Profile = () => {
                             EditingAvatar ?
                                 <div id="avatar-settings">
                                     <RiCloseCircleLine
-                                        onClick={cancelAvatarEdit} />
-                                    <RiSave3Line onClick={(e) => {
-                                        saveAvatar(e) 
-                                    }} />
+                                        id="cancle-avatar-btn"
+                                        onClick={cancelAvatarEdit}/>
+                                    <RiSave3Line
+                                        id="save-avatar-btn"
+                                        onClick={(e) => { 
+                                            saveAvatar(e) 
+                                        }}/>
                                 </div>
                                 :
                                 <RiImageEditFill
@@ -197,19 +201,8 @@ const Profile = () => {
                     </div>
                     <div id="user-info">
                         <div id="username-info">
-                            {
-                                EditingUsername ?
-                                    <>
-                                        <RiSave3Line onClick={saveUsername} />
-                                        <p>{UsernameFeedback}</p>
-                                    </>
-                                    :
-                                    <RiEdit2Fill
-                                        id="edit-name-icon"
-                                        onClick={() => {
-                                            setEditingUsername(true) 
-                                        }} />
-                            }
+
+
                             <h2><span className="label">Name: </span></h2>
                             <h2 contentEditable={EditingUsername}
                                 className={EditingUsername ? "editable" : ""}
@@ -217,8 +210,26 @@ const Profile = () => {
                                 ref={usernameField}>
                                 {profileData.username}
                             </h2>
+                            {
+                                EditingUsername ?
+                                    <>
+                                        <RiSave3Line
+                                            id="edit-name-icon"
+                                            onClick={saveUsername} />
+                                        <p>{UsernameFeedback}</p>
+                                    </>
+                                    :
+                                    <RiEdit2Fill
+                                        id="edit-name-icon"
+                                        onClick={() => { 
+                                            setEditingUsername(true) 
+                                        }}/>
+                            }
                         </div>
-                        <h2> <span className="label">Rank: </span> {profileData.rank}</h2>
+                        <div id="rank-info">
+                            <h2> <span className="label">Rank: </span></h2>
+                            <h2>{profileData.rank}</h2>
+                        </div>
                     </div>
                 </div>
 
