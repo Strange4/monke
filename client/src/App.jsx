@@ -4,6 +4,8 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import Home from './Pages/Home';
 import AuthContext from './Context/AuthContext';
 import { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
+import PageHolder from './Pages/PageHolder';
 import checkAccess from './Controller/AuthHelper';
 import Profile from './Pages/Profile';
 import Lobby from './Pages/Lobby';
@@ -19,6 +21,7 @@ const queryClient = new QueryClient();
 function App() {
     const [userEmail, setUserEmail] = useState();
     const socket = useRef();
+    // const location = useLocation()
 
     useEffect(() => {
         (async () => {
@@ -32,6 +35,15 @@ function App() {
         })();
     }, [userEmail]);
 
+    // useEffect(() => {
+    //     console.log("here")
+    //     console.log(location.pathname)
+    //     if(location.pathname !== "/lobby") {
+    //         auth.socket.current.disconnect()
+    //         auth.socket.current = undefined
+    //     }
+    // }, [location]);
+
     return (
         <div className="App">
             <AuthContext.Provider value={{
@@ -42,25 +54,7 @@ function App() {
             }}>
                 <QueryClientProvider client={queryClient}>
                     <Router>
-                        <Routes>
-                            <Route path="/" element={<Home />} />
-                            <Route path="/profile"
-                                element={
-                                    userEmail ?
-                                        <Profile />
-                                        :
-                                        <Login navbar={true} />
-                                } />
-                            <Route path='/lobby' element={<Lobby/>}/>
-                            <Route path='/multiplayer-game' element={<MultiplayerGame/>}/>
-
-                            <Route path="/profile" element={
-                                userEmail ?
-                                    <Profile redirect={userEmail ? false : true} />
-                                    :
-                                    <></>
-                            } />
-                        </Routes>
+                       <PageHolder/>
                     </Router>
                     <div id="popup-root" />
                 </QueryClientProvider>
