@@ -1,6 +1,8 @@
 import { Server } from "socket.io"
 import { v4 } from "uuid";
 
+const defaultAvatar = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+
 export function setUp(server) {
     const io = new Server(server, { cors: { origin: "http://localhost:3000" } })
     let userDict = {}
@@ -9,9 +11,11 @@ export function setUp(server) {
         let roomCode = socket.handshake.query.roomCode
         let userData = { username: "", id: "", avatar: "" }
 
-        userData["username"] = socket.handshake.auth.userEmail || "GUEST"
-
+        console.log(socket.handshake.auth)
+        userData["username"] = socket.handshake.auth.userData?.username || "GUEST"
+        userData["avatar"] = socket.handshake.auth.userData?.avatar || defaultAvatar
         userData["id"] = v4()
+
         socket.join(roomCode);
 
         if (!userDict[roomCode]) {

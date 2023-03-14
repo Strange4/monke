@@ -53,7 +53,7 @@ function Lobby() {
             <div id="lobby-info">
                 <div id="players">
                     {userList.map((user, i) => {
-                        return <PlayerItem key={i} name={user.username} />
+                        return <PlayerItem key={i} name={user.username} avatar={user.avatar} />
                     })}
                     <p ref={roomCode} id="invite-code">{location.state.roomCode}<BiCopy id="copy-icon" onClick={copyCode} /></p>
                 </div>

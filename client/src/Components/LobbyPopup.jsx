@@ -19,20 +19,32 @@ function LobbyPopup() {
     const auth = useContext(AuthContext);
 
     const joinLobby = () => {
-        if (!auth.socket.current) {
-            auth.socket.current = io("", { query: { roomCode: roomCode.current.value }, auth: { userEmail: auth.userEmail } })
-            setSocketListeners()
-        }
-        auth.socket.current.emit("try-join")
+        (async () => {
+            await setUpSocket(roomCode.current.value)
+            // if (!auth.socket.current) { 
+            //     let userData = {
+            //         userEmail: auth.userEmail
+            //     }
+            //     if (auth.userEmail) {
+            //         const url = "/api/user"
+            //         const data = await FetchModule.postData(url, { email: auth.userEmail }, "POST")
+            //         console.log(data)
+            //         userData["avatar"] = data.picture_url
+            //         userData["username"] = data.username
+            //     }
+            //     console.log(userData)
+            //     auth.socket.current = io("", { query: { roomCode: roomCode.current.value }, auth: { userData } })
+            //     setSocketListeners()
+            // }
+            // auth.socket.current.emit("try-join")
+        })()
     }
 
     function setSocketListeners() {
         auth.socket.current.on("join-room", (users, roomCode) => {
-            console.log("joining")
             navigate("/lobby", { state: { roomCode: roomCode, users: users } });
         })
         auth.socket.current.on("leave-room", (users, roomCode) => {
-            console.log("leaving")
             navigate("/lobby", { state: { roomCode: roomCode, users: users } });
         })
         auth.socket.current.on("full-room", () => {
@@ -42,15 +54,36 @@ function LobbyPopup() {
         });
     }
 
+    async function setUpSocket(roomCode) {
+        if (!auth.socket.current) { 
+            let userData = {
+                userEmail: auth.userEmail,
+                avatar: "",
+                username: ""
+            }
+            if (auth.userEmail) {
+                const url = "/api/user"
+                const data = await FetchModule.postData(url, { email: auth.userEmail }, "POST")
+                console.log(data)
+                userData["avatar"] = data.picture_url
+                userData["username"] = data.username
+            }
+            console.log(userData)
+            auth.socket.current = io("", { query: { roomCode: roomCode }, auth: { userData } })
+            setSocketListeners()
+        }
+        auth.socket.current.emit("try-join")
+    }
+
     function createLobby() {
         (async () => {
             let newRoomCode = await FetchModule.fetchData("/api/lobby")
-
-            if (!auth.socket.current) {
-                auth.socket.current = io("", { query: { roomCode: newRoomCode }, auth: { userEmail: auth.userEmail } })
-                setSocketListeners()
-            }
-            auth.socket.current.emit("try-join")
+            await setUpSocket(newRoomCode)
+            // if (!auth.socket.current) {
+            //     auth.socket.current = io("", { query: { roomCode: newRoomCode }, auth: { userEmail: auth.userEmail } })
+            //     setSocketListeners()
+            // }
+            // auth.socket.current.emit("try-join")
         })()
     }
 
