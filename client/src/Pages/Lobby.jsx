@@ -60,10 +60,13 @@ function Lobby() {
                         <BiCopy id="copy-icon" onClick={copyCode} />
                     </p>
                 </div>
-                <Link to="/multiplayer-game">
-                    <button id="play-btn">PLAY</button>
-                </Link>
-                <button id="leave-btn" onClick={leave}>LEAVE</button>
+                <div id="action-buttons">
+                    <Link to="/multiplayer-game">
+                        <button id="play-btn">PLAY</button>
+                    </Link>
+                    <button id="leave-btn" onClick={leave}>LEAVE</button>
+                </div>
+
                 {settings && <LobbySettings />}
                 <AiFillSetting id="lobby-settings-icon" onClick={handleClick} />
             </div>
