@@ -6,6 +6,7 @@ import { useContext, useEffect, useState, useRef } from "react";
 import { RiImageEditFill, RiEdit2Fill, RiSave3Line, RiCloseCircleLine } from "react-icons/ri";
 import * as FetchModule from "../Controller/FetchModule"
 import { useNavigate } from "react-router-dom";
+import UserStats from "../Components/UserStats";
 
 const Profile = () => {
     const auth = useContext(AuthContext);
@@ -233,32 +234,7 @@ const Profile = () => {
                             <h2>{profileData.rank}</h2>
                         </div>
                     </div>
-                    <div id="user-stats">
-                        <p><span className="label">Avg. WPM: </span>
-                            {Math.round(profileData.user_stats.wpm * 100) / 100}
-                        </p>
-                        <p><span className="label">Avg. ACC: </span>
-                            {Math.round(profileData.user_stats.accuracy * 100) / 100}
-                        </p>
-                        <p><span className="label">Max WPM: </span>
-                            {Math.round(profileData.user_stats.max_wpm * 100) / 100}
-                        </p>
-                        <p><span className="label">Max ACC: </span>
-                            {Math.round(profileData.user_stats.max_accuracy * 100) / 100}
-                        </p>
-                        <p><span className="label">Games: </span>
-                            {profileData.user_stats.games_count}
-                        </p>
-                        <p><span className="label">Wins: </span>
-                            {profileData.user_stats.win}
-                        </p>
-                        <p><span className="label">Loses: </span>
-                            {profileData.user_stats.lose}
-                        </p>
-                        <p><span className="label">Draws: </span>
-                            {profileData.user_stats.draw}
-                        </p>
-                    </div>
+                    <UserStats userData={profileData}/>
                 </div>
 
             </div>
