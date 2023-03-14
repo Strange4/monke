@@ -85,6 +85,8 @@
 .editable {
     text-decoration-line: underline;
     color: white;
+    overflow: hidden;
+    max-width: 150px;
 }
 
 #edit-name-icon :hover, #edit-pic-icon :hover {

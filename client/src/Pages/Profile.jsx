@@ -207,7 +207,9 @@ const Profile = () => {
                             <h2 id="user-name" contentEditable={EditingUsername}
                                 className={EditingUsername ? "editable" : ""}
                                 suppressContentEditableWarning={true}
-                                ref={usernameField}>
+                                ref={usernameField}
+                                maxLength={5}>
+                                
                                 {profileData.username}
                             </h2>
                             {
