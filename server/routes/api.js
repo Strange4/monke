@@ -39,7 +39,9 @@ router.put("/user_stat", async (req, res, next) => {
     }
     const email = Constraints.email(req.body.email);
     if (!email) {
-        next(new createHttpError.BadRequest("Can't find or create the user because no email was provided"));
+        next(new createHttpError.BadRequest(
+            "Can't find or create the user because no email was provided"
+        ));
         return;
     }
 
@@ -54,15 +56,21 @@ router.put("/user_stat", async (req, res, next) => {
     const win = Constraints.positiveInt(req.body.win);
     const lose = Constraints.positiveInt(req.body.lose);
     const draw = Constraints.positiveInt(req.body.draw);
+    const gameCount = user.user_stats.games_count;
 
     // updates the average of that value if it is defined only
     const updated = {
-        ...(wpm && { "user_stats.wpm": getAverage(user.user_stats.wpm, wpm, user.user_stats.games_count) }),
-        ...(accuracy && { "user_stats.accuracy": getAverage(user.user_stats.accuracy, accuracy, user.user_stats.games_count) }),
-        ...(win && { "user_stats.win": getAverage(user.user_stats.win, win, user.user_stats.games_count) }),
-        ...(lose && { "user_stats.lose": getAverage(user.user_stats.lose, lose, user.user_stats.games_count) }),
-        ...(draw && { "user_stats.draw": getAverage(user.user_stats.draw, draw, user.user_stats.games_count) }),
-        "user_stats.games_count": user.user_stats.games_count + 1
+        ...wpm && { 
+            "user_stats.wpm": getAverage(user.user_stats.wpm, wpm, gameCount) },
+        ...accuracy && { 
+            "user_stats.accuracy": getAverage(user.user_stats.accuracy, accuracy, gameCount) },
+        ...win && { 
+            "user_stats.win": getAverage(user.user_stats.win, win, gameCount) },
+        ...lose && { 
+            "user_stats.lose": getAverage(user.user_stats.lose, lose, gameCount) },
+        ...draw && { 
+            "user_stats.draw": getAverage(user.user_stats.draw, draw, gameCount) },
+        "user_stats.games_count": gameCount + 1
     }
     if (wpm > user.user_stats.max_wpm) {
         updated["user_stats.date"] = new Date();
@@ -70,7 +78,11 @@ router.put("/user_stat", async (req, res, next) => {
         updated["user_stats.max_accuracy"] = Math.max(user.user_stats.max_accuracy, accuracy);
     }
     await user.updateOne({ $set: { ...updated } });
-    res.json(user);
+    const rank = await user.getRank();
+    res.json({
+        rank,
+        ...user.toObject()
+    });
 });
 
 /**
@@ -84,7 +96,9 @@ router.post("/user", async (req, res, next) => {
     }
     const email = Constraints.email(req.body.email);
     if (!email) {
-        next(new createHttpError.BadRequest("Can't find or create the user because no email was provided"));
+        next(new createHttpError.BadRequest(
+            "Can't find or create the user because no email was provided"
+        ));
         return;
     }
     let user = await User.findOne({ email: email });
@@ -108,11 +122,10 @@ router.post("/user", async (req, res, next) => {
             return;
         }
     }
-    user = await user.toObject();
-    const rank = await User.countDocuments({ wpm: { "$lte": user.user_stats.wpm } });
+    const rank = await user.getRank();
     res.json({
         rank,
-        ...user
+        ...user.toObject()
     });
 })
 
@@ -126,7 +139,9 @@ router.get("/leaderboard", async (req, res) => {
         return;
     }
     const maxItems = Constraints.positiveInt(req.query.max) || 10;
-    const users = await User.find().limit(maxItems).sort({"user_stats.max_wpm": 'desc', "user_stats.max_accuracy": "desc"}).lean();
+    const users = await User
+        .find().limit(maxItems)
+        .sort({"user_stats.max_wpm": 'desc', "user_stats.max_accuracy": "desc"}).lean();
     res.json(users);
 });
 
@@ -168,7 +183,11 @@ router.put("/update_avatar", upload.single('image'), async (req, res) => {
             }));
             return;
         }
-        res.status(200).json(user);
+        const rank = await user.getRank();
+        res.json({
+            rank,
+            ...user.toObject()
+        });
     } catch (err) {
         res.status(400).send(`<h1>400! Picture could not be uploaded to the database.</h1>`);
     }
@@ -199,7 +218,11 @@ router.put("/update_username", async (req, res) => {
         }));
         return;
     }
-    res.status(200).json(user);
+    const rank = await user.getRank();
+    res.json({
+        rank,
+        ...user.toObject()
+    });
 });
 
 function dbIsConnected() {

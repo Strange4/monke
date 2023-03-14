@@ -8,6 +8,7 @@
     "build": "cd ./client && npm run build",
     "install:all": "npm install && concurrently \"cd client && npm install\" \"cd server && npm install\"",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint .",
     "dev": "concurrently \"cd client && npm run start\" \"cd server && npm run dev\" --kill-others"
   },
   "repository": {
@@ -27,6 +28,7 @@
   "dependencies": {
     "@react-oauth/google": "^0.7.1",
     "csrf-sync": "^4.0.0",
+    "eslint": "^8.36.0",
     "react-google-login": "^5.2.2",
     "react-icons": "^4.7.1"
   }
