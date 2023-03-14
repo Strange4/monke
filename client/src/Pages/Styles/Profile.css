@@ -87,10 +87,17 @@
     color: white;
     overflow: hidden;
     max-width: 150px;
+    max-height: 50px;
 }
 
 #edit-name-icon :hover, #edit-pic-icon :hover {
     cursor: pointer;
+}
+
+#user-name {
+    max-width: 150px;
+    max-height: 50px;
+    overflow: hidden;
 }
 
 #user-info {
