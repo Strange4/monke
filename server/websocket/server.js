@@ -10,11 +10,11 @@ export function setUp(server) {
         const roomCode = socket.handshake.query.roomCode
         userDict[roomCode] = userDict[roomCode] || []
 
-        setUpLobbyListeners(socket, userData, roomCode)
+        setUpLobbyListeners(socket, userData, roomCode, userDict, io)
     });
 }
 
-function setUpLobbyListeners(socket, userData, roomCode) {
+function setUpLobbyListeners(socket, userData, roomCode, userDict, io) {
     socket.on("try-join", () => {
         if (userDict[roomCode].length < 2) {
             socket.join(roomCode);
