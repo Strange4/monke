@@ -19,9 +19,6 @@ function Lobby() {
     const [userList, setUserList] = useState(location.state.users)
     const socketContext = useContext(SocketContext)
 
-    // add state to handle wheter a user is the lobby creator
-    // Will show additional info/settings if they are
-
     useEffect(() => {
         if (location.pathname !== "/lobby") {
             socketContext.socket.current.disconnect()
