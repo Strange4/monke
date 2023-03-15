@@ -18,10 +18,13 @@ function LobbyPopup() {
     const navigate = useNavigate()
     const auth = useContext(AuthContext);
 
-    const joinLobby = () => {
-        (async () => {
-            await setUpSocket(roomCode.current.value)
-        })()
+    const joinLobby = async () => {
+        await setUpSocket(roomCode.current.value)
+    }
+
+    const createLobby = async () => {
+        let newRoomCode = await FetchModule.fetchData("/api/lobby")
+        await setUpSocket(newRoomCode)
     }
 
     function setSocketListeners() {
@@ -59,24 +62,15 @@ function LobbyPopup() {
         auth.socket.current.emit("try-join")
     }
 
-    function createLobby() {
-        (async () => {
-            let newRoomCode = await FetchModule.fetchData("/api/lobby")
-            await setUpSocket(newRoomCode)
-        })()
-    }
-
     return (
         <div id="lobby" className='popup'>
             <h1>Lobby Popup</h1>
-            <button onClick={createLobby}>Create</button>
-            <button onClick={() => {
-                enterCode(current => !current)
-            }}>Join</button>
+            <button onClick={async () => await createLobby()}>Create</button>
+            <button onClick={() => enterCode(current => !current)}>Join</button>
             {code &&
                 <div>
                     <input ref={roomCode} type="text" name="code" />
-                    <button onClick={joinLobby}>Enter game</button>
+                    <button onClick={async () => await joinLobby()}>Enter game</button>
                     <p ref={feedback}></p>
                 </div>
             }
