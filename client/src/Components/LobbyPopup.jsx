@@ -6,6 +6,7 @@ import AuthContext from '../Context/AuthContext';
 import * as FetchModule from "../Controller/FetchModule"
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
+import SocketContext from '../Context/SocketContext';
 
 /**
  * Displays a Popup for the lobby
@@ -17,6 +18,7 @@ function LobbyPopup() {
     const feedback = useRef()
     const navigate = useNavigate()
     const auth = useContext(AuthContext);
+    const socketContext = useContext(SocketContext)
 
     const joinLobby = async () => {
         await setUpSocket(roomCode.current.value)
@@ -28,23 +30,23 @@ function LobbyPopup() {
     }
 
     function setSocketListeners() {
-        auth.socket.current.on("join-room", (users, roomCode) => {
+        socketContext.socket.current.on("join-room", (users, roomCode) => {
             navigate("/lobby", { state: { roomCode: roomCode, users: users } });
         })
-        auth.socket.current.on("leave-room", (users, roomCode) => {
+        socketContext.socket.current.on("leave-room", (users, roomCode) => {
             navigate("/lobby", { state: { roomCode: roomCode, users: users } });
         })
-        auth.socket.current.on("full-room", () => {
+        socketContext.socket.current.on("full-room", () => {
             feedback.current.textContent = "ROOM FULL, enter a different room"
-            auth.socket.current.disconnect()
-            auth.socket.current = undefined
+            socketContext.socket.current.disconnect()
+            socketContext.socket.current = undefined
         });
     }
 
     async function setUpSocket(roomCode) {
-        if (auth.socket.current) {
-            auth.socket.current.disconnect()
-            auth.socket.current = undefined
+        if (socketContext.socket.current) {
+            socketContext.socket.current.disconnect()
+            socketContext.socket.current = undefined
         }
         let userData = {
             userEmail: auth.userEmail,
@@ -57,9 +59,9 @@ function LobbyPopup() {
             userData["avatar"] = data.picture_url
             userData["username"] = data.username
         }
-        auth.socket.current = io("", { query: { roomCode: roomCode }, auth: { userData } })
+        socketContext.socket.current = io("", { query: { roomCode: roomCode }, auth: { userData } })
         setSocketListeners()
-        auth.socket.current.emit("try-join")
+        socketContext.socket.current.emit("try-join")
     }
 
     return (

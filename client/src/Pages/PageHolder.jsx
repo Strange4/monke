@@ -7,15 +7,17 @@ import Login from '../Components/Login';
 import { Routes, Route } from 'react-router-dom';
 import Home from './Home';
 import AuthContext from '../Context/AuthContext';
+import SocketContext from '../Context/SocketContext';
 
 function PageHolder() {
     const auth = useContext(AuthContext);
+    const socketContext = useContext(SocketContext)
     const location = useLocation()
 
     useEffect(() => {
-        if (location.pathname !== "/lobby" && auth.socket.current) {
-            auth.socket.current.disconnect()
-            auth.socket.current = undefined
+        if (location.pathname !== "/lobby" && socketContext.socket.current) {
+            socketContext.socket.current.disconnect()
+            socketContext.socket.current = undefined
         }
     }, [location]);
 

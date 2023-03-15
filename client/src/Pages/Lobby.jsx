@@ -8,7 +8,7 @@ import { useState, useRef, useEffect, useContext } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Link, useLocation } from 'react-router-dom';
 import { BiCopy } from 'react-icons/bi';
-import AuthContext from '../Context/AuthContext';
+import SocketContext from '../Context/SocketContext';
 
 
 function Lobby() {
@@ -17,15 +17,15 @@ function Lobby() {
     const location = useLocation()
     const [settings, showSettings] = useState(false);
     const [userList, setUserList] = useState(location.state.users)
-    const auth = useContext(AuthContext);
+    const socketContext = useContext(SocketContext)
 
     // add state to handle wheter a user is the lobby creator
     // Will show additional info/settings if they are
 
     useEffect(() => {
         if (location.pathname !== "/lobby") {
-            auth.socket.current.disconnect()
-            auth.socket.current = undefined
+            socketContext.socket.current.disconnect()
+            socketContext.socket.current = undefined
         }
     }, [location]);
 
@@ -42,8 +42,8 @@ function Lobby() {
     }, [location.state.users])
 
     function leave() {
-        auth.socket.current.disconnect()
-        auth.socket.current = undefined
+        socketContext.socket.current.disconnect()
+        socketContext.socket.current = undefined
         navigate("/")
     }
 

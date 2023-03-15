@@ -5,6 +5,7 @@ import AuthContext from './Context/AuthContext';
 import { useState, useEffect, useRef } from 'react';
 import PageHolder from './Pages/PageHolder';
 import checkAccess from './Controller/AuthHelper';
+import SocketContext from './Context/SocketContext';
 
 const queryClient = new QueryClient();
 
@@ -33,15 +34,18 @@ function App() {
             <AuthContext.Provider value={{
                 userEmail: userEmail,
                 setUserEmail: setUserEmail,
-                checkAccess: checkAccess,
-                socket: socket,
+                checkAccess: checkAccess
             }}>
-                <QueryClientProvider client={queryClient}>
-                    <Router>
-                        <PageHolder />
-                    </Router>
-                    <div id="popup-root" />
-                </QueryClientProvider>
+                <SocketContext.Provider value={{
+                    socket: socket
+                }}>
+                    <QueryClientProvider client={queryClient}>
+                        <Router>
+                            <PageHolder />
+                        </Router>
+                        <div id="popup-root" />
+                    </QueryClientProvider>
+                </SocketContext.Provider>
             </AuthContext.Provider>
         </div >
     );
