@@ -1,5 +1,4 @@
 import { Server } from "socket.io"
-import { v4 } from "uuid";
 
 const defaultAvatar = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
 
@@ -13,7 +12,7 @@ export function setUp(server) {
 
         userData["username"] = socket.handshake.auth.userData?.username || "GUEST"
         userData["avatar"] = socket.handshake.auth.userData?.avatar || defaultAvatar
-        userData["id"] = v4()
+        userData["id"] = socket.id
 
         socket.join(roomCode);
 
