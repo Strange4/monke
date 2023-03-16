@@ -12,11 +12,6 @@ stages:
     - main
     - merge_requests
 
-.do-for-deploy:
-  rules:
-    - if: $CI_COMMIT_REF_NAME == "staging" || $CI_COMMIT_REF_NAME == "main"
-      when: always
-
 eslint-job:
   extends: .important-branches
   stage: lint
@@ -32,9 +27,7 @@ eslint-job:
     - echo "The code passes the vibes check 💅"
 
 client-build-job:
-  extends: 
-    - .important-branches
-    - .do-for-deploy
+  extends: .important-branches
   stage: build
   only:
     changes:
@@ -53,9 +46,7 @@ client-build-job:
       - client/node_modules
 
 server-build-job:
-  extends: 
-    - .important-branches
-    - .do-for-deploy
+  extends: .important-branches
   stage: build
   only:
     changes:
@@ -99,5 +90,6 @@ deploy-job:
     - "az webapp config appsettings set --resource-group $RESOURCE_GROUP_NAME --name $APP_NAME --settings storageAccountName=$storageAccountName"
     - "az webapp config appsettings set --resource-group $RESOURCE_GROUP_NAME --name $APP_NAME --settings containerName=$containerName"
     - "az webapp config appsettings set --resource-group $RESOURCE_GROUP_NAME --name $APP_NAME --settings EXPRESS_PORT=$EXPRESS_PORT"
+    - az webapp config set --resource-group <resource-group-name> --name <app-name> --startup-file "npm run start:prod"
     - "az webapp deployment source config-zip --resource-group $RESOURCE_GROUP_NAME --name $APP_NAME --src deploy.zip"
     - echo "Server deployed bring the campagne! 🎉🎉🎉"
