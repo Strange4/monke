@@ -8,6 +8,7 @@ import { useState, useRef, useEffect, useContext } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Link, useLocation } from 'react-router-dom';
 import { BiCopy } from 'react-icons/bi';
+import { RiCheckDoubleFill } from 'react-icons/ri';
 import SocketContext from '../Context/SocketContext';
 
 function Lobby() {
@@ -15,6 +16,7 @@ function Lobby() {
     const roomCode = useRef()
     const location = useLocation()
     const [settings, showSettings] = useState(false);
+    const [copied, setCopied] = useState(false)
     const [userList, setUserList] = useState(location.state.users)
     const socketContext = useContext(SocketContext)
 
@@ -31,6 +33,7 @@ function Lobby() {
 
     function copyCode() {
         navigator.clipboard.writeText(roomCode.current.textContent)
+        setCopied(true)
     }
 
     useEffect(() => {
@@ -53,7 +56,10 @@ function Lobby() {
                     })}
                     <p ref={roomCode} id="invite-code">
                         {location.state.roomCode}
-                        <BiCopy id="copy-icon" onClick={copyCode} />
+                        {copied ?
+                            <RiCheckDoubleFill id="copy-icon" />
+                            :
+                            <BiCopy id="copy-icon" onClick={copyCode} />}
                     </p>
                 </div>
                 <div id="action-buttons">
