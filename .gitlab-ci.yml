@@ -32,11 +32,8 @@ eslint-job:
     - echo "The code passes the vibes check 💅"
 
 client-build-job:
-  extends: .important-branches
+  extends: .deploy-branches
   stage: build
-  only:
-    changes:
-      - client/*
 
   script:
     - echo "Building client 🔨"
@@ -51,11 +48,8 @@ client-build-job:
       - client/node_modules
 
 server-build-job:
-  extends: .important-branches
+  extends: .deploy-branches
   stage: build
-  only:
-    changes:
-      - server/*
   script:
     - echo "Building server 🔨"
     - cd server
@@ -70,19 +64,17 @@ test-job:
   extends: .important-branches
   stage: test
   script:
+    # - cd server && npm run install
     - echo "Testing 🧪🔬"
     # - npm run test
 
-pre-deploy-job:
-  stage: deploy
-  extends: .deploy-branches
-  script:
-    - "npm run install:all"
 deploy-job:
   extends: .deploy-branches
   stage: deploy
   image: mcr.microsoft.com/azure-cli
-  needs: ["client-build-job", "server-build-job", "pre-deploy-job"]
+  dependencies: 
+    - server-build-job
+    - client-build-job
   before_script:
     - "az login --allow-no-subscriptions --service-principal -u $AZ_SP_ID -p $AZ_SP_SECRET --tenant $AZ_TENANT"
   script:
