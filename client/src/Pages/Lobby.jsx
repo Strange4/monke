@@ -25,6 +25,9 @@ function Lobby() {
             socketContext.socket.current.disconnect()
             socketContext.socket.current = undefined
         }
+        if (!socketContext.socket.current) {
+            navigate("/")
+        }
     }, [location]);
 
     const handleClick = () => {
