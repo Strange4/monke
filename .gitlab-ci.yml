@@ -82,10 +82,7 @@ deploy-job:
   extends: .deploy-branches
   stage: deploy
   image: mcr.microsoft.com/azure-cli
-  dependencies:
-    - client-build-job
-    - server-build-job
-    - pre-deploy-job
+  needs: ["client-build-job", "server-build-job", "pre-deploy-job"]
   before_script:
     - "az login --allow-no-subscriptions --service-principal -u $AZ_SP_ID -p $AZ_SP_SECRET --tenant $AZ_TENANT"
   script:
