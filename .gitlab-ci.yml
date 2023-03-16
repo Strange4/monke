@@ -15,7 +15,6 @@ stages:
   only:
     - staging
     - main
-    - 82-fix-add-startup-command-to-azure-deploy
 
 eslint-job:
   extends: .important-branches
