@@ -74,6 +74,7 @@ test-job:
     # - npm run test
 
 pre-deploy-job:
+  stage: deploy
   extends: .deploy-branches
   script:
     - "npm run install:all"
