@@ -12,6 +12,11 @@ stages:
     - main
     - merge_requests
 
+.do-for-deploy:
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "staging" || $CI_COMMIT_REF_NAME == "main"
+      when: always
+
 eslint-job:
   extends: .important-branches
   stage: lint
@@ -27,7 +32,9 @@ eslint-job:
     - echo "The code passes the vibes check 💅"
 
 client-build-job:
-  extends: .important-branches
+  extends: 
+    - .important-branches
+    - .do-for-deploy
   stage: build
   only:
     changes:
@@ -46,7 +53,9 @@ client-build-job:
       - client/node_modules
 
 server-build-job:
-  extends: .important-branches
+  extends: 
+    - .important-branches
+    - .do-for-deploy
   stage: build
   only:
     changes:
@@ -80,7 +89,6 @@ deploy-job:
     - server-build-job
   before_script:
     - "az login --allow-no-subscriptions --service-principal -u $AZ_SP_ID -p $AZ_SP_SECRET --tenant $AZ_TENANT"
-    - "npm run install:all"
   script:
     - echo "Deploying server... 🐱‍💻"
     - zip -r deploy.zip client/build server ./package.json
