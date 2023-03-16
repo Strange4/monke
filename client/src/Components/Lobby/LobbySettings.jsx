@@ -1,13 +1,11 @@
-import './Styles/Settings.css';
-import LengthSettings from './LengthSettings';
+import '../Styles/Settings.css';
+import LengthSettings from '../LengthSettings';
 import { FaAt } from 'react-icons/fa'
 /**
  * Displays game settings
  * @returns {ReactElement}
  */
 function LobbySettings() {
-
-
     return (
         <div id="settings">
             <div id="global-settings">

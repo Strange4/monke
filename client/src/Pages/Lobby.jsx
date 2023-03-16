@@ -1,7 +1,7 @@
-import './Styles/Lobby.css'
+import '../Components/Lobby/Styles/Lobby.css'
 import NavBar from "../Components/NavBar";
 import TypingScreen from "../Components/TypingScreen/TypingScreen";
-import LobbySettings from '../Components/LobbySettings';
+import LobbySettings from '../Components/Lobby/LobbySettings';
 import { AiFillSetting } from "react-icons/ai"
 import PlayerItem from '../Components/PlayerItem';
 import { useState, useRef, useEffect, useContext } from 'react';
@@ -9,7 +9,6 @@ import { useNavigate } from "react-router-dom";
 import { Link, useLocation } from 'react-router-dom';
 import { BiCopy } from 'react-icons/bi';
 import SocketContext from '../Context/SocketContext';
-
 
 function Lobby() {
     const navigate = useNavigate()
