@@ -40,13 +40,16 @@
 
 #invite-code {
     display: flex;
+    position: absolute;
+    bottom: 0;
     flex-wrap: wrap;
     justify-content: center;
     align-content: center;
-    font-size: 2em;
+    font-size: 1em;
     width: 100%;
     height: 80px;
     margin: auto;
+    border: 1px solid white;
 }
 
 #copy-icon:hover {
@@ -54,11 +57,21 @@
 }
 
 #play-btn {
-    position: absolute;
-    bottom: 0;
     width: 150px;
     height: 56px;
+    font-size: 2em;
+}
+
+#action-buttons {
+    position: absolute;
+    bottom: 0;
     right: 0;
+}
+
+#leave-btn {
+    position: relative;
+    width: 150px;
+    height: 56px;
     font-size: 2em;
 }
 
@@ -70,16 +83,16 @@
     margin-top: 30px;
 }
 
-#practice > div.center > div > div#chronometer {
+#practice>div.center>div>div#chronometer {
     visibility: hidden;
     height: 0;
 }
 
-#practice > div.center{
+#practice>div.center {
     height: 350px;
 }
 
-#lobby-info > div#settings {
+#lobby-info>div#settings {
     display: flex;
     flex-flow: row wrap;
     max-width: 350px;
@@ -88,16 +101,16 @@
     margin-right: 50px;
 }
 
-#lobby-info > div#settings > div {
+#lobby-info>div#settings>div {
     min-width: 60px;
 }
 
-#lobby-info > div#settings > div#length-settings {
+#lobby-info>div#settings>div#length-settings {
     min-width: 100px;
     max-height: 50px;
 }
 
-#lobby-info > div#settings > div#global-settings {
+#lobby-info>div#settings>div#global-settings {
     min-width: 100px;
     max-height: 50px;
 }

@@ -93,7 +93,6 @@ const Profile = () => {
      * @param {Event} e 
      */
     const saveAvatar = async () => {
-        console.log(image)
         if (validateImageForm(image)) {
             FetchModule.readImage(image, auth.userEmail, validateImageForm, postImage);
             setEditingAvatar(false)
@@ -143,7 +142,6 @@ const Profile = () => {
 
     const handleFileUpload = e => {
         const { files } = e.target;
-        console.log(files[0])
         if (files && files.length) {
             readURL(e)
             setEditingAvatar(true)
