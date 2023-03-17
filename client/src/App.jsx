@@ -1,14 +1,11 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import './styles/App.css';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import Home from './Pages/Home';
 import AuthContext from './Context/AuthContext';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import PageHolder from './Pages/PageHolder';
 import checkAccess from './Controller/AuthHelper';
-import Profile from './Pages/Profile';
-import Lobby from './Pages/Lobby';
-import MultiplayerGame from './Pages/MultiplayerGame';
-import Login from './Components/Login';
+import SocketContext from './Context/SocketContext';
 
 const queryClient = new QueryClient();
 
@@ -18,6 +15,7 @@ const queryClient = new QueryClient();
  */
 function App() {
     const [userEmail, setUserEmail] = useState();
+    const socket = useRef();
 
     useEffect(() => {
         (async () => {
@@ -38,30 +36,16 @@ function App() {
                 setUserEmail: setUserEmail,
                 checkAccess: checkAccess
             }}>
-                <QueryClientProvider client={queryClient}>
-                    <Router>
-                        <Routes>
-                            <Route path="/" element={<Home />} />
-                            <Route path="/profile"
-                                element={
-                                    userEmail ?
-                                        <Profile />
-                                        :
-                                        <Login navbar={true} />
-                                } />
-                            <Route path='/lobby' element={<Lobby/>}/>
-                            <Route path='/multiplayer-game' element={<MultiplayerGame/>}/>
-
-                            <Route path="/profile" element={
-                                userEmail ?
-                                    <Profile redirect={userEmail ? false : true} />
-                                    :
-                                    <></>
-                            } />
-                        </Routes>
-                    </Router>
-                    <div id="popup-root" />
-                </QueryClientProvider>
+                <SocketContext.Provider value={{
+                    socket: socket
+                }}>
+                    <QueryClientProvider client={queryClient}>
+                        <Router>
+                            <PageHolder />
+                        </Router>
+                        <div id="popup-root" />
+                    </QueryClientProvider>
+                </SocketContext.Provider>
             </AuthContext.Provider>
         </div >
     );

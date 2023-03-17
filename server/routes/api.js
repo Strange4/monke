@@ -13,6 +13,7 @@ import { ImgParser } from "../controller/validation.js";
 import createHttpError from "http-errors";
 import * as Azure from "../database/azure.js"
 import multer from 'multer';
+import { v4 } from "uuid"
 
 const upload = multer({
     limits: {fieldSize: 5242880},
@@ -223,6 +224,11 @@ router.put("/update_username", async (req, res) => {
         rank,
         ...user.toObject()
     });
+});
+
+router.get("/lobby", (_, res) => {
+    let roomID = v4()
+    res.json(roomID)
 });
 
 function dbIsConnected() {
