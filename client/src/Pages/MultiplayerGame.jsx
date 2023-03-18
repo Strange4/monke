@@ -19,8 +19,32 @@ const MultiplayerGame = () => {
         }
         if (!socketContext.socket.current) {
             navigate("/")
-        }
+        } 
     }, [location]);
+
+    useEffect(() => {
+        if(socketContext.socket.current) {
+            updateListeners()
+        } 
+    }, [])
+
+    function updateListeners() {
+        socketContext.socket.current.off("join-room")
+        socketContext.socket.current.off("leave-room")
+        // socketContext.socket.current.on("join-room", (users) => {
+        //     socketContext.setUserList(users)
+        //     // TODO: handle what to do when game is already started
+        //     console.log("Game started, cannot join")
+        //     // navigate("/multiplayer-game", { state: { roomCode: roomCode } });
+        // })
+        
+        socketContext.socket.current.on("leave-room", (users) => {
+            socketContext.setUserList(users)
+            // TODO: handle what to do when game is already started
+            console.log("Someone just left")
+            // navigate("/multiplayer-game", { state: { roomCode: roomCode } });
+        })
+    }
 
     return (
         <div id="home">

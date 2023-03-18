@@ -46,6 +46,9 @@ function LobbyPopup() {
         socketContext.socket.current.on("start-game", () => {
             navigate("/multiplayer-game", { state: { roomCode: roomCode } });
         })
+        socketContext.socket.current.on("game-started", () => {
+            feedback.current.textContent = "GAME ALREADY STARTED, cannot join the room"
+        })
     }
 
     async function setUpSocket(roomCode) {

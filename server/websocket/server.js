@@ -3,6 +3,7 @@ import { Server } from "socket.io"
 export function setUp(server) {
     const io = new Server(server, { cors: { origin: "http://localhost:3000" } })
     let userDict = {}
+    let roomState = {}
 
     io.on("connection", (socket) => {
         const userData = setUserData(socket)
@@ -10,13 +11,15 @@ export function setUp(server) {
         const roomCode = socket.handshake.query.roomCode
         userDict[roomCode] = userDict[roomCode] || []
 
-        setUpLobbyListeners(socket, userData, roomCode, userDict, io)
+        setUpLobbyListeners(socket, userData, roomCode, roomState, userDict, io)
     });
 }
 
-function setUpLobbyListeners(socket, userData, roomCode, userDict, io) {
+function setUpLobbyListeners(socket, userData, roomCode, roomState, userDict, io) {
     socket.on("try-join", () => {
-        if (userDict[roomCode].length < 2) {
+        if (roomState[roomCode] === "started") {
+            socket.emit("game-started")
+        } else if (userDict[roomCode].length < 2) {
             socket.join(roomCode);
             userDict[roomCode].push(userData)
             io.to(roomCode).emit("join-room", userDict[roomCode], roomCode)
@@ -26,6 +29,7 @@ function setUpLobbyListeners(socket, userData, roomCode, userDict, io) {
     })
 
     socket.on("try-start", () => {
+        roomState[roomCode] = "started"
         io.to(roomCode).emit("start-game", userDict[roomCode], roomCode)
     })
 
