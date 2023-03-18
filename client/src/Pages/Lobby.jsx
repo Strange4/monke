@@ -55,7 +55,9 @@ function Lobby() {
             <div id="lobby-info">
                 <div id="players">
                     {userList.map((user, i) => {
-                        return <PlayerItem key={i} name={user.username} avatar={user.avatar} />
+                        return <PlayerItem
+                            key={i} name={user.username}
+                            avatar={user.avatar} leader={i === 0} />
                     })}
                     <p ref={roomCode} id="invite-code">
                         {location.state.roomCode}
