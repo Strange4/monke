@@ -43,6 +43,9 @@ function LobbyPopup() {
             socketContext.socket.current.disconnect()
             socketContext.socket.current = undefined
         });
+        socketContext.socket.current.on("start-game", () => {
+            navigate("/multiplayer-game", { state: { roomCode: roomCode } });
+        })
     }
 
     async function setUpSocket(roomCode) {

@@ -6,7 +6,7 @@ import { AiFillSetting } from "react-icons/ai"
 import PlayerItem from '../Components/PlayerItem';
 import { useState, useRef, useEffect, useContext } from 'react';
 import { useNavigate } from "react-router-dom";
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { BiCopy } from 'react-icons/bi';
 import { RiCheckDoubleFill } from 'react-icons/ri';
 import SocketContext from '../Context/SocketContext';
@@ -44,6 +44,10 @@ function Lobby() {
         navigate("/")
     }
 
+    function startGame() {
+        socketContext.socket.current.emit("try-start")
+    }
+
     return (
         <div id="home">
             <NavBar />
@@ -63,9 +67,7 @@ function Lobby() {
                     </p>
                 </div>
                 <div id="action-buttons">
-                    <Link to="/multiplayer-game">
-                        <button id="play-btn">PLAY</button>
-                    </Link>
+                    <button id="play-btn" onClick={startGame}>PLAY</button>
                     <button id="leave-btn" onClick={leave}>LEAVE</button>
                 </div>
 

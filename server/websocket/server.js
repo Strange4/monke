@@ -25,6 +25,10 @@ function setUpLobbyListeners(socket, userData, roomCode, userDict, io) {
         }
     })
 
+    socket.on("try-start", () => {
+        io.to(roomCode).emit("start-game", userDict[roomCode], roomCode)
+    })
+
     socket.on("disconnect", () => {
         userDict[roomCode] = userDict[roomCode].filter(user => user.id !== userData.id)
         io.to(roomCode).emit("leave-room", userDict[roomCode], roomCode)

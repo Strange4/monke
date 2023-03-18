@@ -2,13 +2,31 @@ import './Styles/MultiplayerGame.css'
 import NavBar from "../Components/NavBar";
 import TypingScreen from "../Components/TypingScreen/TypingScreen";
 import PlayerItem from '../Components/PlayerItem';
+import SocketContext from '../Context/SocketContext';
+import { useContext, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 
 const MultiplayerGame = () => {
+    const socketContext = useContext(SocketContext)
+    const location = useLocation()
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        if (location.pathname !== "/multiplayer-game") {
+            socketContext.socket.current.disconnect()
+            socketContext.socket.current = undefined
+        }
+        if (!socketContext.socket.current) {
+            navigate("/")
+        }
+    }, [location]);
+
     return (
         <div id="home">
             <NavBar />
             <div id="playing-players">
-                {userList.map((user, i) => {
+                {socketContext.userList.map((user, i) => {
                     return <PlayerItem
                         key={i} name={user.username}
                         avatar={user.avatar} leader={i === 0} />
