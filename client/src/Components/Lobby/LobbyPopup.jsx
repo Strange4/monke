@@ -31,10 +31,12 @@ function LobbyPopup() {
 
     function setSocketListeners() {
         socketContext.socket.current.on("join-room", (users, roomCode) => {
-            navigate("/lobby", { state: { roomCode: roomCode, users: users } });
+            socketContext.setUserList(users)
+            navigate("/lobby", { state: { roomCode: roomCode } });
         })
         socketContext.socket.current.on("leave-room", (users, roomCode) => {
-            navigate("/lobby", { state: { roomCode: roomCode, users: users } });
+            socketContext.setUserList(users)
+            navigate("/lobby", { state: { roomCode: roomCode } });
         })
         socketContext.socket.current.on("full-room", () => {
             feedback.current.textContent = "ROOM FULL, enter a different room"

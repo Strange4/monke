@@ -17,7 +17,6 @@ function Lobby() {
     const location = useLocation()
     const [settings, showSettings] = useState(false);
     const [copied, setCopied] = useState(false)
-    const [userList, setUserList] = useState(location.state.users)
     const socketContext = useContext(SocketContext)
 
     useEffect(() => {
@@ -39,10 +38,6 @@ function Lobby() {
         setCopied(true)
     }
 
-    useEffect(() => {
-        setUserList(location.state.users)
-    }, [location.state.users])
-
     function leave() {
         socketContext.socket.current.disconnect()
         socketContext.socket.current = undefined
@@ -54,7 +49,7 @@ function Lobby() {
             <NavBar />
             <div id="lobby-info">
                 <div id="players">
-                    {userList.map((user, i) => {
+                    {socketContext.userList.map((user, i) => {
                         return <PlayerItem
                             key={i} name={user.username}
                             avatar={user.avatar} leader={i === 0} />
