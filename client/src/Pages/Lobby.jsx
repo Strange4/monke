@@ -76,7 +76,7 @@ function Lobby() {
             </div>
 
             <div id="practice">
-                <TypingScreen />
+                <TypingScreen multiplayer={false} />
             </div>
         </div>
     );

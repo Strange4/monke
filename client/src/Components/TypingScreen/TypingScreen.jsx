@@ -19,7 +19,7 @@ const allRegKeys = keyboardKeys.english.lower;
  * Container for the Textarea and the virtual keyboard
  * @returns {ReactElement}
  */
-function TypingScreen() {
+function TypingScreen(props) {
 
     const {
         isLoading, data: textToDisplay, refetch

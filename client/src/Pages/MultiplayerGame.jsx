@@ -51,7 +51,7 @@ const MultiplayerGame = () => {
                 <div id="mode-indicator">
                     <p>A time or percentage indicator will appear here depending on game mode</p>
                 </div>
-                <TypingScreen />
+                <TypingScreen multiplayer={true}/>
             </div>
         </div>
     );

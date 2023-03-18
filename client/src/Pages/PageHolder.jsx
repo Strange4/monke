@@ -15,11 +15,15 @@ function PageHolder() {
     const location = useLocation()
 
     useEffect(() => {
-        if (location.pathname !== "/lobby" && location.pathname !== "/multiplayer-game" && socketContext.socket.current) {
+        if (checkPathLocation() && socketContext.socket.current) {
             socketContext.socket.current.disconnect()
             socketContext.socket.current = undefined
         }
     }, [location]);
+
+    function checkPathLocation() {
+        return location.pathname !== "/lobby" && location.pathname !== "/multiplayer-game"
+    }
 
     return (
         <Routes>
