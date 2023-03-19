@@ -12,6 +12,7 @@ export function setUp(server) {
         userDict[roomCode] = userDict[roomCode] || []
 
         setUpLobbyListeners(socket, userData, roomCode, roomState, userDict, io)
+        setUpGameListeners(socket, userData, roomCode, roomState, userDict, io)
     });
 }
 
@@ -40,6 +41,20 @@ function setUpLobbyListeners(socket, userData, roomCode, roomState, userDict, io
     })
 }
 
+function setUpGameListeners(socket, userData, roomCode, roomState, userDict, io) {
+    socket.on("send-progress", (userText) => {
+        let userIndex = userDict[roomCode].findIndex(user => user.id === userData.id)
+        userDict[roomCode][userIndex].progress = userText.length
+        //TODO
+        io.to(roomCode).emit("update-progress", userDict[roomCode])
+    });
+    socket.on("end-game", () => {
+        console.log("GAME ENDED")
+        //TODO
+        io.to(roomCode).emit("display-results")
+    })
+}
+
 function setUserData(socket) {
     const defaultAvatar = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
     let userData = { username: "", id: "", avatar: "" }
@@ -47,6 +62,7 @@ function setUserData(socket) {
     userData["username"] = socket.handshake.auth.userData?.username || "GUEST"
     userData["avatar"] = socket.handshake.auth.userData?.avatar || defaultAvatar
     userData["id"] = socket.id
+    userData["progress"] = 0
 
     return userData
 }
