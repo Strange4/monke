@@ -64,7 +64,6 @@ const MultiplayerGame = () => {
                     return <GameProgress
                         key={i} index={i} progress={user.progress}/>
                 })}
-                
                 <TypingScreen multiplayer={true}/>
             </div>
         </div>

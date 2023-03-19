@@ -45,7 +45,6 @@ function setUpGameListeners(socket, userData, roomCode, roomState, userDict, io)
     socket.on("send-progress", (userText) => {
         let userIndex = userDict[roomCode].findIndex(user => user.id === userData.id)
         userDict[roomCode][userIndex].progress = userText.length
-        //TODO
         io.to(roomCode).emit("update-progress", userDict[roomCode])
     });
     socket.on("end-game", () => {

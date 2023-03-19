@@ -4,7 +4,8 @@ function GameProgress(props) {
     return (
         <div id="progress-bar"
             style={{
-                backgroundColor: colors[props.index]
+                backgroundColor: colors[props.index],
+                width: 10 * props.progress
             }}>
             {props.progress}
         </div>
