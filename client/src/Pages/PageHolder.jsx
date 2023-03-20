@@ -22,7 +22,7 @@ function PageHolder() {
     }, [location]);
 
     function checkPathLocation() {
-        return location.pathname !== "/lobby" && location.pathname !== "/multiplayer-game"
+        return location.pathname !== "/lobby" && location.pathname !== "/multiplayer-game" && location.pathname !== "/endgame-results"
     }
 
     return (
@@ -37,7 +37,6 @@ function PageHolder() {
                 } />
             <Route path='/lobby' element={<Lobby />} />
             <Route path='/multiplayer-game' element={<MultiplayerGame />} />
-
             <Route path="/profile" element={
                 auth.userEmail ?
                     <Profile redirect={auth.userEmail ? false : true} />

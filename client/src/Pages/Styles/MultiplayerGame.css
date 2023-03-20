@@ -54,3 +54,7 @@
 /* .App > #popup-root {
     visibility: hidden;
 } */
+#game-single-result {
+    display: flex;
+    flex-direction: column;
+}

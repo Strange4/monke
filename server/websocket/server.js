@@ -42,15 +42,29 @@ function setUpLobbyListeners(socket, userData, roomCode, roomState, userDict, io
 }
 
 function setUpGameListeners(socket, userData, roomCode, roomState, userDict, io) {
-    socket.on("send-progress", (userText) => {
+    socket.on("send-progress", (currentProgress, total) => {
         let userIndex = userDict[roomCode].findIndex(user => user.id === userData.id)
-        userDict[roomCode][userIndex].progress = userText.length
+        userDict[roomCode][userIndex].progress = currentProgress
+        
+        let endGame = true;
+        userDict[roomCode].forEach(user => {
+            if (user.progress < total) {
+                endGame = false
+            } else {
+                user.gameEnded = true
+            }
+        });
+
+        if (endGame) {
+            io.to(roomCode).emit("end-game", userDict[roomCode])
+        }
         io.to(roomCode).emit("update-progress", userDict[roomCode])
     });
-    socket.on("end-game", () => {
-        console.log("GAME ENDED")
-        //TODO
-        io.to(roomCode).emit("display-results")
+
+    socket.once("send-results", (result) => {
+        let userIndex = userDict[roomCode].findIndex(user => user.id === userData.id)
+        userDict[roomCode][userIndex].results = result
+        io.to(roomCode).emit("update-results", userDict[roomCode])
     })
 }
 

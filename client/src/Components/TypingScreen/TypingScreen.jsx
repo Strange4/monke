@@ -72,7 +72,7 @@ function TypingScreen(props) {
         }
         renderLetters(currentText, userDisplay);
         if (props.multiplayer) {
-            socketContext.socket.current.emit("send-progress", currentText)
+            socketContext.socket.current.emit("send-progress", currentText.length, userDisplay.length)
         }
     }
 
@@ -134,6 +134,7 @@ function TypingScreen(props) {
                             timer={timer.current}
                             originalText={textToDisplay}
                             closeWindow={resetGame}
+                            multiplayer={props.multiplayer}
                         />
                     </div>
 

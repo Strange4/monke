@@ -4,15 +4,15 @@ import TypingScreen from "../Components/TypingScreen/TypingScreen";
 import PlayerItem from '../Components/PlayerItem';
 import SocketContext from '../Context/SocketContext';
 import { useContext, useEffect, useState } from 'react';
-import { useNavigate } from "react-router-dom";
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from "react-router-dom";
 import GameProgress from '../Components/Lobby/GameProgress';
+import EndGameResults from './EndGameResults';
 
 const MultiplayerGame = () => {
     const socketContext = useContext(SocketContext)
     const location = useLocation()
     const navigate = useNavigate()
-    const [users, setUsers] = useState(socketContext.userList)
+    const [users] = useState(socketContext.userList)
 
     useEffect(() => {
         if (location.pathname !== "/multiplayer-game") {
@@ -21,19 +21,19 @@ const MultiplayerGame = () => {
         }
         if (!socketContext.socket.current) {
             navigate("/")
-        } 
+        }
     }, [location]);
 
     useEffect(() => {
-        if(socketContext.socket.current) {
+        if (socketContext.socket.current) {
             updateListeners()
-        } 
+        }
     }, [])
 
     function updateListeners() {
         socketContext.socket.current.off("join-room")
         socketContext.socket.current.off("leave-room")
-        
+
         socketContext.socket.current.on("leave-room", (users) => {
             socketContext.setUserList(users)
         })
@@ -42,13 +42,28 @@ const MultiplayerGame = () => {
 
     function setUpProgressListeners() {
         socketContext.socket.current.on("update-progress", (userList) => {
-            setUsers(userList)
+            socketContext.setUserList(userList)
+        })
+        socketContext.socket.current.once("end-game", (userList) => {
+            socketContext.setUserList(userList)
+            socketContext.socket.current.off("send-progress")
+        })
+        socketContext.socket.current.on("update-results", (userList) => {
+            socketContext.setUserList(userList)
         })
     }
 
     return (
         <div id="home">
             <NavBar />
+            {socketContext.userList.map((user, i) => {
+                return <EndGameResults
+                    key={i} name={user.username}
+                    avatar={user.avatar}
+                    wpm={user.results?.wpm}
+                    acc={user.results?.accuracy}
+                />
+            })}
             <div id="playing-players">
                 {socketContext.userList.map((user, i) => {
                     return <PlayerItem
@@ -62,9 +77,9 @@ const MultiplayerGame = () => {
                 </div>
                 {users.map((user, i) => {
                     return <GameProgress
-                        key={i} index={i} progress={user.progress}/>
+                        key={i} index={i} progress={user.progress} />
                 })}
-                <TypingScreen multiplayer={true}/>
+                <TypingScreen multiplayer={true} />
             </div>
         </div>
     );
