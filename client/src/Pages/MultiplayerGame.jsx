@@ -76,7 +76,7 @@ const MultiplayerGame = () => {
                 </div>
                 {socketContext.userList.map((user, i) => {
                     return <GameProgress
-                        key={i} index={i} progress={user.progress} />
+                        key={i} index={i} progress={Math.round(user.progress)} />
                 })}
                 <TypingScreen multiplayer={true} />
             </div>

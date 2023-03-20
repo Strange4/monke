@@ -44,11 +44,11 @@ function setUpLobbyListeners(socket, userData, roomCode, roomState, userDict, io
 function setUpGameListeners(socket, userData, roomCode, roomState, userDict, io) {
     socket.on("send-progress", (currentProgress, total) => {
         let userIndex = userDict[roomCode].findIndex(user => user.id === userData.id)
-        userDict[roomCode][userIndex].progress = currentProgress
+        userDict[roomCode][userIndex].progress = currentProgress / total * 100
         
         let endGame = true;
         userDict[roomCode].forEach(user => {
-            if (user.progress < total) {
+            if (user.progress < 100) {
                 endGame = false
             } else {
                 user.gameEnded = true
