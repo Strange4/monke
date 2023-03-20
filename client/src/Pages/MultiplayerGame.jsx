@@ -3,7 +3,7 @@ import NavBar from "../Components/NavBar";
 import TypingScreen from "../Components/TypingScreen/TypingScreen";
 import PlayerItem from '../Components/PlayerItem';
 import SocketContext from '../Context/SocketContext';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 import GameProgress from '../Components/Lobby/GameProgress';
 import EndGameResults from './EndGameResults';
@@ -12,7 +12,6 @@ const MultiplayerGame = () => {
     const socketContext = useContext(SocketContext)
     const location = useLocation()
     const navigate = useNavigate()
-    const [users] = useState(socketContext.userList)
 
     useEffect(() => {
         if (location.pathname !== "/multiplayer-game") {
@@ -75,7 +74,7 @@ const MultiplayerGame = () => {
                 <div id="mode-indicator">
                     <p>A time or percentage indicator will appear here depending on game mode</p>
                 </div>
-                {users.map((user, i) => {
+                {socketContext.userList.map((user, i) => {
                     return <GameProgress
                         key={i} index={i} progress={user.progress} />
                 })}
