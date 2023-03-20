@@ -45,13 +45,16 @@ function setUpGameListeners(socket, userData, roomCode, roomState, userDict, io)
     socket.on("send-progress", (currentProgress, total) => {
         let userIndex = userDict[roomCode].findIndex(user => user.id === userData.id)
         userDict[roomCode][userIndex].progress = currentProgress / total * 100
-        
+
         let endGame = true;
         userDict[roomCode].forEach(user => {
             if (user.progress < 100) {
                 endGame = false
             } else {
                 user.gameEnded = true
+                if (user.id === userData.id) {
+                    socket.emit("user-ended")
+                }
             }
         });
 
@@ -69,7 +72,8 @@ function setUpGameListeners(socket, userData, roomCode, roomState, userDict, io)
 }
 
 function setUserData(socket) {
-    const defaultAvatar = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+    const defaultAvatar =
+        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
     let userData = { username: "", id: "", avatar: "" }
 
     userData["username"] = socket.handshake.auth.userData?.username || "GUEST"

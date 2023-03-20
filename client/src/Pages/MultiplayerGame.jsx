@@ -3,7 +3,7 @@ import NavBar from "../Components/NavBar";
 import TypingScreen from "../Components/TypingScreen/TypingScreen";
 import PlayerItem from '../Components/PlayerItem';
 import SocketContext from '../Context/SocketContext';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 import GameProgress from '../Components/Lobby/GameProgress';
 import EndGameResults from './EndGameResults';
@@ -12,6 +12,7 @@ const MultiplayerGame = () => {
     const socketContext = useContext(SocketContext)
     const location = useLocation()
     const navigate = useNavigate()
+    const [ended, setEnded] = useState(false)
 
     useEffect(() => {
         if (location.pathname !== "/multiplayer-game") {
@@ -50,37 +51,46 @@ const MultiplayerGame = () => {
         socketContext.socket.current.on("update-results", (userList) => {
             socketContext.setUserList(userList)
         })
+        socketContext.socket.current.on("user-ended", () => {
+            setEnded(true)
+        })
     }
 
     return (
-        <div id="home">
-            <NavBar />
-            {socketContext.userList.map((user, i) => {
-                return <EndGameResults
-                    key={i} name={user.username}
-                    avatar={user.avatar}
-                    wpm={user.results?.wpm}
-                    acc={user.results?.accuracy}
-                />
-            })}
-            <div id="playing-players">
-                {socketContext.userList.map((user, i) => {
-                    return <PlayerItem
-                        key={i} name={user.username}
-                        avatar={user.avatar} leader={i === 0} />
-                })}
-            </div>
-            <div id="multiplayer-info">
-                <div id="mode-indicator">
-                    <p>A time or percentage indicator will appear here depending on game mode</p>
+        <>
+            {ended ?
+                <div id="end-game-leaderboard">
+                    {socketContext.userList.map((user, i) => {
+                        return <EndGameResults
+                            key={i} name={user.username}
+                            avatar={user.avatar}
+                            wpm={user.results?.wpm}
+                            acc={user.results?.accuracy}
+                        />
+                    })}
                 </div>
-                {socketContext.userList.map((user, i) => {
-                    return <GameProgress
-                        key={i} index={i} progress={Math.round(user.progress)} />
-                })}
-                <TypingScreen multiplayer={true} />
-            </div>
-        </div>
+                :
+                <div id="multiplayer-game">
+                    < NavBar />
+                    <div id="playing-players">
+                        {socketContext.userList.map((user, i) => {
+                            return <PlayerItem
+                                key={i} name={user.username}
+                                avatar={user.avatar} leader={i === 0} />
+                        })}
+                    </div>
+                    <div id="multiplayer-info">
+                        <div id="mode-indicator">
+                            <p>percentage indicator will appear here depending on game mode</p>
+                        </div>
+                        {socketContext.userList.map((user, i) => {
+                            return <GameProgress
+                                key={i} index={i} progress={Math.round(user.progress)} />
+                        })}
+                        <TypingScreen multiplayer={true} />
+                    </div>
+                </div>}
+        </>
     );
 }
 
