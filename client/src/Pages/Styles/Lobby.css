@@ -10,10 +10,12 @@
     min-height: 250px;
     max-height: 400px;
     margin: auto;
-    margin-top: 20px;
+    margin-top: 50px;
 }
 
 #players {
+    display: flex;
+    flex-flow: column wrap;
     padding: 5px;
     padding-right: 15px;
     position: relative;
@@ -79,25 +81,36 @@
     justify-content: center;
     margin: auto;
     margin-top: 120px;
+    max-width: 300px;
+    min-width: 120px;
     justify-content: space-around;
     height: 50%;
 }
 
 #play-btn, #leave-btn {
-    max-width: 250px;
+    max-width: 300px;
+    width: 250px;
     min-width: 180px;
     height: 56px;
-    font-size: 2em;
+    font-size: 2.5em;
     border: none;
     border-radius: 20px;
     background-color: var(--sub-color-transparent);
     color: var(--text-color);
+    transition: 0.4s;
 }
 
 #play-btn:hover, #leave-btn:hover {
     cursor: pointer;
     background-color: var(--sub-color);
-    color: var(--accent-color);
+    color: var(--sub-alt-color);
+}
+
+#play-btn:active, #leave-btn:active {
+    cursor: pointer;
+    background-color: var(--accent-color);
+    color: var(--sub-alt-color);
+    outline: none;
 }
 
 #practice {
@@ -136,4 +149,8 @@
 #lobby-info>div#settings>div#global-settings {
     min-width: 80px;
     max-height: 50px;
+}
+
+.App > div#popup-root:has(> div.popup-overlay > div.popup-content > div#solo-game-result){
+    visibility: hidden;
 }

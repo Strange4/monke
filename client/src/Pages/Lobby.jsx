@@ -1,4 +1,4 @@
-import '../Components/Lobby/Styles/Lobby.css'
+import './Styles/Lobby.css'
 import NavBar from "../Components/NavBar";
 import TypingScreen from "../Components/TypingScreen/TypingScreen";
 import LobbySettings from '../Components/Lobby/LobbySettings';

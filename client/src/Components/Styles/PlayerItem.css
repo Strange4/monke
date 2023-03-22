@@ -3,7 +3,6 @@
     display: flex;
     flex-wrap: wrap;
     flex-flow: row;
-    /* border: 2px solid white; */
     background-color: var(--sub-color);
     border-radius: 20px;
     align-items: center;
@@ -11,13 +10,13 @@
     max-height: 40px;
     min-height: 35px;
     min-width: 120px;
+    margin: 10px;
 }
 
 .player-image {
     width: 100%;
     max-width: 40px;
     min-width: 20px;
-    /* height: 100%; */
     max-height: 80px;
     min-height: 40px;
     border: 2px solid white;
@@ -25,7 +24,12 @@
 }
 
 .player-name {
-    max-width: 300px;
-    min-width: 120px;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    /* max-width: 300px; */
+    /* min-width: 120px; */
     margin: 5px;
 }
