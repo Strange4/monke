@@ -27,7 +27,7 @@ function Lobby() {
         if (!socketContext.socket.current) {
             navigate("/")
         }
-    }, [location]);
+    }, [location.pathname]);
 
     const handleClick = () => {
         showSettings(current => !current)

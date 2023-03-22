@@ -1,5 +1,5 @@
 import './Layout/TypingScreen.css';
-import { useState, useRef, useContext } from "react";
+import { useState, useRef, useContext, useEffect } from "react";
 import VirtualKeyboard from './VirtualKeyboard';
 import keyboardKeys from "../../Data/keyboard_keys.json";
 import GameText from '../GameText';
@@ -47,6 +47,12 @@ function TypingScreen(props) {
     const textContainerRef = useRef();
     const socketContext = useContext(SocketContext)
 
+    useEffect(() => {
+        if(props.multiplayer) {
+            startTimer();
+        }
+    }, [])
+
     function handleGameEnd() {
         stopTimer();
         setDisplayResults(true);
@@ -64,16 +70,17 @@ function TypingScreen(props) {
      * @param {InputEvent} e 
      */
     function onChangeText(e) {
-        const currentText = e.target.value;
-        if (currentText.length === 1) {
-            startTimer();
-        } else if (textToDisplay.length === currentText.length) {
+        const current = e.target.value;
+
+        if (textToDisplay.length === current.length) {
             handleGameEnd();
         }
-        renderLetters(currentText, userDisplay);
         if (props.multiplayer) {
-            socketContext.socket.current.emit("send-progress", currentText.length, userDisplay.length)
+            socketContext.socket.current.emit("send-progress", current.length, userDisplay.length)
+        } else if (current.length === 1) {
+            startTimer();
         }
+        renderLetters(current, userDisplay);
     }
 
     /**

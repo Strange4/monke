@@ -19,10 +19,12 @@ function PageHolder() {
             socketContext.socket.current.disconnect()
             socketContext.socket.current = undefined
         }
-    }, [location]);
+    }, [location.pathname]);
 
     function checkPathLocation() {
-        return location.pathname !== "/lobby" && location.pathname !== "/multiplayer-game" && location.pathname !== "/endgame-results"
+        return location.pathname !== "/lobby" && 
+            location.pathname !== "/multiplayer-game" && 
+            location.pathname !== "/endgame-results"
     }
 
     return (

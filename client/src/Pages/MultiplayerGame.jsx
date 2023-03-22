@@ -22,13 +22,13 @@ const MultiplayerGame = () => {
         if (!socketContext.socket.current) {
             navigate("/")
         }
-    }, [location]);
+    }, [location.pathname]);
 
     useEffect(() => {
         if (socketContext.socket.current) {
             updateListeners()
         }
-    }, [])
+    })
 
     function updateListeners() {
         socketContext.socket.current.off("join-room")
