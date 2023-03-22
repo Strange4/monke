@@ -41,11 +41,6 @@
     height: 150px;
 }
 
-#multiplayer-info > div.center > div > div#chronometer{
-    visibility: hidden;
-    height: 0;
-}
-
 #multiplayer-info > div.center{
     height: 300px;
 }
