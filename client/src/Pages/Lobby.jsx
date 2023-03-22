@@ -6,7 +6,7 @@ import { AiFillSetting } from "react-icons/ai"
 import PlayerItem from '../Components/PlayerItem';
 import { useState, useRef, useEffect, useContext } from 'react';
 import { useNavigate } from "react-router-dom";
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { BiCopy } from 'react-icons/bi';
 import { RiCheckDoubleFill } from 'react-icons/ri';
 import SocketContext from '../Context/SocketContext';
@@ -17,7 +17,6 @@ function Lobby() {
     const location = useLocation()
     const [settings, showSettings] = useState(false);
     const [copied, setCopied] = useState(false)
-    const [userList, setUserList] = useState(location.state.users)
     const socketContext = useContext(SocketContext)
 
     useEffect(() => {
@@ -39,14 +38,14 @@ function Lobby() {
         setCopied(true)
     }
 
-    useEffect(() => {
-        setUserList(location.state.users)
-    }, [location.state.users])
-
     function leave() {
         socketContext.socket.current.disconnect()
         socketContext.socket.current = undefined
         navigate("/")
+    }
+
+    function startGame() {
+        socketContext.socket.current.emit("try-start")
     }
 
     return (
@@ -54,8 +53,10 @@ function Lobby() {
             <NavBar />
             <div id="lobby-info">
                 <div id="players">
-                    {userList.map((user, i) => {
-                        return <PlayerItem key={i} name={user.username} avatar={user.avatar} />
+                    {socketContext.userList.map((user, i) => {
+                        return <PlayerItem
+                            key={i} name={user.username}
+                            avatar={user.avatar} leader={i === 0} />
                     })}
                     <p ref={roomCode} id="invite-code">
                         {location.state.roomCode}
@@ -66,9 +67,7 @@ function Lobby() {
                     </p>
                 </div>
                 <div id="action-buttons">
-                    <Link to="/multiplayer-game">
-                        <button id="play-btn">PLAY</button>
-                    </Link>
+                    <button id="play-btn" onClick={startGame}>PLAY</button>
                     <button id="leave-btn" onClick={leave}>LEAVE</button>
                 </div>
 
@@ -77,7 +76,7 @@ function Lobby() {
             </div>
 
             <div id="practice">
-                <TypingScreen />
+                <TypingScreen multiplayer={false} />
             </div>
         </div>
     );

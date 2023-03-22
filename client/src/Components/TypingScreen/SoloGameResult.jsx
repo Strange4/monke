@@ -5,10 +5,11 @@ import Popup from "reactjs-popup";
 import * as FetchModule from '../../Controller/FetchModule';
 import AuthContext from '../../Context/AuthContext';
 import { postData } from '../../Controller/FetchModule';
+import SocketContext from '../../Context/SocketContext';
 
-function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText }) {
+function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText, multiplayer }) {
     const [userStats, setUserStats] = useState({ "time": 0, "wpm": 0, "accuracy": 0 });
-
+    const socketContext = useContext(SocketContext)
     const auth = useContext(AuthContext);
     const [userData, setUserData] = useState({
         username: "",
@@ -54,6 +55,9 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
             const data = await postData("/api/user", { email: auth.userEmail }, "POST")
             setUserData(data)
             postUserStats(result);
+        } 
+        if (multiplayer) {
+            socketContext.socket.current.emit("send-results", result)
         }
 
         return result;

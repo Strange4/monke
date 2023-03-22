@@ -31,16 +31,24 @@ function LobbyPopup() {
 
     function setSocketListeners() {
         socketContext.socket.current.on("join-room", (users, roomCode) => {
-            navigate("/lobby", { state: { roomCode: roomCode, users: users } });
+            socketContext.setUserList(users)
+            navigate("/lobby", { state: { roomCode: roomCode } });
         })
         socketContext.socket.current.on("leave-room", (users, roomCode) => {
-            navigate("/lobby", { state: { roomCode: roomCode, users: users } });
+            socketContext.setUserList(users)
+            navigate("/lobby", { state: { roomCode: roomCode } });
         })
         socketContext.socket.current.on("full-room", () => {
             feedback.current.textContent = "ROOM FULL, enter a different room"
             socketContext.socket.current.disconnect()
             socketContext.socket.current = undefined
         });
+        socketContext.socket.current.on("start-game", () => {
+            navigate("/multiplayer-game", { state: { roomCode: roomCode } });
+        })
+        socketContext.socket.current.on("game-started", () => {
+            feedback.current.textContent = "GAME ALREADY STARTED, cannot join the room"
+        })
     }
 
     async function setUpSocket(roomCode) {
