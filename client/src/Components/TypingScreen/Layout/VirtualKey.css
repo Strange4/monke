@@ -6,11 +6,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 0.05em solid;
   border-color: var(--sub-color);
   border-radius: var(--roundness);
   width: 75%;
   align-self: center;
+  margin: auto;
+  margin-top: 30px;
 }
 
 .keyboard-key {
@@ -30,8 +31,6 @@
     animation:  120ms pressed_key_animation ease-out;
 }
 
-
-
 .vertical {
   flex-direction: column;
 }
@@ -49,9 +48,8 @@
   width: 6em;
 }
 
-
 .keyboard-key.pressed {
-    background-color: var(--text-color);
+    background-color: var(--accent-color);
     color: var(--bg-color); 
 }
 

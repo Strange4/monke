@@ -1,12 +1,40 @@
-import './Styles/Login.css';
+import './Styles/AccessOptions.css';
+import { GoogleLogin } from '@react-oauth/google';
+import { useContext } from "react";
+import AuthContext from "../Context/AuthContext";
+import NavBar from './NavBar';
+import { postData } from '../Controller/FetchModule';
 
-const Login = () => {
+
+function Login(props) {
+    const auth = useContext(AuthContext);
+
+    async function handleLogin(googleData) {
+        const data = await postData("/authentication/login", {token: googleData.credential}, "POST")
+        await setUserData(data)
+    }
+
+    async function setUserData(data) {
+        const userData = {
+            username: data.user.username,
+            email: data.user.email,
+            "picture_url": data.user.pic,
+        }
+        await postData("/api/user", userData, "POST")
+        auth.setUserEmail(data.user.email);
+    }
+
     return (
-        <div id="login">
-            <h1>Login Popup</h1>
-            <button id="login-btn">Google Login Button</button>
-        </div>
+        <>
+            {props.navbar ? <NavBar /> : null}
+            <div className="access">
+                <h2>Login</h2>
+                <GoogleLogin
+                    onSuccess={handleLogin}
+                    onError={() => console.log('Login Failed')} />
+            </div>
+        </>
     );
-};
+}
 
 export default Login;

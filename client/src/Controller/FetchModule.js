@@ -1,5 +1,6 @@
-import { useState, useCallback } from "react";
+import { useQuery } from "react-query";
 import Spinner from "../Components/Spinner";
+// importing definitions for better intellisense
 
 /**
  * Generic fetch function to fetch from any given
@@ -10,7 +11,7 @@ import Spinner from "../Components/Spinner";
  */
 async function fetchData(url) {
     let data;
-    let response = await fetch(url);
+    const response = await fetch(url);
     if (response.ok) {
         data = await response.json();
         return data;
@@ -19,62 +20,96 @@ async function fetchData(url) {
     }
 }
 
-/**
- * Post the user stat to the api
- * @param url 
- * @param userInput 
- */
-async function postUserStatAPI(url, userStat) {
-    let response = await fetch(url, {
-        method: 'PUT',
+async function postData(url, body, method) {
+    const res = await fetch(url, {
+        method: method,
+        body: JSON.stringify(body),
         headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json"
         },
-        body: JSON.stringify(userStat)
     });
-    if (!response.ok) {
+    const data = await res.json();
+    return data
+}
+
+/**
+ * fetches data using react-query and handles errors
+ * @param {string} cacheKey the key used by react-query to cache the response
+ * @param {string} url the url used for the fetch request
+ * @param {RequestInit?} fetchParams the parameters for the fetch request
+ * @returns {[JSX.Element?, any?]}
+ */
+function useFetch(cacheKey, url, fetchParams) {
+    const { data, error, isLoading } = useQuery(cacheKey, async () => {
+        const response = await fetch(url, fetchParams);
+        if (!response.ok) {
+            throw new Error("There was an error in the response");
+        }
+        return await transformData(response);
+    });
+    if (isLoading) {
+        return [<Spinner key="spinner" />, undefined];
+    }
+    if (error) {
+        return (
+            [<div key="spinner">
+                <h1>There was an error contacting the server. Please try again later</h1>
+            </div>, undefined]
+        );
+    }
+    return [undefined, data];
+}
+
+/**
+ * transforms the data type from a fetch response to it's sent content type
+ * @param {Response} data the data that needs to be transformed to it's data type
+ */
+async function transformData(response) {
+    const contentType = response.headers.get("Content-Type");
+    if (contentType.match("json")) {
+        return await response.json();
+    } else if (contentType.match("text")) {
+        return await response.text()
+    }
+    return await response.blob();
+}
+
+/**
+ * Helper function to read the given image, convert it and post it
+ * @param image 
+ * @param username 
+ * @param validateForm 
+ * @param postImage 
+ */
+function readImage(image, email, validateForm, postImage) {
+    if (validateForm(image)) {
+        const fr = new FileReader();
+        fr.readAsArrayBuffer(image);
+
+        fr.onload = function () {
+            const formData = new FormData()
+            formData.append('image', image);
+            formData.append('email', email);
+            formData.append('fileName', image.name);
+            postImage(formData);
+        }
+    }
+}
+
+async function postImageAPI(url, userInput) {
+    const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+        },
+        body: userInput
+    });
+    if (response.ok) {
+        const data = await response.json()
+        return data
+    } else {
         throw Error("Something Went wrong posting data");
     }
 }
 
-function useFetch(url, params) {
-    const [error, setError] = useState();
-    const [isLoading, setIsLoading] = useState(false);
-    const sendRequest = useCallback(async (callback) => {
-        setIsLoading(true);
-        try{
-            const response = await fetch(url, params);
-
-            if(!response.ok){
-                setError(await response.text());
-                setIsLoading(false);
-                return;
-            }
-            const contentType = response.headers.get("Content-Type");
-            let data = null;
-            // return the right content type
-            if(contentType.match("json")){
-                data = await response.json();
-            } else if(contentType.match("text")){
-                data = await response.text()
-            } else {
-                data = await response.blob();
-            }
-            setIsLoading(false);
-            callback(data);
-        } catch (caughtError){
-            setError(caughtError);
-            setIsLoading(false);
-        }
-    });
-    
-    const loadingPlaceHolder = 
-        isLoading || error ?
-            <Spinner/> : undefined
-
-    return { sendRequest, loadingPlaceHolder };
-}
-
-
-export { fetchData, useFetch, postUserStatAPI };
+export { fetchData, postData, useFetch, readImage, postImageAPI };

@@ -1,397 +1,246 @@
+/* eslint-disable camelcase */
 /**
  * this module exports a router containing routes that will query
  * a mongo database and return the info as json to the user
  */
 
-import * as express from "express";
+import express from "express";
 import User from "../database/models/user.js";
-import Quote from "../database/models/quote.js";
-import UserStat from "../database/models/userStat.js";
-import Picture from "../database/models/picture.js";
-import { userSchema, userStatSchema } from "../database/validation.js";
+import mongoose from "mongoose";
+import { Constraints } from "../database/validation.js";
+import { getAverage } from "../controller/util.js";
+import { ImgParser } from "../controller/validation.js";
+import createHttpError from "http-errors";
+import * as Azure from "../database/azure.js"
+import multer from 'multer';
+import { v4 } from "uuid"
+
+const upload = multer({
+    limits: {fieldSize: 5242880},
+    fileFilter: (_, file, callback) => {
+        if (file.mimetype.startsWith("image/")) {
+            return callback(null, true)
+        }
+        callback(new Error("Error occured with uploading"))
+    }
+});
 
 const router = express.Router();
-
 router.use(express.json());
 
-
-const userStat = "/user_stat";
-const quote = "/quote";
-const user = "/user";
-const leaderboard = "/leaderboard";
-
-const SUCCESS = 200;
-const ERROR = 400;
-
 /**
- * Check to see in the database if the username exists or not.
- * @param {string} name, username of the new User. 
- * @returns boolean depending on if the username exists or not. 
+ * Updates the stats of a user using their email.
+ * Updates only the fields sent
+ * if a field has the wrong type it will not be updated
  */
-async function checkName(name) {
-    try {
-        const nameQuery = await User.findOne({ username: name });
-        // Name exists.
-        if (nameQuery !== null) {
-            return true;
-            // Name does not exists.
-        } else {
-            console.log(`Could not find user with name: ${name}`);
-            return false;
-        }
-    } catch (err) {
-        console.error(err);
+router.put("/user_stat", async (req, res, next) => {
+    if (!dbIsConnected()) {
+        next(new createHttpError.InternalServerError("Database is unavailable"));
+        return;
     }
-}
-
-/**
- * Check to see in the database if the username exists or not.
- * @param {string} email, email of the new User. 
- * @returns boolean depending on if the email exists or not. 
- */
-async function checkEmail(newEmail) {
-    try {
-        const emailQuery = await User.findOne({ email: newEmail });
-        // Name exists.
-        if (emailQuery !== null) {
-            return true;
-            // Name does not exists.
-        } else {
-            console.log(`Could not find user with email: ${newEmail}`);
-            return false;
-        }
-    } catch (err) {
-        console.error(err);
+    const email = Constraints.email(req.body.email);
+    if (!email) {
+        next(new createHttpError.BadRequest(
+            "Can't find or create the user because no email was provided"
+        ));
+        return;
     }
-}
 
+    const user = await User.findOne({ email });
 
-/**
- * Get the Id of the User then return the UserStats of the User.
- * @param {string} name, username of the new User. 
- * @returns boolean depending on if the username exists or not. 
- */
-async function getUserStats(name) {
-    try {
-        const databaseUser = await User.findOne({ username: name });
-        if (databaseUser !== null) {
-            const stats = await UserStat.findOne({ user: databaseUser.id });
-            return stats;
-        } else {
-            console.log(`Could not find user with name: ${name}`);
-        }
-    } catch (err) {
-        console.error(err);
+    if (user === null) {
+        next(new createHttpError.BadRequest("user with that email does not exist on database"));
+        return;
     }
-}
+    const wpm = Constraints.positiveNumber(req.body.wpm);
+    const accuracy = Constraints.positiveNumber(req.body.accuracy);
+    const win = Constraints.positiveInt(req.body.win);
+    const lose = Constraints.positiveInt(req.body.lose);
+    const draw = Constraints.positiveInt(req.body.draw);
+    const gameCount = user.user_stats.games_count;
 
-
-/**
- * Return the average of a stat
- * @param {Number} stat, the previous average of the stat.
- * @param {Number} newStat, the new stat obtain after a game has been complete. 
- * @param {Number} games, the total number of games.
- * @returns Average of the stat
- */
-function getAverage(stat, newStat, games) {
-    if (games === 0){
-        return newStat;
-    } else{
-        let unAverage = stat * games;
-        let newTotal = unAverage + newStat;
-        return newTotal / (games + 1);
+    // updates the average of that value if it is defined only
+    const updated = {
+        ...wpm && { 
+            "user_stats.wpm": getAverage(user.user_stats.wpm, wpm, gameCount) },
+        ...accuracy && { 
+            "user_stats.accuracy": getAverage(user.user_stats.accuracy, accuracy, gameCount) },
+        ...win && { 
+            "user_stats.win": getAverage(user.user_stats.win, win, gameCount) },
+        ...lose && { 
+            "user_stats.lose": getAverage(user.user_stats.lose, lose, gameCount) },
+        ...draw && { 
+            "user_stats.draw": getAverage(user.user_stats.draw, draw, gameCount) },
+        "user_stats.games_count": gameCount + 1
     }
-}
-
-
-router.put(userStat, async (req, res) => {
-    let name = req.body.username;
-    let newWpm = req.body.wpm;
-    let newAccuracy = req.body.accuracy;
-    let win = req.body.win;
-    let lose = req.body.lose;
-    let draw = req.body.draw;
-
-    const previousStats = await getUserStats(name);
-    const user = await User.findOne({ username: name })
-    const filter = { user: user.id, id: previousStats.id }
-
-    let update;
-
-    if (newWpm > previousStats.max_wpm) {
-        update = {
-            "max_wpm": newWpm,
-            "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
-            "max_accuracy": newAccuracy,
-            "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
-            "games_count": previousStats.games_count + 1,
-            "win": previousStats.win + win,
-            "lose": previousStats.lose + lose,
-            "draw": previousStats.draw + draw,
-            "date": Date.now()
-        }
-
-    } else if (newWpm === previousStats.max_wpm && newAccuracy > previousStats.max_accuracy) {
-        update = {
-            "max_wpm": newWpm,
-            "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
-            "max_accuracy": newAccuracy,
-            "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
-            "games_count": previousStats.games_count + 1,
-            "win": previousStats.win + win,
-            "lose": previousStats.lose + lose,
-            "draw": previousStats.draw + draw,
-            "date": Date.now()
-        }
-    } else {
-        // Update average only
-        update = {
-            "wpm": getAverage(previousStats.wpm, newWpm, previousStats.games_count),
-            "accuracy": getAverage(previousStats.accuracy, newAccuracy, previousStats.games_count),
-            "games_count": previousStats.games_count + 1,
-            "win": previousStats.win + win,
-            "lose": previousStats.lose + lose,
-            "draw": previousStats.draw + draw,
-            "date": previousStats.date
-        }
+    if (wpm > user.user_stats.max_wpm) {
+        updated["user_stats.date"] = new Date();
+        updated["user_stats.max_wpm"] = Math.max(user.user_stats.max_wpm, wpm);
+        updated["user_stats.max_accuracy"] = Math.max(user.user_stats.max_accuracy, accuracy);
     }
-    userStatSchema.parse(update)
-    await UserStat.findOneAndUpdate(filter, update);
-
-    res.status(SUCCESS).json({message: "Stats updated"})
-})
-
-
-/**
- * Post endpoint that creates User containing
- * username and temporary profileURL
- */
-router.post(user, async (req, res) => {
-    try {
-        const picName = ["profile_gear", "profile_keyboard", "profile_mac", "profile_user", "profile_pc", "default_user_image"];
-        const name = req.body.username;
-        const email = req.body.email;
-        const picture = req.body.picture;
-
-        if (await checkName(name) === false 
-        && await checkEmail(email) === false 
-        && picName.includes(picture)){
-            
-            // Get the link for the picture
-            const pictureQuery = await Picture.findOne({"picture_name": picture});
-
-            // create the user
-            const user = new User({
-                "username": name,
-                "picture_url": pictureQuery.url,
-                "email": email
-            });
-
-            userSchema.parse(user);
-
-            let userObject = await User.create(user);
-            await userObject.save();
-
-            //Stat creation
-            const stats = new UserStat({
-                "user": userObject.id,
-                "max_wpm": 0,
-                "wpm": 0,
-                "max_accuracy": 0,
-                "accuracy": 0,
-                "games_count": 0,
-                "win": 0,
-                "lose": 0,
-                "draw": 0,
-                "date": null
-            })
-
-            userStatSchema.parse(stats)
-            let userStatsObject = await UserStat.create(stats)
-            await userStatsObject.save()
-
-            const message = "User created successfully";
-            console.log(message);
-            res.status(SUCCESS).send(message);
-
-        // user not valid
-        } else{
-            if (await checkName(name) === true && await checkEmail(email) === true)
-                res.status(ERROR).json({error: "Username and Email Already Taken"});
-            else if (await checkName(name) === true)
-                res.status(ERROR).json({error: "Username Already Taken"});
-            else if(await checkEmail(email) === true)
-                res.status(ERROR).json({error: "Email Already Taken"});
-            else
-                res.status(ERROR).json({error: `Picture Name Invalid | Valid Names: profile_gear, profile_keyboard, profile_mac, profile_user, profile_pc, default_user_image`}); 
-        }
-
-    } catch (err) {
-        console.error(`Error: ${err}`);
-        res.status(ERROR).send(`<h1>400! User could not be created. Please refill the form.</h1>`);
-    }
+    await user.updateOne({ $set: { ...updated } });
+    const rank = await user.getRank();
+    res.json({
+        rank,
+        ...user.toObject()
+    });
 });
 
-
 /**
- * Get endpoint that  json object containing the user
+ * Get endpoint that json object containing the user
  * and their game statistics
  */
-router.get(user, async (req, res) => {
-
-    try {
-        // query for user that matches username
-        const user = await User.findOne({ username: req.body.username });
-        // query for user's game statistics
-        const stats = await getUserStats(user.username);
-
-        let data = {
-            "username": user.username,
-            "image": user.picture_url,
-            "wpm": stats.wpm,
-            "max_wpm": stats.max_wpm,
-            "accuracy": stats.accuracy,
-            "max_accuracy": stats.max_accuracy,
-            "games_count": stats.games_count,
-            "win": stats.win,
-            "lose": stats.lose,
-            "draw": stats.draw,
-            "date": stats.date
-        };
-    
-        res.status(SUCCESS).json(data);
-
-    } catch (err) {
-        console.error("Could not obtain userstats ", err);
-        res.status(ERROR).json({ error: "Could not obtain user stats."})
+router.post("/user", async (req, res, next) => {
+    if (!dbIsConnected() && process.env.NODE_ENV !== "test") {
+        next(new createHttpError.InternalServerError("Database is unavailable"));
+        return;
     }
-});
-
-/**
- * Endpoint returns a quote to the client.
- */
-router.get(quote, async (req, res) => {
-    
-    let statusCode = SUCCESS;
-    let message;
-
-    // verify if difficulty is NaN and not undefined
-    if(isNaN(req.body.difficulty) && req.body.difficulty !== undefined){
-        console.error("Invalid number input for quotes");
-        statusCode = ERROR;
-        message = { "error": "Input for difficulty is not a valid number" };
-    } else {
-        try{
-            message = await queryQuotes(req.body.difficulty);
-        } catch (err) {
-            statusCode = ERROR;
-            message = { "error": "unable to retrieve quote"};
-        }
+    const email = Constraints.email(req.body.email);
+    if (!email) {
+        next(new createHttpError.BadRequest(
+            "Can't find or create the user because no email was provided"
+        ));
+        return;
     }
-    res.status(statusCode).json(message);
-});
+    let user = await User.findOne({ email: email });
+    // Create the user.
+    if (user === null) {
+        const username = req.body.username;
+        const picture_url = req.body.picture_url;
 
-/**
- * Function will query database for quotes with given difficulty then
- * pick and return one quote randomly from resulting list.
- * If said list is length of 1, return that single quote.
- * @param {number} difficultyVal : represents difficulty level of desired quotes
- * @returns Object, is a json that holds the body of the quote.
- */
-async function queryQuotes(difficultyVal){
-    let quotes, message;
-
-    // selects all quotes if difficultyVal is undefined otherwise query by difficulty
-    quotes = difficultyVal === undefined ? 
-        await Quote.find() : await Quote.find( { difficulty: difficultyVal });
- 
-    if(quotes.length > 0){
-        // if len quotes > 1 randomize index to pick from quotes, otherwise assign 0
-        const quoteIndex =
-            quotes.length > 1 ? Math.floor(Math.random() * quotes.length) : 0;
-        message = { "body": quotes[quoteIndex].quote };
-    } else {
-        message = { "body": "There are no quotes available with that difficulty." };
-    }
-
-    return message;
-}
-
-/**
- * Sort the users into rank depending on wpm and accuracy, then returns the sorted leaderboard.
- * @param {*} users, Leadeaboard JSON Object without sorting and no rank field.
- * @returns Array of JSON object that represents the leaderboard.
- */
-function sortRank(users) {
-    const leaderboard = [];
-    const userCount = users.length;
-    let rank = 1;
-
-    while (leaderboard.length !== userCount){
-        let picture = users[0].profilePicture;
-        let username = users[0].username;
-        let wpm = 0;
-        let accuracy = 0;
-        let index = 0;
-        for (let i = 0; i < users.length; i++){
-            if (users[i].wpm > wpm){
-                picture = users[i].profilePicture;
-                username = users[i].username;
-                wpm = users[i].wpm;
-                accuracy = users[i].accuracy;
-                index = i;
-            } else if(users[i].wpm === wpm && users[i].accuracy > accuracy){
-                picture = users[i].profilePicture;
-                username = users[i].username;
-                wpm = users[i].wpm;
-                accuracy = users[i].accuracy;
-                index = i;
-            }
-        }
-
-        leaderboard.push({
-            "rank": rank++,
-            "profilePicture": picture,
-            "username": username,
-            "wpm": wpm,
-            "accuracy": accuracy
+        user = new User({
+            username,
+            picture_url,
+            email,
         });
-        users.splice(index, 1);
+        try {
+            await user.save();
+        } catch (error) {
+            next(new createHttpError.BadRequest({
+                message: "values do not comply with user stats schema",
+                error: error.message
+            }));
+            return;
+        }
     }
-
-    return leaderboard;
-}
+    const rank = await user.getRank();
+    res.json({
+        rank,
+        ...user.toObject()
+    });
+})
 
 /**
  * Get endpoint that returns a hardcoded json object containing
  * leaderboard info such as rank, wpm, username and temporary profileURL
  */
-router.get(leaderboard, async (_, res) => {
-    try {
-        const stats = [];
-        const users = await User.find();
-        for (const user of users){
-            const userStats = await UserStat.findOne({user: user.id});
-            stats.push({
-                "profilePicture": user.picture_url,
-                "username": user.username,
-                "wpm": userStats.max_wpm,
-                "accuracy": userStats.max_accuracy
-            });
-        }
-        res.status(SUCCESS).json(sortRank(stats));
-    } catch (err){
-        console.error(err);
+router.get("/leaderboard", async (req, res) => {
+    if (!dbIsConnected() && process.env.NODE_ENV !== "test") {
+        next(new createHttpError.InternalServerError("Error while getting the leaderboard"));
+        return;
     }
+    const maxItems = Constraints.positiveInt(req.query.max) || 10;
+    const users = await User
+        .find().limit(maxItems)
+        .sort({"user_stats.max_wpm": 'desc', "user_stats.max_accuracy": "desc"}).lean();
+    res.json(users);
 });
 
-router.use("/", async (_, res) => {
-    res.json("Success! Getting to the api!");
+/**
+ * Put endpoint used to update the profile picture of a user.
+ * The user email and new Image is sent, newly updated user is returned
+ */
+router.put("/update_avatar", upload.single('image'), async (req, res) => {
+    if (!dbIsConnected()) {
+        next(new createError.InternalServerError("Database is unavailable"));
+        return;
+    }
+    const email = Constraints.email(req.body.email);
+    if (!email) {
+        next(new createHttpError.BadRequest("Can't find the user because no email was provided"));
+        return;
+    }
+    if (req.file === undefined) {
+        next(new createHttpError.BadRequest("Image was not sent correctly"));
+        return;
+    }
+    try {
+        ImgParser.parse(req.file);
+        const blobName = req.body.fileName;
+        const blobClient = Azure.getContainerClient().getBlockBlobClient(blobName);
+        const options = { blobHTTPHeaders: { blobContentType: req.file.mimetype } };
+        await blobClient.uploadData(req.file.buffer, options);
+
+        // Uploading data to mongodb.
+        const url = Azure.getBlobPublicUrl() + blobName;
+        const user = await User.findOneAndUpdate({email}, { "picture_url": url }, { "new": true });
+
+        try {
+            await user.save();
+        } catch (error) {
+            next(new createHttpError.BadRequest({
+                message: "values do not comply with user stats schema",
+                error: error.message
+            }));
+            return;
+        }
+        const rank = await user.getRank();
+        res.json({
+            rank,
+            ...user.toObject()
+        });
+    } catch (err) {
+        res.status(400).send(`<h1>400! Picture could not be uploaded to the database.</h1>`);
+    }
+})
+
+/**
+ * Put endpoint used to update the username of a user.
+ * The user email and new username is sent, newly updated user is returned
+ */
+router.put("/update_username", async (req, res) => {
+    if (!dbIsConnected()) {
+        next(new createError.InternalServerError("Database is unavailable"));
+        return;
+    }
+    const email = Constraints.email(req.body.email);
+    const newName = req.body.username;
+    if (!email || !newName) {
+        next(new createHttpError.BadRequest("no email or username was provided"));
+        return;
+    }
+    const user = await User.findOneAndUpdate({ email }, { username: newName }, { "new": true });
+    try {
+        await user.save();
+    } catch (error) {
+        next(new createHttpError.BadRequest({
+            message: "values do not comply with user stats schema",
+            error: error.message
+        }));
+        return;
+    }
+    const rank = await user.getRank();
+    res.json({
+        rank,
+        ...user.toObject()
+    });
 });
 
-
-router.use(async (_, res) => {
-    res.status(ERROR).json({ error: "Not Found" });
+router.get("/lobby", (_, res) => {
+    let roomID = v4()
+    res.json(roomID)
 });
 
+function dbIsConnected() {
+    return mongoose.connection.readyState === 1;
+}
+
+function handleHttpErrors(error, _, res, next) {
+    if (error instanceof createHttpError.HttpError) {
+        res.status(error.status).json({ "error": error.message });
+        return;
+    }
+    next(error);
+}
+router.use(handleHttpErrors);
 export default router;

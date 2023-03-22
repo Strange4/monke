@@ -15,15 +15,16 @@
       "ecmaVersion": "latest",
       "sourceType": "module"
   },
+  "ecmaFeatures": {"jsx": true},
+  "ignorePatterns": [
+    "**/node_modules/**",
+    "client/build"
+  ],
   "overrides": [ {
-    "files": ["*.mjs", 
-    "*.cjs", 
-    "**/modules/*.js", 
-    "**/__tests__/*.js", 
-    "**/api/*.js",
-    "**/src/**/*.js",
-    "**/controllers/*.js",
-    "**/server/**/*.js"],
+    "files": [
+    "./**/*.js",
+    "./**/*.jsx"
+    ],
     "parserOptions": {
       "sourceType":"module"
     }
@@ -54,7 +55,7 @@
     ////////// Style //////////
     "array-bracket-spacing": ["warn", "never"],
     "array-bracket-newline": ["warn", "consistent"],
-    "camelcase": "error",
+    "camelcase": "warn",
     "comma-spacing": ["warn", { "before": false, "after": true }],
     "comma-style": ["warn", "last"],
     "brace-style": ["warn"],
