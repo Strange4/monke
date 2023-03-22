@@ -1,7 +1,8 @@
 #lobby-info {
     position: relative;
     display: flex;
-    border: 2px solid white;
+    border: 2px solid var(--sub-color-transparent);
+    border-radius: 20px;
     width: 100%;
     min-width: 400px;
     max-width: 1000px;
@@ -13,11 +14,14 @@
 }
 
 #players {
+    padding: 5px;
+    padding-right: 15px;
     position: relative;
-    border: 2px solid white;
-    width: 30%;
+    border-right: 2px solid var(--sub-color-transparent);
+    width: 40%;
     min-width: 200px;
     min-height: 200px;
+    margin: 8px;
     margin-right: 20px;
 }
 
@@ -46,37 +50,53 @@
     justify-content: center;
     align-content: center;
     font-size: 1em;
-    width: 100%;
-    height: 80px;
+    width: 85%;
     margin: auto;
-    border: 1px solid white;
+    padding: 10px;
+    border-radius: 20px;
+    background-color: var(--sub-color-transparent);
+    color: var(--accent-color);
+}
+
+#invite-code > svg {
+    margin-top: 5px;
+    color: var(--sub-color);
+}
+
+#invite-code > svg:hover {
+    color: var(--text-color);
 }
 
 #copy-icon:hover {
     cursor: pointer;
-}
-
-#play-btn {
-    width: 150px;
-    height: 56px;
-    font-size: 2em;
+    color: var(--text-color);
 }
 
 #action-buttons {
-    position: absolute;
-    bottom: 0;
-    right: 0;
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+    margin: auto;
+    margin-top: 150px;
+    justify-content: space-around;
+    height: 50%;
 }
 
-#leave-btn {
-    position: relative;
-    width: 150px;
+#play-btn, #leave-btn {
+    max-width: 250px;
+    min-width: 180px;
     height: 56px;
     font-size: 2em;
+    border: none;
+    border-radius: 20px;
+    background-color: var(--sub-color-transparent);
+    color: var(--text-color);
 }
 
-#lobby-settings {
-    margin-right: 70px;
+#play-btn:hover, #leave-btn:hover {
+    cursor: pointer;
+    background-color: var(--sub-color);
+    color: var(--accent-color);
 }
 
 #practice {
@@ -93,10 +113,12 @@
 }
 
 #lobby-info>div#settings {
+    position: absolute;
+    right: 0;
     display: flex;
     flex-flow: row wrap;
-    max-width: 350px;
-    min-width: 200px;
+    max-width: 40%;
+    min-width: 180px;
     box-shadow: 0 0 5px var(--sub-color);
     margin-right: 50px;
 }
@@ -106,11 +128,11 @@
 }
 
 #lobby-info>div#settings>div#length-settings {
-    min-width: 100px;
+    min-width: 80px;
     max-height: 50px;
 }
 
 #lobby-info>div#settings>div#global-settings {
-    min-width: 100px;
+    min-width: 80px;
     max-height: 50px;
 }
