@@ -6,7 +6,6 @@
 import api from "./api.js";
 import express from "express";
 import {authRouter} from "./authentication.js"
-import { quoteRouter } from "./quotes.js";
 
 const app = express();
 
@@ -22,7 +21,6 @@ function html (req, _, next) {
 
 app.use("/api", api);
 app.use("/authentication", authRouter);
-app.use("/quote", quoteRouter);
 
 app.get("*", html, function(_, res) {
     res.sendFile("index.html", {root: "../client/build/"})
