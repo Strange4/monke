@@ -6,7 +6,6 @@ import { useState, useEffect, useRef } from 'react';
 import PageHolder from './Pages/PageHolder';
 import checkAccess from './Controller/AuthHelper';
 import SocketContext from './Context/SocketContext';
-import Cookie from './Components/Cookie';
 
 const queryClient = new QueryClient();
 
@@ -48,7 +47,6 @@ function App() {
                     </QueryClientProvider>
                 </SocketContext.Provider>
             </AuthContext.Provider>
-            <Cookie cookieName={"teammate"} cookieValue={"Chris"}/>
         </div >
     );
 }
