@@ -2,12 +2,13 @@ const EndGameResults = (props) => {
     return (
         <div id="game-results" className="player-info">
             <img className="player-image" src={`${props.avatar}`} />
-            <p className='player-name'>
-                {props.name}
-            </p>
+            <p className='player-name'> {props.name} </p>
             <div id="game-single-result">
-                <p> wpm: {props.wpm}</p>
-                <p> accuracy: {props.acc}</p>
+                {props.wpm !== undefined ?
+                    <p> wpm: {props.wpm} accuracy: {props.acc}</p>
+                    :
+                    <p> User still in progress...</p>
+                }
             </div>
         </div>
     );
