@@ -57,38 +57,40 @@ const MultiplayerGame = () => {
     }
 
     return (
-        <> {ended ?
-            <div id="end-game-leaderboard">
-                {socketContext.userList.map((user, i) => {
-                    return <EndGameResults
-                        key={i} name={user.username}
-                        avatar={user.avatar}
-                        wpm={user.results?.wpm}
-                        acc={user.results?.accuracy}
-                    />
-                })}
-            </div>
-            :
-            <div id="multiplayer-game">
-                < NavBar />
-                <div id="playing-players">
+        <>
+            < NavBar />
+            {ended ?
+                <div id="end-game-leaderboard">
+                    <h1> END OF GAME </h1>
                     {socketContext.userList.map((user, i) => {
-                        return <PlayerItem
+                        return <EndGameResults
                             key={i} name={user.username}
-                            avatar={user.avatar} leader={i === 0} />
+                            avatar={user.avatar}
+                            wpm={user.results?.wpm}
+                            acc={user.results?.accuracy}
+                        />
                     })}
                 </div>
-                <div id="multiplayer-info">
-                    <div id="mode-indicator">
-                        <p>percentage indicator will appear here depending on game mode</p>
+                :
+                <div id="multiplayer-game">
+                    <div id="playing-players">
+                        {socketContext.userList.map((user, i) => {
+                            return <PlayerItem
+                                key={i} name={user.username}
+                                avatar={user.avatar} leader={i === 0} />
+                        })}
                     </div>
-                    {socketContext.userList.map((user, i) => {
-                        return <GameProgress
-                            key={i} index={i} progress={Math.round(user.progress)} />
-                    })}
-                    <TypingScreen multiplayer={true} />
-                </div>
-            </div>}
+                    <div id="multiplayer-info">
+                        <div id="mode-indicator">
+                            <p>percentage indicator will appear here depending on game mode</p>
+                        </div>
+                        {socketContext.userList.map((user, i) => {
+                            return <GameProgress
+                                key={i} index={i} progress={Math.round(user.progress)} />
+                        })}
+                        <TypingScreen multiplayer={true} />
+                    </div>
+                </div>}
         </>
     );
 }
