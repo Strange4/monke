@@ -1,5 +1,9 @@
-import { Server } from "socket.io"
+import { Server, Socket } from "socket.io"
 
+/**
+ * Initial connnection set up
+ * @param {Server} server 
+ */
 export function setUp(server) {
     const io = new Server(server, { cors: { origin: "http://localhost:3000" } })
     let userDict = {}
@@ -12,10 +16,20 @@ export function setUp(server) {
         userDict[roomCode] = userDict[roomCode] || []
 
         setUpLobbyListeners(socket, userData, roomCode, roomState, userDict, io)
-        setUpGameListeners(socket, userData, roomCode, roomState, userDict, io)
+        setUpGameListeners(socket, userData, roomCode, userDict, io)
     });
 }
 
+/**
+ * Sets up the lobby socket listeners and is in charge of handling
+ * access to the room (full room or game started or available)
+ * @param {Socket} socket 
+ * @param {Object} userData 
+ * @param {String} roomCode 
+ * @param {String} roomState 
+ * @param {Object} userDict 
+ * @param {Server} io 
+ */
 function setUpLobbyListeners(socket, userData, roomCode, roomState, userDict, io) {
     socket.on("try-join", () => {
         if (roomState[roomCode] === "started") {
@@ -41,16 +55,22 @@ function setUpLobbyListeners(socket, userData, roomCode, roomState, userDict, io
     })
 }
 
-function setUpGameListeners(socket, userData, roomCode, roomState, userDict, io) {
-    socket.on("send-progress", (currentProgress, total) => {
+/**
+ * Sets up the in game socket listeners
+ * @param {Socket} socket 
+ * @param {Object} userData 
+ * @param {String} roomCode 
+ * @param {Object} userDict 
+ * @param {Server} io 
+ */
+function setUpGameListeners(socket, userData, roomCode, userDict, io) {
+    socket.on("update-progress-bar", (currentProgress, total) => {
         let userIndex = userDict[roomCode].findIndex(user => user.id === userData.id)
         userDict[roomCode][userIndex].progress = currentProgress / total * 100
 
-        let endGame = true;
+        // keeps track on whether that user finished the game or not
         userDict[roomCode].forEach(user => {
-            if (user.progress < 100) {
-                endGame = false
-            } else {
+            if (user.progress >= 100) {
                 user.gameEnded = true
                 if (user.id === userData.id) {
                     socket.emit("user-ended")
@@ -58,19 +78,23 @@ function setUpGameListeners(socket, userData, roomCode, roomState, userDict, io)
             }
         });
 
-        if (endGame) {
-            io.to(roomCode).emit("end-game", userDict[roomCode])
-        }
         io.to(roomCode).emit("update-progress", userDict[roomCode])
     });
 
+    // executes once user has ended to update the results for that user
     socket.once("send-results", (result) => {
         let userIndex = userDict[roomCode].findIndex(user => user.id === userData.id)
         userDict[roomCode][userIndex].results = result
-        io.to(roomCode).emit("update-results", userDict[roomCode])
-    })
+        io.to(roomCode).emit("update-progress", userDict[roomCode])
+    });
 }
 
+/**
+ * Sets the ID, username, avatar and progress for the user
+ * associater with the given socket
+ * @param {Socket} socket 
+ * @returns {Object}
+ */
 function setUserData(socket) {
     const defaultAvatar =
         "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
