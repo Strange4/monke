@@ -12,6 +12,7 @@ import {
     randomNumber
 } from './TypingUtil';
 import defaultQuotes from '../../Data/default_quotes.json';
+import TTSQuote from '../TTSpeech/TTSQuote';
 
 const allShiftKeys = keyboardKeys.english.upper;
 const allRegKeys = keyboardKeys.english.lower;
@@ -123,6 +124,7 @@ function TypingScreen() {
                     <div>
                         <Chronometer seconds={displayTime}/>
                         <GameText display={userDisplay} />
+                        <TTSQuote text={textToDisplay} resultScreenOff={!displayResults} />
                         <VirtualKeyboard currentKeys={keyboard} />
                         <SoloGameResult
                             isOpen={displayResults}
