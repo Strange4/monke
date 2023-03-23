@@ -6,7 +6,8 @@ import Cookies from "js-cookie";
  * @param {string} cookieValue, the value of the cookie that will be created.
  */
 function setCookie(cookieName, cookieValue){
-    Cookies.set(cookieName, cookieValue, {expires: 100000});
+    if (getCookieValue(cookieName) !== undefined)
+        Cookies.set(cookieName, cookieValue, {expires: 100000, sameSite: 'Strict', secure: true});
 }
 
 /**
@@ -26,4 +27,4 @@ function deleteCookie(cookieName){
     Cookies.remove(cookieName);
 }
 
-export default {setCookie, getCookieValue, deleteCookie};
+export {setCookie, getCookieValue, deleteCookie};
