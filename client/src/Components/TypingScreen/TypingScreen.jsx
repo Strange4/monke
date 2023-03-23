@@ -138,9 +138,16 @@ function TypingScreen() {
                         {/* label and checkbox are there temporary to enable TTS */}
                         <label>!TEMPORARY! Enable text to speech</label>
                         <input type="checkbox"
+                            id="enableTTS"
                             name="enableTTSQuote"
                             defaultChecked={false}
                             onClick={handleChkBoxEvent}
+                            onKeyUp={(e) => {
+                                if(e.key === 'Enter'){
+                                    e.target.checked = !e.target.checked;
+                                    handleChkBoxEvent(e)
+                                }
+                            }}
                         />
                         <SoloGameResult
                             isOpen={displayResults}
