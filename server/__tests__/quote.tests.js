@@ -3,6 +3,7 @@ import supertest from "supertest";
 import app from "../routes/app";
 import mockingoose from "mockingoose";
 import { SUCCESS, ERROR } from "./api.tests";
+import { shortQuoteLength, mediumQuoteLength } from "../routes/quotes";
 const REQUEST = supertest(app);
 
 describe("Testing the quotes api endpoint", () => {
@@ -35,11 +36,9 @@ describe("Testing the quotes api endpoint", () => {
             expect(RESPONSE.status).toBe(ERROR);
         });
         
-        const shortQuoteLength = 100;
-        const mediumQuoteLength = 250;
         it(`set length medium, must return a message with 
         ${shortQuoteLength} < characters <= ${mediumQuoteLength} `, async () => {
-            const RESPONSE = await REQUEST.get("/quote?length=medium");
+            const RESPONSE = await REQUEST.get("/quote?quoteLength=medium");
             expect(RESPONSE.status).toBe(SUCCESS);
             const quoteLength = RESPONSE.body.body.length;
             expect(quoteLength).toBeGreaterThan(shortQuoteLength);
