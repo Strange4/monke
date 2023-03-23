@@ -24,7 +24,7 @@ function TypingScreen() {
     const {
         isLoading, data: textToDisplay, refetch
     } = useQuery("textToDisplay", async () => {
-        return (await (await fetch("/quote",
+        return (await (await fetch("/api/quote",
             {
                 headers:
                     { 'Accept': 'application/json', "Content-Type": "application/json" }

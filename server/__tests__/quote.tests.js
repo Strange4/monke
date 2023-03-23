@@ -11,27 +11,27 @@ describe("Testing the quotes api endpoint", () => {
         it("set difficulty to 1, must return a message with status code 200", async () => {
             mockingoose(Quote).toReturn({ "quote": "baaahh"}, "findOne");
         
-            const RESPONSE = await REQUEST.get("/quote?difficulty=1");
+            const RESPONSE = await REQUEST.get("/api/quote?difficulty=1");
         
             expect(RESPONSE.status).toBe(SUCCESS);
             expect(RESPONSE.body.body).toBeDefined();
         });
         
         it("set undefined difficulty, must return a message with status code 200", async () => {
-            const RESPONSE = await REQUEST.get("/quote");
+            const RESPONSE = await REQUEST.get("/api/quote");
             
             expect(RESPONSE.status).toBe(SUCCESS);
             expect(RESPONSE.body.body).toBeDefined();
         });
         
         it("set 'a' for difficulty, must return a message with status code 400", async () => {
-            const RESPONSE = await REQUEST.get("/quote?difficulty=nepnep");
+            const RESPONSE = await REQUEST.get("/api/quote?difficulty=nepnep");
             
             expect(RESPONSE.status).toBe(ERROR);
         });
 
         it("set difficulty as 10, must return a status of 400", async () => {
-            const RESPONSE = await REQUEST.get("/quote?difficulty=10");
+            const RESPONSE = await REQUEST.get("/api/quote?difficulty=10");
             expect(RESPONSE.status).toBe(ERROR);
         });
     });
