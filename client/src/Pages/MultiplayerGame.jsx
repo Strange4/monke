@@ -42,17 +42,17 @@ const MultiplayerGame = () => {
         });
     }
 
-    function sortGameLeaderboard(a, b) {
-        if (a.results === undefined || b.results === undefined) {
-            return 1
-        } else if (a.results.wpm * a.results.acc > b.results.wpm * b.results.acc) {
-            return 1;
-        } else if (a.results.wpm * a.results.acc < b.results.wpm * b.results.acc) {
-            return -1;
-        } else {
-            return 0;
-        }
-    }
+    // function sortGameLeaderboard(a, b) {
+    //     if (a.results === undefined || b.results === undefined) {
+    //         return 1
+    //     } else if (a.results.wpm * a.results.acc > b.results.wpm * b.results.acc) {
+    //         return 1;
+    //     } else if (a.results.wpm * a.results.acc < b.results.wpm * b.results.acc) {
+    //         return -1;
+    //     } else {
+    //         return 0;
+    //     }
+    // }
 
     return (
         <>
@@ -60,7 +60,7 @@ const MultiplayerGame = () => {
             {ended ?
                 <div id="end-game-leaderboard">
                     <h1> END OF GAME </h1>
-                    {socketContext.userList.sort((a, b) => sortGameLeaderboard(a, b)).map((user, i) => {
+                    {socketContext.userList.map((user, i) => {
                         return <EndGameResults
                             key={i} name={user.username}
                             avatar={user.avatar}
