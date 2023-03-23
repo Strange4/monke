@@ -1,16 +1,16 @@
 import supertest from "supertest";
 import app from "../routes/app";
 import mockingoose from "mockingoose";
+import '@types/jest'
 
-import Quote from "../database/models/quote";
 import User from "../database/models/user";
 
 const REQUEST = supertest(app);
 
 const API_ROUTE = "/api";
 
-const SUCCESS = 200;
-const ERROR = 400;
+export const SUCCESS = 200;
+export const ERROR = 400;
 
 const TEST_USERS = [
     {
@@ -63,30 +63,6 @@ const TEST_USERS = [
     }
 ];
 
-describe("GET /api/quote", () => {
-    mockingoose(Quote).toReturn({ "quote": "weeeeeeeeeeeeeeeeeeee"}, "findOne");
-    it("set difficulty to 1, must return a message with status code 200", async () => {
-        mockingoose(Quote).toReturn({ "quote": "baaahh"}, "findOne");
-    
-        const RESPONSE = await REQUEST.get("/quote?difficulty=1");
-    
-        expect(RESPONSE.status).toBe(SUCCESS);
-        expect(RESPONSE.body.body).toBeDefined();
-    });
-
-    it("set undefined difficulty, must return a message with status code 200", async () => {
-        const RESPONSE = await REQUEST.get("/quote");
-        
-        expect(RESPONSE.status).toBe(SUCCESS);
-        expect(RESPONSE.body.body).toBeDefined();
-    });
-
-    it("set 'a' for difficulty, must return a message with status code 400", async () => {
-        const RESPONSE = await REQUEST.get("/quote?difficulty=nepnep");
-        
-        expect(RESPONSE.status).toBe(ERROR);
-    });
-});
 
 
 describe("GET /api/leaderboard", () => {
