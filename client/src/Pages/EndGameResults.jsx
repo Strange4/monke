@@ -5,7 +5,7 @@ const EndGameResults = (props) => {
             <p className='player-name'> {props.name} </p>
             <div id="game-single-result">
                 {props.wpm !== undefined ?
-                    <p> wpm: {props.wpm} accuracy: {props.acc}</p>
+                    <p> wpm: {props.wpm} accuracy: {props.acc} score: {Math.round(props.wpm*props.acc)}</p>
                     :
                     <p> User still in progress...</p>
                 }
