@@ -1,7 +1,6 @@
 import supertest from "supertest";
 import app from "../routes/app";
 import mockingoose from "mockingoose";
-import '@types/jest'
 
 import User from "../database/models/user";
 

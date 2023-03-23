@@ -13,13 +13,18 @@ quoteRouter.get("/", async (req, res, next) => {
     try{
         query = getUriParams(req.query);
     } catch(zodError){
+        console.log("Oh shit got a parsing error");
         const error = new createHttpError.BadRequest(zodError);
+        console.log("bad to the bone");
         next(error);
+        return;
     }
+    console.log(query);
     const total = await Quote.countDocuments(query);
     const quote = await Quote.findOne(query).skip(randomInt(0, total - 1)).lean();
     // there are no quotes with query
     if(quote === null){
+        console.log("There are no quotes with those params")
         res.json({body: await getRandomQuote() });
         return;
     }
@@ -32,19 +37,22 @@ quoteRouter.get("/", async (req, res, next) => {
 * @returns {import('mongoose').FilterQuery<import("../database/models/quote").quoteFields>}
  */
 function getUriParams(queryParams){
-    const difficulty = z.number()
-        .gte(1)
-        .int().lte(5).parse(queryParams.difficulty);
-        
-    const length = z.string()
+    const difficulty = queryParams.difficulty ? z.number()
+        .int().gte(1).lte(5)
+        .parse(Number(queryParams.difficulty))
+        : undefined;
+    const length = queryParams.quoteLength ? z.string()
         .regex(/(short|medium|long)/)
-        .parse(queryParams.quoteLength);
+        .parse(queryParams.quoteLength)
+        : undefined;
     const quoteLengthQuery = {
-        short: {"number_characters": {$lte: shortQuoteLength}},
-        medium: {"number_characters": {$gt: shortQuoteLength, $lte: mediumQuoteLength}},
-        long: {"number_characters": {$gt: mediumQuoteLength}}
+        short: {$lte: shortQuoteLength},
+        medium: {$gt: shortQuoteLength, $lte: mediumQuoteLength},
+        long: {$gt: mediumQuoteLength}
     }[length];
-    return {difficulty, "number_characters": quoteLengthQuery};
+    return {
+        ...difficulty && {difficulty}, 
+        ...quoteLengthQuery && {"number_characters": quoteLengthQuery}};
 }
 
 async function getRandomQuote(){
