@@ -33,10 +33,6 @@ quoteRouter.get("/", async (req, res, next) => {
 * @returns {import('mongoose').FilterQuery<import("../database/models/quote").quoteFields>}
  */
 function getUriParams(queryParams){
-    const difficulty = queryParams.difficulty ? z.number()
-        .int().gte(1).lte(5)
-        .parse(Number(queryParams.difficulty))
-        : undefined;
     const length = queryParams.quoteLength ? z.string()
         .regex(/(short|medium|long)/)
         .parse(queryParams.quoteLength)
@@ -47,7 +43,6 @@ function getUriParams(queryParams){
         long: {$gt: mediumQuoteLength}
     }[length];
     return {
-        ...difficulty && {difficulty}, 
         ...quoteLengthQuery && {"number_characters": quoteLengthQuery}};
 }
 
