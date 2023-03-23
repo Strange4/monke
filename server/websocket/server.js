@@ -72,6 +72,7 @@ function setUpGameListeners(socket, userData, roomCode, userDict, io) {
         // keeps track on whether that user finished the game or not
         userDict[roomCode].forEach(user => {
             if (user.progress >= 100) {
+                user.progress = 100;
                 user.gameEnded = true;
                 if (user.id === userData.id) {
                     socket.emit("user-ended");
