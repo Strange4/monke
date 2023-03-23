@@ -1,16 +1,16 @@
 import Speech from "react-speech";
 import { useRef, useEffect, useState } from "react";
 
-function TTSQuote({ text, resultScreenOff }){
+function TTSQuote({ text, resultScreenOff, enabled }){
 
     const [isMounted, setIsMounted] = useState(false);
     const speechRef = useRef();
 
     useEffect(() => {
-        if(resultScreenOff){
+        if(resultScreenOff && enabled){
             setIsMounted(true);
         }
-    }, [resultScreenOff]);
+    }, [resultScreenOff, enabled]);
 
     useEffect(() => {
         if(speechRef.current && isMounted){

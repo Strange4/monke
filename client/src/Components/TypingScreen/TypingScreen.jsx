@@ -115,6 +115,11 @@ function TypingScreen() {
         setKeyboard(newKeyboard);
     }
 
+    const [enableTTS, setEnableTTS] = useState(false);
+    function handleChkBoxEvent(e) {
+        setEnableTTS(e.target.checked);
+    }
+
     return (
         <div className='center'>
             {isLoading ?
@@ -124,8 +129,19 @@ function TypingScreen() {
                     <div>
                         <Chronometer seconds={displayTime}/>
                         <GameText display={userDisplay} />
-                        <TTSQuote text={textToDisplay} resultScreenOff={!displayResults} />
+                        <TTSQuote
+                            text={textToDisplay}
+                            resultScreenOff={!displayResults}
+                            enabled={enableTTS}
+                        />
                         <VirtualKeyboard currentKeys={keyboard} />
+                        {/* label and checkbox are there temporary to enable TTS */}
+                        <label>!TEMPORARY! Enable text to speech</label>
+                        <input type="checkbox"
+                            name="enableTTSQuote"
+                            defaultChecked={false}
+                            onClick={handleChkBoxEvent}
+                        />
                         <SoloGameResult
                             isOpen={displayResults}
                             displayText={userDisplay}
