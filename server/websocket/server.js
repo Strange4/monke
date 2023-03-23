@@ -34,7 +34,7 @@ function setUpLobbyListeners(socket, userData, roomCode, roomState, userDict, io
     socket.on("try-join", () => {
         if (roomState[roomCode] === "started") {
             socket.emit("game-started");
-        } else if (userDict[roomCode].length < 2) {
+        } else if (userDict[roomCode].length < 5) {
             socket.join(roomCode);
             userDict[roomCode].push(userData);
             io.to(roomCode).emit("join-room", userDict[roomCode], roomCode);
