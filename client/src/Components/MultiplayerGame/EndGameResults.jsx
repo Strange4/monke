@@ -4,8 +4,13 @@ const EndGameResults = (props) => {
             <img className="player-image" src={`${props.avatar}`} />
             <p className='player-name'> {props.name} </p>
             <div id="game-single-result">
-                {props.wpm !== undefined ?
-                    <p> wpm: {props.wpm} accuracy: {props.acc} score: {Math.round(props.wpm*props.acc)}</p>
+                {props.ended ?
+                    <p>
+                        <h1>RANK: {props.rank}</h1>
+                        wpm: {props.wpm}
+                        accuracy: {props.acc}
+                        score: {Math.round(props.wpm * props.acc)}
+                    </p>
                     :
                     <p> User still in progress...</p>
                 }

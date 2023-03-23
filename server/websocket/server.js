@@ -73,13 +73,12 @@ function setUpGameListeners(socket, userData, roomCode, userDict, io) {
         userDict[roomCode].forEach(user => {
             if (user.progress >= 100) {
                 user.progress = 100;
-                user.gameEnded = true;
-                if (user.id === userData.id) {
+                if (user.id === userData.id && !user.gameEnded) {
                     socket.emit("user-ended");
                 }
+                user.gameEnded = true;
             }
         });
-
         io.to(roomCode).emit("update-progress", userDict[roomCode]);
     });
 
@@ -87,6 +86,9 @@ function setUpGameListeners(socket, userData, roomCode, userDict, io) {
     socket.once("send-results", (result) => {
         let userIndex = userDict[roomCode].findIndex(user => user.id === userData.id);
         userDict[roomCode][userIndex].results = result;
+        userDict[roomCode].sort(
+            (a, b) => b.results.wpm * b.results.accuracy - a.results.wpm * a.results.accuracy
+        )
         io.to(roomCode).emit("update-progress", userDict[roomCode]);
     });
 }
@@ -106,6 +108,10 @@ function setUserData(socket) {
     userData["avatar"] = socket.handshake.auth.userData?.avatar || defaultAvatar;
     userData["id"] = socket.id;
     userData["progress"] = 0;
+    userData["results"] = {
+        wpm: 0,
+        acc: 0
+    };
 
     return userData;
 }
