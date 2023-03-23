@@ -13,18 +13,14 @@ quoteRouter.get("/", async (req, res, next) => {
     try{
         query = getUriParams(req.query);
     } catch(zodError){
-        console.log("Oh shit got a parsing error");
         const error = new createHttpError.BadRequest(zodError);
-        console.log("bad to the bone");
         next(error);
         return;
     }
-    console.log(query);
     const total = await Quote.countDocuments(query);
     const quote = await Quote.findOne(query).skip(randomInt(0, total - 1)).lean();
     // there are no quotes with query
     if(quote === null){
-        console.log("There are no quotes with those params")
         res.json({body: await getRandomQuote() });
         return;
     }
