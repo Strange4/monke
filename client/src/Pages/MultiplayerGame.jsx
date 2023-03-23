@@ -1,59 +1,45 @@
-import './Styles/MultiplayerGame.css'
+import './Styles/MultiplayerGame.css';
 import NavBar from "../Components/NavBar";
 import TypingScreen from "../Components/TypingScreen/TypingScreen";
 import PlayerItem from '../Components/PlayerItem';
 import SocketContext from '../Context/SocketContext';
 import { useContext, useEffect, useState } from 'react';
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import GameProgress from '../Components/Lobby/GameProgress';
 import EndGameResults from './EndGameResults';
 
 const MultiplayerGame = () => {
-    const socketContext = useContext(SocketContext)
-    const location = useLocation()
-    const navigate = useNavigate()
-    const [ended, setEnded] = useState(false)
+    const socketContext = useContext(SocketContext);
+    const navigate = useNavigate();
+    const [ended, setEnded] = useState(false);
 
     useEffect(() => {
-        if (location.pathname !== "/multiplayer-game") {
-            socketContext.socket.current.disconnect()
-            socketContext.socket.current = undefined
-        }
-        if (!socketContext.socket.current) {
-            navigate("/")
-        }
-    }, [location.pathname]);
+        socketContext.socket.current ? updateListeners() : navigate("/");
+    }, []);
 
-    useEffect(() => {
-        if (socketContext.socket.current) {
-            updateListeners()
-        }
-    })
-
+    /**
+     * Updates the current lobby listeners and calls
+     * a function that sets up new ones for gameplay
+     */
     function updateListeners() {
-        socketContext.socket.current.off("join-room")
-        socketContext.socket.current.off("leave-room")
-
+        socketContext.socket.current.off("join-room");
+        socketContext.socket.current.off("leave-room");
         socketContext.socket.current.on("leave-room", (users) => {
-            socketContext.setUserList(users)
-        })
-        setUpProgressListeners()
+            socketContext.setUserList(users);
+        });
+        setUpProgressListeners();
     }
 
+    /**
+     * Sets all the progress in game listeners
+     */
     function setUpProgressListeners() {
         socketContext.socket.current.on("update-progress", (userList) => {
-            socketContext.setUserList(userList)
-        })
-        socketContext.socket.current.once("end-game", (userList) => {
-            socketContext.setUserList(userList)
-            socketContext.socket.current.off("send-progress")
-        })
-        socketContext.socket.current.on("update-results", (userList) => {
-            socketContext.setUserList(userList)
-        })
-        socketContext.socket.current.on("user-ended", () => {
-            setEnded(true)
-        })
+            socketContext.setUserList(userList);
+        });
+        socketContext.socket.current.once("user-ended", () => {
+            setEnded(true);
+        });
     }
 
     return (
@@ -62,7 +48,10 @@ const MultiplayerGame = () => {
             {ended ?
                 <div id="end-game-leaderboard">
                     <h1> END OF GAME </h1>
-                    {socketContext.userList.map((user, i) => {
+                    {socketContext.userList.sort((a, b) => {
+                        return a.results?.wpm * a.results?.acc > b.results?.wpm * b.results?.acc
+                    }).map((user, i) => {
+                        console.log(user)
                         return <EndGameResults
                             key={i} name={user.username}
                             avatar={user.avatar}
@@ -81,16 +70,14 @@ const MultiplayerGame = () => {
                         })}
                     </div>
                     <div id="multiplayer-info">
-                        <div id="mode-indicator">
-                            <p>percentage indicator will appear here depending on game mode</p>
-                        </div>
                         {socketContext.userList.map((user, i) => {
                             return <GameProgress
                                 key={i} index={i} progress={Math.round(user.progress)} />
                         })}
                         <TypingScreen multiplayer={true} />
                     </div>
-                </div>}
+                </div>
+            }
         </>
     );
 }

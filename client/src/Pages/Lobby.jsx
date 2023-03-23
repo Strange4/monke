@@ -1,8 +1,8 @@
-import '../Components/Lobby/Styles/Lobby.css'
+import '../Components/Lobby/Styles/Lobby.css';
 import NavBar from "../Components/NavBar";
 import TypingScreen from "../Components/TypingScreen/TypingScreen";
 import LobbySettings from '../Components/Lobby/LobbySettings';
-import { AiFillSetting } from "react-icons/ai"
+import { AiFillSetting } from "react-icons/ai";
 import PlayerItem from '../Components/PlayerItem';
 import { useState, useRef, useEffect, useContext } from 'react';
 import { useNavigate } from "react-router-dom";
@@ -12,40 +12,40 @@ import { RiCheckDoubleFill } from 'react-icons/ri';
 import SocketContext from '../Context/SocketContext';
 
 function Lobby() {
-    const navigate = useNavigate()
-    const roomCode = useRef()
-    const location = useLocation()
+    const navigate = useNavigate();
+    const roomCode = useRef();
+    const location = useLocation();
     const [settings, showSettings] = useState(false);
-    const [copied, setCopied] = useState(false)
-    const socketContext = useContext(SocketContext)
+    const [copied, setCopied] = useState(false);
+    const socketContext = useContext(SocketContext);
 
     useEffect(() => {
-        if (location.pathname !== "/lobby") {
-            socketContext.socket.current.disconnect()
-            socketContext.socket.current = undefined
-        }
         if (!socketContext.socket.current) {
-            navigate("/")
+            navigate("/");
         }
-    }, [location.pathname]);
+    }, []);
 
+    // Toggle settings view
     const handleClick = () => {
-        showSettings(current => !current)
+        showSettings(current => !current);
     }
 
+    // Copies the code to the clipboard through click
     function copyCode() {
-        navigator.clipboard.writeText(roomCode.current.textContent)
-        setCopied(true)
+        navigator.clipboard.writeText(roomCode.current.textContent);
+        setCopied(true);
     }
 
+    // Disconnect the socket and navigate back to the home page
     function leave() {
-        socketContext.socket.current.disconnect()
-        socketContext.socket.current = undefined
-        navigate("/")
+        socketContext.socket.current.disconnect();
+        socketContext.socket.current = undefined;
+        navigate("/");
     }
 
+    // Checks with the server side if game can get started
     function startGame() {
-        socketContext.socket.current.emit("try-start")
+        socketContext.socket.current.emit("try-start");
     }
 
     return (
