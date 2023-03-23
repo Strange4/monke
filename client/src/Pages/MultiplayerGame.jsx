@@ -5,8 +5,8 @@ import PlayerItem from '../Components/PlayerItem';
 import SocketContext from '../Context/SocketContext';
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import GameProgress from '../Components/Lobby/GameProgress';
-import EndGameResults from './EndGameResults';
+import GameProgress from '../Components/MultiplayerGame/GameProgress';
+import EndGameLeaderboard from '../Components/MultiplayerGame/EndGameLeaderboard';
 
 const MultiplayerGame = () => {
     const socketContext = useContext(SocketContext);
@@ -42,33 +42,11 @@ const MultiplayerGame = () => {
         });
     }
 
-    // function sortGameLeaderboard(a, b) {
-    //     if (a.results === undefined || b.results === undefined) {
-    //         return 1
-    //     } else if (a.results.wpm * a.results.acc > b.results.wpm * b.results.acc) {
-    //         return 1;
-    //     } else if (a.results.wpm * a.results.acc < b.results.wpm * b.results.acc) {
-    //         return -1;
-    //     } else {
-    //         return 0;
-    //     }
-    // }
-
     return (
         <>
             < NavBar />
             {ended ?
-                <div id="end-game-leaderboard">
-                    <h1> END OF GAME </h1>
-                    {socketContext.userList.map((user, i) => {
-                        return <EndGameResults
-                            key={i} name={user.username}
-                            avatar={user.avatar}
-                            wpm={user.results?.wpm}
-                            acc={user.results?.accuracy}
-                        />
-                    })}
-                </div>
+                <EndGameLeaderboard/>
                 :
                 <div id="multiplayer-game">
                     <div id="playing-players">
@@ -78,13 +56,8 @@ const MultiplayerGame = () => {
                                 avatar={user.avatar} leader={i === 0} />
                         })}
                     </div>
-                    <div id="multiplayer-info">
-                        {socketContext.userList.map((user, i) => {
-                            return <GameProgress
-                                key={i} index={i} progress={Math.round(user.progress)} />
-                        })}
-                        <TypingScreen multiplayer={true} />
-                    </div>
+                    <GameProgress />
+                    <TypingScreen multiplayer={true} />
                 </div>
             }
         </>
