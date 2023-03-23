@@ -45,20 +45,28 @@ function TypingScreen(props) {
     const { startTimer, stopTimer, resetTimer, timer } = useChronometer(setDisplayTime);
     const [userDisplay, setUserDisplay] = useState(getDefaultUserDisplay(textToDisplay));
     const textContainerRef = useRef();
-    const socketContext = useContext(SocketContext)
+    const socketContext = useContext(SocketContext);
 
     useEffect(() => {
-        if(props.multiplayer) {
+        if (props.multiplayer) {
             startTimer();
         }
-    }, [])
+    }, []);
 
+    /**
+     * Stops the timer and displays result
+     */
     function handleGameEnd() {
         stopTimer();
         setDisplayResults(true);
-        refetch();
+        if (!props.multiplayer) {
+            refetch();
+        }
     }
 
+    /**
+     * Reset the timer and typing screen
+     */
     function resetGame() {
         setDisplayResults(false);
         resetTimer();
@@ -76,7 +84,9 @@ function TypingScreen(props) {
             handleGameEnd();
         }
         if (props.multiplayer) {
-            socketContext.socket.current.emit("send-progress", current.length, userDisplay.length)
+            socketContext.socket.current.emit("update-progress-bar",
+                current.length, userDisplay.length
+            );
         } else if (current.length === 1) {
             startTimer();
         }
@@ -156,7 +166,8 @@ function TypingScreen(props) {
                         onDrop={preventDefaultBehavior}
                         onCopy={preventDefaultBehavior}
                     />
-                </>}
+                </>
+            }
         </div>
     );
 }
