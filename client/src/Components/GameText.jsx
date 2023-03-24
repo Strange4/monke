@@ -14,8 +14,8 @@ function GameText({ display, isFocused, onClick }) {
             </div>
             <div
                 id="typing-screen-text"
+                onClick={onClick} 
                 className={isFocused ? 'letter-container' : 'blurred-container letter-container'}>
-                
                 {
                     display.map((letter, index) => {
                         return (
