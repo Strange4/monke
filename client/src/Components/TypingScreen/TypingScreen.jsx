@@ -47,16 +47,8 @@ function TypingScreen() {
     const [displayResults, setDisplayResults] = useState(false);
     const { startTimer, stopTimer, resetTimer, timer } = useChronometer(setDisplayTime);
     const [userDisplay, setUserDisplay] = useState(getDefaultUserDisplay(textToDisplay));
+    const [isFocused, setIsFocused] = useState(true);
     const textContainerRef = useRef();
-
-
-    useEffect(() => {
-        if(textContainerRef.current){
-            console.log("focusing");
-            textContainerRef.current.focus();
-        }
-    }, []);
-
     function handleGameEnd() {
         stopTimer();
         setDisplayResults(true);
@@ -125,37 +117,42 @@ function TypingScreen() {
         setKeyboard(newKeyboard);
     }
 
-    return (
-        <div className='center'>
-            {isLoading ?
-                <Spinner />
-                :
-                <>
-                    <div>
-                        <Chronometer seconds={displayTime}/>
-                        <GameText display={userDisplay} />
-                        <VirtualKeyboard currentKeys={keyboard} />
-                        <SoloGameResult
-                            isOpen={displayResults}
-                            displayText={userDisplay}
-                            timer={timer.current}
-                            originalText={textToDisplay}
-                            closeWindow={resetGame}
-                        />
-                    </div>
+    if(isLoading){
+        return <Spinner/>
+    }
 
-                    <input type="text" 
-                        className="text-container"
-                        ref={textContainerRef}
-                        onChange={onChangeText}
-                        onKeyDown={handleKeyDown}
-                        onKeyUp={handlekeyUp}
-                        onPaste={preventDefaultBehavior}
-                        onDrag={preventDefaultBehavior}
-                        onDrop={preventDefaultBehavior}
-                        onCopy={preventDefaultBehavior}
-                    />
-                </>}
+    return (
+        <div>
+            <div>
+                <Chronometer seconds={displayTime}/>
+                <GameText onClick={()=> {
+                    textContainerRef.current.focus();
+                    setIsFocused(true);
+                }} display={userDisplay} isFocused={isFocused} />
+                <VirtualKeyboard currentKeys={keyboard} />
+                <SoloGameResult
+                    isOpen={displayResults}
+                    displayText={userDisplay}
+                    timer={timer.current}
+                    originalText={textToDisplay}
+                    closeWindow={resetGame}
+                />
+            </div>
+
+            <input
+                onBlur={()=>setIsFocused(false)}
+                autoFocus
+                type="text" 
+                id="typing-input-box"
+                ref={textContainerRef}
+                onChange={onChangeText}
+                onKeyDown={handleKeyDown}
+                onKeyUp={handlekeyUp}
+                onPaste={preventDefaultBehavior}
+                onDrag={preventDefaultBehavior}
+                onDrop={preventDefaultBehavior}
+                onCopy={preventDefaultBehavior}
+            />
         </div>
     );
 }
