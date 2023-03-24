@@ -8,7 +8,7 @@ import './Styles/RankListItem.css';
 function RankListItem(props) {
     return (
         <div className="rank-list-item">
-            <p>{props.rank}</p>
+            <p id="user-rank">{props.rank}</p>
             <div id='rank-user'>
                 <img className="leaderboard-user-icon" src={`${props.picture}`} />
                 <p className='username'>{props.user}</p>
