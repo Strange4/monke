@@ -27,9 +27,11 @@ const upload = multer({
 });
 
 const router = express.Router();
-function dbConnected(_, res, next){
+function dbConnected(_, __, next){
     // the node_env could be changed to mock the connection state instead
     if(mongoose.connection.readyState !== 1 && process.env.NODE_ENV !== "test"){
+        mongoose.connect(process.env.ATLAS_URI, {dbName: "QuotesDatabase"})
+            .catch(() => {});
         next(new createHttpError.InternalServerError("Database is unavailable"));
         return;
     }
