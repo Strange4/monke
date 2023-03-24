@@ -12,7 +12,7 @@
 }
    
 #leaderboard::-webkit-scrollbar-track {
-    background-color: var(--bg-color);
+    background-color: transparent;
     border: 8px solid transparent;
     border-radius: 20px;
     background-clip: content-box;
@@ -36,11 +36,13 @@
 }
 
 #leaderboard-header p {
-    width: max-content;
-    text-align: center;
+    width: 150px;
+    text-align: left;
+    padding: 10px;
 }
 
-.leaderboard_user_icon {
-    width: 3vw;
-    height: 5vh;
+#rank-user {
+    display: flex;
+    flex-flow: row;
+    width: 150px;
 }
