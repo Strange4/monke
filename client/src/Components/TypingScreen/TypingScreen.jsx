@@ -1,5 +1,5 @@
 import './Layout/TypingScreen.css';
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import VirtualKeyboard from './VirtualKeyboard';
 import keyboardKeys from "../../Data/keyboard_keys.json";
 import GameText from '../GameText';
