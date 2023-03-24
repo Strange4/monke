@@ -74,12 +74,20 @@ function LobbyPopup() {
 
     return (
         <div id="lobby" className='popup'>
-            <h1>Lobby Popup</h1>
-            <button onClick={async () => await createLobby()}>Create</button>
-            <button onClick={() => enterCode(current => !current)}>Join</button>
+            <h1 id='lobby-header'>Multiplayer</h1>
+            <button 
+                onClick={async () => await createLobby()} 
+                className='lobby-access'>
+                Create
+            </button>
+            <button 
+                onClick={() => enterCode(current => !current)} 
+                className='lobby-access'>
+                Join
+            </button>
             {code &&
-                <div>
-                    <input ref={roomCode} type="text" name="code" />
+                <div id='room-code-input'>
+                    <input ref={roomCode} type="text" name="code" placeholder='Enter room code...'/>
                     <button onClick={async () => await joinLobby()}>Enter game</button>
                     <p ref={feedback}></p>
                 </div>
