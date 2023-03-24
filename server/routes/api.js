@@ -27,6 +27,16 @@ const upload = multer({
 });
 
 const router = express.Router();
+function dbConnected(_, res, next){
+    // the node_env could be changed to mock the connection state instead
+    if(mongoose.connection.readyState !== 1 && process.env.NODE_ENV !== "test"){
+        next(new createHttpError.InternalServerError("Database is unavailable"));
+        return;
+    }
+    next();
+}
+
+router.use(dbConnected);
 router.use("/quote", quoteRouter);
 router.use(express.json());
 
@@ -36,10 +46,6 @@ router.use(express.json());
  * if a field has the wrong type it will not be updated
  */
 router.put("/user_stat", async (req, res, next) => {
-    if (!dbIsConnected()) {
-        next(new createHttpError.InternalServerError("Database is unavailable"));
-        return;
-    }
     const email = Constraints.email(req.body.email);
     if (!email) {
         next(new createHttpError.BadRequest(
@@ -93,10 +99,6 @@ router.put("/user_stat", async (req, res, next) => {
  * and their game statistics
  */
 router.post("/user", async (req, res, next) => {
-    if (!dbIsConnected() && process.env.NODE_ENV !== "test") {
-        next(new createHttpError.InternalServerError("Database is unavailable"));
-        return;
-    }
     const email = Constraints.email(req.body.email);
     if (!email) {
         next(new createHttpError.BadRequest(
@@ -137,10 +139,6 @@ router.post("/user", async (req, res, next) => {
  * leaderboard info such as rank, wpm, username and temporary profileURL
  */
 router.get("/leaderboard", async (req, res) => {
-    if (!dbIsConnected() && process.env.NODE_ENV !== "test") {
-        next(new createHttpError.InternalServerError("Error while getting the leaderboard"));
-        return;
-    }
     const maxItems = Constraints.positiveInt(req.query.max) || 10;
     const users = await User
         .find().limit(maxItems)
@@ -153,10 +151,6 @@ router.get("/leaderboard", async (req, res) => {
  * The user email and new Image is sent, newly updated user is returned
  */
 router.put("/update_avatar", upload.single('image'), async (req, res) => {
-    if (!dbIsConnected()) {
-        next(new createError.InternalServerError("Database is unavailable"));
-        return;
-    }
     const email = Constraints.email(req.body.email);
     if (!email) {
         next(new createHttpError.BadRequest("Can't find the user because no email was provided"));
@@ -201,10 +195,6 @@ router.put("/update_avatar", upload.single('image'), async (req, res) => {
  * The user email and new username is sent, newly updated user is returned
  */
 router.put("/update_username", async (req, res) => {
-    if (!dbIsConnected()) {
-        next(new createError.InternalServerError("Database is unavailable"));
-        return;
-    }
     const email = Constraints.email(req.body.email);
     const newName = req.body.username;
     if (!email || !newName) {
@@ -232,10 +222,6 @@ router.get("/lobby", (_, res) => {
     let roomID = v4()
     res.json(roomID)
 });
-
-function dbIsConnected() {
-    return mongoose.connection.readyState === 1;
-}
 
 function handleHttpErrors(error, _, res, next) {
     if (error instanceof createHttpError.HttpError) {
