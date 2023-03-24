@@ -7,6 +7,8 @@ import { RiImageEditFill, RiEdit2Fill, RiSave3Line, RiCloseCircleLine } from "re
 import * as FetchModule from "../Controller/FetchModule"
 import { useNavigate } from "react-router-dom";
 import UserStats from "../Components/UserStats";
+import FirstTimePopUp from "../Components/FirstTimePopUp";
+import { getCookieValue, deleteCookie } from "../Controller/CookieHelper.js";
 
 const Profile = () => {
     const auth = useContext(AuthContext);
@@ -149,9 +151,15 @@ const Profile = () => {
         }
     };
 
+    // Kat when you want to test use the delete here and refresh the page so the style of the banners
+    // deleteCookie("profileFirstTime");
+
+    const [profileCookie, visitedProfile] = useState(getCookieValue("profileFirstTime") === "visited");
+    
     return (
         <div id="home">
             <NavBar />
+            { profileCookie ? <></> : <FirstTimePopUp area={"profile"} setCookieArea={visitedProfile}/> }
             <div id="profile">
                 <div id="user">
                     <div id="image">

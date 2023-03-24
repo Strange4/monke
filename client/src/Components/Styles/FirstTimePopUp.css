@@ -1,0 +1,43 @@
+.firstTimeMessage-overlay {
+    width: 100%;
+    height: 100%;
+    margin: auto;
+    background-color: var(--sub-color-transparent);
+    backdrop-filter: blur(5px);
+}
+
+.firstTimeMessage{
+    background-color: var(--popup-color);
+    border-radius: 10px;
+    color: #fff;
+    backdrop-filter: blur(5px);
+    padding: 10px;
+}
+
+.firstTimeMessage-content {
+    margin-top: 0;
+}
+
+#cookieFirstTime{
+
+}
+
+#homeFirstTime{
+
+}
+
+#leaderboardFirstTime{
+
+}
+
+#lobbyFirstTime{
+
+}
+
+#loginFirstTime{
+
+}
+
+#profileFirstTime{
+
+}
