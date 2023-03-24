@@ -1,17 +1,17 @@
 .rank-list-item{
     display: flex;
     justify-content: space-evenly;
+    align-content: center;
     width: 100%;
     color: #fff;
-    /* margin-left: 3vw; */
     padding: 10px;
-    border-bottom: 1px solid var(--bg-color);
 }
 
 .rank-list-item p {
     text-align: left;
-    min-width: 100px;
-    max-width: 150px;
+    min-width: 80px;
+    width: 100px;
+    max-width: 160px;
     font-size: 0.8em;
 }
 
@@ -19,17 +19,21 @@
     height: 15px;
     overflow: hidden;
     margin-left: 10px;
+    width: 60px !important;
 }
 
 .leaderboard-user-icon {
-    min-width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
 }
 
 #rank-user {
     display: flex;
-    justify-content: left;
-    width: 100px;
+    width: 150px;
     text-align: left;
+}
+
+.user-acc {
+    width: 150px !important;
 }

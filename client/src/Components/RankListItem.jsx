@@ -14,7 +14,7 @@ function RankListItem(props) {
                 <p className='username'>{props.user}</p>
             </div>
             <p>{props.wpm}</p>
-            <p>{props.accuracy}</p>
+            <p className='user-acc'>{props.accuracy}</p>
             <p>{props.date}</p>
         </div>
     );

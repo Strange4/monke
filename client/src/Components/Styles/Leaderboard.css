@@ -1,8 +1,17 @@
-#leaderboard{
+#leaderboard {
+    min-width: 600px;
     width: 80vw;
+    max-width: 1000px;
     height: 80vh;
     overflow-y: scroll;
     padding: 20px;
+}
+
+#header-name {
+    font-size: 3em;
+    color: var(--sub-color);
+    letter-spacing: 15px;
+    margin-bottom: 40px;
 }
 
 #leaderboard::-webkit-scrollbar {
@@ -37,13 +46,19 @@
 }
 
 #leaderboard-header p {
+    min-width: 80px;
     width: 100px;
+    max-width: 150px;
     text-align: left;
-    padding: 10px;
+    font-size: 1.2em;
+    color: var(--accent-color);
 }
 
-#rank-user {
-    display: flex;
-    flex-flow: row;
-    width: 100px;
+.rank-header {
+    width: 150px !important;
+}
+
+div#rankings>div:nth-of-type(even) {
+    background: var(--sub-color-transparent);
+    border-radius: 10px;
 }
