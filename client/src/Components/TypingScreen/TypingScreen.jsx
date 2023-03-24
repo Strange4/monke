@@ -1,5 +1,5 @@
 import './Layout/TypingScreen.css';
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import VirtualKeyboard from './VirtualKeyboard';
 import keyboardKeys from "../../Data/keyboard_keys.json";
 import GameText from '../GameText';
@@ -24,11 +24,14 @@ function TypingScreen() {
     const {
         isLoading, data: textToDisplay, refetch
     } = useQuery("textToDisplay", async () => {
-        return (await (await fetch("/api/quote",
+        const resp = await fetch("/api/quote",
             {
-                headers:
-                    { 'Accept': 'application/json', "Content-Type": "application/json" }
-            })).json()).body;
+                headers: { 'Accept': 'application/json', "Content-Type": "application/json" }
+            });
+        if(!resp.ok){
+            throw new Error("The fetch request failed");
+        }
+        return (await resp.json()).body;
     }, {
         onSuccess: (quote) => {
             setUserDisplay(getDefaultUserDisplay(quote))
@@ -45,6 +48,14 @@ function TypingScreen() {
     const { startTimer, stopTimer, resetTimer, timer } = useChronometer(setDisplayTime);
     const [userDisplay, setUserDisplay] = useState(getDefaultUserDisplay(textToDisplay));
     const textContainerRef = useRef();
+
+
+    useEffect(() => {
+        if(textContainerRef.current){
+            console.log("focusing");
+            textContainerRef.current.focus();
+        }
+    }, []);
 
     function handleGameEnd() {
         stopTimer();
