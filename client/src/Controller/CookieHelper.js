@@ -7,7 +7,7 @@ import Cookies from "js-cookie";
  */
 function setCookie(cookieName, cookieValue){
     if (getCookieValue(cookieName) === undefined){
-        Cookies.set(cookieName, cookieValue, {expires: 100000, sameSite: "Strict", secure: false});   
+        Cookies.set(cookieName, cookieValue, {expires: 100000, sameSite: "Strict", secure: false});
     }
 }
 
