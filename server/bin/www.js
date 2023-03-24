@@ -16,7 +16,11 @@ const PORT = process.env.EXPRESS_PORT || 8080;
 
 (async ()=> {
     mongoose.set("strictQuery", true);
-    await mongoose.connect(process.env.ATLAS_URI, {dbName: "QuotesDatabase"});
+    try{
+        await mongoose.connect(process.env.ATLAS_URI, {dbName: "QuotesDatabase"});
+    } catch(_){
+        console.log("Couldn't connect to the database");
+    }
     const buildPath = path.resolve(__dirname, "..", "..", "client", "build");
     app.use(express.static(buildPath));
     let server = app.listen(PORT, () => {
