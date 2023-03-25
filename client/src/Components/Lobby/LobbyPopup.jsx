@@ -7,6 +7,7 @@ import * as FetchModule from "../../Controller/FetchModule"
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import SocketContext from '../../Context/SocketContext';
+import { GiRetroController } from 'react-icons/gi'
 
 /**
  * Displays a Popup for the lobby
@@ -73,6 +74,8 @@ function LobbyPopup() {
 
     return (
         <div id="lobby" className='popup'>
+            <GiRetroController id='lobby-filler-1'/>
+            <GiRetroController id='lobby-filler-2'/>
             <h1 id='lobby-header'>Multiplayer</h1>
             <button 
                 onClick={async () => await createLobby()} 

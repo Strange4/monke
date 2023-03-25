@@ -74,7 +74,8 @@ function TypingScreen(props) {
         }
         renderLetters(currentText, userDisplay);
         if (props.multiplayer) {
-            socketContext.socket.current.emit("send-progress", currentText.length, userDisplay.length)
+            socketContext.socket.current.
+                emit("send-progress", currentText.length, userDisplay.length)
         }
     }
 
