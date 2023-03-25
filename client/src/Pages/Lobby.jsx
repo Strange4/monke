@@ -70,7 +70,7 @@ function Lobby() {
             <NavBar />
             <div id="lobby-info">
                 {started ?
-                    <Chronometer seconds={(3 - displayTime) || "GO"} />
+                    <Chronometer seconds={3 - displayTime || "GO"} />
                     :
                     <>
                         <div id="players">

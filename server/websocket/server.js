@@ -59,6 +59,7 @@ function setUpLobbyListeners(socket, userData, roomCode, roomState, userDict, io
     socket.on("disconnect", () => {
         userDict[roomCode] = userDict[roomCode].filter(user => user.id !== userData.id);
         io.to(roomCode).emit("leave-room", userDict[roomCode], roomCode);
+        checkGameEnded(leaderboard, userDict, roomCode, io)
     });
 }
 
@@ -98,17 +99,7 @@ function setUpGameListeners(socket, userData, roomCode, userDict, io, leaderboar
 
         leaderboard[roomCode][userIndex].results = result;
 
-        // only display the end game leaderboard if everyone finished
-        let displayLeaderboard = true
-        userDict[roomCode].forEach(user => {
-            if (!user.gameEnded) {
-                displayLeaderboard = false
-            }
-        })
-        if (displayLeaderboard) {
-            leaderboard[roomCode].sort((a, b) => sortLeaderboard(a, b));
-            io.to(roomCode).emit("update-leaderboard", leaderboard[roomCode]);
-        }
+        checkGameEnded(leaderboard, userDict, roomCode, io)
     });
 }
 
@@ -123,6 +114,24 @@ function sortLeaderboard(a, b) {
         return 1;
     }
     return b.results.wpm * b.results.accuracy - a.results.wpm * a.results.accuracy
+}
+
+/**
+ * only display the end game leaderboard if everyone finished
+ * @param {Object} userDict 
+ * @param {Server} io 
+ */
+function checkGameEnded(leaderboard, userDict, roomCode, io) {
+    let displayLeaderboard = true
+    userDict[roomCode].forEach(user => {
+        if (!user.gameEnded) {
+            displayLeaderboard = false
+        }
+    })
+    if (displayLeaderboard) {
+        leaderboard[roomCode].sort((a, b) => sortLeaderboard(a, b));
+        io.to(roomCode).emit("update-leaderboard", leaderboard[roomCode]);
+    }
 }
 
 /**
