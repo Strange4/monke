@@ -5,10 +5,12 @@ import "./Styles/FirstTimePopUp.css";
 function FirstTimePopUp(props){
     
     let message;
+    let btnMessage;
 
     firstTimeData.messages.forEach( (data) => {
         if (data.message.area === props.area){
             message = data.message.body;
+            btnMessage = data.message.btnMessage;
         }
     });
 
@@ -28,7 +30,7 @@ function FirstTimePopUp(props){
     return(
         <div className="firstTimeMessage">
             <div id={`${props.area}FirstTime`}>{message}</div>
-            <button type="button" onClick={setCookieArea}>Close</button>
+            <button type="button" onClick={setCookieArea}>{`${btnMessage}`}</button>
         </div>
     );
 }

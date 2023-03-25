@@ -22,23 +22,51 @@ const Home = () => {
     const loginValue = getCookieValue("loginFirstTime") === "visited";
 
     const [cookieCookie, visitedCookie] = useState(cookieValue);
-    const [homeCookie, visitedHome] = useState(cookieValue ? homeValue :!(cookieValue && homeValue));
-    const [leaderboardCookie, visitedLeaderboard] = useState(cookieValue ? leaderboardValue : !(homeCookie && leaderboardValue));
-    const [lobbyCookie, visitedLobby] = useState(cookieValue ? lobbyValue : !(leaderboardValue && lobbyValue)); 
-    const [loginCookie, visitedLogin] = useState( cookieValue ? loginValue : !(lobbyValue && loginValue));
+
+    const [homeCookie, visitedHome] = 
+        useState(cookieValue ? homeValue : !(cookieValue && homeValue));
+
+    const [leaderboardCookie, visitedLeaderboard] = 
+        useState(cookieValue ? leaderboardValue : !(homeCookie && leaderboardValue));
+
+    const [lobbyCookie, visitedLobby] = 
+        useState(cookieValue ? lobbyValue : !(leaderboardValue && lobbyValue));
+
+    const [loginCookie, visitedLogin] = 
+        useState( cookieValue ? loginValue : !(lobbyValue && loginValue));
 
     return (
         <div id="home">
             <NavBar />
-            { cookieCookie ? <></> : <FirstTimePopUp area={"cookie"} setCookieArea={visitedCookie} setNextArea={visitedHome}/> }
-            { homeCookie ? <></> : <FirstTimePopUp area={"home"} setCookieArea={visitedHome} setNextArea={visitedLeaderboard}/> }
-            { leaderboardCookie ? <></> : <FirstTimePopUp area={"leaderboard"} setCookieArea={visitedLeaderboard} setNextArea={visitedLobby}/> }
-            { lobbyCookie ? <></> : <FirstTimePopUp area={"lobby"} setCookieArea={visitedLobby} setNextArea={visitedLogin}/> }
-            { loginCookie ? <></> : <FirstTimePopUp area={"login"} setCookieArea={visitedLogin}/> }
+
             <div id="game-component">
                 <GameSettings />
                 <TypingScreen />
             </div>
+            { cookieCookie ? <></> : 
+                <FirstTimePopUp area={"cookie"} 
+                    setCookieArea={visitedCookie} 
+                    setNextArea={visitedHome}/> }
+
+            { homeCookie ? <></> :
+                <FirstTimePopUp area={"home"} 
+                    setCookieArea={visitedHome} 
+                    setNextArea={visitedLeaderboard}/> }
+
+            { leaderboardCookie ? <></> : 
+                <FirstTimePopUp area={"leaderboard"} 
+                    setCookieArea={visitedLeaderboard} 
+                    setNextArea={visitedLobby}/> }
+
+            { lobbyCookie ? <></> : 
+                <FirstTimePopUp area={"lobby"} 
+                    setCookieArea={visitedLobby} 
+                    setNextArea={visitedLogin}/> }
+
+            { loginCookie ? <></> : 
+                <FirstTimePopUp 
+                    area={"login"} 
+                    setCookieArea={visitedLogin}/> }
         </div>
     );
 }

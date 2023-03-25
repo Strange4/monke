@@ -3,37 +3,48 @@
         {
             "message": {
                 "area" : "cookie",
-                "body": "We use cookie to remember if you have previously accessed the website or not. We do not store sensitive data. No data that can be traced back to you are stored. Don't worry we care about you."
+                "body": "We use cookie to remember if you have previously accessed the website or not. We do not store sensitive data. No data that can be traced back to you are stored. Don't worry we care about you.",
+                "btnMessage": "close"
             }
         },
         {
             "message": {
                 "area" : "home",
-                "body": "This is where games are being played. You can choose what type of typing game you want to play."
+                "body": "This is where games are being played. You can choose what type of typing game you want to play.",
+                "btnMessage": "next"
+                
             }
         },
         {
             "message": {
                 "area" : "leaderboard",
-                "body": "This is where the best players are placed. Players are ranked based on their best Words per Minute and Accuracy. If you want to show up on the leaderboard, be sure to type away and set the highest records."
+                "body": "This is where the best players are placed. Players are ranked based on their best Words per Minute and Accuracy. If you want to show up on the leaderboard, be sure to type away and set the highest records.",
+                "btnMessage": "next"
+                
             }
         },
         {
             "message": {
                 "area" : "lobby",
-                "body": "This is where you would play games with your friends. Create a room for your friends and type away. Room Creators (Leaders) are able to invite players and choose the typing settings for the game."
+                "body": "This is where you would play games with your friends. Create a room for your friends and type away. Room Creators (Leaders) are able to invite players and choose the typing settings for the game.",
+                "btnMessage": "next"
+                
             }
         },
         {
             "message": {
                 "area" : "login",
-                "body": "This is where you would log in to keep your progress. You login with Google."
+                "body": "This is where you would log in to keep your progress. You login with Google.",
+                "btnMessage": "next"
+                
             }
         },
         {
             "message": {
                 "area" : "profile",
-                "body": "Here you would have all your data stored and see how well you did in all your games. You could even change your name and profile picture (avatar)."
+                "body": "Here you would have all your data stored and see how well you did in all your games. You could even change your name and profile picture (avatar).",
+                "btnMessage": "close"
+                
             }
         }
     ]
