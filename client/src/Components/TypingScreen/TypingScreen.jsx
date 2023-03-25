@@ -66,7 +66,7 @@ function TypingScreen() {
         const currentText = e.target.value;
         if (currentText.length === 1) {
             startTimer();
-        } else if (textToDisplay.length === currentText.length) {
+        } else if (userDisplay.length === currentText.length) {
             handleGameEnd();
         }
         renderLetters(currentText, userDisplay);
