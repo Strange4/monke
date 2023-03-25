@@ -3,11 +3,12 @@ import { Link } from 'react-router-dom';
 import Popup from 'reactjs-popup';
 import Leaderboard from './Leaderboard';
 import LobbyPopup from './Lobby/LobbyPopup';
+import Preferences from './Preferences';
 import Login from './Login';
 import logo from "../Assets/keyboard-champions-logo/svg/logo-no-background.svg"
 import { GiCrenelCrown } from "react-icons/gi";
 import { CgProfile } from "react-icons/cg";
-import { HiUserGroup } from "react-icons/hi"
+import { HiCog, HiUserGroup } from "react-icons/hi"
 import AuthContext from '../Context/AuthContext';
 import { useContext } from "react";
 
@@ -40,6 +41,11 @@ function NavBar() {
                 <li>
                     <Popup trigger={<a><HiUserGroup id="lobby-icon"/></a>} modal>
                         <LobbyPopup />
+                    </Popup>
+                </li>
+                <li>
+                    <Popup trigger={<a><HiCog id="pref-icon"/></a>} modal>
+                        <Preferences />
                     </Popup>
                 </li>
             </div>
