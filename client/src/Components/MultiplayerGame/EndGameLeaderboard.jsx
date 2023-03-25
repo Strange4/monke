@@ -10,6 +10,7 @@ function EndGameLeaderboard() {
         socketContext.socket.current.on("update-leaderboard", (leaderboard) => {
             setLeaderboard(leaderboard)
         });
+
     }, [])
 
     useEffect(() => {
@@ -19,16 +20,20 @@ function EndGameLeaderboard() {
     return (
         <div id="end-game-leaderboard">
             <h1> END OF GAME </h1>
-            {leaderboard.map((user, i) => {
-                return <EndGameResults
-                    rank={i}
-                    key={i} name={user.username}
-                    avatar={user.avatar}
-                    ended={user.gameEnded}
-                    wpm={user.results?.wpm}
-                    acc={user.results?.accuracy}
-                />
-            })}
+            {leaderboard.length === 0 ?
+                <p> GAME STILL IN PROGRESS</p>
+                :
+                leaderboard.map((user, i) => {
+                    return <EndGameResults
+                        rank={i}
+                        key={i} name={user.username}
+                        avatar={user.avatar}
+                        ended={user.gameEnded}
+                        wpm={user.results?.wpm}
+                        acc={user.results?.accuracy}
+                    />
+                })
+            }
         </div>
     );
 }

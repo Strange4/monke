@@ -12,7 +12,7 @@ const EndGameResults = (props) => {
                         score: {Math.round(props.wpm * props.acc)}
                     </p>
                     :
-                    <p> User still in progress...</p>
+                    <p> User did not finish </p>
                 }
             </div>
         </div>

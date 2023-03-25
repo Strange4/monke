@@ -88,6 +88,8 @@ function setUpGameListeners(socket, userData, roomCode, userDict, io, leaderboar
         io.to(roomCode).emit("update-progress", userDict[roomCode]);
     });
 
+
+
     // executes once user has ended to update the results for that user
     socket.once("send-results", (result) => {
         io.to(roomCode).emit("update-progress", userDict[roomCode]);
@@ -95,12 +97,32 @@ function setUpGameListeners(socket, userData, roomCode, userDict, io, leaderboar
         let userIndex = leaderboard[roomCode].findIndex(user => user.id === userData.id);
 
         leaderboard[roomCode][userIndex].results = result;
-        leaderboard[roomCode].sort(
-            (a, b) => b.results?.wpm * b.results?.accuracy - a.results?.wpm * a.results?.accuracy
-        );
-        console.log(leaderboard)
-        io.to(roomCode).emit("update-leaderboard", leaderboard[roomCode]);
+
+        // only display the end game leaderboard if everyone finished
+        let displayLeaderboard = true
+        userDict[roomCode].forEach(user => {
+            if (!user.gameEnded) {
+                displayLeaderboard = false
+            }
+        })
+        if (displayLeaderboard) {
+            leaderboard[roomCode].sort((a, b) => sortLeaderboard(a, b));
+            io.to(roomCode).emit("update-leaderboard", leaderboard[roomCode]);
+        }
     });
+}
+
+/**
+ * Sorts the users in multiplayer game according to their score
+ * @param {Object} a 
+ * @param {Object} b 
+ * @returns {Number}
+ */
+function sortLeaderboard(a, b) {
+    if (!b.results || !a.results) {
+        return 1;
+    }
+    return b.results.wpm * b.results.accuracy - a.results.wpm * a.results.accuracy
 }
 
 /**
