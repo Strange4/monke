@@ -104,8 +104,5 @@
 }
 
 .App> div#popup-root > div.popup-overlay > div.popup-content:has(> div#lobby) {
-    height: 26vh;
-    min-height: 360px;
-    margin-bottom: 300px;
-    top: -250px;
+    margin-top: 250px !important;
 }
