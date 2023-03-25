@@ -10,6 +10,7 @@ import mongoose from "mongoose";
 import { Constraints } from "../database/validation.js";
 import { getAverage } from "../controller/util.js";
 import { ImgParser } from "../controller/validation.js";
+import { quoteRouter } from "./quotes.js";
 import createHttpError from "http-errors";
 import * as Azure from "../database/azure.js"
 import multer from 'multer';
@@ -26,6 +27,7 @@ const upload = multer({
 });
 
 const router = express.Router();
+router.use("/quote", quoteRouter);
 router.use(express.json());
 
 /**
