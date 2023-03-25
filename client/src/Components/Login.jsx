@@ -28,7 +28,6 @@ function Login(props) {
         <>
             {props.navbar ? <NavBar /> : null}
             <div className="access">
-                <h2>Login</h2>
                 <GoogleLogin
                     onSuccess={handleLogin}
                     onError={() => console.log('Login Failed')} />

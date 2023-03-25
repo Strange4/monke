@@ -6,6 +6,7 @@ import * as FetchModule from '../../Controller/FetchModule';
 import AuthContext from '../../Context/AuthContext';
 import { postData } from '../../Controller/FetchModule';
 import SocketContext from '../../Context/SocketContext';
+import { GiPartyPopper } from 'react-icons/gi'
 
 function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText, multiplayer }) {
     const [userStats, setUserStats] = useState({ "time": 0, "wpm": 0, "accuracy": 0 });
@@ -104,11 +105,17 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText,
     return (
         <Popup open={isOpen} position="center" onClose={closeWindow} modal>
             <div id="solo-game-result">
-                <h1>END Solo Game Popup</h1>
-                <p>time: {userStats.time} seconds </p>
-                <p>wpm: {userStats.wpm}</p>
-                <p>accuracy: {userStats.accuracy}%</p>
-                <p> press escape or click out of the popup to leave </p>
+                <h1>Game Results</h1>
+                <div id='game-stats'>
+                    <p><span className='stat-label'>time: </span>{userStats.time} seconds </p>
+                    <p><span className='stat-label'>wpm: </span>{userStats.wpm}</p>
+                    <p><span className='stat-label'>accuracy: </span>{userStats.accuracy}%</p>
+                </div>
+                <div id='end-icon'>
+                    <GiPartyPopper/>
+                </div>
+
+                {/* <p> press escape or click out of the popup to leave </p> */}
             </div>
         </Popup>
     );

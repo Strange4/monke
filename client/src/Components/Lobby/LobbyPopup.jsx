@@ -1,12 +1,12 @@
 import './Styles/LobbyPopup.css';
 import '../Styles/Popup.css';
 import { useState, useContext, useRef } from 'react';
-
 import AuthContext from '../../Context/AuthContext';
 import * as FetchModule from "../../Controller/FetchModule";
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import SocketContext from '../../Context/SocketContext';
+import { GiRetroController } from 'react-icons/gi'
 
 /**
  * Displays a Popup for the lobby
@@ -79,15 +79,19 @@ function LobbyPopup() {
 
     return (
         <div id="lobby" className='popup'>
-            <h1>Lobby Popup</h1>
-            <button onClick={async () => await createLobby()}>Create</button>
-            <button onClick={() => enterCode(current => !current)}>Join</button>
-            {code &&
-                <div>
-                    <input ref={roomCode} type="text" name="code" />
-                    <button onClick={async () => await joinLobby()}>Enter game</button>
-                </div>
-            }
+            <GiRetroController id='lobby-filler-1' />
+            <GiRetroController id='lobby-filler-2' />
+            <h1 id='lobby-header'>Multiplayer</h1>
+            <button
+                onClick={async () => await createLobby()}
+                className='lobby-access'>
+                Create
+            </button>
+
+            <div id='room-code-input'>
+                <input ref={roomCode} type="text" name="code" placeholder='Enter room code...' />
+                <button onClick={async () => await joinLobby()}>Enter game</button>
+            </div>
             <p ref={feedback}></p>
         </div>
     );

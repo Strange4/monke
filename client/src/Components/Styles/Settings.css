@@ -2,9 +2,9 @@
     display: flex;
     justify-content: space-around;
     margin: auto;
-    margin-top: 30px;
+    margin-top: 40px;
     background-color: var(--sub-color-transparent);
-    max-width: 700px;
+    max-width: 500px;
     min-width: 480px;
     border-radius: 20px;
 }
