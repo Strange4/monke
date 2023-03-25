@@ -13,7 +13,7 @@ import SocketContext from '../../Context/SocketContext';
  * @returns {ReactElement}
  */
 function LobbyPopup() {
-    const [code, enterCode] = useState(false);
+    // const [code, enterCode] = useState(false);
     const roomCode = useRef()
     const feedback = useRef()
     const navigate = useNavigate()
@@ -80,18 +80,12 @@ function LobbyPopup() {
                 className='lobby-access'>
                 Create
             </button>
-            <button 
-                onClick={() => enterCode(current => !current)} 
-                className='lobby-access'>
-                Join
-            </button>
-            {code &&
-                <div id='room-code-input'>
-                    <input ref={roomCode} type="text" name="code" placeholder='Enter room code...'/>
-                    <button onClick={async () => await joinLobby()}>Enter game</button>
-                    <p ref={feedback}></p>
-                </div>
-            }
+
+            <div id='room-code-input'>
+                <input ref={roomCode} type="text" name="code" placeholder='Enter room code...'/>
+                <button onClick={async () => await joinLobby()}>Enter game</button>
+                <p ref={feedback}></p>
+            </div>
         </div>
     );
 }

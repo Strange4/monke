@@ -12,7 +12,7 @@
 
 }
 
-.popup-content {
+.popup-content:has(>div#solo-game-result) {
     height: 30vw;
     margin-bottom: 700px !important;
 }
