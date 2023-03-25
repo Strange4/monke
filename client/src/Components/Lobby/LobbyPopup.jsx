@@ -1,6 +1,6 @@
 import './Styles/LobbyPopup.css';
 import '../Styles/Popup.css'
-import { useState, useContext, useRef } from 'react';
+import {useContext, useRef } from 'react';
 
 import AuthContext from '../../Context/AuthContext';
 import * as FetchModule from "../../Controller/FetchModule"
@@ -13,7 +13,6 @@ import SocketContext from '../../Context/SocketContext';
  * @returns {ReactElement}
  */
 function LobbyPopup() {
-    // const [code, enterCode] = useState(false);
     const roomCode = useRef()
     const feedback = useRef()
     const navigate = useNavigate()
