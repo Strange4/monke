@@ -38,7 +38,6 @@ function Lobby() {
     useEffect(() => {
         if (displayTime === 3) {
             stopTimer()
-            setDisplayTime("GO")
             socketContext.socket.current.emit("try-start");
         }
     }, [displayTime]);
@@ -71,7 +70,7 @@ function Lobby() {
             <NavBar />
             <div id="lobby-info">
                 {started ?
-                    <Chronometer seconds={displayTime + 1} />
+                    <Chronometer seconds={(3 - displayTime) || "GO"} />
                     :
                     <>
                         <div id="players">
