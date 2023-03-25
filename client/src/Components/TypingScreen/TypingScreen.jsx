@@ -47,6 +47,7 @@ function TypingScreen() {
     const [displayResults, setDisplayResults] = useState(false);
     const { startTimer, stopTimer, resetTimer, timer } = useChronometer(setDisplayTime);
     const [userDisplay, setUserDisplay] = useState(getDefaultUserDisplay(textToDisplay));
+    const [enableTTS, setEnableTTS] = useState(false);
     const textContainerRef = useRef();
 
     function handleGameEnd() {
@@ -121,7 +122,6 @@ function TypingScreen() {
         return <Spinner/>
     }
 
-    const [enableTTS, setEnableTTS] = useState(false);
     function handleChkBoxEvent(e) {
         setEnableTTS(e.target.checked);
     }   
