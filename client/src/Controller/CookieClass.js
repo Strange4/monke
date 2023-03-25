@@ -6,8 +6,8 @@ import Cookies from "js-cookie";
  * @param {string} cookieValue, the value of the cookie that will be created.
  */
 function setCookie(cookieName, cookieValue){
-    if (getCookieValue(cookieName) !== undefined)
-        Cookies.set(cookieName, cookieValue, {expires: 100000, sameSite: 'Strict', secure: true});
+    if (getCookieValue(cookieName) === undefined)
+        Cookies.set(cookieName, cookieValue, {expires: 100000, sameSite: 'Strict', secure: false});
 }
 
 /**

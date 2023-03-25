@@ -1,6 +1,6 @@
 import './Styles/Popup.css';
 import { useState } from 'react';
-
+import {setCookie, getCookieValue} from '../Controller/CookieClass'
 
 function Preferences(){
 
@@ -8,19 +8,26 @@ function Preferences(){
     const [tssSpeed, setTssSpeed] = useState(1);
 
     const stateMap = {
-        "enableTTSQuote": setEnableTTSQuote,
-        "tssSpeed": setTssSpeed
+        "enableTTSQuote": {
+            state: enableTTSQuote,
+            setter: setEnableTTSQuote
+        },
+        "tssSpeed": {
+            state: tssSpeed,
+            setter: setTssSpeed
+        }
     }
 
     function handlePrefChange(event){
-        const stateSetter = stateMap[event.target.name];
+        const stateSetter = stateMap[event.target.name].setter;
         stateSetter(event.target.value);
     }
 
     function handleSavePref(event){
         event.preventDefault();
-        console.log(enableTTSQuote);
-        console.log(tssSpeed);
+        Object.keys(stateMap).forEach(key => {
+            setCookie(key, stateMap[key].state);
+        });
     }
 
     return(
