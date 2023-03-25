@@ -8,15 +8,17 @@ export function setUp(server) {
     const io = new Server(server, { cors: { origin: "http://localhost:3000" } });
     let userDict = {};
     let roomState = {};
+    let leaderboard = {};
 
     io.on("connection", (socket) => {
         const userData = setUserData(socket);
 
         const roomCode = socket.handshake.query.roomCode;
         userDict[roomCode] = userDict[roomCode] || [];
+        leaderboard[roomCode] = leaderboard[roomCode] || [];
 
-        setUpLobbyListeners(socket, userData, roomCode, roomState, userDict, io);
-        setUpGameListeners(socket, userData, roomCode, userDict, io);
+        setUpLobbyListeners(socket, userData, roomCode, roomState, userDict, io, leaderboard);
+        setUpGameListeners(socket, userData, roomCode, userDict, io, leaderboard);
     });
 }
 
@@ -30,7 +32,7 @@ export function setUp(server) {
  * @param {Object} userDict 
  * @param {Server} io 
  */
-function setUpLobbyListeners(socket, userData, roomCode, roomState, userDict, io) {
+function setUpLobbyListeners(socket, userData, roomCode, roomState, userDict, io, leaderboard) {
     socket.on("try-join", () => {
         if (roomState[roomCode] === "started") {
             socket.emit("game-started");
@@ -46,6 +48,7 @@ function setUpLobbyListeners(socket, userData, roomCode, roomState, userDict, io
     socket.on("try-start", () => {
         roomState[roomCode] = "started";
         io.to(roomCode).emit("start-game", userDict[roomCode], roomCode);
+        leaderboard[roomCode] = [...userDict[roomCode]]
     });
 
     socket.on("start-countdown", () => {
@@ -56,10 +59,6 @@ function setUpLobbyListeners(socket, userData, roomCode, roomState, userDict, io
     socket.on("disconnect", () => {
         userDict[roomCode] = userDict[roomCode].filter(user => user.id !== userData.id);
         io.to(roomCode).emit("leave-room", userDict[roomCode], roomCode);
-        socket._cleanup();
-
-        console.log(io.sockets)
-        console.log(socket)
     });
 }
 
@@ -71,7 +70,7 @@ function setUpLobbyListeners(socket, userData, roomCode, roomState, userDict, io
  * @param {Object} userDict 
  * @param {Server} io 
  */
-function setUpGameListeners(socket, userData, roomCode, userDict, io) {
+function setUpGameListeners(socket, userData, roomCode, userDict, io, leaderboard) {
     socket.on("update-progress-bar", (currentProgress, total) => {
         let userIndex = userDict[roomCode].findIndex(user => user.id === userData.id);
         userDict[roomCode][userIndex].progress = currentProgress / total * 100;
@@ -91,12 +90,16 @@ function setUpGameListeners(socket, userData, roomCode, userDict, io) {
 
     // executes once user has ended to update the results for that user
     socket.once("send-results", (result) => {
-        let userIndex = userDict[roomCode].findIndex(user => user.id === userData.id);
-        userDict[roomCode][userIndex].results = result;
-        userDict[roomCode].sort(
-            (a, b) => b.results.wpm * b.results.accuracy - a.results.wpm * a.results.accuracy
-        )
         io.to(roomCode).emit("update-progress", userDict[roomCode]);
+
+        let userIndex = leaderboard[roomCode].findIndex(user => user.id === userData.id);
+
+        leaderboard[roomCode][userIndex].results = result;
+        leaderboard[roomCode].sort(
+            (a, b) => b.results?.wpm * b.results?.accuracy - a.results?.wpm * a.results?.accuracy
+        );
+        console.log(leaderboard)
+        io.to(roomCode).emit("update-leaderboard", leaderboard[roomCode]);
     });
 }
 
@@ -115,10 +118,5 @@ function setUserData(socket) {
     userData["avatar"] = socket.handshake.auth.userData?.avatar || defaultAvatar;
     userData["id"] = socket.id;
     userData["progress"] = 0;
-    userData["results"] = {
-        wpm: 0,
-        acc: 0
-    };
-
     return userData;
 }

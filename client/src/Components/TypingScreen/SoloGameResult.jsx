@@ -56,6 +56,7 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText,
             setUserData(data)
             postUserStats(result);
         } 
+
         if (multiplayer) {
             socketContext.socket.current.emit("send-results", result)
         }

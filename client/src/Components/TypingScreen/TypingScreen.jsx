@@ -153,6 +153,7 @@ function TypingScreen(props) {
                     timer={timer.current}
                     originalText={textToDisplay}
                     closeWindow={resetGame}
+                    multiplayer={props.multiplayer}
                 />
             </div>
 
