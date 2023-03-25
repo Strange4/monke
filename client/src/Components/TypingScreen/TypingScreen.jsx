@@ -23,7 +23,7 @@ const allRegKeys = keyboardKeys.english.lower;
 function TypingScreen() {
 
     const {
-        isLoading, data: textToDisplay, refetch
+        isLoading, refetch
     } = useQuery("textToDisplay", async () => {
         return (await (await fetch("/api/quote",
             {
@@ -32,14 +32,16 @@ function TypingScreen() {
             })).json()).body;
     }, {
         onSuccess: (quote) => {
+            setTextToDisplay(quote);
             setUserDisplay(getDefaultUserDisplay(quote))
         }, onError: () => {
-            setUserDisplay(
-                getDefaultUserDisplay(defaultQuotes[randomNumber(0, defaultQuotes.length)])
-            )
+            const quote = defaultQuotes[randomNumber(0, defaultQuotes.length)];
+            setTextToDisplay(quote);
+            setUserDisplay(getDefaultUserDisplay(quote))
         },
         refetchOnWindowFocus: false
     });
+    const [textToDisplay, setTextToDisplay] = useState("");
     const [keyboard, setKeyboard] = useState(mapKeyToKeyboard(allRegKeys));
     const [displayTime, setDisplayTime] = useState(0);
     const [displayResults, setDisplayResults] = useState(false);
@@ -115,61 +117,59 @@ function TypingScreen() {
         setKeyboard(newKeyboard);
     }
 
+    if(isLoading){
+        return <Spinner/>
+    }
+
     const [enableTTS, setEnableTTS] = useState(false);
     function handleChkBoxEvent(e) {
         setEnableTTS(e.target.checked);
-    }
+    }   
 
     return (
         <div className='center'>
-            {isLoading ?
-                <Spinner />
-                :
-                <>
-                    <div>
-                        <Chronometer seconds={displayTime}/>
-                        <GameText display={userDisplay} />
-                        <TTSQuote
-                            text={textToDisplay}
-                            resultScreenOff={!displayResults}
-                            enabled={enableTTS}
-                        />
-                        <VirtualKeyboard currentKeys={keyboard} />
-                        {/* label and checkbox are there temporary to enable TTS */}
-                        <label>!TEMPORARY! Enable text to speech</label>
-                        <input type="checkbox"
-                            id="enableTTS"
-                            name="enableTTSQuote"
-                            defaultChecked={false}
-                            onClick={handleChkBoxEvent}
-                            onKeyUp={(e) => {
-                                if(e.key === 'Enter'){
-                                    e.target.checked = !e.target.checked;
-                                    handleChkBoxEvent(e)
-                                }
-                            }}
-                        />
-                        <SoloGameResult
-                            isOpen={displayResults}
-                            displayText={userDisplay}
-                            timer={timer.current}
-                            originalText={textToDisplay}
-                            closeWindow={resetGame}
-                        />
-                    </div>
+            <div>
+                <Chronometer seconds={displayTime}/>
+                <GameText display={userDisplay} />
+                <VirtualKeyboard currentKeys={keyboard} />
+                <TTSQuote
+                    text={textToDisplay}
+                    resultScreenOff={!displayResults}
+                    enabled={enableTTS}
+                />
+                <label>!TEMPORARY! Enable text to speech</label>
+                <input type="checkbox"
+                    id="enableTTS"
+                    name="enableTTSQuote"
+                    defaultChecked={false}
+                    onClick={handleChkBoxEvent}
+                    onKeyUp={(e) => {
+                        if(e.key === 'Enter'){
+                            e.target.checked = !e.target.checked;
+                            handleChkBoxEvent(e)
+                        }
+                    }}
+                />
+                <SoloGameResult
+                    isOpen={displayResults}
+                    displayText={userDisplay}
+                    timer={timer.current}
+                    originalText={textToDisplay}
+                    closeWindow={resetGame}
+                />
+            </div>
 
-                    <input type="text" 
-                        className="text-container"
-                        ref={textContainerRef}
-                        onChange={onChangeText}
-                        onKeyDown={handleKeyDown}
-                        onKeyUp={handlekeyUp}
-                        onPaste={preventDefaultBehavior}
-                        onDrag={preventDefaultBehavior}
-                        onDrop={preventDefaultBehavior}
-                        onCopy={preventDefaultBehavior}
-                    />
-                </>}
+            <input type="text" 
+                className="text-container"
+                ref={textContainerRef}
+                onChange={onChangeText}
+                onKeyDown={handleKeyDown}
+                onKeyUp={handlekeyUp}
+                onPaste={preventDefaultBehavior}
+                onDrag={preventDefaultBehavior}
+                onDrop={preventDefaultBehavior}
+                onCopy={preventDefaultBehavior}
+            />
         </div>
     );
 }
