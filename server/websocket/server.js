@@ -1,4 +1,4 @@
-import { Server } from "socket.io"
+import { Server } from "socket.io";
 
 /**
  * Initial connnection set up
@@ -34,6 +34,9 @@ export function setUp(server) {
  */
 function setUpLobbyListeners(socket, userData, roomCode, roomState, userDict, io, leaderboard) {
     socket.on("try-join", () => {
+        if (!validateRoom(roomCode)) {
+            socket.emit("invalid-room");
+        }
         if (roomState[roomCode] === "started") {
             socket.emit("game-started");
         } else if (userDict[roomCode].length < 5) {
@@ -48,7 +51,7 @@ function setUpLobbyListeners(socket, userData, roomCode, roomState, userDict, io
     socket.on("try-start", () => {
         roomState[roomCode] = "started";
         io.to(roomCode).emit("start-game", userDict[roomCode], roomCode);
-        leaderboard[roomCode] = [...userDict[roomCode]]
+        leaderboard[roomCode] = [...userDict[roomCode]];
     });
 
     socket.on("start-countdown", () => {
@@ -59,7 +62,7 @@ function setUpLobbyListeners(socket, userData, roomCode, roomState, userDict, io
     socket.on("disconnect", () => {
         userDict[roomCode] = userDict[roomCode].filter(user => user.id !== userData.id);
         io.to(roomCode).emit("leave-room", userDict[roomCode], roomCode);
-        checkGameEnded(leaderboard, userDict, roomCode, io)
+        checkGameEnded(leaderboard, userDict, roomCode, io);
     });
 }
 
@@ -89,16 +92,11 @@ function setUpGameListeners(socket, userData, roomCode, userDict, io, leaderboar
         io.to(roomCode).emit("update-progress", userDict[roomCode]);
     });
 
-
-
     // executes once user has ended to update the results for that user
     socket.once("send-results", (result) => {
         io.to(roomCode).emit("update-progress", userDict[roomCode]);
-
         let userIndex = leaderboard[roomCode].findIndex(user => user.id === userData.id);
-
         leaderboard[roomCode][userIndex].results = result;
-
         checkGameEnded(leaderboard, userDict, roomCode, io)
     });
 }
@@ -113,7 +111,17 @@ function sortLeaderboard(a, b) {
     if (!b.results || !a.results) {
         return 1;
     }
-    return b.results.wpm * b.results.accuracy - a.results.wpm * a.results.accuracy
+    return b.results.wpm * b.results.accuracy - a.results.wpm * a.results.accuracy;
+}
+
+/**
+ * validates room code with regex pattern
+ * @returns {boolean}
+ */
+function validateRoom(room) {
+    const roomRegex = /^[A-Za-z0-9]+(?:[-][A-Za-z0-9]+)*$/;
+    var validRoom = room.match(roomRegex);
+    return validRoom !== null;
 }
 
 /**
@@ -122,12 +130,12 @@ function sortLeaderboard(a, b) {
  * @param {Server} io 
  */
 function checkGameEnded(leaderboard, userDict, roomCode, io) {
-    let displayLeaderboard = true
+    let displayLeaderboard = true;
     userDict[roomCode].forEach(user => {
         if (!user.gameEnded) {
-            displayLeaderboard = false
+            displayLeaderboard = false;
         }
-    })
+    });
     if (displayLeaderboard) {
         leaderboard[roomCode].sort((a, b) => sortLeaderboard(a, b));
         io.to(roomCode).emit("update-leaderboard", leaderboard[roomCode]);
