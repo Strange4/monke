@@ -151,6 +151,6 @@
     max-height: 50px;
 }
 
-.App > div#popup-root:has(> div.popup-overlay > div.popup-content > div#solo-game-result){
+#practice #popup-root{
     visibility: hidden;
 }

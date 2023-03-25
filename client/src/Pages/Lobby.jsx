@@ -76,7 +76,9 @@ function Lobby() {
             </div>
 
             <div id="practice">
-                <TypingScreen multiplayer={false} />
+                <div id="popup-root" />
+                <TypingScreen multiplayer={false} id='lobby-game'/>
+
             </div>
         </div>
     );
