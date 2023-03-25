@@ -22,7 +22,7 @@ const allRegKeys = keyboardKeys.english.lower;
 function TypingScreen() {
 
     const {
-        isLoading, data: textToDisplay, refetch
+        isLoading, refetch
     } = useQuery("textToDisplay", async () => {
         return (await (await fetch("/api/quote",
             {
@@ -31,14 +31,16 @@ function TypingScreen() {
             })).json()).body;
     }, {
         onSuccess: (quote) => {
+            setTextToDisplay(quote);
             setUserDisplay(getDefaultUserDisplay(quote))
         }, onError: () => {
-            setUserDisplay(
-                getDefaultUserDisplay(defaultQuotes[randomNumber(0, defaultQuotes.length)])
-            )
+            const quote = defaultQuotes[randomNumber(0, defaultQuotes.length)];
+            setTextToDisplay(quote);
+            setUserDisplay(getDefaultUserDisplay(quote))
         },
         refetchOnWindowFocus: false
     });
+    const [textToDisplay, setTextToDisplay] = useState("");
     const [keyboard, setKeyboard] = useState(mapKeyToKeyboard(allRegKeys));
     const [displayTime, setDisplayTime] = useState(0);
     const [displayResults, setDisplayResults] = useState(false);
@@ -66,7 +68,7 @@ function TypingScreen() {
         const currentText = e.target.value;
         if (currentText.length === 1) {
             startTimer();
-        } else if (userDisplay.length === currentText.length) {
+        } else if (textToDisplay.length === currentText.length) {
             handleGameEnd();
         }
         renderLetters(currentText, userDisplay);
@@ -114,37 +116,36 @@ function TypingScreen() {
         setKeyboard(newKeyboard);
     }
 
+    if(isLoading){
+        return <Spinner/>
+    }
+
     return (
         <div className='center'>
-            {isLoading ?
-                <Spinner />
-                :
-                <>
-                    <div>
-                        <Chronometer seconds={displayTime}/>
-                        <GameText display={userDisplay} />
-                        <VirtualKeyboard currentKeys={keyboard} />
-                        <SoloGameResult
-                            isOpen={displayResults}
-                            displayText={userDisplay}
-                            timer={timer.current}
-                            originalText={textToDisplay}
-                            closeWindow={resetGame}
-                        />
-                    </div>
+            <div>
+                <Chronometer seconds={displayTime}/>
+                <GameText display={userDisplay} />
+                <VirtualKeyboard currentKeys={keyboard} />
+                <SoloGameResult
+                    isOpen={displayResults}
+                    displayText={userDisplay}
+                    timer={timer.current}
+                    originalText={textToDisplay}
+                    closeWindow={resetGame}
+                />
+            </div>
 
-                    <input type="text" 
-                        className="text-container"
-                        ref={textContainerRef}
-                        onChange={onChangeText}
-                        onKeyDown={handleKeyDown}
-                        onKeyUp={handlekeyUp}
-                        onPaste={preventDefaultBehavior}
-                        onDrag={preventDefaultBehavior}
-                        onDrop={preventDefaultBehavior}
-                        onCopy={preventDefaultBehavior}
-                    />
-                </>}
+            <input type="text" 
+                className="text-container"
+                ref={textContainerRef}
+                onChange={onChangeText}
+                onKeyDown={handleKeyDown}
+                onKeyUp={handlekeyUp}
+                onPaste={preventDefaultBehavior}
+                onDrag={preventDefaultBehavior}
+                onDrop={preventDefaultBehavior}
+                onCopy={preventDefaultBehavior}
+            />
         </div>
     );
 }
