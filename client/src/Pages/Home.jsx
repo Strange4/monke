@@ -15,19 +15,25 @@ const Home = () => {
     // deleteCookie("lobbyFirstTime");
     // deleteCookie("loginFirstTime");
 
-    const [cookieCookie, visitedCookie] = useState(getCookieValue("cookieFirstTime") === "visited");
-    const [homeCookie, visitedHome] = useState(getCookieValue("homeFirstTime") === "visited");
-    const [leaderboardCookie, visitedLeaderboard] = useState(getCookieValue("leaderboardFirstTime") === "visited");
-    const [lobbyCookie, visitedLobby] = useState(getCookieValue("lobbyFirstTime") === "visited"); 
-    const [loginCookie, visitedLogin] = useState(getCookieValue("loginFirstTime") === "visited");
-    
+    const cookieValue = getCookieValue("cookieFirstTime") === "visited";
+    const homeValue = getCookieValue("homeFirstTime") === "visited";
+    const leaderboardValue = getCookieValue("leaderboardFirstTime") === "visited";
+    const lobbyValue = getCookieValue("lobbyFirstTime") === "visited"
+    const loginValue = getCookieValue("loginFirstTime") === "visited";
+
+    const [cookieCookie, visitedCookie] = useState(cookieValue);
+    const [homeCookie, visitedHome] = useState(cookieValue ? homeValue :!(cookieValue && homeValue));
+    const [leaderboardCookie, visitedLeaderboard] = useState(cookieValue ? leaderboardValue : !(homeCookie && leaderboardValue));
+    const [lobbyCookie, visitedLobby] = useState(cookieValue ? lobbyValue : !(leaderboardValue && lobbyValue)); 
+    const [loginCookie, visitedLogin] = useState( cookieValue ? loginValue : !(lobbyValue && loginValue));
+
     return (
         <div id="home">
             <NavBar />
-            { cookieCookie ? <></> : <FirstTimePopUp area={"cookie"} setCookieArea={visitedCookie}/> }
-            { homeCookie ? <></> : <FirstTimePopUp area={"home"} setCookieArea={visitedHome}/> }
-            { leaderboardCookie ? <></> : <FirstTimePopUp area={"leaderboard"} setCookieArea={visitedLeaderboard}/> }
-            { lobbyCookie ? <></> : <FirstTimePopUp area={"lobby"} setCookieArea={visitedLobby}/> }
+            { cookieCookie ? <></> : <FirstTimePopUp area={"cookie"} setCookieArea={visitedCookie} setNextArea={visitedHome}/> }
+            { homeCookie ? <></> : <FirstTimePopUp area={"home"} setCookieArea={visitedHome} setNextArea={visitedLeaderboard}/> }
+            { leaderboardCookie ? <></> : <FirstTimePopUp area={"leaderboard"} setCookieArea={visitedLeaderboard} setNextArea={visitedLobby}/> }
+            { lobbyCookie ? <></> : <FirstTimePopUp area={"lobby"} setCookieArea={visitedLobby} setNextArea={visitedLogin}/> }
             { loginCookie ? <></> : <FirstTimePopUp area={"login"} setCookieArea={visitedLogin}/> }
             <div id="game-component">
                 <GameSettings />
