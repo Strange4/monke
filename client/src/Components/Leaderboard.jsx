@@ -12,14 +12,14 @@ function Leaderboard() {
 
     return (
         <div id="leaderboard" className='popup'>
-            <h1>Leaderboard</h1>
+            <h1 id='header-name'>Leaderboard</h1>
             <div id="rankings">
                 <div id="leaderboard-header">
-                    <p>Rank</p>
-                    <p>User</p>
-                    <p>WPM</p>
-                    <p>Accuracy</p>
-                    <p>Date</p>
+                    <p>#</p>
+                    <p className='rank-header'>user</p>
+                    <p>wpm</p>
+                    <p className='rank-header'>accuracy</p>
+                    <p>date</p>
                 </div>
                 {
                     loadingIndicator || leaderboard.map((user, i) => <RankListItem

@@ -1,20 +1,64 @@
-#leaderboard{
+#leaderboard {
+    min-width: 600px;
     width: 80vw;
+    max-width: 1000px;
     height: 80vh;
+    overflow-y: scroll;
+    padding: 20px;
+}
+
+#header-name {
+    font-size: 3em;
+    color: var(--sub-color);
+    letter-spacing: 15px;
+    margin-bottom: 40px;
+}
+
+#leaderboard::-webkit-scrollbar {
+    width: 2em;
+    background-clip: border-box;
+    border-right: 10px solid transparent;
+}
+   
+#leaderboard::-webkit-scrollbar-track {
+    background-color: transparent;
+    border: 8px solid transparent;
+    border-radius: 20px;
+    background-clip: content-box;
+
+}
+   
+#leaderboard::-webkit-scrollbar-thumb {
+    background-color: var(--sub-color);
+    border: 11px solid transparent;
+    border-radius: 20px;
+    background-clip: content-box;
+}
+
+#leaderboard::-webkit-scrollbar-button {
+    height: 20px;
 }
 
 #leaderboard-header {
     display: flex;
-    justify-content: space-between;
-    width: 50vw;
+    justify-content: space-evenly;
+    width: 100%;
 }
 
 #leaderboard-header p {
-    width: 6vw;
-    text-align: center;
+    min-width: 80px;
+    width: 100px;
+    max-width: 150px;
+    text-align: left;
+    font-size: 1.2em;
+    color: var(--accent-color);
 }
 
-.leaderboard_user_icon {
-    width: 3vw;
-    height: 5vh;
+.rank-header {
+    width: 150px !important;
+}
+
+div#rankings>div:nth-of-type(even) {
+    background: var(--sub-color-transparent);
+    border-radius: 10px;
 }
