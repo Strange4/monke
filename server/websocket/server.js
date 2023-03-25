@@ -48,11 +48,18 @@ function setUpLobbyListeners(socket, userData, roomCode, roomState, userDict, io
         io.to(roomCode).emit("start-game", userDict[roomCode], roomCode);
     });
 
+    socket.on("start-countdown", () => {
+        io.to(roomCode).emit("countdown", userDict[roomCode], roomCode);
+    });
+
     //TODO make sure the disconnect cleans up everything
     socket.on("disconnect", () => {
         userDict[roomCode] = userDict[roomCode].filter(user => user.id !== userData.id);
         io.to(roomCode).emit("leave-room", userDict[roomCode], roomCode);
         socket._cleanup();
+
+        console.log(io.sockets)
+        console.log(socket)
     });
 }
 

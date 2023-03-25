@@ -6,7 +6,7 @@ const EndGameResults = (props) => {
             <div id="game-single-result">
                 {props.ended ?
                     <p>
-                        <h1>RANK: {props.rank}</h1>
+                        RANK: {props.rank + 1}
                         wpm: {props.wpm}
                         accuracy: {props.acc}
                         score: {Math.round(props.wpm * props.acc)}
