@@ -8,7 +8,7 @@ const Home = () => {
             <NavBar />
             <div id="game-component">
                 <GameSettings />
-                <TypingScreen />
+                <TypingScreen multiplayer={false}/>
             </div>
         </div>
     );

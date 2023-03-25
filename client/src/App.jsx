@@ -16,6 +16,7 @@ const queryClient = new QueryClient();
 function App() {
     const [userEmail, setUserEmail] = useState();
     const socket = useRef();
+    const [userList, setUserList] = useState([])
 
     useEffect(() => {
         (async () => {
@@ -37,7 +38,9 @@ function App() {
                 checkAccess: checkAccess
             }}>
                 <SocketContext.Provider value={{
-                    socket: socket
+                    socket: socket,
+                    userList: userList,
+                    setUserList: setUserList
                 }}>
                     <QueryClientProvider client={queryClient}>
                         <Router>

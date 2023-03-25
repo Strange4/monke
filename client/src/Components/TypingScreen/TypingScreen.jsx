@@ -1,5 +1,5 @@
 import './Layout/TypingScreen.css';
-import { useState, useRef } from "react";
+import { useState, useRef, useContext } from "react";
 import VirtualKeyboard from './VirtualKeyboard';
 import keyboardKeys from "../../Data/keyboard_keys.json";
 import GameText from '../GameText';
@@ -7,6 +7,7 @@ import Chronometer, { useChronometer } from './Chronometer';
 import SoloGameResult from './SoloGameResult';
 import { useQuery } from 'react-query';
 import Spinner from '../Spinner';
+import SocketContext from '../../Context/SocketContext';
 import {
     renderLetters, getDefaultUserDisplay, mapKeyToKeyboard, preventDefaultBehavior,
     randomNumber
@@ -19,7 +20,7 @@ const allRegKeys = keyboardKeys.english.lower;
  * Container for the Textarea and the virtual keyboard
  * @returns {ReactElement}
  */
-function TypingScreen() {
+function TypingScreen(props) {
 
     const {
         isLoading, refetch
@@ -51,6 +52,8 @@ function TypingScreen() {
     const [userDisplay, setUserDisplay] = useState(getDefaultUserDisplay(textToDisplay));
     const [isFocused, setIsFocused] = useState(true);
     const textContainerRef = useRef();
+    const socketContext = useContext(SocketContext)
+
     function handleGameEnd() {
         stopTimer();
         setDisplayResults(true);
@@ -75,6 +78,10 @@ function TypingScreen() {
             handleGameEnd();
         }
         renderLetters(currentText, userDisplay);
+        if (props.multiplayer) {
+            socketContext.socket.current.
+                emit("send-progress", currentText.length, userDisplay.length)
+        }
     }
 
     /**
