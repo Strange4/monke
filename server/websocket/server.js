@@ -35,16 +35,16 @@ export function setUp(server) {
 function setUpLobbyListeners(socket, userData, roomCode, roomState, userDict, io, leaderboard) {
     socket.on("try-join", () => {
         if (!validateRoom(roomCode)) {
-            socket.emit("invalid-room");
+            socket.emit("invalid", "INVALID ROOM CODE, try again");
         }
         if (roomState[roomCode] === "started") {
-            socket.emit("game-started");
+            socket.emit("invalid", "GAME ALREADY STARTED, cannot join the room");
         } else if (userDict[roomCode].length < 5) {
             socket.join(roomCode);
             userDict[roomCode].push(userData);
             io.to(roomCode).emit("join-room", userDict[roomCode], roomCode);
         } else {
-            socket.emit("full-room");
+            socket.emit("invalid", "ROOM FULL, enter a different room");
         }
     });
 
@@ -58,11 +58,14 @@ function setUpLobbyListeners(socket, userData, roomCode, roomState, userDict, io
         io.to(roomCode).emit("countdown", userDict[roomCode], roomCode);
     });
 
-    //TODO make sure the disconnect cleans up everything
     socket.on("disconnect", () => {
         userDict[roomCode] = userDict[roomCode].filter(user => user.id !== userData.id);
         io.to(roomCode).emit("leave-room", userDict[roomCode], roomCode);
         checkGameEnded(leaderboard, userDict, roomCode, io);
+        if(userDict[roomCode].length === 0) {
+            delete userDict[roomCode];
+            delete leaderboard[roomCode];
+        }
     });
 }
 

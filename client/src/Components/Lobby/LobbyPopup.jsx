@@ -29,37 +29,35 @@ function LobbyPopup() {
         await setUpSocket(newRoomCode);
     }
 
+    function disconnectSocket() {
+        socketContext.socket.current.disconnect();
+        socketContext.socket.current = undefined;
+    }
+
+    function updateRoom(users, roomCode) {
+        socketContext.setUserList(users);
+        navigate("/lobby", { state: { roomCode: roomCode } });
+    }
+
     function setSocketListeners() {
         socketContext.socket.current.on("join-room", (users, roomCode) => {
-            socketContext.setUserList(users);
-            navigate("/lobby", { state: { roomCode: roomCode } });
+            updateRoom(users, roomCode)
         });
         socketContext.socket.current.on("leave-room", (users, roomCode) => {
-            socketContext.setUserList(users);
-            navigate("/lobby", { state: { roomCode: roomCode } });
+            updateRoom(users, roomCode)
         });
-        socketContext.socket.current.on("full-room", () => {
-            feedback.current.textContent = "ROOM FULL, enter a different room";
-            socketContext.socket.current.disconnect();
-            socketContext.socket.current = undefined;
-        });
-        socketContext.socket.current.on("invalid-room", () => {
-            feedback.current.textContent = "INVALID ROOM CODE, try again";
-            socketContext.socket.current.disconnect();
-            socketContext.socket.current = undefined;
+        socketContext.socket.current.on("invalid", (invalidMessage) => {
+            feedback.current.textContent = invalidMessage;
+            disconnectSocket()
         });
         socketContext.socket.current.on("start-game", () => {
             navigate("/multiplayer-game", { state: { roomCode: roomCode } });
-        });
-        socketContext.socket.current.on("game-started", () => {
-            feedback.current.textContent = "GAME ALREADY STARTED, cannot join the room";
         });
     }
 
     async function setUpSocket(roomCode) {
         if (socketContext.socket.current) {
-            socketContext.socket.current.disconnect();
-            socketContext.socket.current = undefined;
+            disconnectSocket()
         }
         let userData = {
             userEmail: auth.userEmail,
@@ -72,7 +70,9 @@ function LobbyPopup() {
             userData["avatar"] = data.picture_url;
             userData["username"] = data.username;
         }
-        socketContext.socket.current = io("", { query: { roomCode: roomCode }, auth: { userData } });
+        socketContext.socket.current = io("", {
+            query: { roomCode: roomCode }, auth: { userData }
+        });
         setSocketListeners();
         socketContext.socket.current.emit("try-join");
     }

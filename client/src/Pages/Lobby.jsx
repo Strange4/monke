@@ -28,6 +28,7 @@ function Lobby() {
         if (!socketContext.socket.current) {
             navigate("/");
         } else {
+            socketContext.socket.current.off("invalid")
             socketContext.socket.current.on("countdown", () => {
                 startTimer();
                 setStarted(true)
