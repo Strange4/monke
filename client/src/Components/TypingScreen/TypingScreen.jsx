@@ -22,7 +22,7 @@ const allRegKeys = keyboardKeys.english.lower;
 function TypingScreen() {
 
     const {
-        isLoading, data: textToDisplay, refetch
+        isLoading, refetch
     } = useQuery("textToDisplay", async () => {
         const resp = await fetch("/api/quote",
             {
@@ -34,14 +34,16 @@ function TypingScreen() {
         return (await resp.json()).body;
     }, {
         onSuccess: (quote) => {
+            setTextToDisplay(quote);
             setUserDisplay(getDefaultUserDisplay(quote))
         }, onError: () => {
-            setUserDisplay(
-                getDefaultUserDisplay(defaultQuotes[randomNumber(0, defaultQuotes.length)])
-            )
+            const quote = defaultQuotes[randomNumber(0, defaultQuotes.length)];
+            setTextToDisplay(quote);
+            setUserDisplay(getDefaultUserDisplay(quote))
         },
         refetchOnWindowFocus: false
     });
+    const [textToDisplay, setTextToDisplay] = useState("");
     const [keyboard, setKeyboard] = useState(mapKeyToKeyboard(allRegKeys));
     const [displayTime, setDisplayTime] = useState(0);
     const [displayResults, setDisplayResults] = useState(false);
