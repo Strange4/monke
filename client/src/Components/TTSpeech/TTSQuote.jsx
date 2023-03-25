@@ -23,6 +23,11 @@ function TTSQuote({ text, resultScreenOff, enabled }){
         }
     }, [isMounted]);
 
+    /**
+     * function that invokes react-speech to read out the text.
+     * Invoked automatically upon being mounted.
+     * User can invoke it either by clicking the replay button or pressing enter when it is focused
+     */
     function playQuote(){
         speechRef.current.play();
     }
