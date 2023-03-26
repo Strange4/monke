@@ -23,8 +23,8 @@ function PageHolder() {
 
     function checkPathLocation() {
         return location.pathname !== "/lobby" && 
-            location.pathname !== "/multiplayer-game" && 
-            location.pathname !== "/endgame-results"
+            location.pathname !== "/multiplayer-game" &&
+            location.pathname !== "/endgame-results";
     }
 
     return (

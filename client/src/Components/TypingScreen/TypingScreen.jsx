@@ -13,6 +13,7 @@ import {
     randomNumber
 } from './TypingUtil';
 import defaultQuotes from '../../Data/default_quotes.json';
+import TTSQuote from '../TTSpeech/TTSQuote';
 
 const allShiftKeys = keyboardKeys.english.upper;
 const allRegKeys = keyboardKeys.english.lower;
@@ -25,10 +26,14 @@ function TypingScreen(props) {
     const {
         isLoading, refetch
     } = useQuery("textToDisplay", async () => {
-        return (await (await fetch("/api/quote",
+        const resp = await fetch("/api/quote",
             {
                 headers: { 'Accept': 'application/json', "Content-Type": "application/json" }
-            })).json()).body;
+            });
+        if(!resp.ok){
+            throw new Error("The fetch request failed");
+        }
+        return (await resp.json()).body;
     }, {
         onSuccess: (quote) => {
             setTextToDisplay(quote);
@@ -46,6 +51,8 @@ function TypingScreen(props) {
     const [displayResults, setDisplayResults] = useState(false);
     const { startTimer, stopTimer, resetTimer, timer } = useChronometer(setDisplayTime);
     const [userDisplay, setUserDisplay] = useState(getDefaultUserDisplay(textToDisplay));
+    const [enableTTS, setEnableTTS] = useState(false);
+    const [isFocused, setIsFocused] = useState(true);
     const textContainerRef = useRef();
     const socketContext = useContext(SocketContext);
 
@@ -141,12 +148,37 @@ function TypingScreen(props) {
         return <Spinner/>
     }
 
+    function handleChkBoxEvent(e) {
+        setEnableTTS(e.target.checked);
+    }   
+
     return (
-        <div className='center'>
+        <div>
             <div>
                 <Chronometer seconds={displayTime}/>
-                <GameText display={userDisplay} />
+                <GameText onClick={()=> {
+                    textContainerRef.current.focus();
+                    setIsFocused(true);
+                }} display={userDisplay} isFocused={isFocused} />
                 <VirtualKeyboard currentKeys={keyboard} />
+                <TTSQuote
+                    text={textToDisplay}
+                    resultScreenOff={!displayResults}
+                    enabled={enableTTS}
+                />
+                <label>!TEMPORARY! Enable text to speech</label>
+                <input type="checkbox"
+                    id="enableTTS"
+                    name="enableTTSQuote"
+                    defaultChecked={false}
+                    onClick={handleChkBoxEvent}
+                    onKeyUp={(e) => {
+                        if(e.key === 'Enter'){
+                            e.target.checked = !e.target.checked;
+                            handleChkBoxEvent(e)
+                        }
+                    }}
+                />
                 <SoloGameResult
                     isOpen={displayResults}
                     displayText={userDisplay}
@@ -157,8 +189,11 @@ function TypingScreen(props) {
                 />
             </div>
 
-            <input type="text" 
-                className="text-container"
+            <input
+                onBlur={()=>setIsFocused(false)}
+                autoFocus
+                type="text" 
+                id="typing-input-box"
                 ref={textContainerRef}
                 onChange={onChangeText}
                 onKeyDown={handleKeyDown}
