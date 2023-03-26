@@ -129,6 +129,7 @@ function sortLeaderboard(a, b) {
 /**
  * only display the end game leaderboard if everyone finished
  * @param {Object} userDict 
+ * @param {String} roomCode
  * @param {Server} io 
  */
 async function checkGameEnded(lobby, roomCode, io) {
