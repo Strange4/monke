@@ -67,6 +67,7 @@ function TypingScreen(props) {
      */
     function handleGameEnd() {
         stopTimer();
+        resetGame();
         setDisplayResults(true);
         if (!props.multiplayer) {
             refetch();
