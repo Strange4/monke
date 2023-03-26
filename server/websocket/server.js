@@ -1,4 +1,5 @@
 import { Server } from "socket.io";
+import { validate as uuidValidate } from 'uuid';
 
 const lobbies = {};
 
@@ -26,9 +27,7 @@ export function setUp(server) {
     io.on("connection", (socket) => {
         const userData = setUserData(socket);
         const roomCode = socket.handshake.query.roomCode;
-        lobbies[roomCode] = new Lobby();
-        // lobbies[roomCode].addUser({"test":"AAA"})
-        // lobbies[roomCode].users.push({"test":"BBB"})
+        lobbies[roomCode] = lobbies[roomCode] || new Lobby();
         setUpLobbyListeners(socket, userData, roomCode, lobbies[roomCode], io);
         setUpGameListeners(socket, userData, roomCode, lobbies[roomCode], io);
     });
@@ -45,19 +44,21 @@ export function setUp(server) {
  */
 function setUpLobbyListeners(socket, userData, roomCode, lobby, io) {
     socket.on("try-join", () => {
-        if (!validateRoom(roomCode)) {
+        if (!uuidValidate(roomCode)) {
             socket.emit("invalid", "INVALID ROOM CODE, try again");
+            return;
         }
         if (lobby.roomState === "started") {
             socket.emit("invalid", "GAME ALREADY STARTED, cannot join the room");
-        } else if (lobby.users.length < 5) {
+            return;
+        } 
+        if (lobby.users.length < 3) {
             socket.join(roomCode);
-            lobbies[roomCode].addUser(userData)
-            console.log(lobby.users)
+            lobby.users.push(userData);
             io.to(roomCode).emit("join-room", lobby.users, roomCode);
-        } else {
-            socket.emit("invalid", "ROOM FULL, enter a different room");
-        }
+            return;
+        } 
+        socket.emit("invalid", "ROOM FULL, enter a different room");
     });
 
     socket.on("try-start", () => {
@@ -126,16 +127,6 @@ function sortLeaderboard(a, b) {
         return 1;
     }
     return b.results.wpm * b.results.accuracy - a.results.wpm * a.results.accuracy;
-}
-
-/**
- * validates room code with regex pattern
- * @returns {boolean}
- */
-function validateRoom(room) {
-    const roomRegex = /^[A-Za-z0-9]+(?:[-][A-Za-z0-9]+)*$/;
-    var validRoom = room.match(roomRegex);
-    return validRoom !== null;
 }
 
 /**

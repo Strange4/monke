@@ -32,7 +32,7 @@ function EndGameLeaderboard() {
             }
         });
     }, []);
-
+    
     return (
         <div id="end-game-leaderboard">
             <h1> END OF GAME </h1>
