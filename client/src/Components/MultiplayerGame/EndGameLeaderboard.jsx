@@ -11,12 +11,8 @@ function EndGameLeaderboard() {
             setLeaderboard(leaderboard)
         });
 
-    }, [])
-
-    useEffect(() => {
-        console.log(leaderboard)
-    }, [leaderboard])
-
+    }, []);
+    
     return (
         <div id="end-game-leaderboard">
             <h1> END OF GAME </h1>
