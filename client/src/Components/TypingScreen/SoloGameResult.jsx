@@ -6,28 +6,12 @@ import * as FetchModule from '../../Controller/FetchModule';
 import AuthContext from '../../Context/AuthContext';
 import { postData } from '../../Controller/FetchModule';
 import SocketContext from '../../Context/SocketContext';
-import { GiPartyPopper } from 'react-icons/gi'
+import { GiPartyPopper } from 'react-icons/gi';
 
 function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText, multiplayer }) {
     const [userStats, setUserStats] = useState({ "time": 0, "wpm": 0, "accuracy": 0 });
-    const socketContext = useContext(SocketContext)
+    const socketContext = useContext(SocketContext);
     const auth = useContext(AuthContext);
-    const [userData, setUserData] = useState({
-        username: "",
-        picture_url:
-            // eslint-disable-next-line max-len
-            "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
-        user_stats: {
-            wpm: 0,
-            max_wpm: 0,
-            accuracy: 0,
-            max_accuracy: 0,
-            win: 0,
-            lose: 0,
-            draw: 0,
-            games_count: 0
-        }
-    });
 
     useEffect(() => {
         (async () => {
@@ -35,7 +19,7 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText,
                 const results = await computeResults(timer.time().s, originalText, displayText);
                 setUserStats(results);
             }
-        })()
+        })();
     }, [isOpen]);
 
     /**
@@ -51,15 +35,14 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText,
             accuracy: Math.round(computeAccuracy(typedText) * 100) / 100
         }
 
-        const loggedIn = await auth.checkAccess()
+        const loggedIn = await auth.checkAccess();
         if (loggedIn) {
-            const data = await postData("/api/user", { email: auth.userEmail }, "POST")
-            setUserData(data)
+            await postData("/api/user", { email: auth.userEmail }, "POST");
             postUserStats(result);
         } 
 
         if (multiplayer) {
-            socketContext.socket.current.emit("send-results", result)
+            socketContext.socket.current.emit("send-results", result);
         }
 
         return result;
@@ -93,13 +76,12 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText,
     async function postUserStats(result) {
         setUserStats(result);
         const userStats = {
-            username: userData.username,
             email: auth.userEmail,
             wpm: result.wpm,
             accuracy: result.accuracy
         };
 
-        FetchModule.postData("/api/user_stat", userStats, "PUT")
+        FetchModule.postData("/api/user_stat", userStats, "PUT");
     }
 
     return (
@@ -114,8 +96,6 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText,
                 <div id='end-icon'>
                     <GiPartyPopper/>
                 </div>
-
-                {/* <p> press escape or click out of the popup to leave </p> */}
             </div>
         </Popup>
     );

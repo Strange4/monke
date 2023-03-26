@@ -1,4 +1,6 @@
 import { Server } from "socket.io";
+// import { postUserStats } from "../routes/api";
+import fetch from "node-fetch"
 
 /**
  * Initial connnection set up
@@ -61,8 +63,8 @@ function setUpLobbyListeners(socket, userData, roomCode, roomState, userDict, io
     socket.on("disconnect", () => {
         userDict[roomCode] = userDict[roomCode].filter(user => user.id !== userData.id);
         io.to(roomCode).emit("leave-room", userDict[roomCode], roomCode);
-        checkGameEnded(leaderboard, userDict, roomCode, io);
-        if(userDict[roomCode].length === 0) {
+        checkGameEnded(leaderboard, userDict, roomCode, io, socket, userData, false);
+        if (userDict[roomCode].length === 0) {
             delete userDict[roomCode];
             delete leaderboard[roomCode];
         }
@@ -96,11 +98,11 @@ function setUpGameListeners(socket, userData, roomCode, userDict, io, leaderboar
     });
 
     // executes once user has ended to update the results for that user
-    socket.once("send-results", (result) => {
+    socket.once("send-results", async (result) => {
         io.to(roomCode).emit("update-progress", userDict[roomCode]);
         let userIndex = leaderboard[roomCode].findIndex(user => user.id === userData.id);
         leaderboard[roomCode][userIndex].results = result;
-        checkGameEnded(leaderboard, userDict, roomCode, io)
+        await checkGameEnded(leaderboard, userDict, roomCode, io, socket, userData, true)
     });
 }
 
@@ -132,7 +134,7 @@ function validateRoom(room) {
  * @param {Object} userDict 
  * @param {Server} io 
  */
-function checkGameEnded(leaderboard, userDict, roomCode, io) {
+async function checkGameEnded(leaderboard, userDict, roomCode, io, socket, userData, post) {
     let displayLeaderboard = true;
     userDict[roomCode].forEach(user => {
         if (!user.gameEnded) {
@@ -142,6 +144,15 @@ function checkGameEnded(leaderboard, userDict, roomCode, io) {
     if (displayLeaderboard) {
         leaderboard[roomCode].sort((a, b) => sortLeaderboard(a, b));
         io.to(roomCode).emit("update-leaderboard", leaderboard[roomCode]);
+        if (post) {
+            let leaderboardIndex = leaderboard[roomCode].findIndex(user => user.id === userData.id)
+            let stats = {
+                email: userData.email,
+                win: leaderboardIndex === 0 ? 1 : 0,
+                lose: leaderboardIndex !== 0 ? 1 : 0
+            }
+            socket.emit("post-endgame-stats", stats);
+        }
     }
 }
 
@@ -157,6 +168,7 @@ function setUserData(socket) {
     let userData = { username: "", id: "", avatar: "" };
 
     userData["username"] = socket.handshake.auth.userData?.username || "GUEST";
+    userData["email"] = socket.handshake.auth.userData?.email || "";
     userData["avatar"] = socket.handshake.auth.userData?.avatar || defaultAvatar;
     userData["id"] = socket.id;
     userData["progress"] = 0;

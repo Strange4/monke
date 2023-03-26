@@ -1,21 +1,21 @@
 import { useContext, useState, useEffect } from "react";
 import SocketContext from "../../Context/SocketContext";
 import EndGameResults from "./EndGameResults";
+import {postData} from "../../Controller/FetchModule";
 
 function EndGameLeaderboard() {
     const socketContext = useContext(SocketContext)
     const [leaderboard, setLeaderboard] = useState([])
 
     useEffect(() => {
-        socketContext.socket.current.on("update-leaderboard", (leaderboard) => {
+        socketContext.socket.current.once("update-leaderboard", (leaderboard) => {
             setLeaderboard(leaderboard)
         });
-
-    }, [])
-
-    useEffect(() => {
-        console.log(leaderboard)
-    }, [leaderboard])
+        socketContext.socket.current.once("post-endgame-stats", (stats) => {
+            console.log(stats)
+            postData("/api/user_stat", stats, "PUT");
+        });
+    }, []);
 
     return (
         <div id="end-game-leaderboard">

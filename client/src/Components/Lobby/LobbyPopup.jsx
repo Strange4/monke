@@ -68,6 +68,7 @@ function LobbyPopup() {
             const data = await FetchModule.postData(url, { email: auth.userEmail }, "POST");
             userData["avatar"] = data.picture_url;
             userData["username"] = data.username;
+            userData["email"] = data.email;
         }
         socketContext.socket.current = io("", {
             query: { roomCode: roomCode }, auth: { userData }
