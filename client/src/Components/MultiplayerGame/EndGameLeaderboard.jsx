@@ -11,7 +11,8 @@ function EndGameLeaderboard() {
         socketContext.socket.current.off("update-leaderboard")
         socketContext.socket.current.once("update-leaderboard", (leaderboard) => {
             setLeaderboard(leaderboard)
-            let leaderboardIndex = leaderboard.findIndex(user => user.id === socketContext.socket.current.id)
+            let leaderboardIndex = 
+                leaderboard.findIndex(user => user.id === socketContext.socket.current.id)
             if (leaderboard[leaderboardIndex].email) {
                 console.log("YEP")
                 
