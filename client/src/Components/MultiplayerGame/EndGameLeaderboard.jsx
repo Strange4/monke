@@ -18,9 +18,9 @@ function EndGameLeaderboard() {
                     email: leaderboard[leaderboardIndex].email
                 }
                 if (leaderboardIndex === 0) {
-                    stats.win = 1;
+                    stats.win = true;
                 } else {
-                    stats.lose = 1;
+                    stats.lose = true;
                 }
                 postData("/api/user_stat", stats, "PUT");
             }

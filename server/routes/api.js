@@ -64,9 +64,9 @@ router.put("/user_stat", async (req, res, next) => {
     }
     const wpm = Constraints.positiveNumber(req.body.wpm);
     const accuracy = Constraints.positiveNumber(req.body.accuracy);
-    const win = Constraints.positiveNumber(req.body.win);
-    const lose = Constraints.positiveNumber(req.body.lose);
-    const draw = Constraints.positiveNumber(req.body.draw);
+    const win = Constraints.boolean(req.body.win);
+    const lose = Constraints.boolean(req.body.lose);
+    const draw = Constraints.boolean(req.body.draw);
     const gameCount = user.user_stats.games_count;
 
     // updates the average of that value if it is defined only
