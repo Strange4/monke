@@ -8,26 +8,33 @@ import { useState } from "react";
 const Home = () => {
 
 
-    // Kat when you want to test use the delete here and refresh the page so the style of the banners
-    // deleteCookie("cookieFirstTime");
-    // deleteCookie("homeFirstTime");
-    // deleteCookie("leaderboardFirstTime");
-    // deleteCookie("lobbyFirstTime");
-    // deleteCookie("loginFirstTime");
+    // Kat when you want to test use the delete here 
+    // and refresh the page so the style of the banners
+
+    deleteCookie("cookieFirstTime");
+    deleteCookie("settingsFirstTime");
+    deleteCookie("gameFirstTime");
+    deleteCookie("leaderboardFirstTime");
+    deleteCookie("lobbyFirstTime");
+    deleteCookie("loginFirstTime");
 
     const cookieValue = getCookieValue("cookieFirstTime") === "visited";
-    const homeValue = getCookieValue("homeFirstTime") === "visited";
+    const settingsValue = getCookieValue("settingsFirstTime") === "visited";
+    const gameValue = getCookieValue("gameFirstTime") === "visited";
     const leaderboardValue = getCookieValue("leaderboardFirstTime") === "visited";
     const lobbyValue = getCookieValue("lobbyFirstTime") === "visited"
     const loginValue = getCookieValue("loginFirstTime") === "visited";
 
     const [cookieCookie, visitedCookie] = useState(cookieValue);
 
-    const [homeCookie, visitedHome] = 
-        useState(cookieValue ? homeValue : !(cookieValue && homeValue));
+    const [settingsCookie, visitedSettings] = 
+        useState(cookieValue ? settingsValue : !(cookieValue && settingsValue));
+
+    const [gameCookie, visitedGame] = 
+        useState(cookieValue ? gameValue : !(settingsValue && gameValue));
 
     const [leaderboardCookie, visitedLeaderboard] = 
-        useState(cookieValue ? leaderboardValue : !(homeCookie && leaderboardValue));
+        useState(cookieValue ? leaderboardValue : !(gameValue && leaderboardValue));
 
     const [lobbyCookie, visitedLobby] = 
         useState(cookieValue ? lobbyValue : !(leaderboardValue && lobbyValue));
@@ -37,20 +44,20 @@ const Home = () => {
 
     return (
         <div id="home">
-            <NavBar />
-
-            <div id="game-component">
-                <GameSettings />
-                <TypingScreen />
-            </div>
+            <div className="blur"></div>
             { cookieCookie ? <></> : 
                 <FirstTimePopUp area={"cookie"} 
                     setCookieArea={visitedCookie} 
-                    setNextArea={visitedHome}/> }
+                    setNextArea={visitedSettings}/> }
 
-            { homeCookie ? <></> :
-                <FirstTimePopUp area={"home"} 
-                    setCookieArea={visitedHome} 
+            { settingsCookie ? <></> :
+                <FirstTimePopUp area={"settings"} 
+                    setCookieArea={visitedSettings} 
+                    setNextArea={visitedGame}/> }
+                
+            { gameCookie ? <></> :
+                <FirstTimePopUp area={"game"} 
+                    setCookieArea={visitedGame} 
                     setNextArea={visitedLeaderboard}/> }
 
             { leaderboardCookie ? <></> : 
@@ -67,7 +74,14 @@ const Home = () => {
                 <FirstTimePopUp 
                     area={"login"} 
                     setCookieArea={visitedLogin}/> }
+            <NavBar />
+            <div id="game-component">
+                
+                <GameSettings />
+                <TypingScreen />
+            </div>
         </div>
+
     );
 }
 

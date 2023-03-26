@@ -1,17 +1,38 @@
-.firstTimeMessage {
-    /* background-color: var(--popup-color); */
-    /* border-radius: 10px; */
-    color: var(--sub-color);
-    backdrop-filter: blur(5px);
-
+#game-component:has(>div.firstTimeMessage) {
+    /* display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+    align-content: center; */
 }
 
-div#home:has(>div.firstTimeMessage) {
-    /* filter: blur(5px); */
+.firstTimeMessage {
+    position: absolute;
+    color: var(--sub-color);
+    z-index: 10;
+    border: 2px solid var(--accent-color);
+    border-radius: 20px;
+}
+
+.firstTimeMessage button{
+    border: none;
+    background-color: var(--sub-color-transparent);
+    color: var(--text-color);
+    font-size: 1.3em;
+    transition: 0.3s;
+    font-size: 1.3em;
+    letter-spacing: 15px;
+    border-radius: 0 0 20px 20px;
+}
+
+.firstTimeMessage button:hover{
+    cursor: pointer;
+    background-color: var(--sub-color);
+    color: var(--bg-color);
 }
 
 .firstTimeMessage:has(> div#cookieFirstTime){
     height: 100%;
+    position: relative;
     display: flex;
     justify-content: flex-end;
     align-self: center;
@@ -21,7 +42,8 @@ div#home:has(>div.firstTimeMessage) {
     width: 95%;
     margin: 10px;
     padding: 10px;
-    backdrop-filter: blur(5px);
+    z-index: 10;
+    border: none;
 }
 
 .firstTimeMessage-content {
@@ -34,48 +56,106 @@ div#home:has(>div.firstTimeMessage) {
     border-radius: 10px 10px 0 0;
 }
 
-.firstTimeMessage:has(>#cookieFirstTime) button{
-    border: none;
-    background-color: var(--sub-color-transparent);
-    color: var(--text-color);
-    font-size: 1.3em;
-    border-radius: 0 0 10px 10px;
-    transition: 0.3s;
+.firstTimeMessage:has(> div#settingsFirstTime){
+    display: flex;
+    justify-content: flex-end;
+    top: 70px;
+    border: 2px solid var(--accent-color);
+    border-radius: 20px;
+    width:  60%;
+    max-width: 800px;
+    height: 200px;
+    flex-flow: column wrap;
+    align-self: center;
+    margin: 10px;
 }
 
-.firstTimeMessage:has(>#cookieFirstTime) button:hover {
+#settingsFirstTime, #gameFirstTime, #leaderboardFirstTime {
+    background-color: var(--sub-color-transparent);
+    padding: 15px;
+}
+
+.firstTimeMessage:has(>#settingsFirstTime) button,
+.firstTimeMessage:has(>#gameFirstTime) button,
+.firstTimeMessage:has(>#leaderboardFirstTime) button {
+    background-color: var(--sub-alt-color);
+    border-radius: 0 0 20px 20px;
+    color: var(--text-color);
+}
+
+.firstTimeMessage:has(>#settingsFirstTime) button:hover,
+.firstTimeMessage:has(>#gameFirstTime) button:hover,
+.firstTimeMessage:has(>#leaderboardFirstTime) button:hover {
     cursor: pointer;
     background-color: var(--sub-color);
     color: var(--bg-color);
 }
 
-.firstTimeMessage:has(> div#homeFirstTime){
-    height: 100%;
-    display: flex;
-    /* justify-content: flex-end; */
-    align-self: center;
-    flex-flow: column wrap;
-    position: absolute;
-    /* top: 200px; */
-    width: 95%;
-    margin: 10px;
-    padding: 10px;
+#settingsFirstTime {
+    padding: 15px;
 }
 
-#homeFirstTime{
+div.firstTimeMessage:has(>div#settingsFirstTime) ~ div#game-component>div#settings,
+div.firstTimeMessage:has(>div#gameFirstTime) ~ div#game-component>div.center,
+div.firstTimeMessage:has(>div#leaderboardFirstTime) ~ div#navbar>div#nav-sub>li>a>svg#leaderboard-icon {
+    position: relative;
+    z-index: 10;
+}
+
+div.firstTimeMessage:has(>div#leaderboardFirstTime) ~ div#navbar>div#nav-sub>li>a>svg#leaderboard-icon {
+    border: 2px solid var(--accent-color);
+    border-radius: 50%;
+}
+
+.blur:has(~.firstTimeMessage) {
+    position: absolute;
+    top: 0;
+    height: 99%;
+    width: 99%;
+    background-color: var(--sub-color-transparent);
+    filter: blur(9px);
+    backdrop-filter: blur(9px);
+    z-index: 1;
+}
+
+.firstTimeMessage:has(> div#gameFirstTime) {
     position: absolute;
     top: 200px;
-    height: 100px;
-
+    width: 85%;
+    max-width: 1100px;
+    height: 500px;
+    display: flex;
+    justify-content: flex-end;
+    flex-flow: column wrap;
+    align-self: center;
 }
 
-#homeFirstTime{
-
+.firstTimeMessage:has(> div#leaderboardFirstTime){
+    display: flex;
+    justify-content: flex-end;
+    top: 70px;
+    left: clamp(260px, 20%, 330px);
+    border: 2px solid var(--accent-color);
+    border-radius: 20px;
+    width:  20%;
+    max-width: 250px;
+    height: 185px;
+    flex-flow: column wrap;
+    align-self: center;
+    margin: 10px;
 }
 
-#leaderboardFirstTime{
-
+/* @media (min-width: 1100px) {
+    .firstTimeMessage:has(> div#leaderboardFirstTime) {
+      left: 100px;
+    }
 }
+
+@media (max-width: 3000px) {
+    .firstTimeMessage:has(> div#leaderboardFirstTime) {
+      left: 20vw;
+    }
+} */
 
 #lobbyFirstTime{
 

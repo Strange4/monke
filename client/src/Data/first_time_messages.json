@@ -9,8 +9,16 @@
         },
         {
             "message": {
-                "area" : "home",
-                "body": "This is where games are being played. You can choose what type of typing game you want to play.",
+                "area" : "settings",
+                "body": "These are the game settings. You can enable puntuation and decide the text length here",
+                "btnMessage": "next"
+                
+            }
+        },
+        {
+            "message": {
+                "area" : "game",
+                "body": "This is the game area. Once the page loads you can start typing right away, if the game is unfocused you can click it to begin.",
                 "btnMessage": "next"
                 
             }
@@ -18,7 +26,7 @@
         {
             "message": {
                 "area" : "leaderboard",
-                "body": "This is where the best players are placed. Players are ranked based on their best Words per Minute and Accuracy. If you want to show up on the leaderboard, be sure to type away and set the highest records.",
+                "body": "This is the leaderboard, players are ranked based on WPM and accuracy. Try a few games to see how you compare to others.",
                 "btnMessage": "next"
                 
             }
