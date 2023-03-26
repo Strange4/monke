@@ -11,10 +11,6 @@ class Lobby {
     startRoom() {
         this.roomState = "started";
     }
-
-    addUser(user) {
-        this.users.push(user)
-    }
 }
 
 /**
@@ -28,6 +24,7 @@ export function setUp(server) {
         const userData = setUserData(socket);
         const roomCode = socket.handshake.query.roomCode;
         lobbies[roomCode] = lobbies[roomCode] || new Lobby();
+
         setUpLobbyListeners(socket, userData, roomCode, lobbies[roomCode], io);
         setUpGameListeners(socket, userData, roomCode, lobbies[roomCode], io);
     });
@@ -76,7 +73,7 @@ function setUpLobbyListeners(socket, userData, roomCode, lobby, io) {
         io.to(roomCode).emit("leave-room", lobby.users, roomCode);
         checkGameEnded(lobby, roomCode, io);
         if (lobby.users.length === 0) {
-            delete lobbies[roomCode]
+            delete lobbies[roomCode];
         }
     });
 }
@@ -112,7 +109,7 @@ function setUpGameListeners(socket, userData, roomCode, lobby, io) {
         io.to(roomCode).emit("update-progress", lobby.users);
         let userIndex = lobby.leaderboard.findIndex(user => user.id === userData.id);
         lobby.leaderboard[userIndex].results = result;
-        await checkGameEnded(lobby, roomCode, io)
+        await checkGameEnded(lobby, roomCode, io);
     });
 }
 
