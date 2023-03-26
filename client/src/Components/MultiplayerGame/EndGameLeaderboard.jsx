@@ -14,8 +14,6 @@ function EndGameLeaderboard() {
             let leaderboardIndex = 
                 leaderboard.findIndex(user => user.id === socketContext.socket.current.id)
             if (leaderboard[leaderboardIndex].email) {
-                console.log("YEP")
-                
                 let stats = {
                     email: leaderboard[leaderboardIndex].email
                 }
@@ -24,11 +22,7 @@ function EndGameLeaderboard() {
                 } else {
                     stats.lose = 1;
                 }
-                console.log(stats)
                 postData("/api/user_stat", stats, "PUT");
-            } else {
-                console.log("NOP")
-                console.log(leaderboard[leaderboardIndex])
             }
         });
     }, []);
