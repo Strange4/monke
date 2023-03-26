@@ -20,7 +20,7 @@ class Lobby {
  */
 export function setUp(server) {
     const io = new Server(server, { cors: { origin: "http://localhost:3000" } });
-    
+
     io.on("connection", (socket) => {
         const userData = setUserData(socket);
         const roomCode = socket.handshake.query.roomCode;
@@ -49,13 +49,13 @@ function setUpLobbyListeners(socket, userData, roomCode, lobby, io) {
         if (lobby.roomState === "started") {
             socket.emit("invalid", "GAME ALREADY STARTED, cannot join the room");
             return;
-        } 
+        }
         if (lobby.users.length < MAX_USERS) {
             socket.join(roomCode);
             lobby.users.push(userData);
             io.to(roomCode).emit("join-room", lobby.users, roomCode);
             return;
-        } 
+        }
         socket.emit("invalid", "ROOM FULL, enter a different room");
     });
 
@@ -93,15 +93,11 @@ function setUpGameListeners(socket, userData, roomCode, lobby, io) {
         lobby.users[userIndex].progress = currentProgress / total * 100;
 
         // keeps track on whether that user finished the game or not
-        lobby.users.forEach(user => {
-            if (user.progress >= 100) {
-                user.progress = 100;
-                if (user.id === userData.id && !user.gameEnded) {
-                    socket.emit("user-ended");
-                }
-                user.gameEnded = true;
-            }
-        });
+        if (lobby.users[userIndex].progress >= 100) {
+            lobby.users[userIndex].progress = 100;
+            socket.emit("user-ended");
+            lobby.users[userIndex].gameEnded = true;
+        }
         io.to(roomCode).emit("update-progress", lobby.users);
     });
 
