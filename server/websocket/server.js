@@ -1,4 +1,5 @@
 import { Server } from "socket.io";
+import { validate as uuidValidate } from 'uuid';
 
 /**
  * Initial connnection set up
@@ -34,7 +35,7 @@ export function setUp(server) {
  */
 function setUpLobbyListeners(socket, userData, roomCode, roomState, userDict, io, leaderboard) {
     socket.on("try-join", () => {
-        if (!validateRoom(roomCode)) {
+        if (!uuidValidate(roomCode)) {
             socket.emit("invalid", "INVALID ROOM CODE, try again");
         }
         if (roomState[roomCode] === "started") {
@@ -115,16 +116,6 @@ function sortLeaderboard(a, b) {
         return 1;
     }
     return b.results.wpm * b.results.accuracy - a.results.wpm * a.results.accuracy;
-}
-
-/**
- * validates room code with regex pattern
- * @returns {boolean}
- */
-function validateRoom(room) {
-    const roomRegex = /^[A-Za-z0-9]+(?:[-][A-Za-z0-9]+)*$/;
-    var validRoom = room.match(roomRegex);
-    return validRoom !== null;
 }
 
 /**
