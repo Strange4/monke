@@ -3,13 +3,14 @@ import { Link } from 'react-router-dom';
 import Popup from 'reactjs-popup';
 import Leaderboard from './Leaderboard';
 import LobbyPopup from './Lobby/LobbyPopup';
+import Preferences from './Preferences/Preferences';
 import Login from './Login';
 import logo from "../Assets/keyboard-champions-logo/svg/logo-no-background.svg"
 import { GiCrenelCrown } from "react-icons/gi";
 import { CgProfile } from "react-icons/cg";
-import { HiUserGroup } from "react-icons/hi"
+import { HiCog, HiUserGroup } from "react-icons/hi"
 import AuthContext from '../Context/AuthContext';
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
 /**
  * Navigation bar to be used on all pages
@@ -17,6 +18,12 @@ import { useContext } from "react";
  */
 function NavBar() {
     const auth = useContext(AuthContext);
+
+    const [showPref, setShowPref] = useState(false);
+
+    function toggleShowPref(){
+        setShowPref(!showPref);
+    }
 
     async function handleLogout() {
         await fetch("/authentication/logout");
@@ -41,6 +48,10 @@ function NavBar() {
                     <Popup trigger={<a><HiUserGroup id="lobby-icon"/></a>} modal>
                         <LobbyPopup />
                     </Popup>
+                </li>
+                <li>
+                    <HiCog onClick={toggleShowPref} id="pref-icon"/>
+                    {showPref ? <Preferences open={showPref} toggleShow={toggleShowPref} /> : null}
                 </li>
             </div>
             <li>
