@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from "react";
 import SocketContext from "../../Context/SocketContext";
 import EndGameResults from "./EndGameResults";
-import {postData} from "../../Controller/FetchModule";
+import { postData } from "../../Controller/FetchModule";
 
 function EndGameLeaderboard() {
     const socketContext = useContext(SocketContext)
@@ -9,11 +9,25 @@ function EndGameLeaderboard() {
 
     useEffect(() => {
         socketContext.socket.current.off("update-leaderboard")
-        socketContext.socket.current.once("update-leaderboard", (leaderboard, stats) => {
+        socketContext.socket.current.once("update-leaderboard", (leaderboard) => {
             setLeaderboard(leaderboard)
-            if (stats.email) {
-                postData("/api/user_stat", stats, "PUT");
+            let leaderboardIndex = leaderboard.findIndex(user => user.id === socketContext.socket.current.id)
+            if (leaderboard[leaderboardIndex].email) {
+                console.log("YEP")
+                
+                let stats = {
+                    email: leaderboard[leaderboardIndex].email
+                }
+                if (leaderboardIndex === 0) {
+                    stats.win = 1;
+                } else {
+                    stats.lose = 1;
+                }
                 console.log(stats)
+                postData("/api/user_stat", stats, "PUT");
+            } else {
+                console.log("NOP")
+                console.log(leaderboard[leaderboardIndex])
             }
         });
     }, []);

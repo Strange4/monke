@@ -63,7 +63,7 @@ function setUpLobbyListeners(socket, userData, roomCode, roomState, userDict, io
     socket.on("disconnect", () => {
         userDict[roomCode] = userDict[roomCode].filter(user => user.id !== userData.id);
         io.to(roomCode).emit("leave-room", userDict[roomCode], roomCode);
-        checkGameEnded(leaderboard, userDict, roomCode, io, socket, userData, false);
+        checkGameEnded(leaderboard, userDict, roomCode, io, socket, userData);
         if (userDict[roomCode].length === 0) {
             delete userDict[roomCode];
             delete leaderboard[roomCode];
@@ -102,7 +102,7 @@ function setUpGameListeners(socket, userData, roomCode, userDict, io, leaderboar
         io.to(roomCode).emit("update-progress", userDict[roomCode]);
         let userIndex = leaderboard[roomCode].findIndex(user => user.id === userData.id);
         leaderboard[roomCode][userIndex].results = result;
-        await checkGameEnded(leaderboard, userDict, roomCode, io, socket, userData, true)
+        await checkGameEnded(leaderboard, userDict, roomCode, io, socket, userData)
     });
 }
 
@@ -134,8 +134,9 @@ function validateRoom(room) {
  * @param {Object} userDict 
  * @param {Server} io 
  */
-async function checkGameEnded(leaderboard, userDict, roomCode, io, socket, userData, post) {
+async function checkGameEnded(leaderboard, userDict, roomCode, io, socket, userData) {
     let displayLeaderboard = true;
+    //TODO use .every
     userDict[roomCode].forEach(user => {
         if (!user.gameEnded) {
             displayLeaderboard = false;
@@ -143,16 +144,7 @@ async function checkGameEnded(leaderboard, userDict, roomCode, io, socket, userD
     });
     if (displayLeaderboard) {
         leaderboard[roomCode].sort((a, b) => sortLeaderboard(a, b));
-        let leaderboardIndex = leaderboard[roomCode].findIndex(user => user.id === userData.id)
-        let stats = {
-            email: userData.email
-        }
-        if (leaderboardIndex === 0) {
-            stats.win = 1;
-        } else {
-            stats.lose = 1;
-        }
-        io.to(roomCode).emit("update-leaderboard", leaderboard[roomCode], stats);
+        io.to(roomCode).emit("update-leaderboard", leaderboard[roomCode]);
     }
 }
 
