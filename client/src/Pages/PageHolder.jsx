@@ -22,7 +22,9 @@ function PageHolder() {
     }, [location]);
 
     function checkPathLocation() {
-        return location.pathname !== "/lobby" && location.pathname !== "/multiplayer-game" && location.pathname !== "/endgame-results"
+        return location.pathname !== "/lobby" && 
+            location.pathname !== "/multiplayer-game" &&
+            location.pathname !== "/endgame-results";
     }
 
     return (
