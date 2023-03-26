@@ -76,11 +76,11 @@ router.put("/user_stat", async (req, res, next) => {
         ...accuracy && { 
             "user_stats.accuracy": getAverage(user.user_stats.accuracy, accuracy, gameCount) },
         ...win && { 
-            "user_stats.win": getAverage(user.user_stats.win, win, gameCount) },
+            "user_stats.win": user.user_stats.win + win},
         ...lose && { 
-            "user_stats.lose": getAverage(user.user_stats.lose, lose, gameCount) },
+            "user_stats.lose": user.user_stats.lose + lose},
         ...draw && { 
-            "user_stats.draw": getAverage(user.user_stats.draw, draw, gameCount) },
+            "user_stats.draw": user.user_stats.draw + draw},
         "user_stats.games_count": gameCount + 1
     }
     if (wpm > user.user_stats.max_wpm) {
