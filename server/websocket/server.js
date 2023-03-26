@@ -143,16 +143,16 @@ async function checkGameEnded(leaderboard, userDict, roomCode, io, socket, userD
     });
     if (displayLeaderboard) {
         leaderboard[roomCode].sort((a, b) => sortLeaderboard(a, b));
-        io.to(roomCode).emit("update-leaderboard", leaderboard[roomCode]);
-        if (post) {
-            let leaderboardIndex = leaderboard[roomCode].findIndex(user => user.id === userData.id)
-            let stats = {
-                email: userData.email,
-                win: leaderboardIndex === 0 ? 1 : 0,
-                lose: leaderboardIndex !== 0 ? 1 : 0
-            }
-            socket.emit("post-endgame-stats", stats);
+        let leaderboardIndex = leaderboard[roomCode].findIndex(user => user.id === userData.id)
+        let stats = {
+            email: userData.email
         }
+        if (leaderboardIndex === 0) {
+            stats.win = 1;
+        } else {
+            stats.lose = 1;
+        }
+        io.to(roomCode).emit("update-leaderboard", leaderboard[roomCode], stats);
     }
 }
 

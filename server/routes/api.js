@@ -64,9 +64,9 @@ router.put("/user_stat", async (req, res, next) => {
     }
     const wpm = Constraints.positiveNumber(req.body.wpm);
     const accuracy = Constraints.positiveNumber(req.body.accuracy);
-    const win = Constraints.positiveInt(req.body.win);
-    const lose = Constraints.positiveInt(req.body.lose);
-    const draw = Constraints.positiveInt(req.body.draw);
+    const win = Constraints.positiveNumber(req.body.win);
+    const lose = Constraints.positiveNumber(req.body.lose);
+    const draw = Constraints.positiveNumber(req.body.draw);
     const gameCount = user.user_stats.games_count;
 
     // updates the average of that value if it is defined only
@@ -76,11 +76,11 @@ router.put("/user_stat", async (req, res, next) => {
         ...accuracy && { 
             "user_stats.accuracy": getAverage(user.user_stats.accuracy, accuracy, gameCount) },
         ...win && { 
-            "user_stats.win": user.user_stats.win + win},
+            "user_stats.win": user.user_stats.win + 1},
         ...lose && { 
-            "user_stats.lose": user.user_stats.lose + lose},
+            "user_stats.lose": user.user_stats.lose + 1},
         ...draw && { 
-            "user_stats.draw": user.user_stats.draw + draw},
+            "user_stats.draw": user.user_stats.draw + 1},
         "user_stats.games_count": gameCount + 1
     }
     if (wpm > user.user_stats.max_wpm) {

@@ -8,12 +8,13 @@ function EndGameLeaderboard() {
     const [leaderboard, setLeaderboard] = useState([])
 
     useEffect(() => {
-        socketContext.socket.current.once("update-leaderboard", (leaderboard) => {
+        socketContext.socket.current.off("update-leaderboard")
+        socketContext.socket.current.once("update-leaderboard", (leaderboard, stats) => {
             setLeaderboard(leaderboard)
-        });
-        socketContext.socket.current.once("post-endgame-stats", (stats) => {
-            console.log(stats)
-            postData("/api/user_stat", stats, "PUT");
+            if (stats.email) {
+                postData("/api/user_stat", stats, "PUT");
+                console.log(stats)
+            }
         });
     }, []);
 
