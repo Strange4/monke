@@ -2,6 +2,7 @@ import { Server } from "socket.io";
 import { validate as uuidValidate } from 'uuid';
 
 const lobbies = {};
+const MAX_USERS = 3
 
 class Lobby {
     users = []
@@ -49,7 +50,7 @@ function setUpLobbyListeners(socket, userData, roomCode, lobby, io) {
             socket.emit("invalid", "GAME ALREADY STARTED, cannot join the room");
             return;
         } 
-        if (lobby.users.length < 3) {
+        if (lobby.users.length < MAX_USERS) {
             socket.join(roomCode);
             lobby.users.push(userData);
             io.to(roomCode).emit("join-room", lobby.users, roomCode);
