@@ -1,5 +1,7 @@
 import { Server } from "socket.io";
 
+const lobbies = {};
+
 class Lobby {
     users = []
     roomState = "stopped"
@@ -7,6 +9,10 @@ class Lobby {
 
     startRoom() {
         this.roomState = "started";
+    }
+
+    addUser(user) {
+        this.users.push(user)
     }
 }
 
@@ -16,15 +22,13 @@ class Lobby {
  */
 export function setUp(server) {
     const io = new Server(server, { cors: { origin: "http://localhost:3000" } });
-    const lobbies = {};
-
+    
     io.on("connection", (socket) => {
         const userData = setUserData(socket);
         const roomCode = socket.handshake.query.roomCode;
         lobbies[roomCode] = new Lobby();
-        lobbies[roomCode].users = lobbies[roomCode].users || [];
-        lobbies[roomCode].leaderboard = lobbies[roomCode].leaderboard || [];
-
+        // lobbies[roomCode].addUser({"test":"AAA"})
+        // lobbies[roomCode].users.push({"test":"BBB"})
         setUpLobbyListeners(socket, userData, roomCode, lobbies[roomCode], io);
         setUpGameListeners(socket, userData, roomCode, lobbies[roomCode], io);
     });
@@ -36,8 +40,7 @@ export function setUp(server) {
  * @param {Socket} socket 
  * @param {Object} userData 
  * @param {String} roomCode 
- * @param {String} lobby.roomState 
- * @param {Object} lobby.users 
+ * @param {Lobby} lobby
  * @param {Server} io 
  */
 function setUpLobbyListeners(socket, userData, roomCode, lobby, io) {
@@ -49,7 +52,8 @@ function setUpLobbyListeners(socket, userData, roomCode, lobby, io) {
             socket.emit("invalid", "GAME ALREADY STARTED, cannot join the room");
         } else if (lobby.users.length < 5) {
             socket.join(roomCode);
-            lobby.users.push(userData);
+            lobbies[roomCode].addUser(userData)
+            console.log(lobby.users)
             io.to(roomCode).emit("join-room", lobby.users, roomCode);
         } else {
             socket.emit("invalid", "ROOM FULL, enter a different room");
@@ -71,10 +75,7 @@ function setUpLobbyListeners(socket, userData, roomCode, lobby, io) {
         io.to(roomCode).emit("leave-room", lobby.users, roomCode);
         checkGameEnded(lobby, roomCode, io);
         if (lobby.users.length === 0) {
-            //TODO clean the lobby itself from lobbies
-            delete lobby.users;
-            delete lobby.leaderboard;
-            delete lobby.roomState
+            delete lobbies[roomCode]
         }
     });
 }
@@ -84,7 +85,7 @@ function setUpLobbyListeners(socket, userData, roomCode, lobby, io) {
  * @param {Socket} socket 
  * @param {Object} userData 
  * @param {String} roomCode 
- * @param {Object} lobby.users 
+ * @param {Lobby} lobby
  * @param {Server} io 
  */
 function setUpGameListeners(socket, userData, roomCode, lobby, io) {
