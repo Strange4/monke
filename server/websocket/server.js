@@ -102,11 +102,11 @@ function setUpGameListeners(socket, userData, roomCode, lobby, io) {
     });
 
     // executes once user has ended to update the results for that user
-    socket.once("send-results", async (result) => {
+    socket.once("send-results", (result) => {
         io.to(roomCode).emit("update-progress", lobby.users);
         let userIndex = lobby.leaderboard.findIndex(user => user.id === userData.id);
         lobby.leaderboard[userIndex].results = result;
-        await checkGameEnded(lobby, roomCode, io);
+        checkGameEnded(lobby, roomCode, io);
     });
 }
 
@@ -129,7 +129,7 @@ function sortLeaderboard(a, b) {
  * @param {String} roomCode
  * @param {Server} io 
  */
-async function checkGameEnded(lobby, roomCode, io) {
+function checkGameEnded(lobby, roomCode, io) {
     let displayLeaderboard = lobby.users.every(user => user.gameEnded);
 
     if (displayLeaderboard) {
