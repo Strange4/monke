@@ -16,7 +16,6 @@ span.letter{
     font-weight: bold;
     width: var(--letter-width);
     text-align: center;
-    position: relative;
     height: 1rem;
     border-bottom: 2px solid transparent;
 }
@@ -31,20 +30,12 @@ span.letter.wrong{
 
 span#inputCaret{
     position: absolute;
-    transition: left 90ms linear;
+    transition: all 60ms linear;
+    transition-property: top, left;
     background-color: var(--caret-color);
-    --caret-width: calc(var(--letter-width) / 10);
+    --caret-width: calc(var(--letter-width) / 6);
     width: var(--caret-width);
-    height: calc(var(--letter-width) * 1.1);
-    left: calc(var(--caret-width) / -2);
+    height: calc(var(--letter-width) * 1.5);
+    border-radius: 0.5rem;
 }
 
-
-@keyframes caret-transition{
-    from {
-        left: -100%;
-    }
-    to {
-        left: 0;
-    }
-}
