@@ -10,14 +10,14 @@ function EndGameLeaderboard() {
     useEffect(() => {
         socketContext.socket.current.off("update-leaderboard")
         socketContext.socket.current.once("update-leaderboard", (leaderboard) => {
-            setLeaderboard(leaderboard)
-            let leaderboardIndex = 
-                leaderboard.findIndex(user => user.id === socketContext.socket.current.id)
-            if (leaderboard[leaderboardIndex].email) {
+            setLeaderboard(leaderboard.sort((a, b) => sortLeaderboard(a, b)))
+            
+            let index = leaderboard.findIndex(user => user.id === socketContext.socket.current.id)
+            if (leaderboard[index].email) {
                 let stats = {
-                    email: leaderboard[leaderboardIndex].email
+                    email: leaderboard[index].email
                 }
-                if (leaderboardIndex === 0) {
+                if (index === 0) {
                     stats.win = true;
                 } else {
                     stats.lose = true;
@@ -26,7 +26,20 @@ function EndGameLeaderboard() {
             }
         });
     }, []);
-    
+
+    /**
+     * Sorts the users in multiplayer game according to their score
+     * @param {Object} a 
+     * @param {Object} b 
+     * @returns {Number}
+     */
+    function sortLeaderboard(a, b) {
+        if (!b.results || !a.results) {
+            return 1;
+        }
+        return b.results.wpm * b.results.accuracy - a.results.wpm * a.results.accuracy;
+    }
+
     return (
         <div id="end-game-leaderboard">
             <h1> END OF GAME </h1>

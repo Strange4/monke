@@ -111,19 +111,6 @@ function setUpGameListeners(socket, userData, roomCode, lobby, io) {
 }
 
 /**
- * Sorts the users in multiplayer game according to their score
- * @param {Object} a 
- * @param {Object} b 
- * @returns {Number}
- */
-function sortLeaderboard(a, b) {
-    if (!b.results || !a.results) {
-        return 1;
-    }
-    return b.results.wpm * b.results.accuracy - a.results.wpm * a.results.accuracy;
-}
-
-/**
  * only display the end game leaderboard if everyone finished
  * @param {Object} userDict 
  * @param {String} roomCode
@@ -133,7 +120,6 @@ function checkGameEnded(lobby, roomCode, io) {
     let displayLeaderboard = lobby.users.every(user => user.gameEnded);
 
     if (displayLeaderboard) {
-        lobby.leaderboard.sort((a, b) => sortLeaderboard(a, b));
         io.to(roomCode).emit("update-leaderboard", lobby.leaderboard);
     }
 }
