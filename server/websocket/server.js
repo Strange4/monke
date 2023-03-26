@@ -132,13 +132,8 @@ function sortLeaderboard(a, b) {
  * @param {Server} io 
  */
 async function checkGameEnded(lobby, roomCode, io) {
-    let displayLeaderboard = true;
-    //TODO use .every
-    lobby.users.forEach(user => {
-        if (!user.gameEnded) {
-            displayLeaderboard = false;
-        }
-    });
+    let displayLeaderboard = lobby.users.every(user => user.gameEnded);
+
     if (displayLeaderboard) {
         lobby.leaderboard.sort((a, b) => sortLeaderboard(a, b));
         io.to(roomCode).emit("update-leaderboard", lobby.leaderboard);
