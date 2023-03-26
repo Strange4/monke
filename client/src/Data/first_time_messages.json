@@ -42,8 +42,8 @@
         {
             "message": {
                 "area" : "login",
-                "body": "This is where you would log in to keep your progress. You login with Google.",
-                "btnMessage": "next"
+                "body": "You can login, check your profile or logout from here. We only support logging in with Google",
+                "btnMessage": "end tour"
                 
             }
         },

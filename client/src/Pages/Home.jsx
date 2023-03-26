@@ -11,12 +11,12 @@ const Home = () => {
     // Kat when you want to test use the delete here 
     // and refresh the page so the style of the banners
 
-    // deleteCookie("cookieFirstTime");
-    // deleteCookie("settingsFirstTime");
-    // deleteCookie("gameFirstTime");
-    // deleteCookie("leaderboardFirstTime");
-    // deleteCookie("lobbyFirstTime");
-    // deleteCookie("loginFirstTime");
+    deleteCookie("cookieFirstTime");
+    deleteCookie("settingsFirstTime");
+    deleteCookie("gameFirstTime");
+    deleteCookie("leaderboardFirstTime");
+    deleteCookie("lobbyFirstTime");
+    deleteCookie("loginFirstTime");
 
     const cookieValue = getCookieValue("cookieFirstTime") === "visited";
     const settingsValue = getCookieValue("settingsFirstTime") === "visited";
