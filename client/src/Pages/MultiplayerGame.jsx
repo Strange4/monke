@@ -36,12 +36,13 @@ const MultiplayerGame = () => {
     function setUpProgressListeners() {
         socketContext.socket.current.on("update-progress", (userList) => {
             socketContext.setUserList(userList);
-        });
-        socketContext.socket.current.once("user-ended", () => {
-            setEnded(true);
+            let index = userList.findIndex(user => user.id === socketContext.socket.current.id);
+            if (userList[index].progress >= 100) {
+                setEnded(true);
+            }
         });
     }
-
+    
     return (
         <>
             < NavBar />

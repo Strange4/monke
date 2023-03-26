@@ -95,7 +95,6 @@ function setUpGameListeners(socket, userData, roomCode, lobby, io) {
         // keeps track on whether that user finished the game or not
         if (lobby.users[userIndex].progress >= 100) {
             lobby.users[userIndex].progress = 100;
-            socket.emit("user-ended");
             lobby.users[userIndex].gameEnded = true;
         }
         io.to(roomCode).emit("update-progress", lobby.users);
