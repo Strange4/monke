@@ -34,7 +34,7 @@
         {
             "message": {
                 "area" : "lobby",
-                "body": "This is where you would play games with your friends. Create a room for your friends and type away. Room Creators (Leaders) are able to invite players and choose the typing settings for the game.",
+                "body": "This is the lobby access, you can create a new lobby or join one if you have a room code.",
                 "btnMessage": "next"
                 
             }
