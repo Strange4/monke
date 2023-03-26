@@ -6,12 +6,15 @@
 import api from "./api.js";
 import express from "express";
 import {authRouter} from "./authentication.js"
-import { quoteRouter } from "./quotes.js";
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
-app.use(express.static("./client/build/"));
-
+const buildPath = path.resolve(__dirname, "..", "..", "client", "build");
+app.use(express.static(buildPath));
 function html (req, _, next) {
     if (req.accepts('html')) {
         return next()
@@ -22,10 +25,9 @@ function html (req, _, next) {
 
 app.use("/api", api);
 app.use("/authentication", authRouter);
-app.use("/quote", quoteRouter);
 
 app.get("*", html, function(_, res) {
-    res.sendFile("index.html", {root: "../client/build/"})
+    res.redirect("/");
 });
 
 //default 404 route

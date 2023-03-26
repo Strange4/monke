@@ -1,4 +1,108 @@
 #lobby{
-    width: 80vw;
-    height: 80vh;
+    display: flex;
+    align-content: space-evenly;
+    justify-content: space-evenly;
+    flex-flow: column wrap;
+    max-width: 800px;
+    width: 60vw;
+    min-width: 700px;
+    height: 26vh;
+    min-height: 360px;
+}
+
+#lobby > #lobby-filler-1 {
+    position: absolute;
+    top: 0;
+    right: 10px;
+    color: var(--sub-color-transparent);
+    width: 170px;
+    height: 170px;
+}
+
+#lobby > #lobby-filler-2 {
+    position: absolute;
+    top: 0;
+    right: 180px;
+    color: var(--sub-color-transparent);
+    width: 120px;
+    height: 120px;
+}
+
+#lobby-header {
+    margin: 30px;
+    letter-spacing: 10px;
+    color: var(--sub-color);
+    width: 50%;
+}
+
+.lobby-access {
+    border: none;
+    font-size: 2em;
+    margin: 10px;
+    width: 50%;
+    min-width: 420px;
+    height: 50px;
+    border-radius: 20px;
+    background-color: var(--sub-color-transparent);
+    color: var(--text-color);
+    transition: 0.3s;
+}
+
+.lobby-access:hover {
+    cursor: pointer;
+    background-color: var(--sub-color);
+    color: var(--sub-alt-color);
+}
+
+.lobby-access:active {
+    cursor: pointer;
+    background-color: var(--accent-color);
+    color: var(--sub-alt-color);
+    outline: none;
+}
+
+#room-code-input {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px;
+    width: 80%;
+}
+
+#room-code-input input{
+    background-color: var(--sub-color-transparent);
+    border: none;
+    height: 30px;
+    width: 400px;
+    min-width: 400px;
+    border-radius: 20px;
+    font-size: 1.2em;
+    padding: 10px;
+    color: var(--sub-color);
+}
+
+#room-code-input button {
+    font-size: 1.2em;
+    border: none;
+    background-color: var(--accent-color);
+    padding: 0 15px;
+    border-radius: 25px;
+    margin-left: 20px;
+    min-width: 150px;
+}
+
+#room-code-input button:hover {
+    cursor: pointer;
+}
+
+#room-code-input button:active {
+    cursor: pointer;
+    background-color: var(--sub-color);
+}
+
+.lobby-access:focus {
+    outline: none;
+}
+
+.App> div#popup-root > div.popup-overlay > div.popup-content:has(> div#lobby) {
+    margin-top: 20vh !important;
 }

@@ -8,3 +8,36 @@
     justify-content: center;
     margin: auto;
 }
+
+.blurred-container{
+    filter: blur(4px);
+    opacity: .25;
+}
+
+#text-focus-message{
+    font-weight: bolder;
+    z-index: 1;
+}
+
+#typing-input-box{
+    width: 0;
+    height: 0;
+    border: none;
+    padding: 0;
+}
+
+#typing-container{
+    display: grid;
+}
+
+#typing-screen-text{
+    position: relative;
+}
+
+#text-focus-message, #typing-screen-text{
+    grid-column: 1;
+    grid-row: 1;
+    align-self: center;
+    justify-self: center;
+    transition: all 0.3s ease-in-out;
+}

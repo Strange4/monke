@@ -1,7 +1,8 @@
 import Cookies from "js-cookie";
 
 /**
- * Sets the cookie in the browser with the given name, value and expiry date of current date + 100 000 days.
+ * Sets the cookie in the browser with the given name, 
+ * value and expiry date of current date + 100 000 days.
  * @param {string} cookieName, the name of the cookie that will be created. 
  * @param {string} cookieValue, the value of the cookie that will be created.
  */
