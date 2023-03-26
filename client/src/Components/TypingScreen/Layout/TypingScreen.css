@@ -30,10 +30,14 @@
     display: grid;
 }
 
+#typing-screen-text{
+    position: relative;
+}
+
 #text-focus-message, #typing-screen-text{
     grid-column: 1;
     grid-row: 1;
     align-self: center;
     justify-self: center;
-    transition: all 0.3s;
+    transition: all 0.3s ease-in-out;
 }
