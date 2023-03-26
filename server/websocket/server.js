@@ -37,16 +37,19 @@ function setUpLobbyListeners(socket, userData, roomCode, roomState, userDict, io
     socket.on("try-join", () => {
         if (!uuidValidate(roomCode)) {
             socket.emit("invalid", "INVALID ROOM CODE, try again");
+            return;
         }
         if (roomState[roomCode] === "started") {
             socket.emit("invalid", "GAME ALREADY STARTED, cannot join the room");
-        } else if (userDict[roomCode].length < 5) {
+            return;
+        } 
+        if (userDict[roomCode].length < 3) {
             socket.join(roomCode);
             userDict[roomCode].push(userData);
             io.to(roomCode).emit("join-room", userDict[roomCode], roomCode);
-        } else {
-            socket.emit("invalid", "ROOM FULL, enter a different room");
-        }
+            return;
+        } 
+        socket.emit("invalid", "ROOM FULL, enter a different room");
     });
 
     socket.on("try-start", () => {
