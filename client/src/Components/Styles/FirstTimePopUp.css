@@ -74,7 +74,7 @@
     margin: 10px;
 }
 
-#settingsFirstTime, #gameFirstTime, #leaderboardFirstTime, #lobbyFirstTime, #loginFirstTime {
+#settingsFirstTime, #gameFirstTime, #leaderboardFirstTime, #lobbyFirstTime, #loginFirstTime, #profileFirstTime {
     background-color: var(--sub-color-transparent);
     padding: 15px;
 }
@@ -99,7 +99,8 @@ div.firstTimeMessage:has(>div#settingsFirstTime) ~ div#game-component>div#settin
 div.firstTimeMessage:has(>div#gameFirstTime) ~ div#game-component>div.center,
 div.firstTimeMessage:has(>div#leaderboardFirstTime) ~ div#navbar>div#nav-sub>li>a>svg#leaderboard-icon,
 div.firstTimeMessage:has(>div#lobbyFirstTime) ~ div#navbar>div#nav-sub>li>a>svg#lobby-icon,
-div.firstTimeMessage:has(>div#loginFirstTime) ~ div#navbar>li>a>svg#profile-icon {
+div.firstTimeMessage:has(>div#loginFirstTime) ~ div#navbar>li>a>svg#profile-icon,
+div.firstTimeMessage:has(>div#profileFirstTime) ~ div#profile>#user {
     position: relative;
     z-index: 10;
 }
@@ -130,6 +131,15 @@ div.firstTimeMessage:has(>div#loginFirstTime) ~ div#navbar>li>a>svg#profile-icon
     height: 500px;
 }
 
+.firstTimeMessage:has(> div#profileFirstTime) {
+    position: absolute;
+    top: 210px;
+    width: 85%;
+    max-width: 1100px;
+    height: 500px;
+    height: 30%;
+}
+
 .firstTimeMessage:has(> div#leaderboardFirstTime), 
 .firstTimeMessage:has(> div#lobbyFirstTime), 
 .firstTimeMessage:has(> div#loginFirstTime){
@@ -154,17 +164,7 @@ div.firstTimeMessage:has(>div#loginFirstTime) ~ div#navbar>li>a>svg#profile-icon
 
 .firstTimeMessage:has(> div#loginFirstTime) {
     height: 130px;
-    right: 0;
+    right: clamp(0px, 10%, 20px);
 }
 
-#lobbyFirstTime{
 
-}
-
-#loginFirstTime{
-
-}
-
-#profileFirstTime{
-
-}

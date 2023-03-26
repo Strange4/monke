@@ -160,6 +160,7 @@ const Profile = () => {
     
     return (
         <div id="home">
+            <div className="blur"></div>
             <NavBar />
             { profileCookie ? <></> : <FirstTimePopUp area={"profile"} setCookieArea={visitedProfile}/> }
             <div id="profile">
