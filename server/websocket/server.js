@@ -1,6 +1,14 @@
 import { Server } from "socket.io";
-// import { postUserStats } from "../routes/api";
-import fetch from "node-fetch"
+
+class Lobby {
+    users = []
+    roomState = "stopped"
+    leaderboard = []
+
+    startRoom() {
+        this.roomState = "started";
+    }
+}
 
 /**
  * Initial connnection set up
@@ -8,19 +16,17 @@ import fetch from "node-fetch"
  */
 export function setUp(server) {
     const io = new Server(server, { cors: { origin: "http://localhost:3000" } });
-    let userDict = {};
-    let roomState = {};
-    let leaderboard = {};
+    const lobbies = {};
 
     io.on("connection", (socket) => {
         const userData = setUserData(socket);
-
         const roomCode = socket.handshake.query.roomCode;
-        userDict[roomCode] = userDict[roomCode] || [];
-        leaderboard[roomCode] = leaderboard[roomCode] || [];
+        lobbies[roomCode] = new Lobby();
+        lobbies[roomCode].users = lobbies[roomCode].users || [];
+        lobbies[roomCode].leaderboard = lobbies[roomCode].leaderboard || [];
 
-        setUpLobbyListeners(socket, userData, roomCode, roomState, userDict, io, leaderboard);
-        setUpGameListeners(socket, userData, roomCode, userDict, io, leaderboard);
+        setUpLobbyListeners(socket, userData, roomCode, lobbies[roomCode], io);
+        setUpGameListeners(socket, userData, roomCode, lobbies[roomCode], io);
     });
 }
 
@@ -30,43 +36,45 @@ export function setUp(server) {
  * @param {Socket} socket 
  * @param {Object} userData 
  * @param {String} roomCode 
- * @param {String} roomState 
- * @param {Object} userDict 
+ * @param {String} lobby.roomState 
+ * @param {Object} lobby.users 
  * @param {Server} io 
  */
-function setUpLobbyListeners(socket, userData, roomCode, roomState, userDict, io, leaderboard) {
+function setUpLobbyListeners(socket, userData, roomCode, lobby, io) {
     socket.on("try-join", () => {
         if (!validateRoom(roomCode)) {
             socket.emit("invalid", "INVALID ROOM CODE, try again");
         }
-        if (roomState[roomCode] === "started") {
+        if (lobby.roomState === "started") {
             socket.emit("invalid", "GAME ALREADY STARTED, cannot join the room");
-        } else if (userDict[roomCode].length < 5) {
+        } else if (lobby.users.length < 5) {
             socket.join(roomCode);
-            userDict[roomCode].push(userData);
-            io.to(roomCode).emit("join-room", userDict[roomCode], roomCode);
+            lobby.users.push(userData);
+            io.to(roomCode).emit("join-room", lobby.users, roomCode);
         } else {
             socket.emit("invalid", "ROOM FULL, enter a different room");
         }
     });
 
     socket.on("try-start", () => {
-        roomState[roomCode] = "started";
-        io.to(roomCode).emit("start-game", userDict[roomCode], roomCode);
-        leaderboard[roomCode] = [...userDict[roomCode]];
+        lobby.startRoom();
+        io.to(roomCode).emit("start-game", lobby.users, roomCode);
+        lobby.leaderboard = [...lobby.users];
     });
 
     socket.on("start-countdown", () => {
-        io.to(roomCode).emit("countdown", userDict[roomCode], roomCode);
+        io.to(roomCode).emit("countdown", lobby.users, roomCode);
     });
 
     socket.on("disconnect", () => {
-        userDict[roomCode] = userDict[roomCode].filter(user => user.id !== userData.id);
-        io.to(roomCode).emit("leave-room", userDict[roomCode], roomCode);
-        checkGameEnded(leaderboard, userDict, roomCode, io, socket, userData);
-        if (userDict[roomCode].length === 0) {
-            delete userDict[roomCode];
-            delete leaderboard[roomCode];
+        lobby.users = lobby.users.filter(user => user.id !== userData.id);
+        io.to(roomCode).emit("leave-room", lobby.users, roomCode);
+        checkGameEnded(lobby, roomCode, io);
+        if (lobby.users.length === 0) {
+            //TODO clean the lobby itself from lobbies
+            delete lobby.users;
+            delete lobby.leaderboard;
+            delete lobby.roomState
         }
     });
 }
@@ -76,16 +84,16 @@ function setUpLobbyListeners(socket, userData, roomCode, roomState, userDict, io
  * @param {Socket} socket 
  * @param {Object} userData 
  * @param {String} roomCode 
- * @param {Object} userDict 
+ * @param {Object} lobby.users 
  * @param {Server} io 
  */
-function setUpGameListeners(socket, userData, roomCode, userDict, io, leaderboard) {
+function setUpGameListeners(socket, userData, roomCode, lobby, io) {
     socket.on("update-progress-bar", (currentProgress, total) => {
-        let userIndex = userDict[roomCode].findIndex(user => user.id === userData.id);
-        userDict[roomCode][userIndex].progress = currentProgress / total * 100;
+        let userIndex = lobby.users.findIndex(user => user.id === userData.id);
+        lobby.users[userIndex].progress = currentProgress / total * 100;
 
         // keeps track on whether that user finished the game or not
-        userDict[roomCode].forEach(user => {
+        lobby.users.forEach(user => {
             if (user.progress >= 100) {
                 user.progress = 100;
                 if (user.id === userData.id && !user.gameEnded) {
@@ -94,15 +102,15 @@ function setUpGameListeners(socket, userData, roomCode, userDict, io, leaderboar
                 user.gameEnded = true;
             }
         });
-        io.to(roomCode).emit("update-progress", userDict[roomCode]);
+        io.to(roomCode).emit("update-progress", lobby.users);
     });
 
     // executes once user has ended to update the results for that user
     socket.once("send-results", async (result) => {
-        io.to(roomCode).emit("update-progress", userDict[roomCode]);
-        let userIndex = leaderboard[roomCode].findIndex(user => user.id === userData.id);
-        leaderboard[roomCode][userIndex].results = result;
-        await checkGameEnded(leaderboard, userDict, roomCode, io, socket, userData)
+        io.to(roomCode).emit("update-progress", lobby.users);
+        let userIndex = lobby.leaderboard.findIndex(user => user.id === userData.id);
+        lobby.leaderboard[userIndex].results = result;
+        await checkGameEnded(lobby, roomCode, io)
     });
 }
 
@@ -134,17 +142,17 @@ function validateRoom(room) {
  * @param {Object} userDict 
  * @param {Server} io 
  */
-async function checkGameEnded(leaderboard, userDict, roomCode, io, socket, userData) {
+async function checkGameEnded(lobby, roomCode, io) {
     let displayLeaderboard = true;
     //TODO use .every
-    userDict[roomCode].forEach(user => {
+    lobby.users.forEach(user => {
         if (!user.gameEnded) {
             displayLeaderboard = false;
         }
     });
     if (displayLeaderboard) {
-        leaderboard[roomCode].sort((a, b) => sortLeaderboard(a, b));
-        io.to(roomCode).emit("update-leaderboard", leaderboard[roomCode]);
+        lobby.leaderboard.sort((a, b) => sortLeaderboard(a, b));
+        io.to(roomCode).emit("update-leaderboard", lobby.leaderboard);
     }
 }
 
