@@ -8,10 +8,13 @@ import './Styles/RankListItem.css';
 function RankListItem(props) {
     return (
         <div className="rank-list-item">
-            <p>{props.rank}</p>
-            <img className="leaderboard_user_icon" src={`${props.picture}`} /><p>{props.user}</p>
+            <p id="user-rank">{props.rank}</p>
+            <div id='rank-user'>
+                <img className="leaderboard-user-icon" src={`${props.picture}`} />
+                <p className='username'>{props.user}</p>
+            </div>
             <p>{props.wpm}</p>
-            <p>{props.accuracy}</p>
+            <p className='user-acc'>{props.accuracy}</p>
             <p>{props.date}</p>
         </div>
     );

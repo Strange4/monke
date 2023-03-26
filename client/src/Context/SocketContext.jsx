@@ -2,7 +2,9 @@ import React from 'react';
 
 const SocketContext = React.createContext(
     {
-        socket: {}
+        socket: {},
+        userList: [],
+        setUserList: () => { }
     }
 );
 

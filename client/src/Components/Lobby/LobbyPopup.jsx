@@ -1,19 +1,19 @@
 import './Styles/LobbyPopup.css';
 import '../Styles/Popup.css'
-import { useState, useContext, useRef } from 'react';
+import {useContext, useRef } from 'react';
 
 import AuthContext from '../../Context/AuthContext';
 import * as FetchModule from "../../Controller/FetchModule"
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import SocketContext from '../../Context/SocketContext';
+import { GiRetroController } from 'react-icons/gi'
 
 /**
  * Displays a Popup for the lobby
  * @returns {ReactElement}
  */
 function LobbyPopup() {
-    const [code, enterCode] = useState(false);
     const roomCode = useRef()
     const feedback = useRef()
     const navigate = useNavigate()
@@ -31,16 +31,24 @@ function LobbyPopup() {
 
     function setSocketListeners() {
         socketContext.socket.current.on("join-room", (users, roomCode) => {
-            navigate("/lobby", { state: { roomCode: roomCode, users: users } });
+            socketContext.setUserList(users)
+            navigate("/lobby", { state: { roomCode: roomCode } });
         })
         socketContext.socket.current.on("leave-room", (users, roomCode) => {
-            navigate("/lobby", { state: { roomCode: roomCode, users: users } });
+            socketContext.setUserList(users)
+            navigate("/lobby", { state: { roomCode: roomCode } });
         })
         socketContext.socket.current.on("full-room", () => {
             feedback.current.textContent = "ROOM FULL, enter a different room"
             socketContext.socket.current.disconnect()
             socketContext.socket.current = undefined
         });
+        socketContext.socket.current.on("start-game", () => {
+            navigate("/multiplayer-game", { state: { roomCode: roomCode } });
+        })
+        socketContext.socket.current.on("game-started", () => {
+            feedback.current.textContent = "GAME ALREADY STARTED, cannot join the room"
+        })
     }
 
     async function setUpSocket(roomCode) {
@@ -66,16 +74,20 @@ function LobbyPopup() {
 
     return (
         <div id="lobby" className='popup'>
-            <h1>Lobby Popup</h1>
-            <button onClick={async () => await createLobby()}>Create</button>
-            <button onClick={() => enterCode(current => !current)}>Join</button>
-            {code &&
-                <div>
-                    <input ref={roomCode} type="text" name="code" />
-                    <button onClick={async () => await joinLobby()}>Enter game</button>
-                    <p ref={feedback}></p>
-                </div>
-            }
+            <GiRetroController id='lobby-filler-1'/>
+            <GiRetroController id='lobby-filler-2'/>
+            <h1 id='lobby-header'>Multiplayer</h1>
+            <button 
+                onClick={async () => await createLobby()} 
+                className='lobby-access'>
+                Create
+            </button>
+
+            <div id='room-code-input'>
+                <input ref={roomCode} type="text" name="code" placeholder='Enter room code...'/>
+                <button onClick={async () => await joinLobby()}>Enter game</button>
+                <p ref={feedback}></p>
+            </div>
         </div>
     );
 }
