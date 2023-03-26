@@ -10,7 +10,7 @@ import { GiCrenelCrown } from "react-icons/gi";
 import { CgProfile } from "react-icons/cg";
 import { HiCog, HiUserGroup } from "react-icons/hi"
 import AuthContext from '../Context/AuthContext';
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
 /**
  * Navigation bar to be used on all pages
@@ -18,6 +18,12 @@ import { useContext } from "react";
  */
 function NavBar() {
     const auth = useContext(AuthContext);
+
+    const [showPref, setShowPref] = useState(false);
+
+    function toggleShowPref(){
+        setShowPref(!showPref);
+    }
 
     async function handleLogout() {
         await fetch("/authentication/logout");
@@ -44,9 +50,8 @@ function NavBar() {
                     </Popup>
                 </li>
                 <li>
-                    <Popup trigger={<a><HiCog id="pref-icon"/></a>} modal>
-                        <Preferences />
-                    </Popup>
+                    <HiCog onClick={toggleShowPref} id="pref-icon"/>
+                    {showPref ? <Preferences open={showPref} toggleShow={toggleShowPref} /> : null}
                 </li>
             </div>
             <li>
