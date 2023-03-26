@@ -1,7 +1,9 @@
-import './Styles/Popup.css';
+import '../Styles/Popup.css';
 import { useState, useEffect, useRef } from 'react';
-import {setCookie, getCookieValue, deleteCookie} from '../Controller/CookieClass'
+import {setCookie, getCookieValue, deleteCookie} from '../../Controller/CookieClass'
 import Popup from 'reactjs-popup';
+import EnableTTS from './EnableTTS';
+import TssSpeed from './TssSpeed';
 
 function Preferences({open, toggleShow}){
 
@@ -78,27 +80,8 @@ function Preferences({open, toggleShow}){
                 <div className="popup">
                     <h1>Accessibility</h1>
                     <div id="TTSQuote-pref">
-                        <p>Enable Text-To-Speech for quotes</p>
-                        <input type={"radio"} id="TTSQuoteOn" name="enableTTSQuote" value={"true"}
-                            checked={enableTTSQuote === "true"} onChange={handlePrefChange} />
-                        <label htmlFor="TTSQuoteOn">Enable</label>
-
-                        <input type={"radio"} id="TTSQuoteOff" name="enableTTSQuote" value={"false"}
-                            checked={enableTTSQuote === "false"} onChange={handlePrefChange} />
-                        <label htmlFor="TTSQuoteOff">Disable</label>
-
-                        <p>Text-To-Speech speed</p>
-                        <input type={"radio"} id="tssSpeedSlow" name="tssSpeed" value={"0.7"}
-                            checked={tssSpeed === "0.7"} onChange={handlePrefChange} />
-                        <label htmlFor="tssSpeedSlow">Slow</label>
-
-                        <input type={"radio"} id="tssSpeedNorm" name="tssSpeed" value={"1"}
-                            checked={tssSpeed === "1"} onChange={handlePrefChange} />
-                        <label htmlFor="tssSpeedNorm">Normal</label>
-
-                        <input type={"radio"} id="tssSpeedFast" name="tssSpeed" value={"1.3"}
-                            checked={tssSpeed === "1.3"} onChange={handlePrefChange} />
-                        <label htmlFor="tssSpeedFast">Fast</label>
+                        <EnableTTS enabled={enableTTSQuote} changeOption={handlePrefChange} />
+                        <TssSpeed speed={tssSpeed} changeOption={handlePrefChange} />
                     </div>
                     <button type="submit">Save preferences</button>
                 </div>
