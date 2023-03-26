@@ -9,7 +9,7 @@ function GameProgress(props) {
             }}>
             {props.progress}
         </div>
-    )
+    );
 }
 
-export default GameProgress
+export default GameProgress;

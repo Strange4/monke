@@ -42,11 +42,6 @@ div#playing-players>div.player-info>img.player-image {
     height: 150px;
 }
 
-#multiplayer-info > div.center > div > div#chronometer{
-    visibility: hidden;
-    height: 0;
-}
-
 #multiplayer-info > div.center{
     height: 300px;
 }

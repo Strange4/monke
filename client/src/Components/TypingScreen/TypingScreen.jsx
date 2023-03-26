@@ -1,5 +1,5 @@
 import './Layout/TypingScreen.css';
-import { useState, useRef, useContext } from "react";
+import { useState, useRef, useContext, useEffect } from "react";
 import VirtualKeyboard from './VirtualKeyboard';
 import keyboardKeys from "../../Data/keyboard_keys.json";
 import GameText from '../GameText';
@@ -54,14 +54,29 @@ function TypingScreen(props) {
     const [enableTTS, setEnableTTS] = useState(false);
     const [isFocused, setIsFocused] = useState(true);
     const textContainerRef = useRef();
-    const socketContext = useContext(SocketContext)
+    const socketContext = useContext(SocketContext);
 
+    useEffect(() => {
+        if (props.multiplayer) {
+            startTimer();
+        }
+    }, []);
+
+    /**
+     * Stops the timer and displays result
+     */
     function handleGameEnd() {
         stopTimer();
+        resetGame();
         setDisplayResults(true);
-        refetch();
+        if (!props.multiplayer) {
+            refetch();
+        }
     }
 
+    /**
+     * Reset the timer and typing screen
+     */
     function resetGame() {
         setDisplayResults(false);
         resetTimer();
@@ -73,17 +88,19 @@ function TypingScreen(props) {
      * @param {InputEvent} e 
      */
     function onChangeText(e) {
-        const currentText = e.target.value;
-        if (currentText.length === 1) {
-            startTimer();
-        } else if (textToDisplay.length === currentText.length) {
+        const current = e.target.value;
+
+        if (textToDisplay.length === current.length) {
             handleGameEnd();
         }
-        renderLetters(currentText, userDisplay);
         if (props.multiplayer) {
-            socketContext.socket.current.
-                emit("send-progress", currentText.length, userDisplay.length)
+            socketContext.socket.current.emit("update-progress-bar",
+                current.length, userDisplay.length
+            );
+        } else if (current.length === 1) {
+            startTimer();
         }
+        renderLetters(current, userDisplay);
     }
 
     /**
@@ -169,6 +186,7 @@ function TypingScreen(props) {
                     timer={timer.current}
                     originalText={textToDisplay}
                     closeWindow={resetGame}
+                    multiplayer={props.multiplayer}
                 />
             </div>
 

@@ -19,7 +19,7 @@ function PageHolder() {
             socketContext.socket.current.disconnect()
             socketContext.socket.current = undefined
         }
-    }, [location]);
+    }, [location.pathname]);
 
     function checkPathLocation() {
         return location.pathname !== "/lobby" && 
