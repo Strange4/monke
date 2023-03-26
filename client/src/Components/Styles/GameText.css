@@ -30,7 +30,7 @@ span.letter.wrong{
 
 span#inputCaret{
     position: absolute;
-    transition: all 60ms linear;
+    transition: all 120ms ease-in-out;
     transition-property: top, left;
     background-color: var(--caret-color);
     --caret-width: calc(var(--letter-width) / 6);
