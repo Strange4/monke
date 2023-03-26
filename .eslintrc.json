@@ -15,7 +15,6 @@
       "ecmaVersion": "latest",
       "sourceType": "module"
   },
-  "ecmaFeatures": {"jsx": true},
   "ignorePatterns": [
     "**/node_modules/**",
     "client/build"
