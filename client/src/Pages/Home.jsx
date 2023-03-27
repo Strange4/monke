@@ -18,29 +18,59 @@ const Home = () => {
     // deleteCookie("lobbyFirstTime");
     // deleteCookie("loginFirstTime");
 
-    const cookieValue = getCookieValue("cookieFirstTime") === "visited";
-    const settingsValue = getCookieValue("settingsFirstTime") === "visited";
-    const gameValue = getCookieValue("gameFirstTime") === "visited";
-    const leaderboardValue = getCookieValue("leaderboardFirstTime") === "visited";
-    const lobbyValue = getCookieValue("lobbyFirstTime") === "visited"
-    const loginValue = getCookieValue("loginFirstTime") === "visited";
+    const cookieNames = ["cookieFirstTime", "settingsFirstTime", "gameFirstTime", 
+        "leaderboardFirstTime", "lobbyFirstTime", "loginFirstTime"];
 
-    const [cookieCookie, visitedCookie] = useState(cookieValue);
+    const cookieValues = [];
+    let falseIndex;
+    let setFalseIndex = false;
 
-    const [settingsCookie, visitedSettings] = 
-        useState(cookieValue ? settingsValue : !(cookieValue && settingsValue));
+    for (let i = 0; i < cookieNames.length; i++){
+        if (getCookieValue(cookieNames[i]) === "visited"){
+            cookieValues.push(true);
+        } else{
+            if (!setFalseIndex){
+                falseIndex = i;
+                setFalseIndex = true;
+            }
+            cookieValues.push(false);
+        }    
+    }
 
-    const [gameCookie, visitedGame] = 
-        useState(cookieValue ? gameValue : !(settingsValue && gameValue));
+    let count = 0;
+    cookieValues.forEach(element => {
+        if (element === true) {
+            count++;
+        }
+    });
 
-    const [leaderboardCookie, visitedLeaderboard] = 
-        useState(cookieValue ? leaderboardValue : !(gameValue && leaderboardValue));
+    const cookieSetter = [];
 
-    const [lobbyCookie, visitedLobby] = 
-        useState(cookieValue ? lobbyValue : !(leaderboardValue && lobbyValue));
-
-    const [loginCookie, visitedLogin] = 
-        useState( cookieValue ? loginValue : !(lobbyValue && loginValue));
+    // Reset the cookie if the person did not finish pressing next until the end.
+    if (count < 6){
+        cookieValues.forEach( (value, index) => {
+            if (index === 0){
+                cookieSetter.push(false);
+            } else {
+                cookieSetter.push(true);
+            }
+        });
+    } else {
+        for (let i = 0; i < cookieValues.length; i++){
+            if (i <= falseIndex){
+                cookieSetter.push(false);
+            } else {
+                cookieSetter.push(true);
+            }
+        }
+    }
+    
+    const [cookieCookie, visitedCookie] = useState(cookieSetter[0]);
+    const [settingsCookie, visitedSettings] = useState(cookieSetter[1]);
+    const [gameCookie, visitedGame] = useState(cookieSetter[2]);
+    const [leaderboardCookie, visitedLeaderboard] = useState(cookieSetter[3]);
+    const [lobbyCookie, visitedLobby] = useState(cookieSetter[4]);
+    const [loginCookie, visitedLogin] = useState(cookieSetter[5]);
 
     return (
         <div id="home">
