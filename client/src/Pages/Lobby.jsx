@@ -54,9 +54,9 @@ function Lobby() {
         navigator.clipboard.writeText(roomCode.current.textContent);
         setCopied(true);
         setTimeout(() => {
-            setCopied(false)
+            setCopied(false);
             e.target.disabled = false;
-        }, 1000)
+        }, 1000);
     }
 
     // Disconnect the socket and navigate back to the home page
