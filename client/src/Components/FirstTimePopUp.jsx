@@ -18,17 +18,13 @@ function FirstTimePopUp(props){
         const cookieName = `${props.area}FirstTime`;
         setCookie(cookieName, "visited");
         props.setCookieArea(true);
-        try{
-            if(props.setNextArea()){
-                props.setNextArea(true);
-            }
-        } catch {
-            // To not print out the error
-        }    
+        if(props.nextArea){
+            props.setNextArea(true);
+        }
     }
 
     function skipAll(){
-        
+        props.skipAll();
     }
         
     return(
@@ -36,7 +32,7 @@ function FirstTimePopUp(props){
             <div id={`${props.area}FirstTime`}>{message}</div>
             <div className="cookieButtonContainer">
                 <button type="button" onClick={setCookieArea}>{`${btnMessage}`}</button>
-                <button type="button" onClick={skipAll}>Skip all</button>
+                { props.skip ? <button type="button" onClick={skipAll}>Skip all</button> : <></> }
             </div>
         </div>
     );
