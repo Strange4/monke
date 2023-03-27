@@ -49,20 +49,27 @@ function Lobby() {
     }
 
     // Copies the code to the clipboard through click
-    function copyCode() {
+    function copyCode(e) {
+        e.target.disabled = true;
         navigator.clipboard.writeText(roomCode.current.textContent);
         setCopied(true);
+        setTimeout(() => {
+            setCopied(false)
+            e.target.disabled = false;
+        }, 1000)
     }
 
     // Disconnect the socket and navigate back to the home page
-    function leave() {
+    function leave(e) {
+        e.target.disabled = true;
         socketContext.socket.current.disconnect();
         socketContext.socket.current = undefined;
         navigate("/");
     }
 
     // Tell all users in lobby to start the countdown 
-    function startGame() {
+    function startGame(e) {
+        e.target.disabled = true;
         socketContext.socket.current.emit("start-countdown");
     }
 
@@ -101,7 +108,6 @@ function Lobby() {
             <div id="practice">
                 <div id="popup-root" />
                 <TypingScreen multiplayer={false} id='lobby-game'/>
-
             </div>
         </div>
     );
