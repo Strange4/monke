@@ -18,7 +18,8 @@
     transition: 0.3s;
     font-size: 1.3em;
     letter-spacing: 15px;
-    border-radius: 0 0 20px 20px;
+    /* border-radius: 0 0 20px 0; */
+    width: 100%;
 }
 
 .firstTimeMessage button:hover{
@@ -42,6 +43,21 @@
     z-index: 10;
     border: none;
 }
+
+.cookie-button-container {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-around;
+    /* flex-grow: 4; */
+    flex-shrink: 1;
+    width: 100%;
+}
+
+/* div.firstTimeMessage:has(> div#cookieFirstTime) > div.cookie-button-container > button#skip-tutorial,
+div.firstTimeMessage:has(> div#loginFirstTime) > div.cookie-button-container > button#skip-tutorial {
+    display: none;
+} */
+
 
 #cookieFirstTime {
     background-color: var(--popup-color);

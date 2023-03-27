@@ -34,9 +34,9 @@ function FirstTimePopUp(props){
     return(
         <div className="firstTimeMessage">
             <div id={`${props.area}FirstTime`}>{message}</div>
-            <div className="cookieButtonContainer">
+            <div className="cookie-button-container">
                 <button type="button" onClick={setCookieArea}>{`${btnMessage}`}</button>
-                <button type="button" onClick={skipAll}>Skip all</button>
+                <button id="skip-tutorial" type="button" onClick={skipAll}>skip</button>
             </div>
         </div>
     );
