@@ -26,11 +26,18 @@ function FirstTimePopUp(props){
             // To not print out the error
         }    
     }
+
+    function skipAll(){
+        
+    }
         
     return(
         <div className="firstTimeMessage">
             <div id={`${props.area}FirstTime`}>{message}</div>
-            <button type="button" onClick={setCookieArea}>{`${btnMessage}`}</button>
+            <div className="cookieButtonContainer">
+                <button type="button" onClick={setCookieArea}>{`${btnMessage}`}</button>
+                <button type="button" onClick={skipAll}>Skip all</button>
+            </div>
         </div>
     );
 }
