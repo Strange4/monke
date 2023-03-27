@@ -152,7 +152,7 @@ const Profile = () => {
     };
 
     // Kat when you want to test use the delete here and refresh the page so the style of the banners
-    // deleteCookie("profileFirstTime");
+    deleteCookie("profileFirstTime");
 
     const profileValue = getCookieValue("profileFirstTime") === "visited";
 
