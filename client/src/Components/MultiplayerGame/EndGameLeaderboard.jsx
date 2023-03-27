@@ -5,12 +5,12 @@ import { postData } from "../../Controller/FetchModule";
 import AuthContext from "../../Context/AuthContext";
 
 function EndGameLeaderboard() {
-    const socketContext = useContext(SocketContext)
-    const authContext = useContext(AuthContext)
-    const [leaderboard, setLeaderboard] = useState([])
+    const socketContext = useContext(SocketContext);
+    const authContext = useContext(AuthContext);
+    const [leaderboard, setLeaderboard] = useState([]);
 
     useEffect(() => {
-        socketContext.socket.current.off("update-leaderboard")
+        socketContext.socket.current.off("update-leaderboard");
         socketContext.socket.current.once("update-leaderboard", (leaderboard) => {
             setLeaderboard(leaderboard.sort((a, b) => sortLeaderboard(a, b)));
             
