@@ -88,9 +88,9 @@ function setUpLobbyListeners(socket, userData, roomCode, lobby, io) {
  * @param {Server} io 
  */
 function setUpGameListeners(socket, userData, roomCode, lobby, io) {
-    socket.on("update-progress-bar", (currentProgress, total) => {
+    socket.on("update-progress-bar", (progress) => {
         let userIndex = lobby.users.findIndex(user => user.id === userData.id);
-        lobby.users[userIndex].progress = currentProgress / total * 100;
+        lobby.users[userIndex].progress = progress;
 
         // keeps track on whether that user finished the game or not
         if (lobby.users[userIndex].progress >= 100) {

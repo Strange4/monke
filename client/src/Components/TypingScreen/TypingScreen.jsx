@@ -89,14 +89,13 @@ function TypingScreen(props) {
      */
     function onChangeText(e) {
         const current = e.target.value;
+        let progress = current.length / userDisplay.length * 100;
 
-        if (textToDisplay.length === current.length) {
+        if (progress === 100) {
             handleGameEnd();
         }
         if (props.multiplayer) {
-            socketContext.socket.current.emit("update-progress-bar",
-                current.length, userDisplay.length
-            );
+            socketContext.socket.current.emit("update-progress-bar", progress);
         } else if (current.length === 1) {
             startTimer();
         }
