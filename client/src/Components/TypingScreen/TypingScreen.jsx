@@ -38,10 +38,10 @@ function TypingScreen(props) {
         return (await resp.json()).body;
     }, {
         onSuccess: (quote) => {
-            setTextToDisplay(props.quote || quote);
-            setUserDisplay(getDefaultUserDisplay(props.quote || quote));
+            setTextToDisplay(quote);
+            setUserDisplay(getDefaultUserDisplay(quote));
         }, onError: () => {
-            const quote = props.quote || defaultQuotes[randomNumber(0, defaultQuotes.length)];
+            const quote = defaultQuotes[randomNumber(0, defaultQuotes.length)];
             setTextToDisplay(quote);
             setUserDisplay(getDefaultUserDisplay(quote));
         },
