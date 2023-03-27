@@ -25,6 +25,9 @@ const allRegKeys = keyboardKeys.english.lower;
 function TypingScreen(props) {
 
     const { isLoading, refetch } = useQuery("textToDisplay", async () => {
+        if(props.multiplayer) {
+            return props.quote
+        }
         const resp = await fetch("/api/quote",
             {
                 headers: { 'Accept': 'application/json', "Content-Type": "application/json" }
