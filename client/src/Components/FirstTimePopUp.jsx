@@ -19,7 +19,7 @@ function FirstTimePopUp(props){
         setCookie(cookieName, "visited");
         props.setCookieArea(true);
         if(props.nextArea){
-            props.setNextArea(true);
+            props.setNextArea(false);
         }
     }
 

@@ -48,7 +48,7 @@ const Home = () => {
 
     // Reset the cookie if the person did not finish pressing next until the end.
     if (count < 6){
-        cookieValues.forEach( (value, index) => {
+        cookieValues.forEach( (_, index) => {
             if (index === 0){
                 cookieSetter.push(false);
             } else {
