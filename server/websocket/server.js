@@ -1,5 +1,7 @@
 import { Server } from "socket.io";
 import { validate as uuidValidate } from 'uuid';
+// import { getRandomQuote } from "../routes/quotes";
+import { getRandomQuote } from "../routes/quotes.js";
 
 const lobbies = {};
 const MAX_USERS = 3
@@ -59,9 +61,10 @@ function setUpLobbyListeners(socket, userData, roomCode, lobby, io) {
         socket.emit("invalid", "ROOM FULL, enter a different room");
     });
 
-    socket.on("try-start", () => {
+    socket.on("try-start", async () => {
         lobby.startRoom();
-        io.to(roomCode).emit("start-game", lobby.users, roomCode);
+        let quote = await getRandomQuote();
+        io.to(roomCode).emit("start-game", quote);
         lobby.leaderboard = [...lobby.users];
     });
 

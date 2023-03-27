@@ -6,7 +6,7 @@ import * as FetchModule from "../../Controller/FetchModule";
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import SocketContext from '../../Context/SocketContext';
-import { GiRetroController } from 'react-icons/gi'
+import { GiRetroController } from 'react-icons/gi';
 
 /**
  * Displays a Popup for the lobby
@@ -49,8 +49,8 @@ function LobbyPopup() {
             feedback.current.textContent = invalidMessage;
             disconnectSocket()
         });
-        socketContext.socket.current.on("start-game", () => {
-            navigate("/multiplayer-game", { state: { roomCode: roomCode } });
+        socketContext.socket.current.on("start-game", (quote) => {
+            navigate("/multiplayer-game", { state: { quote: quote } });
         });
     }
 
