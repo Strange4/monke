@@ -135,7 +135,6 @@ function setUserData(socket) {
     let userData = { username: "", id: "", avatar: "" };
 
     userData["username"] = socket.handshake.auth.userData?.username || "GUEST";
-    userData["email"] = socket.handshake.auth.userData?.email || "";
     userData["avatar"] = socket.handshake.auth.userData?.avatar || defaultAvatar;
     userData["id"] = socket.id;
     userData["progress"] = 0;

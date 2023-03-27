@@ -2,9 +2,11 @@ import { useContext, useState, useEffect } from "react";
 import SocketContext from "../../Context/SocketContext";
 import EndGameResults from "./EndGameResults";
 import { postData } from "../../Controller/FetchModule";
+import AuthContext from "../../Context/AuthContext";
 
 function EndGameLeaderboard() {
     const socketContext = useContext(SocketContext)
+    const authContext = useContext(AuthContext)
     const [leaderboard, setLeaderboard] = useState([])
 
     useEffect(() => {
@@ -13,9 +15,9 @@ function EndGameLeaderboard() {
             setLeaderboard(leaderboard.sort((a, b) => sortLeaderboard(a, b)));
             
             let index = leaderboard.findIndex(user => user.id === socketContext.socket.current.id);
-            if (leaderboard[index].email) {
+            if (authContext.userEmail) {
                 let stats = {
-                    email: leaderboard[index].email
+                    email: authContext.userEmail
                 }
                 if (index === 0) {
                     stats.win = true;
