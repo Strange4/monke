@@ -43,7 +43,7 @@
             "message": {
                 "area" : "login",
                 "body": "You can login, check your profile or logout from here. We only support logging in with Google",
-                "btnMessage": "end tour"
+                "btnMessage": "close"
                 
             }
         },
