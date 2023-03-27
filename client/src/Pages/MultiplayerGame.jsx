@@ -4,13 +4,14 @@ import TypingScreen from "../Components/TypingScreen/TypingScreen";
 import PlayerItem from '../Components/PlayerItem';
 import SocketContext from '../Context/SocketContext';
 import { useContext, useEffect, useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import GameProgress from '../Components/MultiplayerGame/GameProgress';
 import EndGameLeaderboard from '../Components/MultiplayerGame/EndGameLeaderboard';
 
 const MultiplayerGame = () => {
     const socketContext = useContext(SocketContext);
     const navigate = useNavigate();
+    const location = useLocation();
     const [ended, setEnded] = useState(false);
 
     useEffect(() => {
@@ -58,7 +59,7 @@ const MultiplayerGame = () => {
                         })}
                     </div>
                     <GameProgress />
-                    <TypingScreen multiplayer={true} />
+                    <TypingScreen multiplayer={true} quote={location.state.quote}/>
                 </div>
             }
         </>

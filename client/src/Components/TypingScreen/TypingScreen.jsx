@@ -17,15 +17,14 @@ import TTSQuote from '../TTSpeech/TTSQuote';
 
 const allShiftKeys = keyboardKeys.english.upper;
 const allRegKeys = keyboardKeys.english.lower;
+
 /**
  * Container for the Textarea and the virtual keyboard
  * @returns {ReactElement}
  */
 function TypingScreen(props) {
 
-    const {
-        isLoading, refetch
-    } = useQuery("textToDisplay", async () => {
+    const { isLoading, refetch } = useQuery("textToDisplay", async () => {
         const resp = await fetch("/api/quote",
             {
                 headers: { 'Accept': 'application/json', "Content-Type": "application/json" }
@@ -36,12 +35,12 @@ function TypingScreen(props) {
         return (await resp.json()).body;
     }, {
         onSuccess: (quote) => {
-            setTextToDisplay(quote);
-            setUserDisplay(getDefaultUserDisplay(quote))
+            setTextToDisplay(props.quote || quote);
+            setUserDisplay(getDefaultUserDisplay(props.quote || quote));
         }, onError: () => {
-            const quote = defaultQuotes[randomNumber(0, defaultQuotes.length)];
+            const quote = props.quote || defaultQuotes[randomNumber(0, defaultQuotes.length)];
             setTextToDisplay(quote);
-            setUserDisplay(getDefaultUserDisplay(quote))
+            setUserDisplay(getDefaultUserDisplay(quote));
         },
         refetchOnWindowFocus: false
     });
