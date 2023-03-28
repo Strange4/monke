@@ -12,12 +12,9 @@ import "./Styles/FirstTimePopUp.css";
 function FirstTimePopUp(props){
     
     // Get the cookie information from the json object.
-    let message;
-    let btnMessage;
-    firstTimeData.messages.forEach( (data) => {
-        if (data.message.area === props.area){
-            message = data.message.body;
-            btnMessage = data.message.btnMessage;
+    const data = firstTimeData.messages.filter(data =>{
+        if(data.message.area === props.area){
+            return data.message;
         }
     });
 
@@ -42,9 +39,9 @@ function FirstTimePopUp(props){
         
     return(
         <div className="firstTimeMessage">
-            <div id={`${props.area}FirstTime`}>{message}</div>
+            <div id={`${props.area}FirstTime`}>{data[0].message.body}</div>
             <div className="cookie-button-container">
-                <button type="button" onClick={setCookieArea}>{`${btnMessage}`}</button>
+                <button type="button" onClick={setCookieArea}>{`${data[0].message.btnMessage}`}</button>
                 { props.skip ? <button type="button" onClick={skipAll}>skip</button> : <></> }
             </div>
         </div>
