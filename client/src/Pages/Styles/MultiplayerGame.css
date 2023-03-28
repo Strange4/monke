@@ -46,7 +46,7 @@ div#playing-players>div.player-info>img.player-image {
     height: 300px;
 }
 
-#game-results {
+#game-results{
     background-color: var(--sub-color-transparent);
     margin: 20px;
 }
@@ -76,6 +76,10 @@ div#playing-players>div.player-info>img.player-image {
     width: 60%;
 }
 
+#end-game-leaderboard>div:nth-of-type(even) {
+    background-color: var(--sub-color-off);
+}
+
 #end-game-leaderboard {
     margin: auto;
     margin-top: 40px;
@@ -86,6 +90,10 @@ div#playing-players>div.player-info>img.player-image {
 #end-game-leaderboard > h1 {
     letter-spacing: 15px;
     color: var(--accent-color);
+}
+
+#end-game-leaderboard>div:nth-of-type(even)>#end-game-rank {
+    color: var(--sub-color-transparent) !important;
 }
 
 #end-game-rank {
