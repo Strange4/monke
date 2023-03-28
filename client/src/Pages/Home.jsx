@@ -2,29 +2,18 @@ import NavBar from "../Components/NavBar";
 import TypingScreen from "../Components/TypingScreen/TypingScreen";
 import GameSettings from "../Components/GameSettings";
 import FirstTimePopUp from "../Components/FirstTimePopUp";
-import { getCookieValue, deleteCookie, setCookie } from "../Controller/CookieHelper.js";
+import { getCookieValue, setCookie } from "../Controller/CookieHelper.js";
 import { useState } from "react";
 
 const Home = () => {
 
-
-    // Kat when you want to test use the delete here 
-    // and refresh the page so the style of the banners
-
-    // deleteCookie("cookieFirstTime");
-    // deleteCookie("settingsFirstTime");
-    // deleteCookie("gameFirstTime");
-    // deleteCookie("leaderboardFirstTime");
-    // deleteCookie("lobbyFirstTime");
-    // deleteCookie("loginFirstTime");
-
     const cookieNames = ["cookieFirstTime", "settingsFirstTime", "gameFirstTime", 
         "leaderboardFirstTime", "lobbyFirstTime", "loginFirstTime"];
 
+    // Check if all cookie banners have been visited or not and keep track of where it has not been.
     const cookieValues = [];
     let falseIndex;
     let setFalseIndex = false;
-
     for (let i = 0; i < cookieNames.length; i++){
         if (getCookieValue(cookieNames[i]) === "visited"){
             cookieValues.push(true);
@@ -37,6 +26,7 @@ const Home = () => {
         }    
     }
 
+    // To count if the count is equal to 6 or else we will reset in a later step.
     let count = 0;
     cookieValues.forEach(element => {
         if (element === true) {
@@ -56,6 +46,7 @@ const Home = () => {
             }
         });
     } else {
+        // This should make it so that no cookie banner appear.
         for (let i = 0; i < cookieValues.length; i++){
             if (i <= falseIndex){
                 cookieSetter.push(false);
@@ -65,6 +56,7 @@ const Home = () => {
         }
     }
     
+    // This is where we set the set state of cookie banners.
     const [cookieCookie, visitedCookie] = useState(cookieSetter[0]);
     const [settingsCookie, visitedSettings] = useState(cookieSetter[1]);
     const [gameCookie, visitedGame] = useState(cookieSetter[2]);
@@ -72,6 +64,10 @@ const Home = () => {
     const [lobbyCookie, visitedLobby] = useState(cookieSetter[4]);
     const [loginCookie, visitedLogin] = useState(cookieSetter[5]);
 
+    /**
+     * The onClick function to skip all the next cookie banner on the home page.
+     * Sets the cookie to visited for each banner and the state also.
+     */
     function skipAll(){
         cookieNames.forEach(name => {
             setCookie(name, "visited");
