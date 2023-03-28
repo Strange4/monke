@@ -4,6 +4,7 @@
   color: var(--accent-color);
   font-size: 1.7em;
   padding: 0;
+  width: 80%;
 }
 
 #seconds {

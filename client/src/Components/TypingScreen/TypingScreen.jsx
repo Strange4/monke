@@ -157,7 +157,7 @@ function TypingScreen(props) {
 
     return (
         <div>
-            <div>
+            <div className='center'>
                 <Chronometer seconds={displayTime}/>
                 <GameText onClick={()=> {
                     textContainerRef.current.focus();

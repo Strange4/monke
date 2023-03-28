@@ -30,8 +30,9 @@ div#playing-players > div.player-info {
 
 div#playing-players>div.player-info>img.player-image {
     padding: 5px;
+    width: 80px;
     min-width: 80px;
-    min-height: 80px;
+    height: 80px;
 }
 
 #mode-indicator {
