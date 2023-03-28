@@ -8,9 +8,9 @@ import express from "express";
 import User from "../database/models/user.js";
 import mongoose from "mongoose";
 import { Constraints } from "../database/validation.js";
-import { getAverage } from "../controller/util.js";
 import { ImgParser } from "../controller/validation.js";
 import { quoteRouter } from "./quotes.js";
+import { usersRouter } from "./user.js";
 import createHttpError from "http-errors";
 import * as Azure from "../database/azure.js"
 import multer from 'multer';
@@ -27,74 +27,11 @@ const upload = multer({
 });
 
 const router = express.Router();
-function dbConnected(_, __, next){
-    // the node_env could be changed to mock the connection state instead
-    if(mongoose.connection.readyState !== 1 && process.env.NODE_ENV !== "test"){
-        mongoose.connect(process.env.ATLAS_URI, {dbName: "QuotesDatabase"})
-            .catch(() => {});
-        next(new createHttpError.InternalServerError("Database is unavailable"));
-        return;
-    }
-    next();
-}
 
 router.use(dbConnected);
 router.use("/quote", quoteRouter);
 router.use(express.json());
-
-/**
- * Updates the stats of a user using their email.
- * Updates only the fields sent
- * if a field has the wrong type it will not be updated
- */
-router.put("/user_stat", async (req, res, next) => {
-    const email = Constraints.email(req.body.email);
-    if (!email) {
-        next(new createHttpError.BadRequest(
-            "Can't find or create the user because no email was provided"
-        ));
-        return;
-    }
-
-    const user = await User.findOne({ email });
-
-    if (user === null) {
-        next(new createHttpError.BadRequest("user with that email does not exist on database"));
-        return;
-    }
-    const wpm = Constraints.positiveNumber(req.body.wpm);
-    const accuracy = Constraints.positiveNumber(req.body.accuracy);
-    const win = Constraints.boolean(req.body.win);
-    const lose = Constraints.boolean(req.body.lose);
-    const draw = Constraints.boolean(req.body.draw);
-    const gameCount = user.user_stats.games_count;
-
-    // updates the average of that value if it is defined only
-    const updated = {
-        ...wpm && { 
-            "user_stats.wpm": getAverage(user.user_stats.wpm, wpm, gameCount) },
-        ...accuracy && { 
-            "user_stats.accuracy": getAverage(user.user_stats.accuracy, accuracy, gameCount) },
-        ...win && { 
-            "user_stats.win": user.user_stats.win + 1},
-        ...lose && { 
-            "user_stats.lose": user.user_stats.lose + 1},
-        ...draw && { 
-            "user_stats.draw": user.user_stats.draw + 1},
-        "user_stats.games_count": gameCount + 1
-    }
-    if (wpm > user.user_stats.max_wpm) {
-        updated["user_stats.date"] = new Date();
-        updated["user_stats.max_wpm"] = Math.max(user.user_stats.max_wpm, wpm);
-        updated["user_stats.max_accuracy"] = Math.max(user.user_stats.max_accuracy, accuracy);
-    }
-    await user.updateOne({ $set: { ...updated } });
-    const rank = await user.getRank();
-    res.json({
-        rank,
-        ...user.toObject()
-    });
-});
+router.use(usersRouter);
 
 /**
  * Get endpoint that json object containing the user
@@ -152,7 +89,7 @@ router.get("/leaderboard", async (req, res) => {
  * Put endpoint used to update the profile picture of a user.
  * The user email and new Image is sent, newly updated user is returned
  */
-router.put("/update_avatar", upload.single('image'), async (req, res) => {
+router.put("/update_avatar", upload.single('image'), async (req, res, next) => {
     const email = Constraints.email(req.body.email);
     if (!email) {
         next(new createHttpError.BadRequest("Can't find the user because no email was provided"));
@@ -196,7 +133,7 @@ router.put("/update_avatar", upload.single('image'), async (req, res) => {
  * Put endpoint used to update the username of a user.
  * The user email and new username is sent, newly updated user is returned
  */
-router.put("/update_username", async (req, res) => {
+router.put("/update_username", async (req, res, next) => {
     const email = Constraints.email(req.body.email);
     const newName = req.body.username;
     if (!email || !newName) {
@@ -219,6 +156,21 @@ router.put("/update_username", async (req, res) => {
         ...user.toObject()
     });
 });
+
+function dbConnected(_, __, next){
+    // the node_env could be changed to mock the connection state instead
+    if(mongoose.connection.readyState !== 1 && process.env.NODE_ENV !== "test"){
+        next(new createHttpError.InternalServerError("Database is unavailable"));
+        if(!process.env.ATLAS_URI){
+            console.error("Trying to reconnect to the db but there is no atlas uri");
+            return;
+        }
+        mongoose.connect(process.env.ATLAS_URI, {dbName: "QuotesDatabase"})
+            .catch(() => {});
+        return;
+    }
+    next();
+}
 
 router.get("/lobby", (_, res) => {
     let roomID = v4()
