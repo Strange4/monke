@@ -52,10 +52,12 @@ div#playing-players>div.player-info>img.player-image {
 }
 
 #game-results > .player-name {
-    width: fit-content;
+    width: 100px;
     margin-right: 10px;
-    flex-grow: 1;
     justify-content: left;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis " [..]";
 }
 
 #game-single-result > p{
@@ -74,7 +76,10 @@ div#playing-players>div.player-info>img.player-image {
 }
 
 #end-game-leaderboard {
+    margin: auto;
     margin-top: 40px;
+    width: 100%;
+    max-width: 800px;
 }
 
 #end-game-leaderboard > h1 {
