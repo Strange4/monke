@@ -3,6 +3,7 @@ import TypingScreen from "../Components/TypingScreen/TypingScreen";
 import GameSettings from "../Components/GameSettings";
 
 const Home = () => {
+    
     return (
         <div id="home">
             <NavBar />

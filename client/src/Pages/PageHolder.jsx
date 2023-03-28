@@ -22,31 +22,30 @@ function PageHolder() {
     }, [location.pathname]);
 
     function checkPathLocation() {
-        return location.pathname !== "/lobby" && 
-            location.pathname !== "/multiplayer-game" &&
-            location.pathname !== "/endgame-results";
+        return location.pathname !== "/lobby" &&
+            location.pathname !== "/multiplayer-game"
     }
 
     return (
         <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/profile"
+            <Route exact path="/" element={<Home />} />
+            <Route exact path="/profile"
                 element={
                     auth.userEmail ?
                         <Profile />
                         :
                         <Login navbar={true} />
                 } />
-            <Route path='/lobby' element={<Lobby />} />
-            <Route path='/multiplayer-game' element={<MultiplayerGame />} />
-            <Route path="/profile" element={
+            <Route exact path='/lobby' element={<Lobby />} />
+            <Route exact path='/multiplayer-game' element={<MultiplayerGame />} />
+            <Route exact path="/profile" element={
                 auth.userEmail ?
                     <Profile redirect={auth.userEmail ? false : true} />
                     :
                     <></>
             } />
         </Routes>
-    )
+    );
 }
 
-export default PageHolder
+export default PageHolder;

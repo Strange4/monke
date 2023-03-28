@@ -25,14 +25,14 @@ const allRegKeys = keyboardKeys.english.lower;
 function TypingScreen(props) {
 
     const { isLoading, refetch } = useQuery("textToDisplay", async () => {
-        if(props.multiplayer) {
+        if (props.multiplayer) {
             return props.quote
         }
         const resp = await fetch("/api/quote",
             {
                 headers: { 'Accept': 'application/json', "Content-Type": "application/json" }
             });
-        if(!resp.ok){
+        if (!resp.ok) {
             throw new Error("The fetch request failed");
         }
         return (await resp.json()).body;
@@ -146,19 +146,19 @@ function TypingScreen(props) {
         setKeyboard(newKeyboard);
     }
 
-    if(isLoading){
-        return <Spinner/>
+    if (isLoading) {
+        return <Spinner />
     }
 
     function handleChkBoxEvent(e) {
         setEnableTTS(e.target.checked);
-    }   
+    }
 
     return (
         <div>
             <div>
-                <Chronometer seconds={displayTime}/>
-                <GameText onClick={()=> {
+                <Chronometer seconds={displayTime} />
+                <GameText onClick={() => {
                     textContainerRef.current.focus();
                     setIsFocused(true);
                 }} display={userDisplay} isFocused={isFocused} />
@@ -175,7 +175,7 @@ function TypingScreen(props) {
                     defaultChecked={false}
                     onClick={handleChkBoxEvent}
                     onKeyUp={(e) => {
-                        if(e.key === 'Enter'){
+                        if (e.key === 'Enter') {
                             e.target.checked = !e.target.checked;
                             handleChkBoxEvent(e)
                         }
@@ -192,9 +192,9 @@ function TypingScreen(props) {
             </div>
 
             <input
-                onBlur={()=>setIsFocused(false)}
+                onBlur={() => setIsFocused(false)}
                 autoFocus
-                type="text" 
+                type="text"
                 id="typing-input-box"
                 ref={textContainerRef}
                 onChange={onChangeText}
