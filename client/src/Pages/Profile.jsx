@@ -7,6 +7,8 @@ import { RiImageEditFill, RiEdit2Fill, RiSave3Line, RiCloseCircleLine } from "re
 import * as FetchModule from "../Controller/FetchModule";
 import { useNavigate } from "react-router-dom";
 import UserStats from "../Components/UserStats";
+import FirstTimePopUp from "../Components/FirstTimePopUp";
+import { getCookieValue } from "../Controller/CookieHelper.js";
 
 const Profile = () => {
     const auth = useContext(AuthContext);
@@ -149,9 +151,16 @@ const Profile = () => {
         }
     };
 
+    // Cookie related variables.
+    const profileValue = getCookieValue("profileFirstTime") === "visited";
+    const [profileCookie, visitedProfile] = useState(profileValue);
+    
     return (
         <div id="home">
+            <div className="blur"></div>
             <NavBar />
+            { profileCookie ? <></> : 
+                <FirstTimePopUp area={"profile"} setCookieArea={visitedProfile}/> }
             <div id="profile">
                 <div id="user">
                     <div id="image">
