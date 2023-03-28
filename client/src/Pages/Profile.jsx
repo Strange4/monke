@@ -4,7 +4,7 @@ import "./Styles/Profile.css";
 import AuthContext from "../Context/AuthContext";
 import { useContext, useEffect, useState, useRef } from "react";
 import { RiImageEditFill, RiEdit2Fill, RiSave3Line, RiCloseCircleLine } from "react-icons/ri";
-import * as FetchModule from "../Controller/FetchModule"
+import * as FetchModule from "../Controller/FetchModule";
 import { useNavigate } from "react-router-dom";
 import UserStats from "../Components/UserStats";
 import FirstTimePopUp from "../Components/FirstTimePopUp";
@@ -46,8 +46,8 @@ const Profile = () => {
     useEffect(() => {
         (async () => {
             if (auth.userEmail) {
-                const url = "/api/user"
-                const data = await FetchModule.postData(url, { email: auth.userEmail }, "POST")
+                const url = "/api/user";
+                const data = await FetchModule.postData(url, { email: auth.userEmail }, "POST");
                 setProfileData(data);
             } else {
                 navigate("/");
@@ -60,10 +60,10 @@ const Profile = () => {
      */
     async function saveUsername() {
         if (validateUsername()) {
-            setEditingUsername(false)
+            setEditingUsername(false);
             const newUsername = usernameField.current.textContent;
-            const body = { email: auth.userEmail, username: newUsername }
-            const data = await FetchModule.postData("/api/update_username", body, "PUT")
+            const body = { email: auth.userEmail, username: newUsername };
+            const data = await FetchModule.postData("/api/update_username", body, "PUT");
             setProfileData(data);
         } else {
             setUsernameFeedback(
@@ -71,7 +71,7 @@ const Profile = () => {
                 "Usernames can consist of alphanumeric characters \n",
                 "Usernames can consist of underscore and hyphens and spaces\n",
                 "Cannot be two underscores, two hypens or two spaces in a row\n",
-                "Cannot have a underscore, hypen or space at the start or end")
+                "Cannot have a underscore, hypen or space at the start or end");
         }
     }
 
@@ -86,8 +86,8 @@ const Profile = () => {
         if (validUsername === null) {
             return false;
         }
-        setUsernameFeedback("")
-        return true
+        setUsernameFeedback("");
+        return true;
     }
 
     /**
@@ -97,7 +97,7 @@ const Profile = () => {
     const saveAvatar = async () => {
         if (validateImageForm(image)) {
             FetchModule.readImage(image, auth.userEmail, validateImageForm, postImage);
-            setEditingAvatar(false)
+            setEditingAvatar(false);
         }
     }
 
@@ -105,14 +105,14 @@ const Profile = () => {
      * Cancels the editing of the avatar and resets it back to previously saved one
      */
     function cancelAvatarEdit() {
-        setEditingAvatar(false)
+        setEditingAvatar(false);
         setAvatarFeedback("");
-        avatarField.current.src = profileData.picture_url
+        avatarField.current.src = profileData.picture_url;
     }
 
     async function postImage(data) {
         const newData = await FetchModule.postImageAPI("/api/update_avatar", data);
-        setProfileData(newData)
+        setProfileData(newData);
     }
 
     /**
@@ -137,7 +137,7 @@ const Profile = () => {
         const img = e.target.files[0]
         var reader = new FileReader();
         reader.onload = function (e) {
-            avatarField.current.src = e.target.result
+            avatarField.current.src = e.target.result;
         }
         reader.readAsDataURL(img);
     }
@@ -145,9 +145,9 @@ const Profile = () => {
     const handleFileUpload = e => {
         const { files } = e.target;
         if (files && files.length) {
-            readURL(e)
-            setEditingAvatar(true)
-            setImage(files[0])
+            readURL(e);
+            setEditingAvatar(true);
+            setImage(files[0]);
         }
     };
 
@@ -175,32 +175,32 @@ const Profile = () => {
                                 <div id="avatar-settings">
                                     <RiCloseCircleLine
                                         id="cancle-avatar-btn"
-                                        onClick={cancelAvatarEdit}/>
+                                        onClick={cancelAvatarEdit} />
                                     <RiSave3Line
                                         id="save-avatar-btn"
-                                        onClick={(e) => { 
-                                            saveAvatar(e) 
-                                        }}/>
+                                        onClick={(e) => {
+                                            saveAvatar(e)
+                                        }} />
                                 </div>
                                 :
                                 <RiImageEditFill
                                     id="edit-pic-icon"
                                     onClick={() => {
-                                        inputFile.current.click() 
+                                        inputFile.current.click()
                                     }} />
                         }
                     </div>
 
                     <div id="update-avatar">
                         {<>
-                            <form id="image-picker-form" 
+                            <form id="image-picker-form"
                                 onSubmit={async (e) => await saveAvatar(e)}>
                                 <input
                                     style={{ display: "none" }}
                                     ref={inputFile}
                                     accept="image/png, image/jpeg, image/jpg"
                                     onChange={(e) => {
-                                        handleFileUpload(e) 
+                                        handleFileUpload(e)
                                     }}
                                     type="file"
                                 />
@@ -219,7 +219,7 @@ const Profile = () => {
                                 suppressContentEditableWarning={true}
                                 ref={usernameField}
                                 maxLength={5}>
-                                
+
                                 {profileData.username}
                             </h2>
                             {
@@ -233,9 +233,9 @@ const Profile = () => {
                                     :
                                     <RiEdit2Fill
                                         id="edit-name-icon"
-                                        onClick={() => { 
-                                            setEditingUsername(true) 
-                                        }}/>
+                                        onClick={() => {
+                                            setEditingUsername(true)
+                                        }} />
                             }
                         </div>
                         <div id="rank-info">
@@ -243,7 +243,7 @@ const Profile = () => {
                             <h2>{profileData.rank}</h2>
                         </div>
                     </div>
-                    <UserStats userData={profileData}/>
+                    <UserStats userData={profileData} />
                 </div>
 
             </div>

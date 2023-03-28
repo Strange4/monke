@@ -1,27 +1,68 @@
-import './Styles/MultiplayerGame.css'
+import './Styles/MultiplayerGame.css';
 import NavBar from "../Components/NavBar";
 import TypingScreen from "../Components/TypingScreen/TypingScreen";
 import PlayerItem from '../Components/PlayerItem';
+import SocketContext from '../Context/SocketContext';
+import { useContext, useEffect, useState } from 'react';
+import { useLocation, useNavigate } from "react-router-dom";
+import GameProgress from '../Components/MultiplayerGame/GameProgress';
+import EndGameLeaderboard from '../Components/MultiplayerGame/EndGameLeaderboard';
 
 const MultiplayerGame = () => {
+    const socketContext = useContext(SocketContext);
+    const navigate = useNavigate();
+    const location = useLocation();
+    const [ended, setEnded] = useState(false);
+
+    useEffect(() => {
+        socketContext.socket.current ? updateListeners() : navigate("/");
+    }, []);
+
+    /**
+     * Updates the current lobby listeners and calls
+     * a function that sets up new ones for gameplay
+     */
+    function updateListeners() {
+        socketContext.socket.current.off("join-room");
+        socketContext.socket.current.off("leave-room");
+        socketContext.socket.current.on("leave-room", (users) => {
+            socketContext.setUserList(users);
+        });
+        setUpProgressListeners();
+    }
+
+    /**
+     * Sets all the progress in game listeners
+     */
+    function setUpProgressListeners() {
+        socketContext.socket.current.on("update-progress", (userList) => {
+            socketContext.setUserList(userList);
+            let index = userList.findIndex(user => user.id === socketContext.socket.current.id);
+            if (userList[index].progress >= 100) {
+                setEnded(true);
+            }
+        });
+    }
+    
     return (
-        <div id="home">
-            <NavBar />
-            <div id="playing-players">
-                {/* to be replaced with a list of the players playing */}
-                <PlayerItem name="name"/>
-                <PlayerItem/>
-                <PlayerItem/>
-                <PlayerItem/>
-                <PlayerItem/>
-            </div>
-            <div id="multiplayer-info">
-                <div id="mode-indicator">
-                    <p>A time or percentage indicator will appear here depending on game mode</p>
+        <>
+            < NavBar />
+            {ended ?
+                <EndGameLeaderboard/>
+                :
+                <div id="multiplayer-game">
+                    <div id="playing-players">
+                        {socketContext.userList.map((user, i) => {
+                            return <PlayerItem
+                                key={i} name={user.username}
+                                avatar={user.avatar} leader={i === 0} />
+                        })}
+                    </div>
+                    <GameProgress />
+                    <TypingScreen multiplayer={true} quote={location.state.quote}/>
                 </div>
-                <TypingScreen/>
-            </div>
-        </div>
+            }
+        </>
     );
 }
 

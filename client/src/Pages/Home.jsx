@@ -135,7 +135,7 @@ const Home = () => {
             <div id="game-component">
                 
                 <GameSettings />
-                <TypingScreen />
+                <TypingScreen multiplayer={false}/>
             </div>
         </div>
 

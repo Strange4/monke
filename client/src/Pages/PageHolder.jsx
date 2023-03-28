@@ -15,11 +15,17 @@ function PageHolder() {
     const location = useLocation()
 
     useEffect(() => {
-        if (location.pathname !== "/lobby" && socketContext.socket.current) {
+        if (checkPathLocation() && socketContext.socket.current) {
             socketContext.socket.current.disconnect()
             socketContext.socket.current = undefined
         }
-    }, [location]);
+    }, [location.pathname]);
+
+    function checkPathLocation() {
+        return location.pathname !== "/lobby" && 
+            location.pathname !== "/multiplayer-game" &&
+            location.pathname !== "/endgame-results";
+    }
 
     return (
         <Routes>
@@ -33,7 +39,6 @@ function PageHolder() {
                 } />
             <Route path='/lobby' element={<Lobby />} />
             <Route path='/multiplayer-game' element={<MultiplayerGame />} />
-
             <Route path="/profile" element={
                 auth.userEmail ?
                     <Profile redirect={auth.userEmail ? false : true} />
