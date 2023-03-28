@@ -5,7 +5,6 @@
     align-content: center;
     background-color: var(--sub-color-transparent);
     border-radius: 60px;
-    /* border: 2px solid white; */
     width: 90%;
     min-width: 400px;
     height: 120px;
@@ -48,6 +47,7 @@ div#playing-players>div.player-info>img.player-image {
 }
 
 #game-results {
+    background-color: var(--sub-color-transparent);
     margin: 20px;
 }
 
@@ -62,10 +62,11 @@ div#playing-players>div.player-info>img.player-image {
 
 #game-single-result > p{
     display: flex;
-    flex-flow: row nowrap;
+    flex-flow: row wrap;
+    align-content: center;
     justify-content: center;
     width: 200px;
-    color: var(--bg-color);
+    color: var(--text-color);
 }
 
 #game-single-result {
@@ -85,4 +86,14 @@ div#playing-players>div.player-info>img.player-image {
 #end-game-leaderboard > h1 {
     letter-spacing: 15px;
     color: var(--accent-color);
+}
+
+#end-game-rank {
+    color: var(--accent-color) !important;
+    font-weight: bold;
+    font-size: 1.3em;
+}
+
+#multiplayer-game > #popup-root:has(>div.popup-overlay>div.popup-content>div#solo-game-result){
+    visibility: hidden;
 }

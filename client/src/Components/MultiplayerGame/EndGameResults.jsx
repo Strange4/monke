@@ -5,8 +5,8 @@ const EndGameResults = (props) => {
             <p className='player-name'> {props.name} </p>
             {props.ended ?
                 <div id="game-single-result">
-                    <p>
-                        RANK: {props.rank + 1}
+                    <p id="end-game-rank">
+                        {props.rank + 1}
                     </p>
                     <p>
                         wpm: {props.wpm}

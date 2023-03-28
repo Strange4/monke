@@ -51,6 +51,7 @@ const MultiplayerGame = () => {
                 <EndGameLeaderboard/>
                 :
                 <div id="multiplayer-game">
+                    <div id="popup-root" />
                     <div id="playing-players">
                         {socketContext.userList.map((user, i) => {
                             return <PlayerItem

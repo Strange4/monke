@@ -9,8 +9,8 @@
 
 .rank-list-item p {
     text-align: left;
-    min-width: 80px;
-    width: 100px;
+    /* min-width: 80px; */
+    width: 110px;
     max-width: 160px;
     font-size: 0.8em;
 }
@@ -26,6 +26,10 @@
     width: 30px;
     height: 30px;
     border-radius: 50%;
+}
+
+#user-rank {
+    width: 100px;
 }
 
 #rank-user {
