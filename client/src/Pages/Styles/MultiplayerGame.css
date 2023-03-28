@@ -47,3 +47,37 @@ div#playing-players>div.player-info>img.player-image {
     height: 300px;
 }
 
+#game-results {
+    margin: 20px;
+}
+
+#game-results > .player-name {
+    width: fit-content;
+    margin-right: 10px;
+    flex-grow: 1;
+    justify-content: left;
+}
+
+#game-single-result > p{
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    width: 200px;
+    color: var(--bg-color);
+}
+
+#game-single-result {
+    display: flex;
+    justify-content: right;
+    flex-grow: 2;
+    width: 60%;
+}
+
+#end-game-leaderboard {
+    margin-top: 40px;
+}
+
+#end-game-leaderboard > h1 {
+    letter-spacing: 15px;
+    color: var(--accent-color);
+}
