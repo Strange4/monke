@@ -44,7 +44,7 @@ function EndGameLeaderboard() {
     }
 
     /**
-     * TODO comment
+     * Checks if the displayed user is the current user
      * @param {Object} user 
      * @returns {Boolean}
      */
