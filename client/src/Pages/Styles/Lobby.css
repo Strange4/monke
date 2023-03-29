@@ -151,6 +151,20 @@
     max-height: 50px;
 }
 
+#lobby-info > div#chronometer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+    width: 100%;
+    height: 100%;
+    font-size: 10em;
+}
+
+#lobby-info > div#chronometer > p > svg{
+    display: none;
+}
+
 #practice > #popup-root:has(>div.popup-overlay>div.popup-content>div#solo-game-result){
     visibility: hidden;
 }
