@@ -1,5 +1,4 @@
 import './Styles/NavBar.css';
-import { Link } from 'react-router-dom';
 import Popup from 'reactjs-popup';
 import Leaderboard from './Leaderboard';
 import LobbyPopup from './Lobby/LobbyPopup';
@@ -11,6 +10,7 @@ import { CgProfile } from "react-icons/cg";
 import { HiCog, HiUserGroup } from "react-icons/hi"
 import AuthContext from '../Context/AuthContext';
 import { useContext, useState } from "react";
+import { SecureLink } from './SecureNavigation/SecureLink';
 
 /**
  * Navigation bar to be used on all pages
@@ -21,7 +21,7 @@ function NavBar() {
 
     const [showPref, setShowPref] = useState(false);
 
-    function toggleShowPref(){
+    function toggleShowPref() {
         setShowPref(!showPref);
     }
 
@@ -33,39 +33,39 @@ function NavBar() {
     return (
         <div id="navbar">
             <div id="nav-sub">
-
                 <li>
-                    <Link to="/">
+                    <SecureLink to="/">
                         <img src={logo} id="logo"></img>
-                    </Link>
+                    </SecureLink>
                 </li>
                 <li>
-                    <Popup trigger={<a><GiCrenelCrown id="leaderboard-icon"/></a>} modal>
+                    <Popup trigger={<a><GiCrenelCrown id="leaderboard-icon" /></a>} modal>
                         <Leaderboard />
                     </Popup>
                 </li>
                 <li>
-                    <Popup trigger={<a><HiUserGroup id="lobby-icon"/></a>} modal>
+                    <Popup trigger={<a><HiUserGroup id="lobby-icon" /></a>} modal>
                         <LobbyPopup />
                     </Popup>
                 </li>
                 <li>
-                    <HiCog onClick={toggleShowPref} id="pref-icon"/>
-                    {showPref ? <Preferences open={showPref} toggleShow={toggleShowPref} /> : null}
+                    <HiCog onClick={toggleShowPref} id="pref-icon" />
+                    {showPref ?
+                        <Preferences open={showPref} toggleShow={toggleShowPref} /> : null}
                 </li>
             </div>
             <li>
-                <Popup trigger={<a><CgProfile id="profile-icon"/></a>}>
-                    {auth.userEmail ? 
+                <Popup trigger={<a><CgProfile id="profile-icon" /></a>}>
+                    {auth.userEmail ?
                         <div className='access'>
-                            <Link to='/profile'>
+                            <SecureLink to='/profile'>
                                 <button className='logged-in'>Profile</button>
-                            </Link>
-                            <Link to='/'>
-                                <button onClick={handleLogout} className='logged-in'> 
-                                    Logout 
+                            </SecureLink>
+                            <SecureLink to='/'>
+                                <button onClick={handleLogout} className='logged-in'>
+                                    Logout
                                 </button>
-                            </Link>
+                            </SecureLink>
                         </div>
                         : ""}
                     {

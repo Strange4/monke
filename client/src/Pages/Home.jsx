@@ -1,12 +1,20 @@
 import NavBar from "../Components/NavBar";
 import TypingScreen from "../Components/TypingScreen/TypingScreen";
 import GameSettings from "../Components/GameSettings";
+import { LocationContext } from "../Context/LocationContext";
+import { useContext, useEffect } from "react";
 import CookieBanner from "../Components/CookieBanner";
 import { getCookieValue } from "../Controller/CookieHelper";
 import { useState } from "react";
 import PreferenceContext from "../Context/PreferenceContext";
 
 const Home = () => {
+    const locationContext = useContext(LocationContext);
+
+    useEffect(() => {
+        locationContext.lastVisitedLocation.current = "/";
+    }, []);
+
     const [enableTTS, setEnableTTS] = useState(getCookieValue("enableTTSQuote"));
     const [ttsSpeed, setTtsSpeed] = useState(getCookieValue("ttsSpeed"));
 
@@ -27,16 +35,14 @@ const Home = () => {
                 setTtsSpeed: setTtsSpeed
             }}>
                 <div className="blur"></div>
-                <CookieBanner/>
+                <CookieBanner />
                 <NavBar />
                 <div id="game-component">
-                    
                     <GameSettings />
-                    <TypingScreen multiplayer={false} enableTTS={enableTTS} />
+                    <TypingScreen multiplayer={false}  enableTTS={enableTTS} />
                 </div>
             </PreferenceContext.Provider>
         </div>
-
     );
 }
 

@@ -25,23 +25,23 @@ const allRegKeys = keyboardKeys.english.lower;
 function TypingScreen(props) {
 
     const { isLoading, refetch } = useQuery("textToDisplay", async () => {
-        if(props.multiplayer) {
+        if (props.multiplayer) {
             return props.quote
         }
         const resp = await fetch("/api/quote",
             {
                 headers: { 'Accept': 'application/json', "Content-Type": "application/json" }
             });
-        if(!resp.ok){
+        if (!resp.ok) {
             throw new Error("The fetch request failed");
         }
         return (await resp.json()).body;
     }, {
         onSuccess: (quote) => {
-            setTextToDisplay(props.quote || quote);
-            setUserDisplay(getDefaultUserDisplay(props.quote || quote));
+            setTextToDisplay(quote);
+            setUserDisplay(getDefaultUserDisplay(quote));
         }, onError: () => {
-            const quote = props.quote || defaultQuotes[randomNumber(0, defaultQuotes.length)];
+            const quote = defaultQuotes[randomNumber(0, defaultQuotes.length)];
             setTextToDisplay(quote);
             setUserDisplay(getDefaultUserDisplay(quote));
         },
@@ -91,14 +91,13 @@ function TypingScreen(props) {
      */
     function onChangeText(e) {
         const current = e.target.value;
+        let progress = current.length / userDisplay.length * 100;
 
-        if (textToDisplay.length === current.length) {
+        if (progress === 100) {
             handleGameEnd();
         }
         if (props.multiplayer) {
-            socketContext.socket.current.emit("update-progress-bar",
-                current.length, userDisplay.length
-            );
+            socketContext.socket.current.emit("update-progress-bar", progress);
         } else if (current.length === 1) {
             startTimer();
         }
@@ -147,15 +146,15 @@ function TypingScreen(props) {
         setKeyboard(newKeyboard);
     }
 
-    if(isLoading){
-        return <Spinner/>
+    if (isLoading) {
+        return <Spinner />
     }
 
     return (
         <div>
-            <div>
-                <Chronometer seconds={displayTime}/>
-                <GameText onClick={()=> {
+            <div className='center'>
+                <Chronometer seconds={displayTime} />
+                <GameText onClick={() => {
                     textContainerRef.current.focus();
                     setIsFocused(true);
                 }} display={userDisplay} isFocused={isFocused} />
@@ -177,9 +176,9 @@ function TypingScreen(props) {
             </div>
 
             <input
-                onBlur={()=>setIsFocused(false)}
+                onBlur={() => setIsFocused(false)}
                 autoFocus
-                type="text" 
+                type="text"
                 id="typing-input-box"
                 ref={textContainerRef}
                 onChange={onChangeText}
