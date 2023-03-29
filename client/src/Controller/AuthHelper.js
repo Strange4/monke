@@ -1,5 +1,5 @@
 async function checkAccess() {
-    const response = await fetch("/authentication/protected");
+    const response = await fetch("/authentication/checkLogin");
     return response.status === 200
 }
 

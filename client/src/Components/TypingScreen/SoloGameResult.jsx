@@ -4,7 +4,6 @@ import { useEffect, useState, useContext } from 'react';
 import Popup from "reactjs-popup";
 import * as FetchModule from '../../Controller/FetchModule';
 import AuthContext from '../../Context/AuthContext';
-import { postData } from '../../Controller/FetchModule';
 import SocketContext from '../../Context/SocketContext';
 import { GiPartyPopper } from 'react-icons/gi';
 
@@ -35,10 +34,7 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText,
             accuracy: Math.round(computeAccuracy(typedText) * 100) / 100
         }
 
-        const loggedIn = await auth.checkAccess();
-        if (loggedIn) {
-            // await postData("/api/user", "POST");
-            setUserStats(result);
+        if (auth.userLoggedIn) {
             postUserStats(result);
         } 
 

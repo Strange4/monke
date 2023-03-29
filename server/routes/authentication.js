@@ -17,7 +17,7 @@ authRouter.use(express.json());
  */
 export function isAuthenticated(req, res, next) {
     if (!req?.session?.email) {
-        return res.sendStatus(204)
+        return res.sendStatus(401);
     }
     next();
 }
@@ -65,8 +65,9 @@ authRouter.post("/login", async (req, res) => {
 /**
  * Get endpoint to be used by client side to check if user is authenticated
  */
-authRouter.get("/protected", isAuthenticated, function (_, res) {
-    res.sendStatus(200);
+authRouter.get("/checkLogin", function (req, res) {
+    const isLoggedIn = req.session.email !== undefined;
+    res.sendStatus(isLoggedIn ? 200 : 204);
 });
 
 /**
