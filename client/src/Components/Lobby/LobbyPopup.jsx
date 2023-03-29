@@ -69,7 +69,7 @@ function LobbyPopup() {
         };
         if (auth.userLoggedIn) {
             const url = "/api/user";
-            const data = await FetchModule.postData(url, "POST");
+            const data = await FetchModule.postData(url, undefined, "POST");
             userData["avatar"] = data.picture_url;
             userData["username"] = data.username;
         }

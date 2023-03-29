@@ -16,9 +16,6 @@ const router = express.Router();
 
 router.use(dbConnected);
 router.use("/quote", quoteRouter);
-router.use(express.json());
-router.use(usersRouter);
-
 /**
  * Get endpoint that returns a hardcoded json object containing
  * leaderboard info such as rank, wpm, username and temporary profileURL
@@ -30,6 +27,14 @@ router.get("/leaderboard", async (req, res) => {
         .sort({"user_stats.max_wpm": 'desc', "user_stats.max_accuracy": "desc"}).lean();
     res.json(users);
 });
+
+router.get("/lobby", (_, res) => {
+    let roomID = v4()
+    res.json(roomID)
+});
+
+router.use(express.json());
+router.use(usersRouter);
 
 function dbConnected(_, __, next){
     // the node_env could be changed to mock the connection state instead
@@ -45,11 +50,6 @@ function dbConnected(_, __, next){
     }
     next();
 }
-
-router.get("/lobby", (_, res) => {
-    let roomID = v4()
-    res.json(roomID)
-});
 
 function handleHttpErrors(error, _, res, next) {
     if (error instanceof createHttpError.HttpError) {

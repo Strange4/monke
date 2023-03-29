@@ -11,8 +11,8 @@ function Login(props) {
 
     async function handleLogin(googleData) {
         const data = await postData("/authentication/login", {token: googleData.credential}, "POST")
-        auth.setUserLoggedIn(true);
         await setUserData(data);
+        auth.setUserLoggedIn(true);
     }
 
     async function setUserData(data) {

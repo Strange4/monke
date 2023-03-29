@@ -54,7 +54,7 @@ const Profile = () => {
         (async () => {
             if (auth.userLoggedIn) {
                 const url = "/api/user";
-                const data = await FetchModule.postData(url, "POST");
+                const data = await FetchModule.postData(url, undefined, "POST");
                 setProfileData(data);
             } else {
                 navigate("/");

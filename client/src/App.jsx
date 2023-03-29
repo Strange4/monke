@@ -36,7 +36,9 @@ function App() {
                 <AuthContext.Provider value={{
                     userEmail: userEmail,
                     setUserEmail: setUserEmail,
-                    checkAccess: checkAccess
+                    checkAccess: checkAccess,
+                    userLoggedIn,
+                    setUserLoggedIn
                 }}>
                     <SocketContext.Provider value={{
                         socket: socket,
