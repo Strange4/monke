@@ -19,7 +19,7 @@ const Home = () => {
     const [ttsSpeed, setTtsSpeed] = useState(getCookieValue("ttsSpeed"));
 
     /**
-     * iife that sets default preference settings
+     * iife that sets default preference settings if undefined
      */
     (()=>{
         enableTTS === undefined ? setEnableTTS("false") : enableTTS;
@@ -39,7 +39,7 @@ const Home = () => {
                 <NavBar />
                 <div id="game-component">
                     <GameSettings />
-                    <TypingScreen multiplayer={false}  enableTTS={enableTTS} />
+                    <TypingScreen multiplayer={false} />
                 </div>
             </PreferenceContext.Provider>
         </div>
