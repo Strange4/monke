@@ -17,14 +17,18 @@ function LengthSettings(props) {
         setCookie("quoteLength", length);
         props.setLength(length); 
     }
-
+    const cookieSetting = props.quoteLength;
 
     return (
         <div id="length-settings">
-            <button type="button" onClick={setQuoteLength}>short</button>
-            <button type="button" onClick={setQuoteLength}>medium</button>
-            <button type="button" onClick={setQuoteLength}>long</button>
-            <button type="button" onClick={setQuoteLength}>random</button>
+            <button className={cookieSetting === "short" ? "highlightSetting" : ""}  
+                onClick={setQuoteLength}>short</button>
+            <button className={cookieSetting === "medium" ? "highlightSetting" : ""} 
+                onClick={setQuoteLength}>medium</button>
+            <button className={cookieSetting === "long" ? "highlightSetting" : ""} 
+                onClick={setQuoteLength}>long</button>
+            <button className={cookieSetting === "random" ? "highlightSetting" : ""}  
+                onClick={setQuoteLength}>random</button>
         </div>
     );
 }

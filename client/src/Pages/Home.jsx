@@ -19,6 +19,22 @@ const Home = () => {
     
     const [length, setLength] = useState(cookieLength);
 
+    // Sets the punctuation from the cookie and converts to a bool.
+    const punctuationCookie = getCookieValue("punctuation");
+    let punctuationValue;
+    if (punctuationCookie === undefined){
+        punctuationValue = false;
+    } else{
+        // eslint-disable-next-line
+        if (punctuationCookie === "true"){
+            punctuationValue = true;
+        } else {
+            punctuationValue = false;
+        }
+    }
+
+    const [punctuation, setPunctuation] = useState(punctuationValue);
+
     const locationContext = useContext(LocationContext);
 
     useEffect(() => {
@@ -31,8 +47,9 @@ const Home = () => {
             <CookieBanner />
             <NavBar />
             <div id="game-component">
-                <GameSettings setLength={setLength}/>
-                <TypingScreen quoteLength={length} multiplayer={false} />
+                <GameSettings quoteLength={length} setLength={setLength} 
+                    punctuation={punctuation} setPunctuation={setPunctuation}/>
+                <TypingScreen quoteLength={length} multiplayer={false} punctuation={punctuation} />
             </div>
         </div>
     );

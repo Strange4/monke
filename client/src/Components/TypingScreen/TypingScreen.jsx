@@ -44,12 +44,20 @@ function TypingScreen(props) {
         return (await resp.json()).body;
     }, {
         onSuccess: (quote) => {
-            setTextToDisplay(quote);
-            setUserDisplay(getDefaultUserDisplay(quote));
+            let newQuote = quote;
+            if (!props.punctuation){
+                newQuote = quote.replace(/[^\w\s']|_/g, "").replace(/\s+/g, " ");
+            }
+            setTextToDisplay(newQuote);
+            setUserDisplay(getDefaultUserDisplay(newQuote));
         }, onError: () => {
             const quote = defaultQuotes[randomNumber(0, defaultQuotes.length)];
-            setTextToDisplay(quote);
-            setUserDisplay(getDefaultUserDisplay(quote));
+            let newQuote = quote;
+            if (!props.punctuation){
+                newQuote = quote.replace(/[^\w\s']|_/g, "").replace(/\s+/g, " ");
+            }
+            setTextToDisplay(newQuote);
+            setUserDisplay(getDefaultUserDisplay(newQuote));
         },
         refetchOnWindowFocus: false
     });
@@ -64,9 +72,9 @@ function TypingScreen(props) {
     const textContainerRef = useRef();
     const socketContext = useContext(SocketContext);
 
-    useEffect(() =>{
+    useEffect(() => {
         refetch();
-    }, [props.quoteLength])
+    }, [props.quoteLength, props.punctuation]);
 
     useEffect(() => {
         if (props.multiplayer) {
