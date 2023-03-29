@@ -7,7 +7,7 @@
     border-radius: 60px;
     width: 90%;
     min-width: 400px;
-    height: 120px;
+    height: 140px;
     margin: auto;
     margin-top: 20px;
 }
@@ -18,6 +18,7 @@
 }
 
 div#playing-players > div.player-info > p.player-name {
+    height: 50px !important;
     margin: 0;
 }
 
@@ -55,7 +56,7 @@ div#playing-players>div.player-info>img.player-image {
 }
 
 #game-results > .player-name {
-    width: 100px;
+    display: inline-block;
     margin-right: 10px;
     justify-content: left;
     overflow: hidden;
@@ -134,5 +135,5 @@ div#playing-players>div.player-info>img.player-image {
     top: 8px;
     left: 0;
     border-radius: 5px;
-    height: 20px;
+    height: 15px;
 }
