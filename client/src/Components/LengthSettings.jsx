@@ -1,25 +1,30 @@
 import './Styles/Settings.css';
+import {setCookie} from "../Controller/CookieHelper";
 
 /**
- * Displays time specific settings
+ * Let's the user choose between quote length preference.
+ * When chosen, sets the cookie preference for quote length.
  * @returns {ReactElement}
  */
 function LengthSettings() {
 
+    /**
+     * Get a quote from the API depending on the chosen length.
+     * Sets the cookie preference of quote length when pressed.
+     * @param {button} e, the button that is being pressed.
+     */
     async function getQuote(e){
-        const url = `/api/quote?quoteLength=${e.target.textContent}`;
+        let url;
+        if (e.target.textContent === "random"){
+            url = "/api/quote";
+        } else{
+            url = `/api/quote?quoteLength=${e.target.textContent}`;
+        }
         const data = await fetch(url);
         const json = await data.json();
         const quote = json.body;
         console.log(quote);
-    }
-
-    async function getRandom(){
-        const url = `/api/quote`;
-        const data = await fetch(url);
-        const json = await data.json();
-        const quote = json.body;
-        console.log(quote);
+        setCookie("quoteLength", e.target.textContent)
     }
 
     return (
@@ -27,7 +32,7 @@ function LengthSettings() {
             <button type="button" onClick={getQuote}>short</button>
             <button type="button" onClick={getQuote}>medium</button>
             <button type="button" onClick={getQuote}>long</button>
-            <button type="button" onClick={getRandom}>random</button>
+            <button type="button" onClick={getQuote}>random</button>
         </div>
     );
 }
