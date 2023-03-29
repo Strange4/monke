@@ -4,7 +4,6 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import AuthContext from './Context/AuthContext';
 import { useState, useEffect, useRef } from 'react';
 import PageHolder from './Pages/PageHolder';
-import checkAccess from './Controller/AuthHelper';
 import SocketContext from './Context/SocketContext';
 import { LocationContextProvider } from './Context/LocationContext';
 
@@ -33,7 +32,6 @@ function App() {
         <div className="App">
             <LocationContextProvider >
                 <AuthContext.Provider value={{
-                    checkAccess: checkAccess,
                     userLoggedIn,
                     setUserLoggedIn
                 }}>
