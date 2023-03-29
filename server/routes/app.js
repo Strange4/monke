@@ -27,6 +27,8 @@ const secret = process.env.SECRET;
 if(!secret){
     throw new Error("The secret wasn't found in the environment variables");
 }
+
+const NODE_ENV = process.env.NODE_ENV || "production";
 app.use(session({
     secret: secret,
     name: 'id',
@@ -34,8 +36,7 @@ app.use(session({
     resave: false,
     cookie: {
         maxAge: 120000,
-        //should only sent over https, but set to false for testing and dev on localhost
-        secure: false,
+        secure: NODE_ENV === "development" ? false : true,
         httpOnly: true,
         sameSite: 'strict'
     }
