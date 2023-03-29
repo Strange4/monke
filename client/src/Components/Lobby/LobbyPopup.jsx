@@ -36,7 +36,7 @@ function LobbyPopup() {
     }
 
     function updateRoom(users, roomCode) {
-        socketContext.setUserList(users);
+        socketContext.userList = users;
         navigate("/lobby", { state: { roomCode: roomCode } });
     }
 

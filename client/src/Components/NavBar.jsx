@@ -10,8 +10,7 @@ import { CgProfile } from "react-icons/cg";
 import { HiCog, HiUserGroup } from "react-icons/hi"
 import AuthContext from '../Context/AuthContext';
 import { useContext, useState } from "react";
-import { LocationContextProvider } from '../Context/LocationContext';
-import { SecureLink } from '../Pages/SecureLink';
+import { SecureLink } from './SecureNavigation/SecureLink';
 
 /**
  * Navigation bar to be used on all pages
@@ -32,57 +31,52 @@ function NavBar() {
     }
 
     return (
-        <LocationContextProvider>
-            <div id="navbar">
-                <div id="nav-sub">
-
-                    <li>
-                        <SecureLink to="/">
-                            <img src={logo} id="logo"></img>
-                        </SecureLink>
-                    </li>
-                    <li>
-                        <Popup trigger={<a><GiCrenelCrown id="leaderboard-icon" /></a>} modal>
-                            <Leaderboard />
-                        </Popup>
-                    </li>
-                    <li>
-                        <Popup trigger={<a><HiUserGroup id="lobby-icon" /></a>} modal>
-                            <LobbyPopup />
-                        </Popup>
-                    </li>
-                    <li>
-                        <HiCog onClick={toggleShowPref} id="pref-icon" />
-                        {showPref ?
-                            <Preferences open={showPref} toggleShow={toggleShowPref} /> : null}
-                    </li>
-                </div>
+        <div id="navbar">
+            <div id="nav-sub">
                 <li>
-                    <Popup trigger={<a><CgProfile id="profile-icon" /></a>}>
-                        {auth.userEmail ?
-                            <div className='access'>
-                                <SecureLink to='/profile'>
-                                    <button className='logged-in'>Profile</button>
-                                </SecureLink>
-                                <SecureLink to='/'>
-                                    <button onClick={handleLogout} className='logged-in'>
-                                        Logout
-                                    </button>
-                                </SecureLink>
-                            </div>
-                            : ""}
-                        {
-                            auth.userEmail ? null :
-                                <div>
-                                    <Login navbar={false} />
-                                </div>
-                        }
+                    <SecureLink to="/">
+                        <img src={logo} id="logo"></img>
+                    </SecureLink>
+                </li>
+                <li>
+                    <Popup trigger={<a><GiCrenelCrown id="leaderboard-icon" /></a>} modal>
+                        <Leaderboard />
                     </Popup>
                 </li>
+                <li>
+                    <Popup trigger={<a><HiUserGroup id="lobby-icon" /></a>} modal>
+                        <LobbyPopup />
+                    </Popup>
+                </li>
+                <li>
+                    <HiCog onClick={toggleShowPref} id="pref-icon" />
+                    {showPref ?
+                        <Preferences open={showPref} toggleShow={toggleShowPref} /> : null}
+                </li>
             </div>
-
-        </LocationContextProvider>
-
+            <li>
+                <Popup trigger={<a><CgProfile id="profile-icon" /></a>}>
+                    {auth.userEmail ?
+                        <div className='access'>
+                            <SecureLink to='/profile'>
+                                <button className='logged-in'>Profile</button>
+                            </SecureLink>
+                            <SecureLink to='/'>
+                                <button onClick={handleLogout} className='logged-in'>
+                                    Logout
+                                </button>
+                            </SecureLink>
+                        </div>
+                        : ""}
+                    {
+                        auth.userEmail ? null :
+                            <div>
+                                <Login navbar={false} />
+                            </div>
+                    }
+                </Popup>
+            </li>
+        </div>
     );
 }
 

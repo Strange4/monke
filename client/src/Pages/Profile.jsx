@@ -7,8 +7,21 @@ import { RiImageEditFill, RiEdit2Fill, RiSave3Line, RiCloseCircleLine } from "re
 import * as FetchModule from "../Controller/FetchModule";
 import { useNavigate } from "react-router-dom";
 import UserStats from "../Components/UserStats";
+import { isRouteInvalid } from "../Components/SecureNavigation/UrlRoutes";
+import { LocationContext } from "../Context/LocationContext";
 
 const Profile = () => {
+    const navigate = useNavigate()
+    const locationContext = useContext(LocationContext)
+    const [validAccess, setValidAccess] = useState(true);
+
+    if (isRouteInvalid()) {
+        if (validAccess) {
+            setValidAccess(false)
+        }
+    } else {
+        locationContext.lastVisitedLocation.current = "/profile"
+    }
     const auth = useContext(AuthContext);
     const [profileData, setProfileData] = useState({
         username: "",
@@ -34,21 +47,25 @@ const Profile = () => {
     const [AvatarFeedback, setAvatarFeedback] = useState("");
     const usernameField = useRef();
     const avatarField = useRef();
-    const navigate = useNavigate();
     const DefaultPicture =
         "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
 
     const [image, setImage] = useState("");
     const inputFile = useRef();
+    useEffect(() => {
 
+    }, [])
     useEffect(() => {
         (async () => {
+            if (!validAccess) {
+                navigate("/");
+            }
             if (auth.userEmail) {
                 const url = "/api/user";
                 const data = await FetchModule.postData(url, { email: auth.userEmail }, "POST");
                 setProfileData(data);
             } else {
-                navigate("/");
+                // navigate("/");
             }
         })();
     }, []);

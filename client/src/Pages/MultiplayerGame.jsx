@@ -7,15 +7,24 @@ import { useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
 import GameProgress from '../Components/MultiplayerGame/GameProgress';
 import EndGameLeaderboard from '../Components/MultiplayerGame/EndGameLeaderboard';
+import { isRouteInvalid } from '../Components/SecureNavigation/UrlRoutes';
+import { LocationContext } from '../Context/LocationContext';
 
 const MultiplayerGame = () => {
+    const navigate = useNavigate()
+    const locationContext = useContext(LocationContext)
     const socketContext = useContext(SocketContext);
-    const navigate = useNavigate();
     const location = useLocation();
     const [ended, setEnded] = useState(false);
 
     useEffect(() => {
-        socketContext.socket.current ? updateListeners() : navigate("/");
+        if(!locationContext.validAccess) {
+            navigate("/")
+        }
+    }, [locationContext.validAccess])
+
+    useEffect(() => {
+        socketContext.socket.current ? updateListeners() : console.log("blep");
     }, []);
 
     /**
@@ -26,7 +35,7 @@ const MultiplayerGame = () => {
         socketContext.socket.current.off("join-room");
         socketContext.socket.current.off("leave-room");
         socketContext.socket.current.on("leave-room", (users) => {
-            socketContext.setUserList(users);
+            socketContext.userList   = users;
         });
         setUpProgressListeners();
     }
@@ -36,19 +45,19 @@ const MultiplayerGame = () => {
      */
     function setUpProgressListeners() {
         socketContext.socket.current.on("update-progress", (userList) => {
-            socketContext.setUserList(userList);
+            socketContext.userList = userList;
             let index = userList.findIndex(user => user.id === socketContext.socket.current.id);
             if (userList[index].progress >= 100) {
                 setEnded(true);
             }
         });
     }
-    
+
     return (
         <>
             < NavBar />
             {ended ?
-                <EndGameLeaderboard/>
+                <EndGameLeaderboard />
                 :
                 <div id="multiplayer-game">
                     <div id="playing-players">
@@ -59,7 +68,7 @@ const MultiplayerGame = () => {
                         })}
                     </div>
                     <GameProgress />
-                    <TypingScreen multiplayer={true} quote={location.state.quote}/>
+                    <TypingScreen multiplayer={true} quote={location.state?.quote || ""} />
                 </div>
             }
         </>

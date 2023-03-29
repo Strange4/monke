@@ -11,18 +11,26 @@ import { BiCopy } from 'react-icons/bi';
 import { RiCheckDoubleFill } from 'react-icons/ri';
 import SocketContext from '../Context/SocketContext';
 import Chronometer, { useChronometer } from '../Components/TypingScreen/Chronometer';
+import { LocationContext } from '../Context/LocationContext';
 
 function Lobby() {
-    const navigate = useNavigate();
     const roomCode = useRef();
     const location = useLocation();
     const [settings, showSettings] = useState(false);
     const [copied, setCopied] = useState(false);
     const socketContext = useContext(SocketContext);
+    const locationContext = useContext(LocationContext)
+    const navigate = useNavigate();
 
     const [started, setStarted] = useState(false)
     const [displayTime, setDisplayTime] = useState(0);
     const { startTimer, stopTimer } = useChronometer(setDisplayTime);
+
+    useEffect(() => {
+        if(!locationContext.validAccess) {
+            navigate("/")
+        }
+    }, [locationContext.validAccess])
 
     useEffect(() => {
         if (!socketContext.socket.current) {
@@ -64,7 +72,7 @@ function Lobby() {
         e.target.disabled = true;
         socketContext.socket.current.disconnect();
         socketContext.socket.current = undefined;
-        navigate("/");
+        // navigate("/");
     }
 
     // Tell all users in lobby to start the countdown 
@@ -88,7 +96,7 @@ function Lobby() {
                                     avatar={user.avatar} leader={i === 0} />
                             })}
                             <p ref={roomCode} id="invite-code">
-                                {location.state.roomCode}
+                                {location.state?.roomCode}
                                 {copied ?
                                     <RiCheckDoubleFill id="copy-icon" />
                                     :
@@ -107,7 +115,7 @@ function Lobby() {
             </div>
             <div id="practice">
                 <div id="popup-root" />
-                <TypingScreen multiplayer={false} id='lobby-game'/>
+                <TypingScreen multiplayer={false} id='lobby-game' />
             </div>
         </div>
     );

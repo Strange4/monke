@@ -1,29 +1,24 @@
-import { useEffect, useContext } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useContext } from 'react';
 import Profile from './Profile';
 import Lobby from './Lobby';
 import MultiplayerGame from './MultiplayerGame';
 import Login from '../Components/Login';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Home from './Home';
 import AuthContext from '../Context/AuthContext';
-import SocketContext from '../Context/SocketContext';
+import { LocationContext } from '../Context/LocationContext';
 
 function PageHolder() {
     const auth = useContext(AuthContext);
-    const socketContext = useContext(SocketContext)
-    const location = useLocation()
+    const locationContext = useContext(LocationContext)
+    const currentLocation = useLocation();
+    const ROUTES = ["/", "/profile", "/lobby", "/multiplayer-game"];
 
-    useEffect(() => {
-        if (checkPathLocation() && socketContext.socket.current) {
-            socketContext.socket.current.disconnect()
-            socketContext.socket.current = undefined
-        }
-    }, [location.pathname]);
-
-    function checkPathLocation() {
-        return location.pathname !== "/lobby" &&
-            location.pathname !== "/multiplayer-game"
+    if (locationContext.lastVisitedLocation.current === null || !ROUTES.includes(currentLocation.pathname)) {
+        locationContext.validAccess = false;
+    } else {
+        locationContext.lastVisitedLocation.current = currentLocation.pathname
+        locationContext.validAccess = true;
     }
 
     return (
