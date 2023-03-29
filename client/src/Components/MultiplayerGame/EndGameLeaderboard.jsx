@@ -34,11 +34,12 @@ function EndGameLeaderboard() {
      * @param {Object} a 
      * @param {Object} b 
      * @returns {Number}
-     * TODO check when user did not finish
      */
     function sortLeaderboard(a, b) {
-        if (!b.results || !a.results || !b.ended || !a.ended) {
+        if (!a.results || !a.gameEnded) {
             return 1;
+        } else if (!b.results || !b.gameEnded) {
+            return -1;
         }
         return b.results.wpm * b.results.accuracy - a.results.wpm * a.results.accuracy;
     }
