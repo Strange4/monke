@@ -7,11 +7,13 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import Home from './Home';
 import AuthContext from '../Context/AuthContext';
 import { LocationContext } from '../Context/LocationContext';
+import SocketContext from '../Context/SocketContext';
 
 function PageHolder() {
     const auth = useContext(AuthContext);
-    const locationContext = useContext(LocationContext)
+    const locationContext = useContext(LocationContext);
     const currentLocation = useLocation();
+    const socketContext = useContext(SocketContext);
     const ROUTES = ["/", "/profile", "/lobby", "/multiplayer-game"];
 
     if (locationContext.lastVisitedLocation.current === null || !ROUTES.includes(currentLocation.pathname)) {
@@ -19,6 +21,19 @@ function PageHolder() {
     } else {
         locationContext.lastVisitedLocation.current = currentLocation.pathname
         locationContext.validAccess = true;
+    }
+
+    useEffect(() => {
+        if (checkPathLocation() && socketContext.socket.current) {
+            socketContext.socket.current.disconnect();
+            socketContext.socket.current = undefined;
+        }
+    }, [currentLocation.pathname]);
+
+    function checkPathLocation() {
+        return currentLocation.pathname !== "/lobby" && 
+        currentLocation.pathname !== "/multiplayer-game" &&
+        currentLocation.pathname !== "/endgame-results";
     }
 
     return (
