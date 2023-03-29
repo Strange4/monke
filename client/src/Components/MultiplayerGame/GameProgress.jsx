@@ -20,7 +20,7 @@ function GameProgress() {
             {
                 users.sort((a, b) => b.progress - a.progress).map((user, i) => {
                     return <UserProgress
-                        key={i} progress={Math.round(user.progress)} />
+                        key={i} progress={Math.round(user.progress)} color={user.color}/>
                 })
             }
             <GiTrophy/>

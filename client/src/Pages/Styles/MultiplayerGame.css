@@ -12,10 +12,12 @@
     margin-top: 20px;
 }
 
+#playing-players > div.highlight{
+    background-color: transparent !important;
+    color: var(--accent-color);
+}
+
 div#playing-players > div.player-info > p.player-name {
-    display: none;
-    height: 0;
-    width: 0;
     margin: 0;
 }
 
@@ -29,9 +31,10 @@ div#playing-players > div.player-info {
 
 div#playing-players>div.player-info>img.player-image {
     padding: 5px;
-    width: 80px;
-    min-width: 80px;
-    height: 80px;
+    width: 70px;
+    min-width: 70px;
+    height: 70px;
+    margin-bottom: 10px;
 }
 
 #mode-indicator {

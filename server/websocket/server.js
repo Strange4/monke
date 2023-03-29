@@ -5,6 +5,7 @@ import { getRandomQuote } from "../routes/quotes.js";
 
 const lobbies = {};
 const MAX_USERS = 3
+const COLORS = ["green", "red", "blue", "yellow", "orange"];
 
 class Lobby {
     users = []
@@ -62,6 +63,9 @@ function setUpLobbyListeners(socket, userData, roomCode, lobby, io) {
     });
 
     socket.on("try-start", async () => {
+        lobby.users.forEach((user, i) => {
+            user.color = COLORS[i]
+        })
         lobby.startRoom();
         let quote = await getRandomQuote();
         io.to(roomCode).emit("start-game", quote);
@@ -70,6 +74,7 @@ function setUpLobbyListeners(socket, userData, roomCode, lobby, io) {
 
     socket.on("start-countdown", () => {
         io.to(roomCode).emit("countdown", lobby.users, roomCode);
+
     });
 
     socket.on("disconnect", () => {

@@ -2,11 +2,9 @@ function GameProgress(props) {
     return (
         <div id="progress-bar"
             style={{
-                backgroundColor: colors[user.color],
+                backgroundColor: props.color || "yellow",
                 width: `${Math.round(props.progress)}%`
             }}>
-            
-            {/* {props.progress} */}
         </div>
     );
 }
