@@ -15,7 +15,6 @@ const queryClient = new QueryClient();
  * @returns {ReactElement}
  */
 function App() {
-    const [userEmail, setUserEmail] = useState();
     const [userLoggedIn, setUserLoggedIn] = useState(false);
     const socket = useRef();
     
@@ -34,8 +33,6 @@ function App() {
         <div className="App">
             <LocationContextProvider >
                 <AuthContext.Provider value={{
-                    userEmail: userEmail,
-                    setUserEmail: setUserEmail,
                     checkAccess: checkAccess,
                     userLoggedIn,
                     setUserLoggedIn
