@@ -20,7 +20,7 @@ function PageHolder() {
         locationContext.lastVisitedLocation.current = currentLocation.pathname
         locationContext.validAccess = true;
     }
-    
+
     return (
         <Routes>
             <Route exact path="/" element={<Home />} />
@@ -39,6 +39,7 @@ function PageHolder() {
                     :
                     <></>
             } />
+            <Route path="*" element={<Home />} />
         </Routes>
     );
 }

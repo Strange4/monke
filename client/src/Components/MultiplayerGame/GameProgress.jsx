@@ -4,12 +4,14 @@ import UserProgress from "./UserProgress";
 
 function GameProgress() {
     const socketContext = useContext(SocketContext);
-    const [users, setUsers] = useState(socketContext.userList)
+    const [users, setUsers] = useState(socketContext.userList);
 
     useEffect(() => {
-        socketContext.socket.current.on("update-progress", (userList) => {
-            setUsers(userList)
-        });
+        if (socketContext.socket.current) {
+            socketContext.socket.current.on("update-progress", (userList) => {
+                setUsers(userList);
+            });
+        }
     }, []);
 
     return (

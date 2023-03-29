@@ -42,14 +42,14 @@ function LobbyPopup() {
 
     function setSocketListeners(joinButton) {
         socketContext.socket.current.on("join-room", (users, roomCode) => {
-            updateRoom(users, roomCode)
+            updateRoom(users, roomCode);
         });
         socketContext.socket.current.on("leave-room", (users, roomCode) => {
-            updateRoom(users, roomCode)
+            updateRoom(users, roomCode);
         });
         socketContext.socket.current.on("invalid", (invalidMessage) => {
             feedback.current.textContent = invalidMessage;
-            disconnectSocket()
+            disconnectSocket();
             if(joinButton) {
                 joinButton.disabled = false;
             }
