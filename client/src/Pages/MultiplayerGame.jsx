@@ -15,8 +15,8 @@ const MultiplayerGame = () => {
     const socketContext = useContext(SocketContext);
     const location = useLocation();
     const [ended, setEnded] = useState(false);
+    const colors = ["green", "red", "blue", "yellow", "orange"];
     
-
     useEffect(() => {
         if(!locationContext.validAccess) {
             navigate("/")
@@ -65,6 +65,7 @@ const MultiplayerGame = () => {
                     <div id="popup-root" />
                     <div id="playing-players">
                         {socketContext.userList.map((user, i) => {
+                            user.color = colors[i];
                             return <PlayerItem
                                 key={i} name={user.username}
                                 avatar={user.avatar} leader={i === 0} />
