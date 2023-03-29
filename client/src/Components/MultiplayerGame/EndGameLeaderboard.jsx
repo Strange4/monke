@@ -44,7 +44,7 @@ function EndGameLeaderboard() {
 
     return (
         <div id="end-game-leaderboard">
-            <h1> END OF GAME </h1>
+            <h1> GAME RESULTS </h1>
             {leaderboard.length === 0 ?
                 <p> GAME STILL IN PROGRESS</p>
                 :
