@@ -69,10 +69,8 @@ function TypingScreen(props) {
      */
     function handleGameEnd() {
         stopTimer();
-        setDisplayResults(true);
-        if (!props.multiplayer) {
-            refetch();
-            resetGame();
+        if(!props.multiplayer){
+            setDisplayResults(true);
         }
     }
 
@@ -82,6 +80,9 @@ function TypingScreen(props) {
     function resetGame() {
         setDisplayResults(false);
         resetTimer();
+        textContainerRef.current.focus();
+        setIsFocused(true);
+        refetch();
         textContainerRef.current.value = "";
     }
 

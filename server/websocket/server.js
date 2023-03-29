@@ -21,7 +21,10 @@ class Lobby {
  * @param {Server} server 
  */
 export function setUp(server) {
-    const io = new Server(server, { cors: { origin: "http://localhost:3000" } });
+    const NODE_ENV = process.env.NODE_ENV || "production";
+    const option = NODE_ENV === "development" ? 
+        { cors: { origin: "http://localhost:3000" } } : undefined;
+    const io = new Server(server, option);
 
     io.on("connection", (socket) => {
         const userData = setUserData(socket);

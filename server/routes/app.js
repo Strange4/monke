@@ -5,7 +5,8 @@
 
 import api from "./api.js";
 import express from "express";
-import {authRouter} from "./authentication.js"
+import {authRouter} from "./authentication.js";
+import session from 'express-session';
 import path from 'path';
 import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
@@ -22,9 +23,26 @@ function html (req, _, next) {
         return next('route')
     }
 }
+const secret = process.env.SECRET;
+if(!secret){
+    throw new Error("The secret wasn't found in the environment variables");
+}
 
-app.use("/api", api);
+const NODE_ENV = process.env.NODE_ENV || "production";
+app.use(session({
+    secret: secret,
+    name: 'id',
+    saveUninitialized: false,
+    resave: false,
+    cookie: {
+        maxAge: 120000,
+        secure: NODE_ENV === "development" ? false : true,
+        httpOnly: true,
+        sameSite: 'strict'
+    }
+}));
 app.use("/authentication", authRouter);
+app.use("/api", api);
 
 app.get("*", html, function(_, res) {
     res.redirect("/");
