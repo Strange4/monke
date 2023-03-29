@@ -25,10 +25,16 @@ const allRegKeys = keyboardKeys.english.lower;
 function TypingScreen(props) {
 
     const { isLoading, refetch } = useQuery("textToDisplay", async () => {
-        if (props.multiplayer) {
+        if (props.quote) {
             return props.quote
         }
-        const resp = await fetch("/api/quote",
+        let url;
+        if (props.quoteLength === "random"){
+            url = "/api/quote";
+        } else{
+            url = `/api/quote?quoteLength=${props.quoteLength}`;
+        }
+        const resp = await fetch(url,
             {
                 headers: { 'Accept': 'application/json', "Content-Type": "application/json" }
             });
@@ -57,6 +63,10 @@ function TypingScreen(props) {
     const [isFocused, setIsFocused] = useState(true);
     const textContainerRef = useRef();
     const socketContext = useContext(SocketContext);
+
+    useEffect(() =>{
+        refetch();
+    }, [props.quoteLength])
 
     useEffect(() => {
         if (props.multiplayer) {

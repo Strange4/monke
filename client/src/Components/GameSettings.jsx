@@ -5,7 +5,7 @@ import { FaAt } from 'react-icons/fa';
  * Displays game settings
  * @returns {ReactElement}
  */
-function GameSettings() {
+function GameSettings(props) {
 
     return (
         <div id="settings">
@@ -15,7 +15,7 @@ function GameSettings() {
                     Punctuation
                 </button>
             </div>
-            <LengthSettings/>
+            <LengthSettings setLength={props.setLength}/>
         </div>
     );
 }

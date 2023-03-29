@@ -6,39 +6,25 @@ import {setCookie} from "../Controller/CookieHelper";
  * When chosen, sets the cookie preference for quote length.
  * @returns {ReactElement}
  */
-function LengthSettings() {
+function LengthSettings(props) {
 
     /**
-     * Get a quote from the API depending on the chosen length.
      * Sets the cookie preference of quote length when pressed.
      * @param {button} e, the button that is being pressed.
      */
-    async function getQuote(e){
-        let url;
-        if (e.target.textContent === "random"){
-            url = "/api/quote";
-        } else{
-            url = `/api/quote?quoteLength=${e.target.textContent}`;
-        }
-        const data = await fetch(url, {
-            headers: { 'Accept': 'application/json', "Content-Type": "application/json" }
-        });
-        if (!data.ok){
-            throw new Error("The fetch request failed");
-        } else{
-            const json = await data.json();
-            const quote = json.body;
-            console.log(quote);
-            setCookie("quoteLength", e.target.textContent);
-        }  
+    function setQuoteLength(e){
+        const length = e.target.textContent;
+        setCookie("quoteLength", length);
+        props.setLength(length); 
     }
+
 
     return (
         <div id="length-settings">
-            <button type="button" onClick={getQuote}>short</button>
-            <button type="button" onClick={getQuote}>medium</button>
-            <button type="button" onClick={getQuote}>long</button>
-            <button type="button" onClick={getQuote}>random</button>
+            <button type="button" onClick={setQuoteLength}>short</button>
+            <button type="button" onClick={setQuoteLength}>medium</button>
+            <button type="button" onClick={setQuoteLength}>long</button>
+            <button type="button" onClick={setQuoteLength}>random</button>
         </div>
     );
 }
