@@ -47,7 +47,7 @@ authRouter.use(session({
  * Makes sure to log back in the user when page is refreshed
  */
 authRouter.get("/refreshLogin", isAuthenticated, function (req, res) {
-    return res.json(req.session.user)
+    return res.sendStatus(200);
 });
 
 /**
@@ -70,7 +70,6 @@ authRouter.post("/login", async (req, res) => {
     const payload = ticket.getPayload();
     const user = {
         username: payload.name,
-        email: payload.email,
         pic: payload.picture
     };
 
@@ -78,7 +77,7 @@ authRouter.post("/login", async (req, res) => {
         if (err) {
             return res.sendStatus(500);
         }
-        req.session.user = user;
+        req.session.email = payload.email;
         res.json({ user: user });
     });
 });

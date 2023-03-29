@@ -30,7 +30,7 @@ router.use(isAuthenticated);
  * if a field has the wrong type it will not be updated
  */
 router.put("/user_stat", async (req, res, next) => {
-    const email = req.session.user.user.email;
+    const email = req.session.email;
     if (!email) {
         next(new createHttpError.BadRequest(
             "Can't find or create the user because no email was provided"
@@ -90,7 +90,7 @@ router.put("/user_stat", async (req, res, next) => {
  * and their game statistics
  */
 router.post("/user", async (req, res, next) => {
-    const email = req.session.user.email;
+    const email = req.session.email;
     if (!email) {
         next(new createHttpError.BadRequest(
             "Can't find or create the user because no email was provided"
@@ -132,7 +132,7 @@ router.post("/user", async (req, res, next) => {
  * The user email and new username is sent, newly updated user is returned
  */
 router.put("/update_username", async (req, res, next) => {
-    const email = req.session.user.email;
+    const email = req.session.email;
     const newName = req.body.username;
     if (!email || !newName) {
         next(new createHttpError.BadRequest("no email or username was provided"));
@@ -162,7 +162,7 @@ router.put("/update_username", async (req, res, next) => {
  * The user email and new Image is sent, newly updated user is returned
  */
 router.put("/update_avatar", upload.single('image'), async (req, res, next) => {
-    const email = req.session.user.email;
+    const email = req.session.email;
     if (!email) {
         next(new createHttpError.BadRequest("Can't find the user because no email was provided"));
         return;
