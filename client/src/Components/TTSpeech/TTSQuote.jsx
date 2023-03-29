@@ -14,7 +14,8 @@ function TTSQuote({ text, resultScreenOff, enabled }){
     const speechRef = useRef();
 
     useEffect(() => {
-        resultScreenOff && enabled ? setIsMounted(true) : setIsMounted(false);
+        enabled === "true" && resultScreenOff
+            ? setIsMounted(true) : setIsMounted(false);
     }, [resultScreenOff, enabled]);
 
     useEffect(() => {

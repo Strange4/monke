@@ -5,7 +5,7 @@ import Popup from 'reactjs-popup';
 import EnableTTS from './EnableTTS';
 import TssSpeed from './TssSpeed';
 
-function Preferences({open, toggleShow}){
+function Preferences({open, toggleShow, setEnableTTS}){
 
     /**
      * Define states for all preferences and their default values
@@ -51,7 +51,7 @@ function Preferences({open, toggleShow}){
             deleteCookie(key);
             setCookie(key, stateMap[key].state);
         });
-
+        enableTTSQuote === "true" ? setEnableTTS("true") : setEnableTTS("false");
         popupRef.current.close();
     }
 
