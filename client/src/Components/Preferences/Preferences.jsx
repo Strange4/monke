@@ -1,6 +1,6 @@
 import '../Styles/Popup.css';
 import { useState, useEffect, useRef } from 'react';
-import {setCookie, getCookieValue, deleteCookie} from '../../Controller/CookieClass'
+import {setCookie, getCookieValue, deleteCookie} from '../../Controller/CookieHelper';
 import Popup from 'reactjs-popup';
 import EnableTTS from './EnableTTS';
 import TssSpeed from './TssSpeed';

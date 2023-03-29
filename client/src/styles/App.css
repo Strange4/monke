@@ -13,6 +13,7 @@
     --error-extra-color: #731010;
     --colorful-error-color: #a61717;
     --colorful-error-extra-color: #731010;
+
 }
 
 body{
@@ -24,11 +25,17 @@ body{
 
 .App {
     text-align: center;
-    display: flex;
-    justify-content: center;
+    /* display: flex;
+    align-content: center; */
     flex-flow: column;
 }
 
 .popup-arrow {
     display: none;
+}
+
+#home {
+    display: flex;
+    flex-flow: column wrap;
+    height: auto;
 }
