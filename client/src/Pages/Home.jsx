@@ -2,7 +2,7 @@ import NavBar from "../Components/NavBar";
 import TypingScreen from "../Components/TypingScreen/TypingScreen";
 import GameSettings from "../Components/GameSettings";
 import CookieBanner from "../Components/CookieBanner";
-import { getCookieValue } from "../Controller/CookieClass";
+import { getCookieValue } from "../Controller/CookieHelper";
 import { useState } from "react";
 
 const Home = () => {
