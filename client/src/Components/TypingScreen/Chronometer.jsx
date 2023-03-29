@@ -1,7 +1,7 @@
 import "./Layout/Chronometer.css";
 import { Timer } from "timer-node";
 import { useEffect, useRef, useState } from "react";
-import { MdTimer } from 'react-icons/md'
+import { MdTimer } from 'react-icons/md';
 
 /**
  * Renders a timer displaying the number of seconds
@@ -12,18 +12,17 @@ import { MdTimer } from 'react-icons/md'
 function Chronometer({ seconds }) {
     return (
         <div id="chronometer">
-            <p><MdTimer id="timer-icon"/><span id="seconds">{seconds}</span></p>
+            <p><MdTimer id="timer-icon" /><span id="seconds">{seconds}</span></p>
         </div>
     );
 }
 
-
-function useChronometer(setSeconds){
+function useChronometer(setSeconds) {
     const timer = useRef(new Timer());
     const [timerState, setTimerState] = useState("stopped");
     const intervalID = useRef();
     useEffect(() => {
-        if(timerState === "started" && !timer.current.isStarted()){
+        if (timerState === "started" && !timer.current.isStarted()) {
             timer.current.start();
             intervalID.current = setInterval(() => {
                 const currentTime = timer.current.time().s;
@@ -31,14 +30,14 @@ function useChronometer(setSeconds){
             }, 1000);
             return;
         }
-        if(timerState === "stopped"){
-            if(!intervalID.current){
+        if (timerState === "stopped") {
+            if (!intervalID.current) {
                 return;
             }
             clearInterval(intervalID);
         }
         return () => {
-            if(!intervalID.current){
+            if (!intervalID.current) {
                 return;
             }
             clearInterval(intervalID);
@@ -58,8 +57,8 @@ function useChronometer(setSeconds){
         setTimerState("stopped");
     }
 
-    return {startTimer, stopTimer, resetTimer, timer }
+    return { startTimer, stopTimer, resetTimer, timer };
 }
 
 export default Chronometer;
-export {useChronometer};
+export { useChronometer };

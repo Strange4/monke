@@ -36,10 +36,21 @@ function EndGameLeaderboard() {
      * @returns {Number}
      */
     function sortLeaderboard(a, b) {
-        if (!b.results || !a.results) {
+        if (!a.results || !a.gameEnded) {
             return 1;
+        } else if (!b.results || !b.gameEnded) {
+            return -1;
         }
         return b.results.wpm * b.results.accuracy - a.results.wpm * a.results.accuracy;
+    }
+
+    /**
+     * Checks if the displayed user is the current user
+     * @param {Object} user 
+     * @returns {Boolean}
+     */
+    function checkUser(user) {
+        return user.id === socketContext.socket.current.id;
     }
 
     return (
@@ -56,6 +67,7 @@ function EndGameLeaderboard() {
                         ended={user.gameEnded}
                         wpm={user.results?.wpm}
                         acc={user.results?.accuracy}
+                        myUser={checkUser(user)}
                     />
                 })
             }

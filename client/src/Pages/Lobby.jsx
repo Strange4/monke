@@ -1,4 +1,4 @@
-import './Styles/Lobby.css'
+import './Styles/Lobby.css';
 import NavBar from "../Components/NavBar";
 import TypingScreen from "../Components/TypingScreen/TypingScreen";
 import LobbySettings from '../Components/Lobby/LobbySettings';
@@ -11,18 +11,26 @@ import { BiCopy } from 'react-icons/bi';
 import { RiCheckDoubleFill } from 'react-icons/ri';
 import SocketContext from '../Context/SocketContext';
 import Chronometer, { useChronometer } from '../Components/TypingScreen/Chronometer';
+import { LocationContext } from '../Context/LocationContext';
 
 function Lobby() {
-    const navigate = useNavigate();
     const roomCode = useRef();
     const location = useLocation();
     const [settings, showSettings] = useState(false);
     const [copied, setCopied] = useState(false);
     const socketContext = useContext(SocketContext);
+    const locationContext = useContext(LocationContext);
+    const navigate = useNavigate();
 
-    const [started, setStarted] = useState(false)
+    const [started, setStarted] = useState(false);
     const [displayTime, setDisplayTime] = useState(0);
     const { startTimer, stopTimer } = useChronometer(setDisplayTime);
+
+    useEffect(() => {
+        if (!locationContext.validAccess) {
+            navigate("/");
+        }
+    }, [locationContext.validAccess]);
 
     useEffect(() => {
         if (!socketContext.socket.current) {
@@ -31,14 +39,14 @@ function Lobby() {
             socketContext.socket.current.off("invalid")
             socketContext.socket.current.on("countdown", () => {
                 startTimer();
-                setStarted(true)
+                setStarted(true);
             });
         }
     }, []);
 
     useEffect(() => {
         if (displayTime === 3) {
-            stopTimer()
+            stopTimer();
             socketContext.socket.current.emit("try-start");
         }
     }, [displayTime]);
@@ -49,21 +57,37 @@ function Lobby() {
     }
 
     // Copies the code to the clipboard through click
-    function copyCode() {
+    function copyCode(e) {
+        e.target.disabled = true;
         navigator.clipboard.writeText(roomCode.current.textContent);
         setCopied(true);
+        setTimeout(() => {
+            setCopied(false);
+            e.target.disabled = false;
+        }, 1000);
     }
 
     // Disconnect the socket and navigate back to the home page
-    function leave() {
+    function leave(e) {
+        e.target.disabled = true;
         socketContext.socket.current.disconnect();
         socketContext.socket.current = undefined;
         navigate("/");
     }
 
     // Tell all users in lobby to start the countdown 
-    function startGame() {
+    function startGame(e) {
+        e.target.disabled = true;
         socketContext.socket.current.emit("start-countdown");
+    }
+
+    /**
+     * Checks if the displayed user is the current user
+     * @param {Object} user 
+     * @returns {Boolean}
+     */
+    function checkUser(user) {
+        return user.id === socketContext.socket.current.id;
     }
 
     return (
@@ -78,10 +102,11 @@ function Lobby() {
                             {socketContext.userList.map((user, i) => {
                                 return <PlayerItem
                                     key={i} name={user.username}
-                                    avatar={user.avatar} leader={i === 0} />
+                                    avatar={user.avatar} leader={i === 0}
+                                    myUser={checkUser(user)} />
                             })}
                             <p ref={roomCode} id="invite-code">
-                                {location.state.roomCode}
+                                {location.state?.roomCode}
                                 {copied ?
                                     <RiCheckDoubleFill id="copy-icon" />
                                     :
@@ -100,8 +125,7 @@ function Lobby() {
             </div>
             <div id="practice">
                 <div id="popup-root" />
-                <TypingScreen multiplayer={false} id='lobby-game'/>
-
+                <TypingScreen multiplayer={false} id='lobby-game' />
             </div>
         </div>
     );
