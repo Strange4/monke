@@ -42,7 +42,7 @@ function PageHolder() {
             <Route exact path="/" element={<Home />} />
             <Route exact path="/profile"
                 element={
-                    auth.userEmail ?
+                    auth.userLoggedIn ?
                         <Profile />
                         :
                         <Login navbar={true} />
@@ -50,8 +50,8 @@ function PageHolder() {
             <Route exact path='/lobby' element={<Lobby />} />
             <Route exact path='/multiplayer-game' element={<MultiplayerGame />} />
             <Route exact path="/profile" element={
-                auth.userEmail ?
-                    <Profile redirect={auth.userEmail ? false : true} />
+                auth.userLoggedIn ?
+                    <Profile redirect={auth.userLoggedIn ? false : true} />
                     :
                     <></>
             } />

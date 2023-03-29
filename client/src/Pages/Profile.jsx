@@ -52,9 +52,9 @@ const Profile = () => {
 
     useEffect(() => {
         (async () => {
-            if (auth.userEmail) {
+            if (auth.userLoggedIn) {
                 const url = "/api/user";
-                const data = await FetchModule.postData(url, { email: auth.userEmail }, "POST");
+                const data = await FetchModule.postData(url, undefined, "POST");
                 setProfileData(data);
             } else {
                 navigate("/");
@@ -69,7 +69,7 @@ const Profile = () => {
         if (validateUsername()) {
             setEditingUsername(false);
             const newUsername = usernameField.current.textContent;
-            const body = { email: auth.userEmail, username: newUsername };
+            const body = { username: newUsername };
             const data = await FetchModule.postData("/api/update_username", body, "PUT");
             setProfileData(data);
         } else {
@@ -104,7 +104,7 @@ const Profile = () => {
      */
     const saveAvatar = async () => {
         if (validateImageForm(image)) {
-            FetchModule.readImage(image, auth.userEmail, validateImageForm, postImage);
+            FetchModule.readImage(image, validateImageForm, postImage);
             setEditingAvatar(false);
         }
     }
