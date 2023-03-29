@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from 'react';
 import PageHolder from './Pages/PageHolder';
 import checkAccess from './Controller/AuthHelper';
 import SocketContext from './Context/SocketContext';
+import { LocationContextProvider } from './Context/LocationContext';
 
 const queryClient = new QueryClient();
 
@@ -16,8 +17,7 @@ const queryClient = new QueryClient();
 function App() {
     const [userEmail, setUserEmail] = useState();
     const socket = useRef();
-    const [userList, setUserList] = useState([])
-
+    
     useEffect(() => {
         (async () => {
             if (!userEmail) {
@@ -32,24 +32,25 @@ function App() {
 
     return (
         <div className="App">
-            <AuthContext.Provider value={{
-                userEmail: userEmail,
-                setUserEmail: setUserEmail,
-                checkAccess: checkAccess
-            }}>
-                <SocketContext.Provider value={{
-                    socket: socket,
-                    userList: userList,
-                    setUserList: setUserList
+            <LocationContextProvider >
+                <AuthContext.Provider value={{
+                    userEmail: userEmail,
+                    setUserEmail: setUserEmail,
+                    checkAccess: checkAccess
                 }}>
-                    <QueryClientProvider client={queryClient}>
-                        <Router>
-                            <PageHolder />
-                        </Router>
-                        <div id="popup-root" />
-                    </QueryClientProvider>
-                </SocketContext.Provider>
-            </AuthContext.Provider>
+                    <SocketContext.Provider value={{
+                        socket: socket,
+                        userList: []
+                    }}>
+                        <QueryClientProvider client={queryClient}>
+                            <Router>
+                                <PageHolder />
+                            </Router>
+                            <div id="popup-root" />
+                        </QueryClientProvider>
+                    </SocketContext.Provider>
+                </AuthContext.Provider>
+            </LocationContextProvider>
         </div >
     );
 }

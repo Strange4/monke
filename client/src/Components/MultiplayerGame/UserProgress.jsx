@@ -1,5 +1,5 @@
 function GameProgress(props) {
-    const colors = ["green", "red", "blue", "yellow", "orange"]
+    const colors = ["green", "red", "blue", "yellow", "orange"];
 
     return (
         <div id="progress-bar"

@@ -8,16 +8,13 @@ import { RiVipCrownLine } from 'react-icons/ri';
  */
 function PlayerItem(props) {
     return (
-        <div className="player-info">
+        <div className={`player-info ${props.myUser ? "highlight" : ""}`}>
             <img className="player-image" src={`${props.avatar}`} />
             <p className='player-name'>
+                {props.leader ? <RiVipCrownLine /> : null}
                 {props.name}
-                {
-                    props.leader ?
-                        <RiVipCrownLine />
-                        :
-                        null
-                }
+                {props.myUser ? "    (You)" : ""}
+
             </p>
         </div>
     );

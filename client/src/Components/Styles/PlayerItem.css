@@ -31,3 +31,7 @@
     /* min-width: 120px; */
     margin: 5px;
 }
+
+.highlight {
+    background-color: #d68b4931 !important;
+}

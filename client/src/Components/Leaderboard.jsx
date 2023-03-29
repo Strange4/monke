@@ -1,5 +1,5 @@
 import './Styles/Leaderboard.css';
-import './Styles/Popup.css'
+import './Styles/Popup.css';
 import RankListItem from './RankListItem';
 import { useFetch } from '../Controller/FetchModule';
 
