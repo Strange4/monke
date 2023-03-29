@@ -164,7 +164,6 @@ function TypingScreen(props) {
                 <TTSQuote
                     text={textToDisplay}
                     resultScreenOff={!displayResults}
-                    enabled={props.enableTTS}
                 />
 
                 <SoloGameResult

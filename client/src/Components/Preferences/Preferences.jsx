@@ -1,18 +1,19 @@
 import '../Styles/Popup.css';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import {setCookie, getCookieValue, deleteCookie} from '../../Controller/CookieHelper';
 import Popup from 'reactjs-popup';
 import EnableTTS from './EnableTTS';
-import TssSpeed from './TssSpeed';
+import TtsSpeed from './TtsSpeed';
+import PreferenceContext from '../../Context/PreferenceContext';
 
-function Preferences({open, toggleShow, setEnableTTS}){
+function Preferences({open, toggleShow}){
 
+    const preferenceContext = useContext(PreferenceContext)
     /**
      * Define states for all preferences and their default values
      */
-    const [enableTTSQuote, setEnableTTSQuote] = useState("false")
-    const [tssSpeed, setTssSpeed] = useState("1");
-
+    const [tempEnableTTSQuote, setEnableTTSQuote] = useState(preferenceContext.enableTTSQuote)
+    const [tempTtsSpeed, setTtsSpeed] = useState(preferenceContext.ttsSpeed);
     const popupRef = useRef(null);
 
     /**
@@ -21,17 +22,17 @@ function Preferences({open, toggleShow, setEnableTTS}){
      */
     const stateMap = {
         "enableTTSQuote": {
-            state: enableTTSQuote,
+            state: tempEnableTTSQuote,
             setter: setEnableTTSQuote
         },
-        "tssSpeed": {
-            state: tssSpeed,
-            setter: setTssSpeed
+        "ttsSpeed": {
+            state: tempTtsSpeed,
+            setter: setTtsSpeed
         }
     }
 
     /**
-     * Will handle changing the state of preference value.
+     * Will handle changing the temporary state of preference value.
      * The target's name value will be retrieved and used to reference the
      * appropriate state setting function in the stateMap object.
      * @param {*} event
@@ -51,7 +52,10 @@ function Preferences({open, toggleShow, setEnableTTS}){
             deleteCookie(key);
             setCookie(key, stateMap[key].state);
         });
-        enableTTSQuote === "true" ? setEnableTTS("true") : setEnableTTS("false");
+        tempEnableTTSQuote === "true" ?
+            preferenceContext.setEnableTTSQuote("true") :
+            preferenceContext.setEnableTTSQuote("false");
+        preferenceContext.setTtsSpeed(tempTtsSpeed);
         popupRef.current.close();
     }
 
@@ -80,8 +84,8 @@ function Preferences({open, toggleShow, setEnableTTS}){
                 <div className="popup">
                     <h1>Accessibility</h1>
                     <div id="TTSQuote-pref">
-                        <EnableTTS enabled={enableTTSQuote} changeOption={handlePrefChange} />
-                        <TssSpeed speed={tssSpeed} changeOption={handlePrefChange} />
+                        <EnableTTS enabled={tempEnableTTSQuote} changeOption={handlePrefChange} />
+                        <TtsSpeed speed={tempTtsSpeed} changeOption={handlePrefChange} />
                     </div>
                     <button type="submit">Save preferences</button>
                 </div>

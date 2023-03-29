@@ -16,7 +16,7 @@ import { useContext, useState } from "react";
  * Navigation bar to be used on all pages
  * @returns {ReactElement}
  */
-function NavBar({ setEnableTTS }) {
+function NavBar() {
     const auth = useContext(AuthContext);
 
     const [showPref, setShowPref] = useState(false);
@@ -51,8 +51,7 @@ function NavBar({ setEnableTTS }) {
                 </li>
                 <li>
                     <HiCog onClick={toggleShowPref} id="pref-icon"/>
-                    {showPref ? <Preferences open={showPref} toggleShow={toggleShowPref}
-                        setEnableTTS={setEnableTTS} /> : null}
+                    {showPref ? <Preferences open={showPref} toggleShow={toggleShowPref} /> : null}
                 </li>
             </div>
             <li>

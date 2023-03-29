@@ -10,6 +10,11 @@ class TtsSettings {
         }
     }
 
+    updateSettings(enableTTS, speed){
+        this.setValue("enableTTSQuote", enableTTS);
+        this.setValue("ttsSpeed", speed);
+    }
+
     setValue(name, value){
         this.state[name] = value;
     }

@@ -1,5 +1,6 @@
 import Speech from "react-speech";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useContext } from "react";
+import PreferenceContext from "../../Context/PreferenceContext";
 
 /**
  * React component that converts a quote spoken words using the 'react-speech' library.
@@ -8,15 +9,16 @@ import { useRef, useEffect, useState } from "react";
  * @param {boolean} enabled - Flag indicating if the user enbled the TTS feature.
  * @returns {ReactElement} - If result screen inactive and TTS enabled, returns TTS component.
  */
-function TTSQuote({ text, resultScreenOff, enabled }){
+function TTSQuote({ text, resultScreenOff }){
 
+    const prefContext = useContext(PreferenceContext);
     const [isMounted, setIsMounted] = useState(false);
     const speechRef = useRef();
 
     useEffect(() => {
-        enabled === "true" && resultScreenOff
+        prefContext.enableTTSQuote === "true" && resultScreenOff
             ? setIsMounted(true) : setIsMounted(false);
-    }, [resultScreenOff, enabled]);
+    }, [resultScreenOff, prefContext.enableTTSQuote]);
 
     useEffect(() => {
         if(speechRef.current && isMounted){
@@ -36,6 +38,7 @@ function TTSQuote({ text, resultScreenOff, enabled }){
     return isMounted && <Speech ref={speechRef} text={text}
         displayText="Replay quote"
         textAsButton={true}
+        rate={prefContext.ttsSpeed}
         onKeyUp={(e) => {
             if(e.key === 'Enter'){
                 playQuote();

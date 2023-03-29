@@ -4,20 +4,37 @@ import GameSettings from "../Components/GameSettings";
 import CookieBanner from "../Components/CookieBanner";
 import { getCookieValue } from "../Controller/CookieHelper";
 import { useState } from "react";
+import PreferenceContext from "../Context/PreferenceContext";
 
 const Home = () => {
     const [enableTTS, setEnableTTS] = useState(getCookieValue("enableTTSQuote"));
+    const [ttsSpeed, setTtsSpeed] = useState(getCookieValue("ttsSpeed"));
+
+    /**
+     * iife that sets default preference settings
+     */
+    (()=>{
+        enableTTS === undefined ? setEnableTTS("false") : enableTTS;
+        ttsSpeed === undefined ? setTtsSpeed("1") : ttsSpeed;
+    })();
 
     return (
         <div id="home">
-            <div className="blur"></div>
-            <CookieBanner/>
-            <NavBar setEnableTTS={setEnableTTS} />
-            <div id="game-component">
-                
-                <GameSettings />
-                <TypingScreen multiplayer={false} enableTTS={enableTTS} />
-            </div>
+            <PreferenceContext.Provider value={{
+                enableTTSQuote: enableTTS,
+                setEnableTTSQuote: setEnableTTS,
+                ttsSpeed: ttsSpeed,
+                setTtsSpeed: setTtsSpeed
+            }}>
+                <div className="blur"></div>
+                <CookieBanner/>
+                <NavBar />
+                <div id="game-component">
+                    
+                    <GameSettings />
+                    <TypingScreen multiplayer={false} enableTTS={enableTTS} />
+                </div>
+            </PreferenceContext.Provider>
         </div>
 
     );
