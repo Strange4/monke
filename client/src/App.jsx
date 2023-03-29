@@ -21,7 +21,7 @@ function App() {
     useEffect(() => {
         (async () => {
             if(!userLoggedIn){
-                const userData = await fetch("/authentication/refreshLogin")
+                const userData = await fetch("/authentication/checkLogin")
                 if (userData.status === 200) {
                     setUserLoggedIn(true);
                 }
