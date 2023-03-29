@@ -14,7 +14,6 @@ function PlayerItem(props) {
                 {props.leader ? <RiVipCrownLine /> : null}
                 {props.name}
                 {props.myUser ? "    (You)" : ""}
-
             </p>
         </div>
     );

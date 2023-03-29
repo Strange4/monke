@@ -15,8 +15,7 @@ const MultiplayerGame = () => {
     const socketContext = useContext(SocketContext);
     const location = useLocation();
     const [ended, setEnded] = useState(false);
-
-
+    
     useEffect(() => {
         if (!locationContext.validAccess) {
             navigate("/")
