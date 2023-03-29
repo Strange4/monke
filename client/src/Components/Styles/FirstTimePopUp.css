@@ -103,7 +103,7 @@ div.firstTimeMessage:has(> div#loginFirstTime) > div.cookie-button-container > b
 }
 
 div.firstTimeMessage:has(>div#settingsFirstTime) ~ div#game-component>div#settings,
-div.firstTimeMessage:has(>div#gameFirstTime) ~ div#game-component>div.center,
+div.firstTimeMessage:has(>div#gameFirstTime) ~ div#game-component>div>div.center,
 div.firstTimeMessage:has(>div#leaderboardFirstTime) ~ div#navbar>div#nav-sub>li>a>svg#leaderboard-icon,
 div.firstTimeMessage:has(>div#lobbyFirstTime) ~ div#navbar>div#nav-sub>li>a>svg#lobby-icon,
 div.firstTimeMessage:has(>div#loginFirstTime) ~ div#navbar>li>a>svg#profile-icon,
@@ -132,20 +132,20 @@ div.firstTimeMessage:has(>div#loginFirstTime) ~ div#navbar>li>a>svg#profile-icon
 
 .firstTimeMessage:has(> div#gameFirstTime) {
     position: absolute;
-    top: 200px;
+    top: 160px;
     width: 85%;
     max-width: 1100px;
-    height: 500px;
+    height: 600px;
 }
 
 .firstTimeMessage:has(> div#profileFirstTime) {
     position: absolute;
     top: 148px;
-    min-width: 690px;
-    width: 90%;
+    min-width: 700px;
+    width: 95%;
     max-width: 1100px;
     min-height: 40%;
-    height: 72%;
+    height: 60%;
 }
 
 .firstTimeMessage:has(> div#leaderboardFirstTime), 
