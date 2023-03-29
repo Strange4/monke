@@ -7,7 +7,6 @@ import { useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
 import GameProgress from '../Components/MultiplayerGame/GameProgress';
 import EndGameLeaderboard from '../Components/MultiplayerGame/EndGameLeaderboard';
-import { isRouteInvalid } from '../Components/SecureNavigation/UrlRoutes';
 import { LocationContext } from '../Context/LocationContext';
 
 const MultiplayerGame = () => {
@@ -16,15 +15,18 @@ const MultiplayerGame = () => {
     const socketContext = useContext(SocketContext);
     const location = useLocation();
     const [ended, setEnded] = useState(false);
+    
 
     useEffect(() => {
         if(!locationContext.validAccess) {
             navigate("/")
         }
-    }, [locationContext.validAccess])
+    }, [locationContext.validAccess]);
 
     useEffect(() => {
-        socketContext.socket.current ? updateListeners() : console.log("blep");
+        if (socketContext.socket.current) {
+            updateListeners();
+        } 
     }, []);
 
     /**
@@ -35,7 +37,7 @@ const MultiplayerGame = () => {
         socketContext.socket.current.off("join-room");
         socketContext.socket.current.off("leave-room");
         socketContext.socket.current.on("leave-room", (users) => {
-            socketContext.userList   = users;
+            socketContext.userList = users;
         });
         setUpProgressListeners();
     }
@@ -60,6 +62,7 @@ const MultiplayerGame = () => {
                 <EndGameLeaderboard />
                 :
                 <div id="multiplayer-game">
+                    <div id="popup-root" />
                     <div id="playing-players">
                         {socketContext.userList.map((user, i) => {
                             return <PlayerItem
@@ -67,7 +70,7 @@ const MultiplayerGame = () => {
                                 avatar={user.avatar} leader={i === 0} />
                         })}
                     </div>
-                    <GameProgress />
+                    <GameProgress/>
                     <TypingScreen multiplayer={true} quote={location.state?.quote || ""} />
                 </div>
             }

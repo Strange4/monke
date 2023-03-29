@@ -156,7 +156,7 @@ function TypingScreen(props) {
 
     return (
         <div>
-            <div>
+            <div className='center'>
                 <Chronometer seconds={displayTime} />
                 <GameText onClick={() => {
                     textContainerRef.current.focus();
@@ -166,8 +166,7 @@ function TypingScreen(props) {
                 <TTSQuote
                     text={textToDisplay}
                     resultScreenOff={!displayResults}
-                    enabled={enableTTS}
-                />
+                    enabled={enableTTS} />
                 <label>!TEMPORARY! Enable text to speech</label>
                 <input type="checkbox"
                     id="enableTTS"

@@ -5,7 +5,6 @@
     align-content: center;
     background-color: var(--sub-color-transparent);
     border-radius: 60px;
-    /* border: 2px solid white; */
     width: 90%;
     min-width: 400px;
     height: 120px;
@@ -30,8 +29,9 @@ div#playing-players > div.player-info {
 
 div#playing-players>div.player-info>img.player-image {
     padding: 5px;
+    width: 80px;
     min-width: 80px;
-    min-height: 80px;
+    height: 80px;
 }
 
 #mode-indicator {
@@ -46,3 +46,62 @@ div#playing-players>div.player-info>img.player-image {
     height: 300px;
 }
 
+#game-results{
+    background-color: var(--sub-color-transparent);
+    margin: 20px;
+}
+
+#game-results > .player-name {
+    width: 100px;
+    margin-right: 10px;
+    justify-content: left;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis " [..]";
+}
+
+#game-single-result > p{
+    display: flex;
+    flex-flow: row wrap;
+    align-content: center;
+    justify-content: center;
+    width: 200px;
+    color: var(--text-color);
+}
+
+#game-single-result {
+    display: flex;
+    justify-content: right;
+    flex-grow: 2;
+    width: 60%;
+}
+
+#end-game-leaderboard>div:nth-of-type(even) {
+    background-color: var(--sub-color-off);
+}
+
+#end-game-leaderboard {
+    margin: auto;
+    margin-top: 40px;
+    width: 100%;
+    max-width: 800px;
+}
+
+#end-game-leaderboard > h1 {
+    letter-spacing: 15px;
+    color: var(--accent-color);
+}
+
+#end-game-leaderboard>div:nth-of-type(even)>#end-game-rank {
+    color: var(--sub-color-transparent) !important;
+}
+
+#end-game-rank {
+    color: var(--accent-color) !important;
+    font-weight: bold;
+    font-size: 1.3em;
+}
+
+#multiplayer-game > #popup-root:has(>div.popup-overlay>div.popup-content>div#solo-game-result){
+    visibility: hidden;
+}

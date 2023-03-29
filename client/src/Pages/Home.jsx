@@ -1,23 +1,21 @@
 import NavBar from "../Components/NavBar";
 import TypingScreen from "../Components/TypingScreen/TypingScreen";
 import GameSettings from "../Components/GameSettings";
-import { LocationContext, LocationContextProvider } from "../Context/LocationContext";
-import { isRouteInvalid } from "../Components/SecureNavigation/UrlRoutes";
-import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
-import { useEffect } from "react";
+import { LocationContext } from "../Context/LocationContext";
+import { useContext, useEffect } from "react";
+import CookieBanner from "../Components/CookieBanner";
 
 const Home = () => {
-    const navigate = useNavigate()
-    const locationContext = useContext(LocationContext)
+    const locationContext = useContext(LocationContext);
 
     useEffect(() => {
-        locationContext.lastVisitedLocation.current = "/"
-    }, [])
-    
+        locationContext.lastVisitedLocation.current = "/";
+    }, []);
 
     return (
         <div id="home">
+            <div className="blur"></div>
+            <CookieBanner />
             <NavBar />
             <div id="game-component">
                 <GameSettings />

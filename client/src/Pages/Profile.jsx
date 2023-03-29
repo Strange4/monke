@@ -7,21 +7,13 @@ import { RiImageEditFill, RiEdit2Fill, RiSave3Line, RiCloseCircleLine } from "re
 import * as FetchModule from "../Controller/FetchModule";
 import { useNavigate } from "react-router-dom";
 import UserStats from "../Components/UserStats";
-import { isRouteInvalid } from "../Components/SecureNavigation/UrlRoutes";
 import { LocationContext } from "../Context/LocationContext";
+import FirstTimePopUp from "../Components/FirstTimePopUp";
+import { getCookieValue } from "../Controller/CookieHelper.js";
 
 const Profile = () => {
     const navigate = useNavigate()
     const locationContext = useContext(LocationContext)
-    const [validAccess, setValidAccess] = useState(true);
-
-    if (isRouteInvalid()) {
-        if (validAccess) {
-            setValidAccess(false)
-        }
-    } else {
-        locationContext.lastVisitedLocation.current = "/profile"
-    }
     const auth = useContext(AuthContext);
     const [profileData, setProfileData] = useState({
         username: "",
@@ -49,23 +41,23 @@ const Profile = () => {
     const avatarField = useRef();
     const DefaultPicture =
         "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
-
     const [image, setImage] = useState("");
     const inputFile = useRef();
-    useEffect(() => {
 
-    }, [])
+    useEffect(() => {
+        if(!locationContext.validAccess) {
+            navigate("/");
+        }
+    }, [locationContext.validAccess]);
+
     useEffect(() => {
         (async () => {
-            if (!validAccess) {
-                navigate("/");
-            }
             if (auth.userEmail) {
                 const url = "/api/user";
                 const data = await FetchModule.postData(url, { email: auth.userEmail }, "POST");
                 setProfileData(data);
             } else {
-                // navigate("/");
+                navigate("/");
             }
         })();
     }, []);
@@ -166,9 +158,16 @@ const Profile = () => {
         }
     };
 
+    // Cookie related variables.
+    const profileValue = getCookieValue("profileFirstTime") === "visited";
+    const [profileCookie, visitedProfile] = useState(profileValue);
+    
     return (
         <div id="home">
+            <div className="blur"></div>
             <NavBar />
+            { profileCookie ? <></> : 
+                <FirstTimePopUp area={"profile"} setCookieArea={visitedProfile}/> }
             <div id="profile">
                 <div id="user">
                     <div id="image">

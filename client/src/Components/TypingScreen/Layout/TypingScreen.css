@@ -4,7 +4,9 @@
     align-items: center;
     flex-flow: column;
     width: 80%;
+    max-width: 800px;
     height: 500px;
+    max-width: 1000px;
     justify-content: center;
     margin: auto;
 }

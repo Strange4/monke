@@ -5,6 +5,7 @@
     --caret-color: #79a617;
     --main-color: #79a617;
     --sub-color: #8b8b8b;
+    --sub-color-off: #3f3f3f;
     --popup-color: #0e0e0e;
     --sub-color-transparent: #9c9c9c14; 
     --sub-alt-color: #141516;
@@ -13,6 +14,7 @@
     --error-extra-color: #731010;
     --colorful-error-color: #a61717;
     --colorful-error-extra-color: #731010;
+
 }
 
 body{
@@ -24,11 +26,17 @@ body{
 
 .App {
     text-align: center;
-    display: flex;
-    justify-content: center;
+    /* display: flex;
+    align-content: center; */
     flex-flow: column;
 }
 
 .popup-arrow {
     display: none;
+}
+
+#home {
+    display: flex;
+    flex-flow: column wrap;
+    height: auto;
 }

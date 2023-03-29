@@ -1,0 +1,59 @@
+{
+    "messages" : [
+        {
+            "message": {
+                "area" : "cookie",
+                "body": "We use cookie to remember if you have previously accessed the website or not. We do not store sensitive data. No data that can be traced back to you are stored. Don't worry we care about you.",
+                "btnMessage": "close"
+            }
+        },
+        {
+            "message": {
+                "area" : "settings",
+                "body": "These are the game settings. You can enable puntuation and decide the text length here",
+                "btnMessage": "next"
+                
+            }
+        },
+        {
+            "message": {
+                "area" : "game",
+                "body": "This is the game area. Once the page loads you can start typing right away, if the game is unfocused you can click it to begin.",
+                "btnMessage": "next"
+                
+            }
+        },
+        {
+            "message": {
+                "area" : "leaderboard",
+                "body": "This is the leaderboard, players are ranked based on WPM and accuracy. Try a few games to see how you compare to others.",
+                "btnMessage": "next"
+                
+            }
+        },
+        {
+            "message": {
+                "area" : "lobby",
+                "body": "This is the lobby access, you can create a new lobby or join one if you have a room code.",
+                "btnMessage": "next"
+                
+            }
+        },
+        {
+            "message": {
+                "area" : "login",
+                "body": "You can login, check your profile or logout from here. We only support logging in with Google",
+                "btnMessage": "close"
+                
+            }
+        },
+        {
+            "message": {
+                "area" : "profile",
+                "body": "Here is your profile page where you can see your name, icon, rank and stats. You can also edit your name and icon here",
+                "btnMessage": "close"
+                
+            }
+        }
+    ]
+}

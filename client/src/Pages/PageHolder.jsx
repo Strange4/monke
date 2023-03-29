@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import Profile from './Profile';
 import Lobby from './Lobby';
 import MultiplayerGame from './MultiplayerGame';
@@ -20,7 +20,7 @@ function PageHolder() {
         locationContext.lastVisitedLocation.current = currentLocation.pathname
         locationContext.validAccess = true;
     }
-
+    
     return (
         <Routes>
             <Route exact path="/" element={<Home />} />

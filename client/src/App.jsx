@@ -19,8 +19,6 @@ function App() {
     const socket = useRef();
     // const [userList, setUserList] = useState([]);
     
-
-
     useEffect(() => {
         (async () => {
             if (!userEmail) {

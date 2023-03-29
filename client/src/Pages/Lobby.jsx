@@ -1,4 +1,4 @@
-import './Styles/Lobby.css'
+import './Styles/Lobby.css';
 import NavBar from "../Components/NavBar";
 import TypingScreen from "../Components/TypingScreen/TypingScreen";
 import LobbySettings from '../Components/Lobby/LobbySettings';
@@ -19,18 +19,18 @@ function Lobby() {
     const [settings, showSettings] = useState(false);
     const [copied, setCopied] = useState(false);
     const socketContext = useContext(SocketContext);
-    const locationContext = useContext(LocationContext)
+    const locationContext = useContext(LocationContext);
     const navigate = useNavigate();
 
-    const [started, setStarted] = useState(false)
+    const [started, setStarted] = useState(false);
     const [displayTime, setDisplayTime] = useState(0);
     const { startTimer, stopTimer } = useChronometer(setDisplayTime);
 
     useEffect(() => {
         if(!locationContext.validAccess) {
-            navigate("/")
+            navigate("/");
         }
-    }, [locationContext.validAccess])
+    }, [locationContext.validAccess]);
 
     useEffect(() => {
         if (!socketContext.socket.current) {
@@ -39,14 +39,14 @@ function Lobby() {
             socketContext.socket.current.off("invalid")
             socketContext.socket.current.on("countdown", () => {
                 startTimer();
-                setStarted(true)
+                setStarted(true);
             });
         }
     }, []);
 
     useEffect(() => {
         if (displayTime === 3) {
-            stopTimer()
+            stopTimer();
             socketContext.socket.current.emit("try-start");
         }
     }, [displayTime]);
@@ -72,7 +72,7 @@ function Lobby() {
         e.target.disabled = true;
         socketContext.socket.current.disconnect();
         socketContext.socket.current = undefined;
-        // navigate("/");
+        navigate("/");
     }
 
     // Tell all users in lobby to start the countdown 
@@ -86,7 +86,7 @@ function Lobby() {
             <NavBar />
             <div id="lobby-info">
                 {started ?
-                    <Chronometer seconds={3 - displayTime || "GO"} />
+                    <Chronometer id="countdown" seconds={3 - displayTime || "GO"} />
                     :
                     <>
                         <div id="players">
