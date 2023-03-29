@@ -20,11 +20,17 @@ function LengthSettings() {
         } else{
             url = `/api/quote?quoteLength=${e.target.textContent}`;
         }
-        const data = await fetch(url);
-        const json = await data.json();
-        const quote = json.body;
-        console.log(quote);
-        setCookie("quoteLength", e.target.textContent)
+        const data = await fetch(url, {
+            headers: { 'Accept': 'application/json', "Content-Type": "application/json" }
+        });
+        if (!data.ok){
+            throw new Error("The fetch request failed");
+        } else{
+            const json = await data.json();
+            const quote = json.body;
+            console.log(quote);
+            setCookie("quoteLength", e.target.textContent);
+        }  
     }
 
     return (
