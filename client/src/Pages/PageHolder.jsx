@@ -16,7 +16,8 @@ function PageHolder() {
     const socketContext = useContext(SocketContext);
     const ROUTES = ["/", "/profile", "/lobby", "/multiplayer-game"];
 
-    if (locationContext.lastVisitedLocation.current === null || !ROUTES.includes(currentLocation.pathname)) {
+    if (locationContext.lastVisitedLocation.current ===
+        null || !ROUTES.includes(currentLocation.pathname)) {
         locationContext.validAccess = false;
     } else {
         locationContext.lastVisitedLocation.current = currentLocation.pathname
@@ -31,9 +32,9 @@ function PageHolder() {
     }, [currentLocation.pathname]);
 
     function checkPathLocation() {
-        return currentLocation.pathname !== "/lobby" && 
-        currentLocation.pathname !== "/multiplayer-game" &&
-        currentLocation.pathname !== "/endgame-results";
+        return currentLocation.pathname !== "/lobby" &&
+            currentLocation.pathname !== "/multiplayer-game" &&
+            currentLocation.pathname !== "/endgame-results";
     }
 
     return (

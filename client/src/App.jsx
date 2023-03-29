@@ -17,7 +17,6 @@ const queryClient = new QueryClient();
 function App() {
     const [userEmail, setUserEmail] = useState();
     const socket = useRef();
-    // const [userList, setUserList] = useState([]);
     
     useEffect(() => {
         (async () => {
@@ -30,7 +29,6 @@ function App() {
             }
         })();
     }, [userEmail]);
-
 
     return (
         <div className="App">

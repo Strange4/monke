@@ -1,8 +1,8 @@
 const EndGameResults = (props) => {
     return (
-        <div id="game-results" className="player-info">
+        <div id="game-results" className={`player-info ${props.myUser ? "highlight" : ""}`}>
             <img className="player-image" src={`${props.avatar}`} />
-            <p className='player-name'> {props.name} </p>
+            <p className='player-name'> {props.name} {props.myUser ? "(You)" : ""}</p>
             {props.ended ?
                 <div id="game-single-result">
                     <p id="end-game-rank">

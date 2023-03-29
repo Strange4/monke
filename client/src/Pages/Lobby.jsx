@@ -27,7 +27,7 @@ function Lobby() {
     const { startTimer, stopTimer } = useChronometer(setDisplayTime);
 
     useEffect(() => {
-        if(!locationContext.validAccess) {
+        if (!locationContext.validAccess) {
             navigate("/");
         }
     }, [locationContext.validAccess]);
@@ -81,6 +81,15 @@ function Lobby() {
         socketContext.socket.current.emit("start-countdown");
     }
 
+    /**
+     * TODO comment
+     * @param {Object} user 
+     * @returns {Boolean}
+     */
+    function checkUser(user) {
+        return user.id === socketContext.socket.current.id;
+    }
+
     return (
         <div id="home">
             <NavBar />
@@ -93,7 +102,8 @@ function Lobby() {
                             {socketContext.userList.map((user, i) => {
                                 return <PlayerItem
                                     key={i} name={user.username}
-                                    avatar={user.avatar} leader={i === 0} />
+                                    avatar={user.avatar} leader={i === 0}
+                                    myUser={checkUser(user)} />
                             })}
                             <p ref={roomCode} id="invite-code">
                                 {location.state?.roomCode}

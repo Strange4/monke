@@ -34,12 +34,22 @@ function EndGameLeaderboard() {
      * @param {Object} a 
      * @param {Object} b 
      * @returns {Number}
+     * TODO check when user did not finish
      */
     function sortLeaderboard(a, b) {
-        if (!b.results || !a.results) {
+        if (!b.results || !a.results || !b.ended || !a.ended) {
             return 1;
         }
         return b.results.wpm * b.results.accuracy - a.results.wpm * a.results.accuracy;
+    }
+
+    /**
+     * TODO comment
+     * @param {Object} user 
+     * @returns {Boolean}
+     */
+    function checkUser(user) {
+        return user.id === socketContext.socket.current.id;
     }
 
     return (
@@ -56,6 +66,7 @@ function EndGameLeaderboard() {
                         ended={user.gameEnded}
                         wpm={user.results?.wpm}
                         acc={user.results?.accuracy}
+                        myUser={checkUser(user)}
                     />
                 })
             }
