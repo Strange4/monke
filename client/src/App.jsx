@@ -15,20 +15,20 @@ const queryClient = new QueryClient();
  */
 function App() {
     const [userEmail, setUserEmail] = useState();
+    const [userLoggedIn, setUserLoggedIn] = useState(false);
     const socket = useRef();
     const [userList, setUserList] = useState([])
 
     useEffect(() => {
         (async () => {
-            if (!userEmail) {
+            if(!userLoggedIn){
                 const userData = await fetch("/authentication/refreshLogin")
                 if (userData.status === 200) {
-                    const newEmail = await userData.json()
-                    setUserEmail(newEmail.email)
+                    setUserLoggedIn(true);
                 }
             }
         })();
-    }, [userEmail]);
+    }, [userLoggedIn]);
 
     return (
         <div className="App">

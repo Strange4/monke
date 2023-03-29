@@ -37,7 +37,8 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText,
 
         const loggedIn = await auth.checkAccess();
         if (loggedIn) {
-            await postData("/api/user", { email: auth.userEmail }, "POST");
+            // await postData("/api/user", "POST");
+            setUserStats(result);
             postUserStats(result);
         } 
 
@@ -74,9 +75,7 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText,
      * @param {Object} result 
      */
     async function postUserStats(result) {
-        setUserStats(result);
         const userStats = {
-            email: auth.userEmail,
             wpm: result.wpm,
             accuracy: result.accuracy
         };

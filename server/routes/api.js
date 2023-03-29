@@ -10,7 +10,7 @@ import { Constraints } from "../database/validation.js";
 import { quoteRouter } from "./quotes.js";
 import { usersRouter } from "./user.js";
 import createHttpError from "http-errors";
-import { v4 } from "uuid"
+import { v4 } from "uuid";
 
 const router = express.Router();
 

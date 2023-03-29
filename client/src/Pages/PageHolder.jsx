@@ -32,7 +32,7 @@ function PageHolder() {
             <Route path="/" element={<Home />} />
             <Route path="/profile"
                 element={
-                    auth.userEmail ?
+                    auth.userLoggedIn ?
                         <Profile />
                         :
                         <Login navbar={true} />
@@ -40,8 +40,8 @@ function PageHolder() {
             <Route path='/lobby' element={<Lobby />} />
             <Route path='/multiplayer-game' element={<MultiplayerGame />} />
             <Route path="/profile" element={
-                auth.userEmail ?
-                    <Profile redirect={auth.userEmail ? false : true} />
+                auth.userLoggedIn ?
+                    <Profile redirect={auth.userLoggedIn ? false : true} />
                     :
                     <></>
             } />

@@ -6,7 +6,9 @@ import createHttpError from "http-errors";
 import User from "../database/models/user.js";
 import { ImgParser } from "../controller/validation.js";
 import multer from 'multer';
-import * as Azure from "../database/azure.js"
+import * as Azure from "../database/azure.js";
+import { isAuthenticated } from "./authentication.js";
+
 
 
 const upload = multer({
@@ -20,6 +22,7 @@ const upload = multer({
 });
 
 const router = express.Router();
+router.use(isAuthenticated);
 
 /**
  * Updates the stats of a user using their email.
@@ -27,7 +30,7 @@ const router = express.Router();
  * if a field has the wrong type it will not be updated
  */
 router.put("/user_stat", async (req, res, next) => {
-    const email = Constraints.email(req.body.email);
+    const email = req.session.user.user.email;
     if (!email) {
         next(new createHttpError.BadRequest(
             "Can't find or create the user because no email was provided"
@@ -73,10 +76,12 @@ router.put("/user_stat", async (req, res, next) => {
         updated["user_stats.max_accuracy"] = Math.max(user.user_stats.max_accuracy, accuracy);
     }
     await user.updateOne({ $set: { ...updated } });
+    const cleanUser = user.toObject();
+    delete cleanUser.email;
     const rank = await user.getRank();
     res.json({
         rank,
-        ...user.toObject()
+        ...cleanUser
     });
 });
 
@@ -85,7 +90,7 @@ router.put("/user_stat", async (req, res, next) => {
  * and their game statistics
  */
 router.post("/user", async (req, res, next) => {
-    const email = Constraints.email(req.body.email);
+    const email = req.session.user.email;
     if (!email) {
         next(new createHttpError.BadRequest(
             "Can't find or create the user because no email was provided"
@@ -113,10 +118,12 @@ router.post("/user", async (req, res, next) => {
             return;
         }
     }
+    const cleanUser = user.toObject();
+    delete cleanUser.email;
     const rank = await user.getRank();
     res.json({
         rank,
-        ...user.toObject()
+        ...cleanUser
     });
 });
 
@@ -125,7 +132,7 @@ router.post("/user", async (req, res, next) => {
  * The user email and new username is sent, newly updated user is returned
  */
 router.put("/update_username", async (req, res, next) => {
-    const email = Constraints.email(req.body.email);
+    const email = req.session.user.email;
     const newName = req.body.username;
     if (!email || !newName) {
         next(new createHttpError.BadRequest("no email or username was provided"));
@@ -141,10 +148,12 @@ router.put("/update_username", async (req, res, next) => {
         }));
         return;
     }
+    const cleanUser = user.toObject();
+    delete cleanUser.email;
     const rank = await user.getRank();
     res.json({
         rank,
-        ...user.toObject()
+        ...cleanUser
     });
 });
 
@@ -153,7 +162,7 @@ router.put("/update_username", async (req, res, next) => {
  * The user email and new Image is sent, newly updated user is returned
  */
 router.put("/update_avatar", upload.single('image'), async (req, res, next) => {
-    const email = Constraints.email(req.body.email);
+    const email = req.session.user.email;
     if (!email) {
         next(new createHttpError.BadRequest("Can't find the user because no email was provided"));
         return;
@@ -182,10 +191,12 @@ router.put("/update_avatar", upload.single('image'), async (req, res, next) => {
             }));
             return;
         }
+        const cleanUser = user.toObject();
+        delete cleanUser.email;
         const rank = await user.getRank();
         res.json({
             rank,
-            ...user.toObject()
+            ...cleanUser
         });
     } catch (err) {
         res.status(400).send(`<h1>400! Picture could not be uploaded to the database.</h1>`);

@@ -13,12 +13,10 @@ function EndGameLeaderboard() {
         socketContext.socket.current.off("update-leaderboard");
         socketContext.socket.current.once("update-leaderboard", (leaderboard) => {
             setLeaderboard(leaderboard.sort((a, b) => sortLeaderboard(a, b)));
-            
-            let index = leaderboard.findIndex(user => user.id === socketContext.socket.current.id);
-            if (authContext.userEmail) {
-                let stats = {
-                    email: authContext.userEmail
-                }
+            if (authContext.userLoggedIn) {
+                const index = leaderboard.
+                    findIndex(user => user.id === socketContext.socket.current.id);
+                const stats = {}
                 if (index === 0) {
                     stats.win = true;
                 } else {

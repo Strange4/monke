@@ -2,6 +2,7 @@ import * as express from "express";
 import { OAuth2Client } from 'google-auth-library';
 import session from 'express-session'
 import dotenv from 'dotenv';
+import createHttpError from "http-errors";
 dotenv.config();
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -22,8 +23,13 @@ export function isAuthenticated(req, res, next) {
     next();
 }
 
+const secret = process.env.SECRET;
+if(!secret){
+    throw new Error("The secret wasn't found in the environment variables");
+}
+
 authRouter.use(session({
-    secret: process.env.SECRET,
+    secret: secret,
     name: 'id',
     saveUninitialized: false,
     resave: false,
@@ -50,29 +56,31 @@ authRouter.get("/refreshLogin", isAuthenticated, function (req, res) {
  */
 authRouter.post("/login", async (req, res) => {
     const { token } = req.body;
-
-    if (token) {
-        const ticket = await client.verifyIdToken({
-            idToken: token,
-            audience: process.env.GOOGLE_CLIENT_ID
-        });
-        if (!ticket) {
-            return res.sendStatus(401);
-        }
-        const user = {
-            username: ticket.getPayload().name,
-            email: ticket.getPayload().email,
-            pic: ticket.getPayload().picture
-        };
-
-        req.session.regenerate(function (err) {
-            if (err) {
-                return res.sendStatus(500);
-            }
-            req.session.user = user;
-            res.json({ user: user });
-        });
+    if(!token){
+        next(new createHttpError.BadRequest("No google token in body"));
+        return;
     }
+    const ticket = await client.verifyIdToken({
+        idToken: token,
+        audience: process.env.GOOGLE_CLIENT_ID
+    });
+    if (!ticket) {
+        return res.sendStatus(401);
+    }
+    const payload = ticket.getPayload();
+    const user = {
+        username: payload.name,
+        email: payload.email,
+        pic: payload.picture
+    };
+
+    req.session.regenerate(function (err) {
+        if (err) {
+            return res.sendStatus(500);
+        }
+        req.session.user = user;
+        res.json({ user: user });
+    });
 });
 
 /**

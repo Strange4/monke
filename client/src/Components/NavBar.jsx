@@ -27,7 +27,7 @@ function NavBar() {
 
     async function handleLogout() {
         await fetch("/authentication/logout");
-        auth.setUserEmail("")
+        auth.setUserLoggedIn(false);
     }
 
     return (
@@ -56,7 +56,7 @@ function NavBar() {
             </div>
             <li>
                 <Popup trigger={<a><CgProfile id="profile-icon"/></a>}>
-                    {auth.userEmail ? 
+                    {auth.userLoggedIn ? 
                         <div className='access'>
                             <Link to='/profile'>
                                 <button className='logged-in'>Profile</button>
@@ -69,7 +69,7 @@ function NavBar() {
                         </div>
                         : ""}
                     {
-                        auth.userEmail ? null :
+                        auth.userLoggedIn ? null :
                             <div>
                                 <Login navbar={false} />
                             </div>

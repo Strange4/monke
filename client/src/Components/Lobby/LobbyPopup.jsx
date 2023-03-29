@@ -59,16 +59,14 @@ function LobbyPopup() {
             disconnectSocket()
         }
         let userData = {
-            userEmail: auth.userEmail,
             avatar: "",
             username: ""
         };
-        if (auth.userEmail) {
+        if (auth.userLoggedIn) {
             const url = "/api/user";
-            const data = await FetchModule.postData(url, { email: auth.userEmail }, "POST");
+            const data = await FetchModule.postData(url, "POST");
             userData["avatar"] = data.picture_url;
             userData["username"] = data.username;
-            userData["email"] = data.email;
         }
         socketContext.socket.current = io("", {
             query: { roomCode: roomCode }, auth: { userData }
