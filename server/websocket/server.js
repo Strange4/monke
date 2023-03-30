@@ -21,7 +21,10 @@ class Lobby {
  * @param {Server} server 
  */
 export function setUp(server) {
-    const io = new Server(server, { cors: { origin: "http://localhost:3000" } });
+    const NODE_ENV = process.env.NODE_ENV || "production";
+    const option = NODE_ENV === "development" ? 
+        { cors: { origin: "http://localhost:3000" } } : undefined;
+    const io = new Server(server, option);
 
     io.on("connection", (socket) => {
         const userData = setUserData(socket);
@@ -120,8 +123,9 @@ function setUpGameListeners(socket, userData, roomCode, lobby, io) {
  */
 function checkGameEnded(lobby, roomCode, io) {
     let displayLeaderboard = lobby.users.every(user => user.gameEnded);
-
-    if (displayLeaderboard) {
+    console.log(lobby.users)
+    if (displayLeaderboard || lobby.users.length <= 1) {
+        console.log("display leaderboard")
         io.to(roomCode).emit("update-leaderboard", lobby.leaderboard);
     }
 }

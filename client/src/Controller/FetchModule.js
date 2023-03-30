@@ -82,7 +82,7 @@ async function transformData(response) {
  * @param validateForm 
  * @param postImage 
  */
-function readImage(image, email, validateForm, postImage) {
+function readImage(image, validateForm, postImage) {
     if (validateForm(image)) {
         const fr = new FileReader();
         fr.readAsArrayBuffer(image);
@@ -90,7 +90,6 @@ function readImage(image, email, validateForm, postImage) {
         fr.onload = function () {
             const formData = new FormData()
             formData.append('image', image);
-            formData.append('email', email);
             formData.append('fileName', image.name);
             postImage(formData);
         }

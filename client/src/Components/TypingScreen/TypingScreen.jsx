@@ -14,6 +14,8 @@ import {
 } from './TypingUtil';
 import defaultQuotes from '../../Data/default_quotes.json';
 import TTSQuote from '../TTSpeech/TTSQuote';
+import AuthContext from '../../Context/AuthContext';
+import { computeResults, postUserStats } from '../../Controller/GameResultsHelper';
 
 const allShiftKeys = keyboardKeys.english.upper;
 const allRegKeys = keyboardKeys.english.lower;
@@ -57,6 +59,7 @@ function TypingScreen(props) {
     const [isFocused, setIsFocused] = useState(true);
     const textContainerRef = useRef();
     const socketContext = useContext(SocketContext);
+    const auth = useContext(AuthContext);
 
     useEffect(() => {
         if (props.multiplayer) {
@@ -69,14 +72,22 @@ function TypingScreen(props) {
      */
     function handleGameEnd() {
         stopTimer();
-        setDisplayResults(true);
-        if (!props.multiplayer) {
-            refetch();
-            resetGame();
+        if (props.multiplayer) {
+            const results = computeMultiplayerResults();
+            socketContext.socket.current.emit("send-results", results);
         } else {
-            //TODO send results
-            socketContext.socket.current.emit("send-results", result);
+            setDisplayResults(true);
+
         }
+    }
+
+    function computeMultiplayerResults() {
+        const results = computeResults(timer.current.time().s, textToDisplay, userDisplay);
+        if (auth.userLoggedIn) {
+            postUserStats(results);
+        }
+
+        return results;
     }
 
     /**
@@ -85,6 +96,9 @@ function TypingScreen(props) {
     function resetGame() {
         setDisplayResults(false);
         resetTimer();
+        textContainerRef.current.focus();
+        setIsFocused(true);
+        refetch();
         textContainerRef.current.value = "";
     }
 

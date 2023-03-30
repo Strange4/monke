@@ -2,21 +2,19 @@
 import './Layout/SoloGameResult.css';
 import { useEffect, useState, useContext } from 'react';
 import Popup from "reactjs-popup";
-import * as FetchModule from '../../Controller/FetchModule';
-import AuthContext from '../../Context/AuthContext';
-import { postData } from '../../Controller/FetchModule';
-import SocketContext from '../../Context/SocketContext';
 import { GiPartyPopper } from 'react-icons/gi';
+import { postUserStats, computeResults } from '../../Controller/GameResultsHelper';
+import AuthContext from '../../Context/AuthContext';
 
 function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText }) {
     const [userStats, setUserStats] = useState({ "time": 0, "wpm": 0, "accuracy": 0 });
-    const socketContext = useContext(SocketContext);
     const auth = useContext(AuthContext);
 
     useEffect(() => {
         (async () => {
             if (isOpen === true) {
-                const results = await computeResults(timer.time().s, originalText, displayText);
+                const results = 
+                    await computeSoloGameResults(timer.time().s, originalText, displayText);
                 setUserStats(results);
             }
         })();
@@ -25,59 +23,13 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
     /**
      * Compute the results for the solo game upon end and post them
      */
-    async function computeResults(numberOfSeconds, text, typedText) {
-        const nbWords = text.split(" ").length;
-        const minutes = numberOfSeconds / 60;
-        const wpm = nbWords / minutes;
-        const result = {
-            time: Math.round(numberOfSeconds * 100) / 100,
-            wpm: Math.round(wpm * 100) / 100,
-            accuracy: Math.round(computeAccuracy(typedText) * 100) / 100
+    async function computeSoloGameResults(numberOfSeconds, text, typedText) {
+        const results = computeResults(numberOfSeconds, text, typedText);
+        if (auth.userLoggedIn) {
+            postUserStats(results);
         }
 
-        const loggedIn = await auth.checkAccess();
-        if (loggedIn) {
-            await postData("/api/user", { email: auth.userEmail }, "POST");
-            postUserStats(result);
-        }
-
-        return result;
-    }
-
-    /**
-     * computes the accuracy and returns it to the results computation
-     * @returns {number}
-     */
-    function computeAccuracy(typedText) {
-        let wrongCount = 0;
-        let rightCount = 0;
-        typedText.forEach(letter => {
-            if (letter.type === "right") {
-                ++rightCount;
-            } else if (letter.type === "wrong") {
-                ++wrongCount;
-            }
-        });
-        let accuracy = rightCount / (rightCount + wrongCount) * 100;
-        if (wrongCount === 0) {
-            accuracy = 100;
-        }
-        return accuracy;
-    }
-
-    /**
-     * Sends data to the post api for a user's solo game
-     * @param {Object} result 
-     */
-    async function postUserStats(result) {
-        setUserStats(result);
-        const userStats = {
-            email: auth.userEmail,
-            wpm: result.wpm,
-            accuracy: result.accuracy
-        };
-
-        FetchModule.postData("/api/user_stat", userStats, "PUT");
+        return results;
     }
 
     return (
