@@ -17,6 +17,11 @@
     color: var(--accent-color);
 }
 
+div.highlight > div#game-single-result > p#end-game-rank{
+    background-color: transparent !important;
+    color: var(--bg-color) !important;
+}
+
 div#playing-players > div.player-info > p.player-name {
     height: 50px !important;
     margin: 0;
@@ -53,15 +58,16 @@ div#playing-players>div.player-info>img.player-image {
 #game-results{
     background-color: var(--sub-color-transparent);
     margin: 20px;
+    height: 40px;
 }
 
 #game-results > .player-name {
-    display: inline-block;
+    display: block;
     margin-right: 10px;
     justify-content: left;
     overflow: hidden;
     white-space: nowrap;
-    text-overflow: ellipsis " [..]";
+    text-overflow: ellipsis;
 }
 
 #game-single-result > p{
@@ -78,6 +84,7 @@ div#playing-players>div.player-info>img.player-image {
     justify-content: right;
     flex-grow: 2;
     width: 60%;
+    height: fit-content;
 }
 
 #end-game-leaderboard>div:nth-of-type(even) {
