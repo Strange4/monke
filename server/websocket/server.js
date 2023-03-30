@@ -1,6 +1,5 @@
 import { Server } from "socket.io";
 import { validate as uuidValidate } from 'uuid';
-// import { getRandomQuote } from "../routes/quotes";
 import { getRandomQuote } from "../routes/quotes.js";
 
 const lobbies = {};
@@ -40,7 +39,7 @@ export function setUp(server) {
  * Sets up the lobby socket listeners and is in charge of handling
  * access to the room (full room or game started or available)
  * @param {Socket} socket 
- * @param {Object} userData 
+ * @param {Object} userData  
  * @param {String} roomCode 
  * @param {Lobby} lobby
  * @param {Server} io 
@@ -97,7 +96,6 @@ function setUpGameListeners(socket, userData, roomCode, lobby, io) {
     socket.on("update-progress-bar", (progress) => {
         let userIndex = lobby.users.findIndex(user => user.id === userData.id);
         lobby.users[userIndex].progress = progress;
-        console.log(progress)
         // keeps track on whether that user finished the game or not
         if (lobby.users[userIndex].progress >= 100) {
             lobby.users[userIndex].progress = 100;
@@ -108,11 +106,12 @@ function setUpGameListeners(socket, userData, roomCode, lobby, io) {
 
     // executes once user has ended to update the results for that user
     socket.once("send-results", (result) => {
-        io.to(roomCode).emit("update-progress", lobby.users);
+        // io.to(roomCode).emit("update-progress", lobby.users);
         let leaderboardIndex = lobby.leaderboard.findIndex(user => user.id === userData.id);
         lobby.leaderboard[leaderboardIndex].results = result;
         lobby.leaderboard[leaderboardIndex].gameEnded = true;
         checkGameEnded(lobby, roomCode, io);
+        io.to(roomCode).emit("update-progress", lobby.users);
     });
 }
 
@@ -124,9 +123,7 @@ function setUpGameListeners(socket, userData, roomCode, lobby, io) {
  */
 function checkGameEnded(lobby, roomCode, io) {
     let displayLeaderboard = lobby.users.every(user => user.gameEnded);
-    console.log(lobby.users)
-    if (displayLeaderboard || lobby.users.length <= 1) {
-        console.log("display leaderboard")
+    if (displayLeaderboard) {
         io.to(roomCode).emit("update-leaderboard", lobby.leaderboard);
     }
 }

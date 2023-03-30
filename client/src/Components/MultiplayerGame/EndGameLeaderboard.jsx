@@ -22,8 +22,8 @@ function EndGameLeaderboard(props) {
                 :
                 props.leaderboard.map((user, i) => {
                     return <EndGameResults
-                        rank={i}
-                        key={i} name={user.username}
+                        rank={i} key={i}
+                        name={user.username}
                         avatar={user.avatar}
                         ended={user.gameEnded}
                         wpm={user.results?.wpm}

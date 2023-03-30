@@ -21,8 +21,6 @@ async function fetchData(url) {
 }
 
 async function postData(url, body, method) {
-    console.log("POSTING DATA")
-    console.log(body)
     const res = await fetch(url, {
         method: method,
         body: JSON.stringify(body),
@@ -31,7 +29,6 @@ async function postData(url, body, method) {
             "Content-Type": "application/json"
         },
     });
-    console.log(res)
     const data = await res.json();
     return data
 }

@@ -9,6 +9,7 @@ import GameProgress from '../Components/MultiplayerGame/GameProgress';
 import EndGameLeaderboard from '../Components/MultiplayerGame/EndGameLeaderboard';
 import { LocationContext } from '../Context/LocationContext';
 import AuthContext from '../Context/AuthContext';
+import { postData } from '../Controller/FetchModule';
 
 const MultiplayerGame = () => {
     const navigate = useNavigate();
@@ -59,8 +60,6 @@ const MultiplayerGame = () => {
         socketContext.socket.current.off("update-leaderboard");
         socketContext.socket.current.once("update-leaderboard", (newLeaderboard) => {
             setLeaderboard(newLeaderboard.sort((a, b) => sortLeaderboard(a, b)));
-            console.log("UPDATING LEADERBOARD TO ")
-            console.log(leaderboard)
             if (authContext.userLoggedIn) {
                 const index = newLeaderboard.
                     findIndex(user => user.id === socketContext.socket.current.id);
@@ -70,8 +69,6 @@ const MultiplayerGame = () => {
                 } else {
                     stats.lose = true;
                 }
-                console.log("attempting to post stats")
-                console.log(stats)
                 postData("/api/user_stat", stats, "PUT");
             }
         });

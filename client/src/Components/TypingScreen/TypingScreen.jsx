@@ -77,7 +77,6 @@ function TypingScreen(props) {
             socketContext.socket.current.emit("send-results", results);
         } else {
             setDisplayResults(true);
-
         }
     }
 
@@ -86,7 +85,6 @@ function TypingScreen(props) {
         if (auth.userLoggedIn) {
             postUserStats(results);
         }
-
         return results;
     }
 
@@ -115,7 +113,6 @@ function TypingScreen(props) {
         }
         if (props.multiplayer) {
             socketContext.socket.current.emit("update-progress-bar", progress);
-            console.log(progress)
         } else if (current.length === 1) {
             startTimer();
         }
