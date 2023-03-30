@@ -24,6 +24,10 @@ const allRegKeys = keyboardKeys.english.lower;
  */
 function TypingScreen(props) {
 
+    /**
+     * Fetches a quote from the database depending on the settings given by the props.
+     * If request fails then we get a quote from a hard coded data (default_quotes.json).
+     */
     const { isLoading, refetch } = useQuery("textToDisplay", async () => {
         if (props.quote) {
             return props.quote
@@ -72,14 +76,10 @@ function TypingScreen(props) {
     const textContainerRef = useRef();
     const socketContext = useContext(SocketContext);
 
+
+    // Refreshes the game when a setting changes.
     useEffect(() => {
-        resetTimer();
-        setDisplayResults(false);
-        setIsFocused(true);
-        refetch();
-        console.log(textContainerRef.current);
-        //textContainerRef.current.value = "";
-        //resetGame();
+        resetGame();
     }, [props.quoteLength, props.punctuation]);
 
     useEffect(() => {
@@ -102,12 +102,14 @@ function TypingScreen(props) {
      * Reset the timer and typing screen
      */
     function resetGame() {
+        refetch();
         setDisplayResults(false);
         resetTimer();
-        textContainerRef.current.focus();
+        if(textContainerRef.current){
+            textContainerRef.current.focus();
+            textContainerRef.current.value = "";
+        }
         setIsFocused(true);
-        refetch();
-        textContainerRef.current.value = "";
     }
 
     /**
