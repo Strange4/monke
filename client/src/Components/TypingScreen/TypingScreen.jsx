@@ -73,8 +73,13 @@ function TypingScreen(props) {
     const socketContext = useContext(SocketContext);
 
     useEffect(() => {
+        resetTimer();
+        setDisplayResults(false);
+        setIsFocused(true);
         refetch();
-        resetGame();
+        console.log(textContainerRef.current);
+        //textContainerRef.current.value = "";
+        //resetGame();
     }, [props.quoteLength, props.punctuation]);
 
     useEffect(() => {
