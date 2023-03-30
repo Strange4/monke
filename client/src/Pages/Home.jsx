@@ -22,8 +22,8 @@ const Home = () => {
      * iife that sets default preference settings if undefined
      */
     (()=>{
-        enableTTS === undefined ? setEnableTTS("false") : enableTTS;
-        ttsSpeed === undefined ? setTtsSpeed("1") : ttsSpeed;
+        enableTTS || setEnableTTS("false");
+        ttsSpeed || setTtsSpeed("1");
     })();
 
     return (
