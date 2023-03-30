@@ -7,15 +7,23 @@
     border-radius: 60px;
     width: 90%;
     min-width: 400px;
-    height: 120px;
+    height: 140px;
     margin: auto;
     margin-top: 20px;
 }
 
+#playing-players > div.highlight{
+    background-color: transparent !important;
+    color: var(--accent-color);
+}
+
+div.highlight > div#game-single-result > p#end-game-rank{
+    background-color: transparent !important;
+    color: var(--bg-color) !important;
+}
+
 div#playing-players > div.player-info > p.player-name {
-    display: none;
-    height: 0;
-    width: 0;
+    height: 50px !important;
     margin: 0;
 }
 
@@ -29,9 +37,10 @@ div#playing-players > div.player-info {
 
 div#playing-players>div.player-info>img.player-image {
     padding: 5px;
-    width: 80px;
-    min-width: 80px;
-    height: 80px;
+    width: 70px;
+    min-width: 70px;
+    height: 70px;
+    margin-bottom: 10px;
 }
 
 #mode-indicator {
@@ -49,15 +58,16 @@ div#playing-players>div.player-info>img.player-image {
 #game-results{
     background-color: var(--sub-color-transparent);
     margin: 20px;
+    height: 40px;
 }
 
 #game-results > .player-name {
-    width: 100px;
+    display: block;
     margin-right: 10px;
     justify-content: left;
     overflow: hidden;
     white-space: nowrap;
-    text-overflow: ellipsis " [..]";
+    text-overflow: ellipsis;
 }
 
 #game-single-result > p{
@@ -74,6 +84,7 @@ div#playing-players>div.player-info>img.player-image {
     justify-content: right;
     flex-grow: 2;
     width: 60%;
+    height: fit-content;
 }
 
 #end-game-leaderboard>div:nth-of-type(even) {
@@ -104,4 +115,32 @@ div#playing-players>div.player-info>img.player-image {
 
 #multiplayer-game > #popup-root:has(>div.popup-overlay>div.popup-content>div#solo-game-result){
     visibility: hidden;
+}
+
+#game-progress {
+    display: flex;
+    position: relative;
+    flex-wrap: wrap;
+    align-content: center;
+    margin: auto;
+    margin-top: 10px;
+    flex-flow: row wrap;
+    width: 80%;
+    height: 40px;
+    padding: 0;
+}
+
+#game-progress > svg {
+    position: absolute;
+    right: 0;
+    width: 35px;
+    height: 35px;
+}
+
+#progress-bar {
+    position: absolute;
+    top: 8px;
+    left: 0;
+    border-radius: 5px;
+    height: 15px;
 }

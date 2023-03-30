@@ -16,9 +16,8 @@ const MultiplayerGame = () => {
     const location = useLocation();
     const [ended, setEnded] = useState(false);
     
-
     useEffect(() => {
-        if(!locationContext.validAccess) {
+        if (!locationContext.validAccess) {
             navigate("/")
         }
     }, [locationContext.validAccess]);
@@ -26,7 +25,7 @@ const MultiplayerGame = () => {
     useEffect(() => {
         if (socketContext.socket.current) {
             updateListeners();
-        } 
+        }
     }, []);
 
     /**
@@ -55,6 +54,15 @@ const MultiplayerGame = () => {
         });
     }
 
+    /**
+     * Checks if the displayed user is the current user
+     * @param {Object} user 
+     * @returns {Boolean}
+     */
+    function checkUser(user) {
+        return user.id === socketContext.socket.current.id;
+    }
+
     return (
         <>
             < NavBar />
@@ -67,10 +75,11 @@ const MultiplayerGame = () => {
                         {socketContext.userList.map((user, i) => {
                             return <PlayerItem
                                 key={i} name={user.username}
-                                avatar={user.avatar} leader={i === 0} />
+                                avatar={user.avatar} leader={i === 0}
+                                myUser={checkUser(user)} />
                         })}
                     </div>
-                    <GameProgress/>
+                    <GameProgress />
                     <TypingScreen multiplayer={true} quote={location.state?.quote || ""} />
                 </div>
             }
