@@ -8,7 +8,7 @@ import { postData } from '../../Controller/FetchModule';
 import SocketContext from '../../Context/SocketContext';
 import { GiPartyPopper } from 'react-icons/gi';
 
-function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText, multiplayer }) {
+function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText }) {
     const [userStats, setUserStats] = useState({ "time": 0, "wpm": 0, "accuracy": 0 });
     const socketContext = useContext(SocketContext);
     const auth = useContext(AuthContext);
@@ -39,10 +39,6 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText,
         if (loggedIn) {
             await postData("/api/user", { email: auth.userEmail }, "POST");
             postUserStats(result);
-        } 
-
-        if (multiplayer) {
-            socketContext.socket.current.emit("send-results", result);
         }
 
         return result;
@@ -94,7 +90,7 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText,
                     <p><span className='stat-label'>accuracy: </span>{userStats.accuracy}%</p>
                 </div>
                 <div id='end-icon'>
-                    <GiPartyPopper/>
+                    <GiPartyPopper />
                 </div>
             </div>
         </Popup>

@@ -73,6 +73,9 @@ function TypingScreen(props) {
         if (!props.multiplayer) {
             refetch();
             resetGame();
+        } else {
+            //TODO send results
+            socketContext.socket.current.emit("send-results", result);
         }
     }
 
@@ -186,7 +189,6 @@ function TypingScreen(props) {
                     timer={timer.current}
                     originalText={textToDisplay}
                     closeWindow={resetGame}
-                    multiplayer={props.multiplayer}
                 />
             </div>
 
