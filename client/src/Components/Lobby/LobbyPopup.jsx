@@ -85,11 +85,14 @@ function LobbyPopup() {
             <GiRetroController id='lobby-filler-1' />
             <GiRetroController id='lobby-filler-2' />
             <h1 id='lobby-header'>Multiplayer</h1>
-            <button
-                onClick={async (e) => await createLobby(e)}
-                className='lobby-access'>
-                Create
-            </button>
+            <div id='create-btn-container'>
+
+                <button
+                    onClick={async (e) => await createLobby(e)}
+                    className='lobby-access'>
+                    Create
+                </button>
+            </div>
 
             <div id='room-code-input'>
                 <input ref={roomCode} type="text" name="code" placeholder='Enter room code...' />
