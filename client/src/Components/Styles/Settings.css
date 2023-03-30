@@ -5,8 +5,9 @@
     margin-top: 40px;
     background-color: var(--sub-color-transparent);
     max-width: 500px;
-    min-width: 480px;
+    min-width: 485px;
     border-radius: 20px;
+    height: fit-content;
 }
 
 .highlightSetting{
@@ -18,7 +19,7 @@
     border: none;
     background-color: transparent;
     color: var(--sub-color);
-    margin: 10px;
+    margin: 5px;
     font-size: 0.9em;
 }
 
@@ -27,9 +28,12 @@
     color: var(--text-color);
 }
 
-#time-settings, #length-settings {
+#length-settings {
     display: flex;
+    flex-flow: row wrap;
     min-width: 200px;
+    line-height: 10px;
+    justify-content: center;
 }
 
 .game-setting-icon {

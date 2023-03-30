@@ -40,3 +40,7 @@ body{
     flex-flow: column wrap;
     height: auto;
 }
+
+body::-webkit-scrollbar {
+    display: none;
+}

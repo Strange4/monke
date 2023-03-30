@@ -4,7 +4,7 @@ import { validate as uuidValidate } from 'uuid';
 import { getRandomQuote } from "../routes/quotes.js";
 
 const lobbies = {};
-const MAX_USERS = 3
+const MAX_USERS = 5
 const COLORS = ["green", "red", "blue", "yellow", "orange"];
 
 class Lobby {
