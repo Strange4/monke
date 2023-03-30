@@ -73,12 +73,13 @@ const Profile = () => {
             const data = await FetchModule.postData("/api/update_username", body, "PUT");
             setProfileData(data);
         } else {
-            setUsernameFeedback(
-                "Invalid username: \n * Usernames can consist of lowercase and capitals \n",
-                "Usernames can consist of alphanumeric characters \n",
-                "Usernames can consist of underscore and hyphens and spaces\n",
-                "Cannot be two underscores, two hypens or two spaces in a row\n",
-                "Cannot have a underscore, hypen or space at the start or end");
+            setUsernameFeedback(`
+                Invalid, usernames consist of:
+                - alphanumeric, lower and upper case characters
+                - underscore and hyphens and spaces
+                - no consistent underscores, hypens or spaces
+                - no underscore, hypen or space at start or end
+                - must be 1 - 10 characters`);
         }
     }
 
@@ -90,7 +91,7 @@ const Profile = () => {
         const username = usernameField.current.textContent;
         const usernameRegex = /^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$/;
         var validUsername = username.match(usernameRegex);
-        if (validUsername === null) {
+        if (validUsername === null || username.length > 10 || username.length < 0) {
             return false;
         }
         setUsernameFeedback("");
@@ -216,7 +217,20 @@ const Profile = () => {
                     </div>
                     <div id="user-info">
                         <div id="username-info">
-
+                            {
+                                EditingUsername ?
+                                    <>
+                                        <RiSave3Line
+                                            id="edit-name-icon"
+                                            onClick={saveUsername} />
+                                    </>
+                                    :
+                                    <RiEdit2Fill
+                                        id="edit-name-icon"
+                                        onClick={() => {
+                                            setEditingUsername(true)
+                                        }} />
+                            }
 
                             <h2><span className="user-label">Name: </span></h2>
                             <h2 id="user-name" contentEditable={EditingUsername}
@@ -227,21 +241,7 @@ const Profile = () => {
 
                                 {profileData.username}
                             </h2>
-                            {
-                                EditingUsername ?
-                                    <>
-                                        <RiSave3Line
-                                            id="edit-name-icon"
-                                            onClick={saveUsername} />
-                                        <p>{UsernameFeedback}</p>
-                                    </>
-                                    :
-                                    <RiEdit2Fill
-                                        id="edit-name-icon"
-                                        onClick={() => {
-                                            setEditingUsername(true)
-                                        }} />
-                            }
+
                         </div>
                         <div id="rank-info">
                             <h2> <span className="user-label">Rank: </span></h2>
@@ -250,7 +250,7 @@ const Profile = () => {
                     </div>
                     <UserStats userData={profileData} />
                 </div>
-
+                <p id="username-error">{UsernameFeedback}</p>
             </div>
         </div>
     );

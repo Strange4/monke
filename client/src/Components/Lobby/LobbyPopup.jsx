@@ -50,7 +50,7 @@ function LobbyPopup() {
         socketContext.socket.current.on("invalid", (invalidMessage) => {
             feedback.current.textContent = invalidMessage;
             disconnectSocket();
-            if(joinButton) {
+            if (joinButton) {
                 joinButton.disabled = false;
             }
         });
