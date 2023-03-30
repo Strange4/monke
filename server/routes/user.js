@@ -54,7 +54,8 @@ router.put("/user_stat", async (req, res, next) => {
     // updates the average of that value if it is defined only
     const updated = {
         ...wpm && { 
-            "user_stats.wpm": getAverage(user.user_stats.wpm, wpm, gameCount) },
+            "user_stats.wpm": getAverage(user.user_stats.wpm, wpm, gameCount), 
+            "user_stats.games_count": gameCount + 1},
         ...accuracy && { 
             "user_stats.accuracy": getAverage(user.user_stats.accuracy, accuracy, gameCount) },
         ...win && { 
@@ -63,7 +64,6 @@ router.put("/user_stat", async (req, res, next) => {
             "user_stats.lose": user.user_stats.lose + 1},
         ...draw && { 
             "user_stats.draw": user.user_stats.draw + 1},
-        "user_stats.games_count": gameCount + 1
     }
     if (wpm && wpm > user.user_stats.max_wpm) {
         updated["user_stats.date"] = new Date();
