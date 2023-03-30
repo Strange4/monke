@@ -3,11 +3,9 @@ import { useRef, useEffect, useContext, useState } from "react";
 import PreferenceContext from "../../Context/PreferenceContext";
 
 /**
- * React component that converts a quote spoken words using the 'react-speech' library.
+ * React component that converts a quote to spoken words using the 'react-speech' library.
  * @param {string} text - Text to be read by react-speech.
- * @param {boolean} resultScreenOff - Flag indicating if result screen is active.
- * @param {boolean} enabled - Flag indicating if the user enbled the TTS feature.
- * @returns {ReactElement} - If result screen inactive and TTS enabled, returns TTS component.
+ * @returns {ReactElement} - If context state enableTTSQuote is "true", returns TTS component.
  */
 function TTSQuote({ text }){
 
@@ -19,7 +17,7 @@ function TTSQuote({ text }){
         if(speechRef.current){
             setIsPlaying(true)
         }
-    }, [text, prefContext.enableTTSQuote, isPlaying]);
+    }, [text, prefContext.enableTTSQuote]);
 
     /**
      * function that invokes react-speech to read out the text.
