@@ -1,10 +1,11 @@
 #leaderboard {
-    min-width: 475px;
+    min-width: 450px;
     width: 70vw;
     max-width: 1000px;
     height: 80vh;
     overflow-y: scroll;
     padding: 20px;
+    overflow-x: hidden;
 }
 
 div.popup-content:has(#leaderboard) {
@@ -12,10 +13,11 @@ div.popup-content:has(#leaderboard) {
 }
 
 #header-name {
-    font-size: 3em;
+    font-size: 2.8em;
     color: var(--sub-color);
     letter-spacing: 15px;
     margin-bottom: 40px;
+
 }
 
 #leaderboard::-webkit-scrollbar {
