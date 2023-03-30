@@ -38,10 +38,9 @@
 .lobby-access {
     border: none;
     font-size: 2em;
-    /* margin: 10px; */
     width: 50%;
     max-width: 300px;
-    min-width: 220px;
+    min-width: 200px;
     height: 50px;
     border-radius: 20px;
     background-color: var(--sub-color-transparent);
@@ -62,7 +61,7 @@
     outline: none;
 }
 
-#room-code-input {
+#room-code-input, #create-btn-container {
     display: flex;
     justify-content: space-between;
     margin: 10px;
@@ -70,23 +69,23 @@
 }
 
 #create-btn-container {
-    display: flex;
     justify-content: left;
-    margin: 10px;
-    width: 80%;
 }
 
 #room-code-input input{
     background-color: var(--sub-color-transparent);
     border: none;
-    height: 30px;
+    height: 50px;
     width: 50%;
-    max-width: 280px;
+    max-width: 300px;
     min-width: 200px;
     border-radius: 20px;
     font-size: 1.2em;
-    padding: 10px;
     color: var(--sub-color);
+}
+
+::placeholder {
+    text-align: center;
 }
 
 #room-code-input button {
