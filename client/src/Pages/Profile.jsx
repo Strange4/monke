@@ -217,6 +217,16 @@ const Profile = () => {
                     </div>
                     <div id="user-info">
                         <div id="username-info">
+
+                            <h2><span className="user-label">Name: </span></h2>
+                            <h2 id="user-name" contentEditable={EditingUsername}
+                                className={EditingUsername ? "editable" : ""}
+                                suppressContentEditableWarning={true}
+                                ref={usernameField}
+                                maxLength={5}>
+
+                                {profileData.username}
+                            </h2>
                             {
                                 EditingUsername ?
                                     <>
@@ -231,17 +241,6 @@ const Profile = () => {
                                             setEditingUsername(true)
                                         }} />
                             }
-
-                            <h2><span className="user-label">Name: </span></h2>
-                            <h2 id="user-name" contentEditable={EditingUsername}
-                                className={EditingUsername ? "editable" : ""}
-                                suppressContentEditableWarning={true}
-                                ref={usernameField}
-                                maxLength={5}>
-
-                                {profileData.username}
-                            </h2>
-
                         </div>
                         <div id="rank-info">
                             <h2> <span className="user-label">Rank: </span></h2>
