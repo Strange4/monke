@@ -74,6 +74,7 @@ function TypingScreen(props) {
 
     useEffect(() => {
         refetch();
+        resetGame();
     }, [props.quoteLength, props.punctuation]);
 
     useEffect(() => {
