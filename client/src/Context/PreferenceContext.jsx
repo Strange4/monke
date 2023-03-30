@@ -5,7 +5,9 @@ const PreferenceContext = React.createContext(
         enableTTSQuote: {},
         setEnableTTSQuote: () => {},
         ttsSpeed: {},
-        setTtsSpeed: () => {}
+        setTtsSpeed: () => {},
+        ttsVoice: {},
+        setTtsVoice: () => {}
     }
 );
 

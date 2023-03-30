@@ -41,6 +41,7 @@ function TTSQuote({ text }){
         displayText="Replay quote"
         textAsButton={true}
         rate={prefContext.ttsSpeed}
+        voice={prefContext.ttsVoice}
         onKeyUp={(e) => {
             if(e.key === 'Enter'){
                 playQuote();

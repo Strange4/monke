@@ -5,6 +5,7 @@ import Popup from 'reactjs-popup';
 import EnableTTS from './EnableTTS';
 import TtsSpeed from './TtsSpeed';
 import PreferenceContext from '../../Context/PreferenceContext';
+import TtsVoice from './TtsVoice';
 
 function Preferences({open, toggleShow}){
 
@@ -14,6 +15,7 @@ function Preferences({open, toggleShow}){
      */
     const [tempEnableTTSQuote, setEnableTTSQuote] = useState(preferenceContext.enableTTSQuote)
     const [tempTtsSpeed, setTtsSpeed] = useState(preferenceContext.ttsSpeed);
+    const [tempTtsVoice, setTtsVoice] = useState(undefined);
     const popupRef = useRef(null);
 
     /**
@@ -28,6 +30,10 @@ function Preferences({open, toggleShow}){
         "ttsSpeed": {
             state: tempTtsSpeed,
             setter: setTtsSpeed
+        },
+        "ttsVoice": {
+            state: tempTtsVoice,
+            setter: setTtsVoice
         }
     }
 
@@ -43,7 +49,8 @@ function Preferences({open, toggleShow}){
     }
 
     /**
-     * Save states of all values to cookie
+     * Save states of all values to cookie and applies changes to
+     * preference context
      * @param {*} event 
      */
     function handleSavePref(event){
@@ -56,6 +63,7 @@ function Preferences({open, toggleShow}){
             preferenceContext.setEnableTTSQuote("true") :
             preferenceContext.setEnableTTSQuote("false");
         preferenceContext.setTtsSpeed(tempTtsSpeed);
+        preferenceContext.setTtsVoice(tempTtsVoice);
         popupRef.current.close();
     }
 
@@ -86,6 +94,7 @@ function Preferences({open, toggleShow}){
                     <div id="TTSQuote-pref">
                         <EnableTTS enabled={tempEnableTTSQuote} changeOption={handlePrefChange} />
                         <TtsSpeed speed={tempTtsSpeed} changeOption={handlePrefChange} />
+                        <TtsVoice selected={tempTtsVoice} changeOption={handlePrefChange} />
                     </div>
                     <button type="submit">Save preferences</button>
                 </div>

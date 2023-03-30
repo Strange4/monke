@@ -44,6 +44,7 @@ const Home = () => {
 
     const [enableTTS, setEnableTTS] = useState(getCookieValue("enableTTSQuote"));
     const [ttsSpeed, setTtsSpeed] = useState(getCookieValue("ttsSpeed"));
+    const [ttsVoice, setTtsVoice] = useState(getCookieValue("ttsVoice"));
 
     /**
      * iife that sets default preference settings if undefined
@@ -59,7 +60,9 @@ const Home = () => {
                 enableTTSQuote: enableTTS,
                 setEnableTTSQuote: setEnableTTS,
                 ttsSpeed: ttsSpeed,
-                setTtsSpeed: setTtsSpeed
+                setTtsSpeed: setTtsSpeed,
+                ttsVoice: ttsVoice,
+                setTtsVoice: setTtsVoice
             }}>
                 <div className="blur"></div>
                 <CookieBanner />
