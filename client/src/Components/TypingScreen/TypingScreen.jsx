@@ -24,11 +24,21 @@ const allRegKeys = keyboardKeys.english.lower;
  */
 function TypingScreen(props) {
 
+    /**
+     * Fetches a quote from the database depending on the settings given by the props.
+     * If request fails then we get a quote from a hard coded data (default_quotes.json).
+     */
     const { isLoading, refetch } = useQuery("textToDisplay", async () => {
-        if (props.multiplayer) {
+        if (props.quote) {
             return props.quote
         }
-        const resp = await fetch("/api/quote",
+        let url;
+        if (props.quoteLength === "random"){
+            url = "/api/quote";
+        } else{
+            url = `/api/quote?quoteLength=${props.quoteLength}`;
+        }
+        const resp = await fetch(url,
             {
                 headers: { 'Accept': 'application/json', "Content-Type": "application/json" }
             });
@@ -38,12 +48,20 @@ function TypingScreen(props) {
         return (await resp.json()).body;
     }, {
         onSuccess: (quote) => {
-            setTextToDisplay(quote);
-            setUserDisplay(getDefaultUserDisplay(quote));
+            let newQuote = quote;
+            if (!props.punctuation){
+                newQuote = quote.replace(/[^\w\s']|_/g, "").replace(/\s+/g, " ");
+            }
+            setTextToDisplay(newQuote);
+            setUserDisplay(getDefaultUserDisplay(newQuote));
         }, onError: () => {
             const quote = defaultQuotes[randomNumber(0, defaultQuotes.length)];
-            setTextToDisplay(quote);
-            setUserDisplay(getDefaultUserDisplay(quote));
+            let newQuote = quote;
+            if (!props.punctuation){
+                newQuote = quote.replace(/[^\w\s']|_/g, "").replace(/\s+/g, " ");
+            }
+            setTextToDisplay(newQuote);
+            setUserDisplay(getDefaultUserDisplay(newQuote));
         },
         refetchOnWindowFocus: false
     });
@@ -57,6 +75,12 @@ function TypingScreen(props) {
     const [isFocused, setIsFocused] = useState(true);
     const textContainerRef = useRef();
     const socketContext = useContext(SocketContext);
+
+
+    // Refreshes the game when a setting changes.
+    useEffect(() => {
+        resetGame();
+    }, [props.quoteLength, props.punctuation]);
 
     useEffect(() => {
         if (props.multiplayer) {
@@ -78,12 +102,14 @@ function TypingScreen(props) {
      * Reset the timer and typing screen
      */
     function resetGame() {
+        refetch();
         setDisplayResults(false);
         resetTimer();
-        textContainerRef.current.focus();
+        if(textContainerRef.current){
+            textContainerRef.current.focus();
+            textContainerRef.current.value = "";
+        }
         setIsFocused(true);
-        refetch();
-        textContainerRef.current.value = "";
     }
 
     /**
@@ -159,6 +185,20 @@ function TypingScreen(props) {
         <div>
             <div className='center'>
                 <Chronometer seconds={displayTime} />
+                <input
+                    onBlur={() => setIsFocused(false)}
+                    autoFocus
+                    type="text"
+                    id="typing-input-box"
+                    ref={textContainerRef}
+                    onChange={onChangeText}
+                    onKeyDown={handleKeyDown}
+                    onKeyUp={handlekeyUp}
+                    onPaste={preventDefaultBehavior}
+                    onDrag={preventDefaultBehavior}
+                    onDrop={preventDefaultBehavior}
+                    onCopy={preventDefaultBehavior}
+                />
                 <GameText onClick={() => {
                     textContainerRef.current.focus();
                     setIsFocused(true);
@@ -191,20 +231,6 @@ function TypingScreen(props) {
                 />
             </div>
 
-            <input
-                onBlur={() => setIsFocused(false)}
-                autoFocus
-                type="text"
-                id="typing-input-box"
-                ref={textContainerRef}
-                onChange={onChangeText}
-                onKeyDown={handleKeyDown}
-                onKeyUp={handlekeyUp}
-                onPaste={preventDefaultBehavior}
-                onDrag={preventDefaultBehavior}
-                onDrop={preventDefaultBehavior}
-                onCopy={preventDefaultBehavior}
-            />
         </div>
     );
 }

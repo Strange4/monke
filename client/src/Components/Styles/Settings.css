@@ -9,6 +9,10 @@
     border-radius: 20px;
 }
 
+.highlightSetting{
+    color: whitesmoke !important;
+}
+
 #settings button{
     text-decoration: none;
     border: none;
