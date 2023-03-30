@@ -201,6 +201,7 @@ function TypingScreen(props) {
                 <Chronometer seconds={displayTime} />
                 <input
                     onBlur={() => setIsFocused(false)}
+                    onFocus={() => setIsFocused(true)}
                     autoFocus
                     type="text"
                     id="typing-input-box"
