@@ -97,7 +97,7 @@ function setUpGameListeners(socket, userData, roomCode, lobby, io) {
     socket.on("update-progress-bar", (progress) => {
         let userIndex = lobby.users.findIndex(user => user.id === userData.id);
         lobby.users[userIndex].progress = progress;
-
+        console.log(progress)
         // keeps track on whether that user finished the game or not
         if (lobby.users[userIndex].progress >= 100) {
             lobby.users[userIndex].progress = 100;
@@ -109,8 +109,9 @@ function setUpGameListeners(socket, userData, roomCode, lobby, io) {
     // executes once user has ended to update the results for that user
     socket.once("send-results", (result) => {
         io.to(roomCode).emit("update-progress", lobby.users);
-        let userIndex = lobby.leaderboard.findIndex(user => user.id === userData.id);
-        lobby.leaderboard[userIndex].results = result;
+        let leaderboardIndex = lobby.leaderboard.findIndex(user => user.id === userData.id);
+        lobby.leaderboard[leaderboardIndex].results = result;
+        lobby.leaderboard[leaderboardIndex].gameEnded = true;
         checkGameEnded(lobby, roomCode, io);
     });
 }

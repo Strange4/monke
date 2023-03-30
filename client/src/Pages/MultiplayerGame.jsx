@@ -18,10 +18,10 @@ const MultiplayerGame = () => {
     const location = useLocation();
     const [ended, setEnded] = useState(false);
     const [leaderboard, setLeaderboard] = useState([]);
-    
+
 
     useEffect(() => {
-        if(!locationContext.validAccess) {
+        if (!locationContext.validAccess) {
             navigate("/")
         }
     }, [locationContext.validAccess]);
@@ -29,7 +29,7 @@ const MultiplayerGame = () => {
     useEffect(() => {
         if (socketContext.socket.current) {
             updateListeners();
-        } 
+        }
     }, []);
 
     /**
@@ -56,7 +56,7 @@ const MultiplayerGame = () => {
                 setEnded(true);
             }
         });
-        // socketContext.socket.current.off("update-leaderboard");
+        socketContext.socket.current.off("update-leaderboard");
         socketContext.socket.current.once("update-leaderboard", (newLeaderboard) => {
             setLeaderboard(newLeaderboard.sort((a, b) => sortLeaderboard(a, b)));
             console.log("UPDATING LEADERBOARD TO ")
@@ -77,26 +77,26 @@ const MultiplayerGame = () => {
         });
     }
 
-        /**
+    /**
      * Sorts the users in multiplayer game according to their score
      * @param {Object} a 
      * @param {Object} b 
      * @returns {Number}
      */
-        function sortLeaderboard(a, b) {
-            if (!a.results || !a.gameEnded) {
-                return 1;
-            } else if (!b.results || !b.gameEnded) {
-                return -1;
-            }
-            return b.results.wpm * b.results.accuracy - a.results.wpm * a.results.accuracy;
+    function sortLeaderboard(a, b) {
+        if (!a.results || !a.gameEnded) {
+            return 1;
+        } else if (!b.results || !b.gameEnded) {
+            return -1;
         }
+        return b.results.wpm * b.results.accuracy - a.results.wpm * a.results.accuracy;
+    }
 
     return (
         <>
             < NavBar />
             {ended ?
-                <EndGameLeaderboard leaderboard={leaderboard}/>
+                <EndGameLeaderboard leaderboard={leaderboard} />
                 :
                 <div id="multiplayer-game">
                     <div id="popup-root" />
@@ -107,7 +107,7 @@ const MultiplayerGame = () => {
                                 avatar={user.avatar} leader={i === 0} />
                         })}
                     </div>
-                    <GameProgress/>
+                    <GameProgress />
                     <TypingScreen multiplayer={true} quote={location.state?.quote || ""} />
                 </div>
             }

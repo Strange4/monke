@@ -115,6 +115,7 @@ function TypingScreen(props) {
         }
         if (props.multiplayer) {
             socketContext.socket.current.emit("update-progress-bar", progress);
+            console.log(progress)
         } else if (current.length === 1) {
             startTimer();
         }
