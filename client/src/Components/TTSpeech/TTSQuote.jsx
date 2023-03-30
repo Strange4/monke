@@ -1,5 +1,5 @@
 import Speech from "react-speech";
-import { useRef, useEffect, useContext } from "react";
+import { useRef, useEffect, useContext, useState } from "react";
 import PreferenceContext from "../../Context/PreferenceContext";
 
 /**
@@ -9,16 +9,17 @@ import PreferenceContext from "../../Context/PreferenceContext";
  * @param {boolean} enabled - Flag indicating if the user enbled the TTS feature.
  * @returns {ReactElement} - If result screen inactive and TTS enabled, returns TTS component.
  */
-function TTSQuote({ text, resultScreenOff }){
+function TTSQuote({ text }){
 
     const prefContext = useContext(PreferenceContext);
     const speechRef = useRef();
+    const [isPlaying, setIsPlaying] = useState(false);
 
     useEffect(() => {
-        if(speechRef.current && resultScreenOff){
-            playQuote();
+        if(speechRef.current){
+            setIsPlaying(true)
         }
-    }, [text, prefContext.enableTTSQuote]);
+    }, [text, prefContext.enableTTSQuote, isPlaying]);
 
     /**
      * function that invokes react-speech to read out the text.
@@ -29,7 +30,16 @@ function TTSQuote({ text, resultScreenOff }){
         speechRef.current.play();
     }
 
-    return prefContext.enableTTSQuote && <Speech ref={speechRef} text={text}
+    useEffect(() => {
+        if(isPlaying){
+            playQuote();
+        }
+        return () => {
+            setIsPlaying(false);
+        }
+    }, [isPlaying]);
+
+    return prefContext.enableTTSQuote === "true" && <Speech ref={speechRef} text={text}
         displayText="Replay quote"
         textAsButton={true}
         rate={prefContext.ttsSpeed}

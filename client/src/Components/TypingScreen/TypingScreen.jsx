@@ -189,7 +189,6 @@ function TypingScreen(props) {
                 
                 <TTSQuote
                     text={textToDisplay}
-                    resultScreenOff={!displayResults}
                 />
 
                 <SoloGameResult
