@@ -1,9 +1,9 @@
 import '../Styles/Settings.css';
 import LengthSettings from './LengthSettings';
 import { FaAt } from 'react-icons/fa';
-import { setCookie } from '../Controller/CookieHelper';
+import { setCookie } from '../../Controller/CookieHelper';
 import { HiCog } from "react-icons/hi"
-import Preferences from './Preferences/Preferences';
+import Preferences from '../Preferences/Preferences';
 import { useState } from 'react';
 
 /**
