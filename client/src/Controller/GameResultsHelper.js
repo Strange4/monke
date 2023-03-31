@@ -17,9 +17,9 @@ export async function postUserStats(result) {
  * Compute the results for the solo game upon end and post them
  */
 export function computeResults(numberOfSeconds, text, typedText) {
-    const nbWords = text.split(" ").length;
+    const numWords = text.split(" ").length;
     const minutes = numberOfSeconds / 60;
-    const wpm = nbWords / minutes;
+    const wpm = numWords / minutes;
     const result = {
         time: Math.round(numberOfSeconds * 100) / 100,
         wpm: Math.round(wpm * 100) / 100,
