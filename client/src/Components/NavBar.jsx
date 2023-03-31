@@ -1,7 +1,7 @@
 import './Styles/NavBar.css';
 import Popup from 'reactjs-popup';
 import Leaderboard from './Leaderboard';
-import LobbyPopup from './Lobby/LobbyPopup';
+import LobbyPopup from './MultiplayerGame/Lobby/LobbyPopup';
 import Preferences from './Preferences/Preferences';
 import Login from './Login';
 import logo from "../Assets/keyboard-champions-logo/svg/logo-no-background.svg"
@@ -18,7 +18,6 @@ import { SecureLink } from './SecureNavigation/SecureLink';
  */
 function NavBar() {
     const auth = useContext(AuthContext);
-
     const [showPref, setShowPref] = useState(false);
 
     function toggleShowPref() {
@@ -55,8 +54,8 @@ function NavBar() {
                 </li>
             </div>
             <li>
-                <Popup trigger={<a><CgProfile id="profile-icon"/></a>} >
-                    {auth.userLoggedIn ? 
+                <Popup trigger={<a><CgProfile id="profile-icon" /></a>} >
+                    {auth.userLoggedIn ?
                         <div className='access'>
                             <SecureLink to='/profile'>
                                 <button className='logged-in'>Profile</button>

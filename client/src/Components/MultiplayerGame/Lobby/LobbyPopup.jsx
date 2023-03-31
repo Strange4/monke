@@ -1,11 +1,11 @@
 import './Styles/LobbyPopup.css';
-import '../Styles/Popup.css';
+import '../../Styles/Popup.css';
 import { useContext, useRef } from 'react';
-import AuthContext from '../../Context/AuthContext';
-import * as FetchModule from "../../Controller/FetchModule";
+import AuthContext from '../../../Context/AuthContext';
+import * as FetchModule from "../../../Controller/FetchModule";
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
-import SocketContext from '../../Context/SocketContext';
+import SocketContext from '../../../Context/SocketContext';
 import { GiRetroController } from 'react-icons/gi';
 
 /**
@@ -19,27 +19,49 @@ function LobbyPopup() {
     const auth = useContext(AuthContext);
     const socketContext = useContext(SocketContext);
 
+    /**
+     * Joins the lobby at the given room code
+     * @param {Event} e 
+     */
     const joinLobby = async (e) => {
         e.target.disabled = true;
         await setUpSocket(roomCode.current.value, e.target);
     }
 
+    /**
+     * Creates a lobby with a new room code
+     * @param {Event} e 
+     */
     const createLobby = async (e) => {
         e.target.disabled = true;
         let newRoomCode = await FetchModule.fetchData("/api/lobby");
-        await setUpSocket(newRoomCode, e.target);
+        if (newRoomCode) {
+            await setUpSocket(newRoomCode, e.target);
+        }
     }
 
+    /**
+     * Disconnects the socket and sets it to undefined
+     */
     function disconnectSocket() {
         socketContext.socket.current.disconnect();
         socketContext.socket.current = undefined;
     }
 
+    /**
+     * Updates the current room to reflect the user join/leave changes
+     * @param {Object} users 
+     * @param {String} roomCode 
+     */
     function updateRoom(users, roomCode) {
         socketContext.userList = users;
         navigate("/lobby", { state: { roomCode: roomCode } });
     }
 
+    /**
+     * Sets up the socket listeners for basic lobby actions
+     * @param {*} joinButton 
+     */
     function setSocketListeners(joinButton) {
         socketContext.socket.current.on("join-room", (users, roomCode) => {
             updateRoom(users, roomCode);
@@ -59,6 +81,11 @@ function LobbyPopup() {
         });
     }
 
+    /**
+     * Sets up the socket and sets the user data
+     * @param {String} roomCode 
+     * @param {*} joinButton 
+     */
     async function setUpSocket(roomCode, joinButton) {
         if (socketContext.socket.current) {
             disconnectSocket();
@@ -70,8 +97,10 @@ function LobbyPopup() {
         if (auth.userLoggedIn) {
             const url = "/api/user";
             const data = await FetchModule.postData(url, undefined, "POST");
-            userData["avatar"] = data.picture_url;
-            userData["username"] = data.username;
+            if (data) {
+                userData["avatar"] = data.picture_url;
+                userData["username"] = data.username;
+            }
         }
         socketContext.socket.current = io("", {
             query: { roomCode: roomCode }, auth: { userData }

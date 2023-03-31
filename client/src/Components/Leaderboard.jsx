@@ -8,7 +8,7 @@ import { useFetch } from '../Controller/FetchModule';
  * @returns {ReactElement}
  */
 function Leaderboard() {
-    const [loadingIndicator, leaderboard] = useFetch("leaderboard", "/api/leaderboard")
+    const [loadingIndicator, leaderboard] = useFetch("leaderboard", "/api/leaderboard");
 
     return (
         <div id="leaderboard" className='popup'>
