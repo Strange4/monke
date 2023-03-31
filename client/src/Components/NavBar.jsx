@@ -10,7 +10,7 @@ import { CgProfile } from "react-icons/cg";
 import { HiCog, HiUserGroup } from "react-icons/hi"
 import AuthContext from '../Context/AuthContext';
 import { useContext, useState } from "react";
-import { SecureLink } from './SecureNavigation/SecureLink';
+    import { SecureLink } from './SecureNavigation/SecureLink';
 
 /**
  * Navigation bar to be used on all pages
