@@ -1,4 +1,4 @@
-import './Styles/PlayerItem.css';
+import '../Styles/PlayerItem.css';
 import { RiVipCrownLine } from 'react-icons/ri';
 
 /**

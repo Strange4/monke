@@ -4,7 +4,7 @@ import './Layout/VirtualKey.css'
  * @param {{currentKeys: {keyValue: string; isPressed: boolean; }[][]}} param
  * @returns 
  */
-function VirtualKeyboard({currentKeys}) {
+function VirtualKeyboard({ currentKeys }) {
     function getKeyType(key) {
         switch (key) {
         case " ":
@@ -15,22 +15,19 @@ function VirtualKeyboard({currentKeys}) {
             return "";
         }
     }
-    
+
     return (
         <div className="keyboard-container vertical">
             {currentKeys.map((row, i) => {
                 return (
                     <div key={i} className="horizontal">
                         {row.map((key, i) =>
-                            <div key={i}
-                                className={
-                                    `keyboard-key
+                            <div key={i} className={
+                                `keyboard-key
                                     ${getKeyType(key.keyValue)}
                                     ${key.isPressed ? "pressed" : undefined}`
-                                }
-                            >
-                                {key.keyValue}
-                            </div>
+                            }
+                            > {key.keyValue} </div>
                         )}
                     </div>
                 );

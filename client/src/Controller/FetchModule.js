@@ -1,6 +1,5 @@
 import { useQuery } from "react-query";
 import Spinner from "../Components/Spinner";
-// importing definitions for better intellisense
 
 /**
  * Generic fetch function to fetch from any given
@@ -10,27 +9,44 @@ import Spinner from "../Components/Spinner";
  * @returns {JSON} data
  */
 async function fetchData(url) {
-    let data;
-    const response = await fetch(url);
-    if (response.ok) {
-        data = await response.json();
-        return data;
-    } else {
-        throw Error("Something Went wrong fetching data");
+    try {
+        const response = await fetch(url);
+        if (response.ok) {
+            return await response.json();
+        } else {
+            throw Error("Something Went wrong fetching data");
+        }
+    } catch {
+        return undefined;
     }
 }
 
+/**
+ * Generic post function to post/put given data using
+ * the given method (post/put)
+ * @param {String} url 
+ * @param {Object} body 
+ * @param {String} method 
+ * @returns {Object}
+ */
 async function postData(url, body, method) {
-    const res = await fetch(url, {
-        method: method,
-        body: JSON.stringify(body),
-        headers: {
-            'Accept': 'application/json',
-            "Content-Type": "application/json"
-        },
-    });
-    const data = await res.json();
-    return data
+    try {
+        const response = await fetch(url, {
+            method: method,
+            body: JSON.stringify(body),
+            headers: {
+                'Accept': 'application/json',
+                "Content-Type": "application/json"
+            },
+        });
+        if (response.ok) {
+            return await response.json();
+        } else {
+            throw Error("Something Went wrong posting data");
+        }
+    } catch {
+        return undefined;
+    }
 }
 
 /**
@@ -70,7 +86,7 @@ async function transformData(response) {
     if (contentType.match("json")) {
         return await response.json();
     } else if (contentType.match("text")) {
-        return await response.text()
+        return await response.text();
     }
     return await response.blob();
 }
@@ -88,7 +104,7 @@ function readImage(image, validateForm, postImage) {
         fr.readAsArrayBuffer(image);
 
         fr.onload = function () {
-            const formData = new FormData()
+            const formData = new FormData();
             formData.append('image', image);
             formData.append('fileName', image.name);
             postImage(formData);
@@ -96,18 +112,28 @@ function readImage(image, validateForm, postImage) {
     }
 }
 
+/**
+ * Helper function used to post images
+ * @param {String} url 
+ * @param {Object} userInput 
+ * @returns {Object}
+ */
 async function postImageAPI(url, userInput) {
-    const response = await fetch(url, {
-        method: 'PUT',
-        headers: {
-        },
-        body: userInput
-    });
-    if (response.ok) {
-        const data = await response.json()
-        return data
-    } else {
-        throw Error("Something Went wrong posting data");
+    try {
+        const response = await fetch(url, {
+            method: 'PUT',
+            headers: {
+            },
+            body: userInput
+        });
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        } else {
+            throw Error("Something Went wrong posting data");
+        }
+    } catch {
+        return undefined;
     }
 }
 

@@ -23,20 +23,12 @@ export function isAuthenticated(req, res, next) {
 }
 
 /**
- * Get endpoint that returns the session user
- * Makes sure to log back in the user when page is refreshed
- */
-authRouter.get("/refreshLogin", isAuthenticated, function (req, res) {
-    return res.sendStatus(200);
-});
-
-/**
  * Post endpoint to login / authenticate the user
  * Creates a session using user email as unique id
  */
 authRouter.post("/login", async (req, res) => {
     const { token } = req.body;
-    if(!token){
+    if (!token) {
         next(new createHttpError.BadRequest("No google token in body"));
         return;
     }

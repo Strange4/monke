@@ -1,4 +1,4 @@
-function TtsVoice({ selected, changeOption }){
+function TtsVoice({ selected, changeOption }) {
 
     // Thanks OpenAI for providing me the
     // information to get a list of available voices
