@@ -4,12 +4,12 @@
     flex-flow: column wrap;
     justify-content: center;
     align-content: center;
-    width: 350px;
+    width: 300px;
     height: 100px;
     background-color: var(--popup-color);
     border-radius: 10px;
     color: #fff;
-    right: -50px;
+    right: 0;
 }
 
 .logged-in {
