@@ -181,6 +181,20 @@ function TypingScreen(props) {
         <div>
             <div className='center'>
                 <Chronometer seconds={displayTime} />
+                <input
+                    onBlur={() => setIsFocused(false)}
+                    autoFocus
+                    type="text"
+                    id="typing-input-box"
+                    ref={textContainerRef}
+                    onChange={onChangeText}
+                    onKeyDown={handleKeyDown}
+                    onKeyUp={handlekeyUp}
+                    onPaste={preventDefaultBehavior}
+                    onDrag={preventDefaultBehavior}
+                    onDrop={preventDefaultBehavior}
+                    onCopy={preventDefaultBehavior}
+                />
                 <GameText onClick={() => {
                     textContainerRef.current.focus();
                     setIsFocused(true);
@@ -201,20 +215,6 @@ function TypingScreen(props) {
                 />
             </div>
 
-            <input
-                onBlur={() => setIsFocused(false)}
-                autoFocus
-                type="text"
-                id="typing-input-box"
-                ref={textContainerRef}
-                onChange={onChangeText}
-                onKeyDown={handleKeyDown}
-                onKeyUp={handlekeyUp}
-                onPaste={preventDefaultBehavior}
-                onDrag={preventDefaultBehavior}
-                onDrop={preventDefaultBehavior}
-                onCopy={preventDefaultBehavior}
-            />
         </div>
     );
 }
