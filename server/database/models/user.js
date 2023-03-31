@@ -15,10 +15,30 @@ const UserSchema = new Schema({
 }, {
     methods: {
         async getRank(){
-            return await User.countDocuments({ 
-                "user_stats.max_wpm": { $gte: this.user_stats.max_wpm },
-                "user_stats.max_accuracy": { $gte: this.user_stats.max_accuracy }
+            const peopleGreaterThanMe = await User.countDocuments({
+                "user_stats.max_wpm": { $gt: this.user_stats.max_wpm },
             });
+            const peopleEqualToMe = await User.countDocuments({
+                "user_stats.max_wpm": this.user_stats.max_wpm,
+            });
+            // if i am the only one with that wpm
+            if(peopleEqualToMe === 1){
+                // i am next in line
+                return peopleGreaterThanMe + 1;
+            }
+
+            // every one who has the same wpm sorted by accuracy and then date
+            const myPeople = await User.find({
+                "user_stats.max_wpm": this.user_stats.max_wpm
+            }).sort({
+                "user_stats.max_accuracy": "desc",
+                "user_stats.date": "asc"
+            }).lean();
+
+            // find myself, then add the people above me, 
+            // then add 1 because it needs the rank not the index
+            return myPeople.findIndex((people) => people._id.toString() === this.id ) 
+                + peopleGreaterThanMe + 1;
         }
     }
 });
