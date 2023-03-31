@@ -115,8 +115,7 @@ function LobbyPopup() {
             <GiRetroController id='lobby-filler-2' />
             <h1 id='lobby-header'>Multiplayer</h1>
             <div id='create-btn-container'>
-
-                <button
+                <button 
                     onClick={async (e) => await createLobby(e)}
                     className='lobby-access'>
                     Create
