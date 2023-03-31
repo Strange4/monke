@@ -2,6 +2,9 @@ import './Styles/Settings.css';
 import LengthSettings from './LengthSettings';
 import { FaAt } from 'react-icons/fa';
 import { setCookie } from '../Controller/CookieHelper';
+import { HiCog } from "react-icons/hi"
+import Preferences from './Preferences/Preferences';
+import { useState } from 'react';
 
 /**
  * Displays game settings
@@ -22,8 +25,19 @@ function GameSettings(props) {
         }
     }
 
+    const [showPref, setShowPref] = useState(false);
+
+    function toggleShowPref() {
+        setShowPref(!showPref);
+    }
+
     return (
         <div id="settings">
+            <li id='prefs'>
+                <HiCog onClick={toggleShowPref} id="pref-icon" />
+                {showPref ?
+                    <Preferences open={showPref} toggleShow={toggleShowPref} /> : null}
+            </li>
             <div id="global-settings">
                 <button className={props.punctuation ? "highlightSetting" : ""} 
                     onClick={setPunctuation}>

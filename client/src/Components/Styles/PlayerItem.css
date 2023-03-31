@@ -9,7 +9,6 @@
     height: 30px;
     width: 100%;
     min-width: 100px;
-    /* margin: 10px; */
 }
 
 .player-image {
@@ -29,7 +28,6 @@
     align-content: center;
     justify-content: center;
     width: 80%;
-    /* margin: 5px; */
     font-size: 1em;
     font-size: 2.5vi;
 }
@@ -38,7 +36,7 @@
     .player-name {
        font-size: 1.2em;
     }
-  }
+}
 
 .highlight {
     background-color: var(--accent-color) !important;

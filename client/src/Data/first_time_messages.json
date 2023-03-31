@@ -10,7 +10,7 @@
         {
             "message": {
                 "area" : "settings",
-                "body": "These are the game settings. You can enable puntuation and decide the text length here",
+                "body": "These are the game settings. You can enable puntuation and decide the text length here. You can also access the accessibility options",
                 "btnMessage": "next"
                 
             }

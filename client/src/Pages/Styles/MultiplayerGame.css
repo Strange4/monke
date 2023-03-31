@@ -6,7 +6,6 @@
     background-color: var(--sub-color-transparent);
     border-radius: 80px;
     width: 80%;
-    /* min-width: fit-content; */
     height: fit-content;
     margin: auto;
     margin-top: 20px;
@@ -26,7 +25,6 @@ div.highlight > div#game-single-result > p#end-game-rank{
 div#playing-players > div.player-info > p.player-name {
     height: fit-content !important;
     margin: 0;
-    /* min-width: 50px; */
 }
 
 div#playing-players > div.player-info {

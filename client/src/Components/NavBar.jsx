@@ -19,12 +19,6 @@ import { SecureLink } from './SecureNavigation/SecureLink';
 function NavBar() {
     const auth = useContext(AuthContext);
 
-    const [showPref, setShowPref] = useState(false);
-
-    function toggleShowPref() {
-        setShowPref(!showPref);
-    }
-
     async function handleLogout() {
         await fetch("/authentication/logout");
         auth.setUserLoggedIn(false);
@@ -47,11 +41,6 @@ function NavBar() {
                     <Popup trigger={<a><HiUserGroup id="lobby-icon" /></a>} modal>
                         <LobbyPopup />
                     </Popup>
-                </li>
-                <li>
-                    <HiCog onClick={toggleShowPref} id="pref-icon" />
-                    {showPref ?
-                        <Preferences open={showPref} toggleShow={toggleShowPref} /> : null}
                 </li>
             </div>
             <li>

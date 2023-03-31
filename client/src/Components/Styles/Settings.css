@@ -10,6 +10,25 @@
     height: fit-content;
 }
 
+#prefs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+    list-style-type: none;
+}
+
+#prefs > svg {
+    width: 20px;
+    height: 20px;
+    color: var(--sub-color);
+}
+
+#prefs > svg:hover {
+    cursor: pointer;
+    color: var(--text-color);
+}
+
 .highlightSetting{
     color: whitesmoke !important;
 }
