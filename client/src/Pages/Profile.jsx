@@ -8,7 +8,7 @@ import * as FetchModule from "../Controller/FetchModule";
 import { useNavigate } from "react-router-dom";
 import UserStats from "../Components/UserStats";
 import { LocationContext } from "../Context/LocationContext";
-import FirstTimePopUp from "../Components/FirstTimePopUp";
+import FirstTimePopUp from "../Components/FirstTimeTour/FirstTimePopUp";
 import { getCookieValue } from "../Controller/CookieHelper.js";
 
 const Profile = () => {

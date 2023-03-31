@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import './Styles/GameText.css';
+import '../Styles/GameText.css';
 /**
  * 
  * @param {{display: {letter: string; type: string; current: boolean; }[]}} param0 

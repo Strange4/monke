@@ -1,5 +1,5 @@
-import './Styles/Settings.css';
-import {setCookie} from "../Controller/CookieHelper";
+import '../Styles/Settings.css';
+import {setCookie} from "../../Controller/CookieHelper";
 
 /**
  * Let's the user choose between quote length preference.

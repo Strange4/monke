@@ -1,5 +1,5 @@
 import FirstTimePopUp from "./FirstTimePopUp";
-import { getCookieValue, setCookie } from "../Controller/CookieHelper.js";
+import { getCookieValue, setCookie } from "../../Controller/CookieHelper.js";
 import { useState } from "react";
 
 /**

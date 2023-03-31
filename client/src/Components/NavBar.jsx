@@ -1,7 +1,7 @@
 import './Styles/NavBar.css';
 import Popup from 'reactjs-popup';
 import Leaderboard from './Leaderboard';
-import LobbyPopup from './Lobby/LobbyPopup';
+import LobbyPopup from './MultiplayerGame/Lobby/LobbyPopup';
 import Preferences from './Preferences/Preferences';
 import Login from './Login';
 import logo from "../Assets/keyboard-champions-logo/svg/logo-no-background.svg"

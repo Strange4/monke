@@ -1,7 +1,7 @@
 import './Styles/MultiplayerGame.css';
 import NavBar from "../Components/NavBar";
 import TypingScreen from "../Components/TypingScreen/TypingScreen";
-import PlayerItem from '../Components/PlayerItem';
+import PlayerItem from '../Components/MultiplayerGame/PlayerItem';
 import SocketContext from '../Context/SocketContext';
 import { useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
@@ -114,7 +114,7 @@ const MultiplayerGame = () => {
                         })}
                     </div>
                     <GameProgress />
-                    <TypingScreen multiplayer={true} quote={location.state?.quote || ""} />
+                    <TypingScreen multiplayer={true} quote={location.state?.quote} />
                 </div>
             }
         </>

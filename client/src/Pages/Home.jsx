@@ -1,9 +1,9 @@
 import NavBar from "../Components/NavBar";
 import TypingScreen from "../Components/TypingScreen/TypingScreen";
-import GameSettings from "../Components/GameSettings";
+import GameSettings from "../Components/Settings/GameSettings";
 import { LocationContext } from "../Context/LocationContext";
 import { useContext, useEffect, useState} from "react";
-import CookieBanner from "../Components/CookieBanner";
+import CookieBanner from "../Components/FirstTimeTour/CookieBanner";
 import { getCookieValue } from "../Controller/CookieHelper";
 
 const Home = () => {
