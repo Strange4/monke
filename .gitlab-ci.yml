@@ -65,7 +65,7 @@ test-job:
     paths:
       - ./server/node_modules
   script:
-    - cd server && npm run install
+    - cd server && npm install
     - echo "Testing 🧪🔬"
     - npm run test
 
