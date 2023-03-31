@@ -28,7 +28,7 @@ if(!secret){
     throw new Error("The secret wasn't found in the environment variables");
 }
 
-const NODE_ENV = process.env.NODE_ENV || "production";
+// const NODE_ENV = process.env.NODE_ENV || "production";
 app.use(session({
     secret: secret,
     name: 'id',
@@ -36,7 +36,8 @@ app.use(session({
     resave: false,
     cookie: {
         maxAge: 120000,
-        secure: NODE_ENV === "development" ? false : true,
+        secure: false,
+        // secure: NODE_ENV === "development" ? false : true,
         httpOnly: true,
         sameSite: 'strict'
     }
