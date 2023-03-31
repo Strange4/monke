@@ -35,7 +35,9 @@ function LobbyPopup() {
     const createLobby = async (e) => {
         e.target.disabled = true;
         let newRoomCode = await FetchModule.fetchData("/api/lobby");
-        await setUpSocket(newRoomCode, e.target);
+        if (newRoomCode) {
+            await setUpSocket(newRoomCode, e.target);
+        }
     }
 
     /**
@@ -95,8 +97,10 @@ function LobbyPopup() {
         if (auth.userLoggedIn) {
             const url = "/api/user";
             const data = await FetchModule.postData(url, undefined, "POST");
-            userData["avatar"] = data.picture_url;
-            userData["username"] = data.username;
+            if (data) {
+                userData["avatar"] = data.picture_url;
+                userData["username"] = data.username;
+            }
         }
         socketContext.socket.current = io("", {
             query: { roomCode: roomCode }, auth: { userData }

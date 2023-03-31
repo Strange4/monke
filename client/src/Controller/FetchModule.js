@@ -10,13 +10,15 @@ import Spinner from "../Components/Spinner";
  * @returns {JSON} data
  */
 async function fetchData(url) {
-    let data;
-    const response = await fetch(url);
-    if (response.ok) {
-        data = await response.json();
-        return data;
-    } else {
-        throw Error("Something Went wrong fetching data");
+    try {
+        const response = await fetch(url);
+        if (response.ok) {
+            return await response.json();
+        } else {
+            throw Error("Something Went wrong fetching data");
+        }
+    } catch {
+        return undefined;
     }
 }
 
@@ -29,19 +31,23 @@ async function fetchData(url) {
  * @returns {Object}
  */
 async function postData(url, body, method) {
-    const response = await fetch(url, {
-        method: method,
-        body: JSON.stringify(body),
-        headers: {
-            'Accept': 'application/json',
-            "Content-Type": "application/json"
-        },
-    });
-    if (response.ok) {
-        const data = await response.json();
-        return data;
-    } else {
-        throw Error("Something Went wrong posting data");
+    try {
+        const response = await fetch(url, {
+            method: method,
+            body: JSON.stringify(body),
+            headers: {
+                'Accept': 'application/json',
+                "Content-Type": "application/json"
+            },
+        });
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        } else {
+            throw Error("Something Went wrong posting data");
+        }
+    } catch {
+        return undefined;
     }
 }
 
@@ -115,17 +121,21 @@ function readImage(image, validateForm, postImage) {
  * @returns {Object}
  */
 async function postImageAPI(url, userInput) {
-    const response = await fetch(url, {
-        method: 'PUT',
-        headers: {
-        },
-        body: userInput
-    });
-    if (response.ok) {
-        const data = await response.json();
-        return data;
-    } else {
-        throw Error("Something Went wrong posting data");
+    try {
+        const response = await fetch(url, {
+            method: 'PUT',
+            headers: {
+            },
+            body: userInput
+        });
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        } else {
+            throw Error("Something Went wrong posting data");
+        }
+    } catch {
+        return undefined;
     }
 }
 

@@ -15,7 +15,7 @@ const Profile = () => {
     const navigate = useNavigate();
     const locationContext = useContext(LocationContext);
     const auth = useContext(AuthContext);
-    const [profileData, setProfileData] = useState({
+    const defaultProfileData = {
         username: "",
         picture_url:
             // eslint-disable-next-line max-len
@@ -31,8 +31,8 @@ const Profile = () => {
             games_count: 0
         },
         rank: 0
-    });
-
+    }
+    const [profileData, setProfileData] = useState(defaultProfileData);
     const [EditingUsername, setEditingUsername] = useState(false);
     const [EditingAvatar, setEditingAvatar] = useState(false);
     const [UsernameFeedback, setUsernameFeedback] = useState("");
@@ -55,7 +55,7 @@ const Profile = () => {
             if (auth.userLoggedIn) {
                 const url = "/api/user";
                 const data = await FetchModule.postData(url, undefined, "POST");
-                setProfileData(data);
+                data ? setProfileData(data) : navigate("/");
             } else {
                 navigate("/");
             }
@@ -71,7 +71,9 @@ const Profile = () => {
             const newUsername = usernameField.current.textContent;
             const body = { username: newUsername };
             const data = await FetchModule.postData("/api/update_username", body, "PUT");
-            setProfileData(data);
+            if (data) {
+                setProfileData(data);
+            }
         } else {
             setUsernameFeedback(`
                 Invalid, usernames consist of:
@@ -120,7 +122,7 @@ const Profile = () => {
 
     async function postImage(data) {
         const newData = await FetchModule.postImageAPI("/api/update_avatar", data);
-        setProfileData(newData);
+        setProfileData(newData || defaultProfileData);
     }
 
     /**
