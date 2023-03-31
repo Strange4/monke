@@ -55,7 +55,9 @@ const Profile = () => {
             if (auth.userLoggedIn) {
                 const url = "/api/user";
                 const data = await FetchModule.postData(url, undefined, "POST");
-                data ? setProfileData(data) : navigate("/");
+                if (data) {
+                    setProfileData(data)
+                }
             } else {
                 navigate("/");
             }
@@ -93,6 +95,8 @@ const Profile = () => {
         const username = usernameField.current.textContent;
         const usernameRegex = /^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$/;
         var validUsername = username.match(usernameRegex);
+        console.log(validUsername)
+        console.log(`-${username}-`)
         if (validUsername === null || username.length > 10 || username.length < 0) {
             return false;
         }
@@ -122,7 +126,9 @@ const Profile = () => {
 
     async function postImage(data) {
         const newData = await FetchModule.postImageAPI("/api/update_avatar", data);
-        setProfileData(newData || defaultProfileData);
+        if (newData) {
+            setProfileData(newData)
+        }
     }
 
     /**
@@ -184,7 +190,7 @@ const Profile = () => {
                     <div id="image">
                         <img id="profile-pic"
                             ref={avatarField}
-                            src={`${profileData.picture_url || DefaultPicture}`}
+                            src={`${profileData?.picture_url || DefaultPicture}`}
                             alt="your profile image"></img>
                         {
                             EditingAvatar ?
@@ -240,7 +246,7 @@ const Profile = () => {
                                 className={EditingUsername ? "editable" : ""}
                                 suppressContentEditableWarning={true}
                                 ref={usernameField}
-                                maxLength={5}> {profileData.username} </h2>
+                                maxLength={5}>{profileData.username}</h2>
                         </div>
                         <div id="rank-info">
                             <h2> <span className="user-label">Rank: </span></h2>

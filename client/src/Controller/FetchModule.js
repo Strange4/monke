@@ -1,6 +1,5 @@
 import { useQuery } from "react-query";
 import Spinner from "../Components/Spinner";
-// importing definitions for better intellisense
 
 /**
  * Generic fetch function to fetch from any given
@@ -41,8 +40,7 @@ async function postData(url, body, method) {
             },
         });
         if (response.ok) {
-            const data = await response.json();
-            return data;
+            return await response.json();
         } else {
             throw Error("Something Went wrong posting data");
         }
