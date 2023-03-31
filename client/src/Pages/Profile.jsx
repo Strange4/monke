@@ -95,8 +95,6 @@ const Profile = () => {
         const username = usernameField.current.textContent;
         const usernameRegex = /^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$/;
         var validUsername = username.match(usernameRegex);
-        console.log(validUsername)
-        console.log(`-${username}-`)
         if (validUsername === null || username.length > 10 || username.length < 0) {
             return false;
         }
