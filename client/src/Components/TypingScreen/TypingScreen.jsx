@@ -35,9 +35,9 @@ function TypingScreen(props) {
             return props.quote
         }
         let url;
-        if (props.quoteLength === "random"){
+        if (props.quoteLength === "random") {
             url = "/api/quote";
-        } else{
+        } else {
             url = `/api/quote?quoteLength=${props.quoteLength}`;
         }
         const resp = await fetch(url,
@@ -51,7 +51,7 @@ function TypingScreen(props) {
     }, {
         onSuccess: (quote) => {
             let newQuote = quote;
-            if (!props.punctuation){
+            if (!props.punctuation) {
                 newQuote = quote.replace(/[^\w\s']|_/g, "").replace(/\s+/g, " ");
             }
             setTextToDisplay(newQuote);
@@ -59,7 +59,7 @@ function TypingScreen(props) {
         }, onError: () => {
             const quote = defaultQuotes[randomNumber(0, defaultQuotes.length)];
             let newQuote = quote;
-            if (!props.punctuation){
+            if (!props.punctuation) {
                 newQuote = quote.replace(/[^\w\s']|_/g, "").replace(/\s+/g, " ");
             }
             setTextToDisplay(newQuote);
@@ -73,7 +73,7 @@ function TypingScreen(props) {
     const [displayResults, setDisplayResults] = useState(false);
     const { startTimer, stopTimer, resetTimer, timer } = useChronometer(setDisplayTime);
     const [userDisplay, setUserDisplay] = useState(getDefaultUserDisplay(textToDisplay));
-    
+
     const [isFocused, setIsFocused] = useState(true);
     const textContainerRef = useRef();
     const socketContext = useContext(SocketContext);
@@ -121,7 +121,7 @@ function TypingScreen(props) {
         refetch();
         setDisplayResults(false);
         resetTimer();
-        if(textContainerRef.current){
+        if (textContainerRef.current) {
             textContainerRef.current.focus();
             textContainerRef.current.value = "";
         }
@@ -217,7 +217,7 @@ function TypingScreen(props) {
                     setIsFocused(true);
                 }} display={userDisplay} isFocused={isFocused} />
                 <VirtualKeyboard currentKeys={keyboard} />
-                
+
                 <TTSQuote
                     text={textToDisplay}
                 />
