@@ -99,6 +99,8 @@ function TypingScreen(props) {
         if (props.multiplayer) {
             const results = computeMultiplayerResults();
             socketContext.socket.current.emit("send-results", results);
+        } else if (props.practice) {
+            resetGame()
         } else {
             setDisplayResults(true);
         }

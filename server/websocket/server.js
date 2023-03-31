@@ -111,6 +111,7 @@ function setUpGameListeners(socket, userData, roomCode, lobby, io) {
 
     // executes once user has ended to update the results for that user
     socket.once("send-results", (result) => {
+        //TODO double check
         // io.to(roomCode).emit("update-progress", lobby.users);
         let leaderboardIndex = lobby.leaderboard.findIndex(user => user.id === userData.id);
         lobby.leaderboard[leaderboardIndex].results = result;

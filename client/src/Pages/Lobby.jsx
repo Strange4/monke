@@ -114,7 +114,7 @@ function Lobby() {
             </div>
             <div id="practice">
                 <div id="popup-root" />
-                <TypingScreen multiplayer={false} punctuation={true}
+                <TypingScreen multiplayer={false} practice={true} punctuation={true}
                     quoteLength={"random"} id='lobby-game' />
             </div>
         </div>
