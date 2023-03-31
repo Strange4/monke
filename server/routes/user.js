@@ -9,8 +9,6 @@ import multer from 'multer';
 import * as Azure from "../database/azure.js";
 import { isAuthenticated } from "./authentication.js";
 
-
-
 const upload = multer({
     limits: {fieldSize: 5242880},
     fileFilter: (_, file, callback) => {

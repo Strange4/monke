@@ -28,7 +28,7 @@ export function isAuthenticated(req, res, next) {
  */
 authRouter.post("/login", async (req, res) => {
     const { token } = req.body;
-    if(!token){
+    if (!token) {
         next(new createHttpError.BadRequest("No google token in body"));
         return;
     }

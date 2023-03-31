@@ -1,4 +1,4 @@
-import {z} from 'zod';
+import { z } from 'zod';
 
 // List of acceptable image types
 const IMG_MIME_TYPES = ["image/jpg", "image/png", "image/webp", "image/jpeg"];
