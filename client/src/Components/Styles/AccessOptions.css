@@ -4,8 +4,10 @@
     flex-flow: column wrap;
     justify-content: center;
     align-content: center;
-    width: 300px;
-    height: 100px;
+    width: fit-content;
+    height: fit-content;
+    min-height: 60px;
+    padding: 10px;
     background-color: var(--popup-color);
     border-radius: 10px;
     color: #fff;
