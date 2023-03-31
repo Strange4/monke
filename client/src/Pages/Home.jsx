@@ -6,7 +6,6 @@ import { useContext, useEffect, useState } from "react";
 import CookieBanner from "../Components/CookieBanner";
 import { getCookieValue } from "../Controller/CookieHelper";
 import PreferenceContext from "../Context/PreferenceContext";
-import { AiFillInfoCircle } from "react-icons/ai"
 
 const Home = () => {
 
@@ -75,7 +74,6 @@ const Home = () => {
                         punctuation={punctuation} />
                 </div>
             </PreferenceContext.Provider>
-            <AiFillInfoCircle id="credits-icon"/>
         </div>
     );
 }
