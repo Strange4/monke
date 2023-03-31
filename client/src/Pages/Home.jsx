@@ -5,6 +5,7 @@ import { LocationContext } from "../Context/LocationContext";
 import { useContext, useEffect, useState} from "react";
 import CookieBanner from "../Components/FirstTimeTour/CookieBanner";
 import { getCookieValue } from "../Controller/CookieHelper";
+import PreferenceContext from "../Context/PreferenceContext";
 
 const Home = () => {
 
@@ -41,16 +42,38 @@ const Home = () => {
         locationContext.lastVisitedLocation.current = "/";
     }, []);
 
+    const [enableTTS, setEnableTTS] = useState(getCookieValue("enableTTSQuote"));
+    const [ttsSpeed, setTtsSpeed] = useState(getCookieValue("ttsSpeed"));
+    const [ttsVoice, setTtsVoice] = useState(getCookieValue("ttsVoice"));
+
+    /**
+     * iife that sets default preference settings if undefined
+     */
+    (()=>{
+        enableTTS || setEnableTTS("false");
+        ttsSpeed || setTtsSpeed("1");
+    })();
+
     return (
         <div id="home">
-            <div className="blur"></div>
-            <CookieBanner />
-            <NavBar />
-            <div id="game-component">
-                <GameSettings quoteLength={length} setLength={setLength} 
-                    punctuation={punctuation} setPunctuation={setPunctuation}/>
-                <TypingScreen quoteLength={length} multiplayer={false} punctuation={punctuation} />
-            </div>
+            <PreferenceContext.Provider value={{
+                enableTTSQuote: enableTTS,
+                setEnableTTSQuote: setEnableTTS,
+                ttsSpeed: ttsSpeed,
+                setTtsSpeed: setTtsSpeed,
+                ttsVoice: ttsVoice,
+                setTtsVoice: setTtsVoice
+            }}>
+                <div className="blur"></div>
+                <CookieBanner />
+                <NavBar />
+                <div id="game-component">
+                    <GameSettings quoteLength={length} setLength={setLength} 
+                        punctuation={punctuation} setPunctuation={setPunctuation}/>
+                    <TypingScreen quoteLength={length} multiplayer={false}
+                        punctuation={punctuation} />
+                </div>
+            </PreferenceContext.Provider>
         </div>
     );
 }

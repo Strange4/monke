@@ -73,7 +73,7 @@ function TypingScreen(props) {
     const [displayResults, setDisplayResults] = useState(false);
     const { startTimer, stopTimer, resetTimer, timer } = useChronometer(setDisplayTime);
     const [userDisplay, setUserDisplay] = useState(getDefaultUserDisplay(textToDisplay));
-    const [enableTTS, setEnableTTS] = useState(false);
+    
     const [isFocused, setIsFocused] = useState(true);
     const textContainerRef = useRef();
     const socketContext = useContext(SocketContext);
@@ -191,10 +191,6 @@ function TypingScreen(props) {
         return <Spinner />
     }
 
-    function handleChkBoxEvent(e) {
-        setEnableTTS(e.target.checked);
-    }
-
     return (
         <div>
             <div className='center'>
@@ -219,23 +215,11 @@ function TypingScreen(props) {
                     setIsFocused(true);
                 }} display={userDisplay} isFocused={isFocused} />
                 <VirtualKeyboard currentKeys={keyboard} />
+                
                 <TTSQuote
                     text={textToDisplay}
-                    resultScreenOff={!displayResults}
-                    enabled={enableTTS} />
-                <label>!TEMPORARY! Enable text to speech</label>
-                <input type="checkbox"
-                    id="enableTTS"
-                    name="enableTTSQuote"
-                    defaultChecked={false}
-                    onClick={handleChkBoxEvent}
-                    onKeyUp={(e) => {
-                        if (e.key === 'Enter') {
-                            e.target.checked = !e.target.checked;
-                            handleChkBoxEvent(e)
-                        }
-                    }}
                 />
+
                 <SoloGameResult
                     isOpen={displayResults}
                     displayText={userDisplay}
