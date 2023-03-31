@@ -1,18 +1,10 @@
 import { useContext } from "react";
 import SocketContext from "../../Context/SocketContext";
 import EndGameResults from "./EndGameResults";
+import { checkUser } from "../../Controller/GameResultsHelper";
 
 function EndGameLeaderboard(props) {
     const socketContext = useContext(SocketContext);
-
-    /**
-     * Checks if the displayed user is the current user
-     * @param {Object} user 
-     * @returns {Boolean}
-     */
-    function checkUser(user) {
-        return user.id === socketContext.socket.current.id;
-    }
 
     return (
         <div id="end-game-leaderboard">
@@ -28,7 +20,7 @@ function EndGameLeaderboard(props) {
                         ended={user.gameEnded}
                         wpm={user.results?.wpm}
                         acc={user.results?.accuracy}
-                        myUser={checkUser(user)}
+                        myUser={checkUser(user, socketContext.socket.current)}
                     />
                 })
             }

@@ -1,5 +1,5 @@
 import '../Styles/Settings.css';
-import {setCookie} from "../../Controller/CookieHelper";
+import { setCookie } from "../../Controller/CookieHelper";
 
 /**
  * Let's the user choose between quote length preference.
@@ -12,22 +12,22 @@ function LengthSettings(props) {
      * Sets the cookie preference of quote length when pressed.
      * @param {button} e, the button that is being pressed.
      */
-    function setQuoteLength(e){
+    function setQuoteLength(e) {
         const length = e.target.textContent;
         setCookie("quoteLength", length);
-        props.setLength(length); 
+        props.setLength(length);
     }
     const cookieSetting = props.quoteLength;
 
     return (
         <div id="length-settings">
-            <button className={cookieSetting === "short" ? "highlightSetting" : ""}  
+            <button className={cookieSetting === "short" ? "highlightSetting" : ""}
                 onClick={setQuoteLength}>short</button>
-            <button className={cookieSetting === "medium" ? "highlightSetting" : ""} 
+            <button className={cookieSetting === "medium" ? "highlightSetting" : ""}
                 onClick={setQuoteLength}>medium</button>
-            <button className={cookieSetting === "long" ? "highlightSetting" : ""} 
+            <button className={cookieSetting === "long" ? "highlightSetting" : ""}
                 onClick={setQuoteLength}>long</button>
-            <button className={cookieSetting === "random" ? "highlightSetting" : ""}  
+            <button className={cookieSetting === "random" ? "highlightSetting" : ""}
                 onClick={setQuoteLength}>random</button>
         </div>
     );

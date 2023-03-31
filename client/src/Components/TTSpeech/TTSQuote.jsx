@@ -7,15 +7,15 @@ import PreferenceContext from "../../Context/PreferenceContext";
  * @param {string} text - Text to be read by react-speech.
  * @returns {ReactElement} - If context state enableTTSQuote is "true", returns TTS component.
  */
-function TTSQuote({ text }){
+function TTSQuote({ text }) {
 
     const prefContext = useContext(PreferenceContext);
     const speechRef = useRef();
     const [isPlaying, setIsPlaying] = useState(false);
 
     useEffect(() => {
-        if(speechRef.current){
-            setIsPlaying(true)
+        if (speechRef.current) {
+            setIsPlaying(true);
         }
     }, [text, prefContext.enableTTSQuote]);
 
@@ -24,12 +24,12 @@ function TTSQuote({ text }){
      * Invoked automatically upon being mounted.
      * User can invoke it either by clicking the replay button or pressing enter when it is focused
      */
-    function playQuote(){
+    function playQuote() {
         speechRef.current.play();
     }
 
     useEffect(() => {
-        if(isPlaying){
+        if (isPlaying) {
             playQuote();
         }
         return () => {
@@ -43,7 +43,7 @@ function TTSQuote({ text }){
         rate={prefContext.ttsSpeed}
         voice={prefContext.ttsVoice}
         onKeyUp={(e) => {
-            if(e.key === 'Enter'){
+            if (e.key === 'Enter') {
                 playQuote();
             }
         }}

@@ -13,7 +13,7 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
     useEffect(() => {
         (async () => {
             if (isOpen === true) {
-                const results = 
+                const results =
                     await computeSoloGameResults(timer.time().s, originalText, displayText);
                 setUserStats(results);
             }
@@ -28,7 +28,6 @@ function SoloGameResult({ isOpen, closeWindow, timer, originalText, displayText 
         if (auth.userLoggedIn) {
             postUserStats(results);
         }
-
         return results;
     }
 

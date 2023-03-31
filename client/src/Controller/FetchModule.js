@@ -20,8 +20,16 @@ async function fetchData(url) {
     }
 }
 
+/**
+ * Generic post function to post/put given data using
+ * the given method (post/put)
+ * @param {String} url 
+ * @param {Object} body 
+ * @param {String} method 
+ * @returns {Object}
+ */
 async function postData(url, body, method) {
-    const res = await fetch(url, {
+    const response = await fetch(url, {
         method: method,
         body: JSON.stringify(body),
         headers: {
@@ -29,8 +37,12 @@ async function postData(url, body, method) {
             "Content-Type": "application/json"
         },
     });
-    const data = await res.json();
-    return data
+    if (response.ok) {
+        const data = await response.json();
+        return data;
+    } else {
+        throw Error("Something Went wrong posting data");
+    }
 }
 
 /**
@@ -70,7 +82,7 @@ async function transformData(response) {
     if (contentType.match("json")) {
         return await response.json();
     } else if (contentType.match("text")) {
-        return await response.text()
+        return await response.text();
     }
     return await response.blob();
 }
@@ -88,7 +100,7 @@ function readImage(image, validateForm, postImage) {
         fr.readAsArrayBuffer(image);
 
         fr.onload = function () {
-            const formData = new FormData()
+            const formData = new FormData();
             formData.append('image', image);
             formData.append('fileName', image.name);
             postImage(formData);
@@ -96,6 +108,12 @@ function readImage(image, validateForm, postImage) {
     }
 }
 
+/**
+ * Helper function used to post images
+ * @param {String} url 
+ * @param {Object} userInput 
+ * @returns {Object}
+ */
 async function postImageAPI(url, userInput) {
     const response = await fetch(url, {
         method: 'PUT',
@@ -104,8 +122,8 @@ async function postImageAPI(url, userInput) {
         body: userInput
     });
     if (response.ok) {
-        const data = await response.json()
-        return data
+        const data = await response.json();
+        return data;
     } else {
         throw Error("Something Went wrong posting data");
     }

@@ -18,7 +18,6 @@ import { SecureLink } from './SecureNavigation/SecureLink';
  */
 function NavBar() {
     const auth = useContext(AuthContext);
-
     const [showPref, setShowPref] = useState(false);
 
     function toggleShowPref() {
@@ -55,8 +54,8 @@ function NavBar() {
                 </li>
             </div>
             <li>
-                <Popup trigger={<a><CgProfile id="profile-icon"/></a>} >
-                    {auth.userLoggedIn ? 
+                <Popup trigger={<a><CgProfile id="profile-icon" /></a>} >
+                    {auth.userLoggedIn ?
                         <div className='access'>
                             <SecureLink to='/profile'>
                                 <button className='logged-in'>Profile</button>

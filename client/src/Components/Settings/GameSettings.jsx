@@ -12,8 +12,8 @@ function GameSettings(props) {
     /**
      * Set the punctuation for the game and also adds a cookie with that value.
      */
-    function setPunctuation(){
-        if (props.punctuation){
+    function setPunctuation() {
+        if (props.punctuation) {
             setCookie("punctuation", false);
             props.setPunctuation(false);
         } else {
@@ -25,14 +25,14 @@ function GameSettings(props) {
     return (
         <div id="settings">
             <div id="global-settings">
-                <button className={props.punctuation ? "highlightSetting" : ""} 
+                <button className={props.punctuation ? "highlightSetting" : ""}
                     onClick={setPunctuation}>
-                    <FaAt className={props.punctuation 
-                        ? "highlightSetting game-setting-icon" : "game-setting-icon"}/>
+                    <FaAt className={props.punctuation
+                        ? "highlightSetting game-setting-icon" : "game-setting-icon"} />
                     Punctuation
                 </button>
             </div>
-            <LengthSettings quoteLength={props.quoteLength} setLength={props.setLength}/>
+            <LengthSettings quoteLength={props.quoteLength} setLength={props.setLength} />
         </div>
     );
 }

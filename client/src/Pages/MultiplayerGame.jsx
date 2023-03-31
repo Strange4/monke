@@ -10,6 +10,7 @@ import EndGameLeaderboard from '../Components/MultiplayerGame/EndGameLeaderboard
 import { LocationContext } from '../Context/LocationContext';
 import AuthContext from '../Context/AuthContext';
 import { postData } from '../Controller/FetchModule';
+import { checkUser } from '../Controller/GameResultsHelper';
 
 const MultiplayerGame = () => {
     const navigate = useNavigate();
@@ -22,7 +23,7 @@ const MultiplayerGame = () => {
 
     useEffect(() => {
         if (!locationContext.validAccess) {
-            navigate("/")
+            navigate("/");
         }
     }, [locationContext.validAccess]);
 
@@ -88,15 +89,6 @@ const MultiplayerGame = () => {
         return b.results.wpm * b.results.accuracy - a.results.wpm * a.results.accuracy;
     }
 
-    /**
-     * Checks if the displayed user is the current user
-     * @param {Object} user 
-     * @returns {Boolean}
-     */
-    function checkUser(user) {
-        return user.id === socketContext.socket.current.id;
-    }
-
     return (
         <>
             < NavBar />
@@ -110,7 +102,7 @@ const MultiplayerGame = () => {
                             return <PlayerItem
                                 key={i} name={user.username}
                                 avatar={user.avatar} leader={i === 0}
-                                myUser={checkUser(user)} />
+                                myUser={checkUser(user, socketContext.socket.current)} />
                         })}
                     </div>
                     <GameProgress />

@@ -48,3 +48,14 @@ function computeAccuracy(typedText) {
     }
     return accuracy;
 }
+
+
+/**
+ * Checks if the displayed user is the current user
+ * @param {Object} user 
+ * @param {Object} currentUser 
+ * @returns {Boolean}
+ */
+export function checkUser(user, currentUser) {
+    return user.id === currentUser.id;
+}

@@ -1,5 +1,5 @@
-function TtsSpeed({speed, changeOption}){
-    return(
+function TtsSpeed({ speed, changeOption }) {
+    return (
         <>
             <p>Text-To-Speech speed</p>
             <input type={"radio"} id="tssSpeedSlow" name="ttsSpeed" value={"0.7"}

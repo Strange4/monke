@@ -11,7 +11,7 @@ import SocketContext from '../../Context/SocketContext';
 import {
     renderLetters, getDefaultUserDisplay, mapKeyToKeyboard, preventDefaultBehavior,
     randomNumber
-} from './TypingUtil';
+} from '../../Controller/TypingUtil';
 import defaultQuotes from '../../Data/default_quotes.json';
 import TTSQuote from '../TTSpeech/TTSQuote';
 import AuthContext from '../../Context/AuthContext';
@@ -100,7 +100,7 @@ function TypingScreen(props) {
             const results = computeMultiplayerResults();
             socketContext.socket.current.emit("send-results", results);
         } else if (props.practice) {
-            resetGame()
+            resetGame();
         } else {
             setDisplayResults(true);
         }
@@ -190,7 +190,7 @@ function TypingScreen(props) {
     }
 
     if (isLoading) {
-        return <Spinner />
+        return <Spinner />;
     }
 
     return (

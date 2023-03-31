@@ -3,13 +3,13 @@ import NavBar from "../Components/NavBar";
 import TypingScreen from "../Components/TypingScreen/TypingScreen";
 import PlayerItem from '../Components/MultiplayerGame/PlayerItem';
 import { useState, useRef, useEffect, useContext } from 'react';
-import { useNavigate } from "react-router-dom";
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from "react-router-dom";
 import { BiCopy } from 'react-icons/bi';
 import { RiCheckDoubleFill } from 'react-icons/ri';
 import SocketContext from '../Context/SocketContext';
 import Chronometer, { useChronometer } from '../Components/TypingScreen/Chronometer';
 import { LocationContext } from '../Context/LocationContext';
+import { checkUser } from '../Controller/GameResultsHelper';
 
 function Lobby() {
     const roomCode = useRef();
@@ -33,7 +33,7 @@ function Lobby() {
         if (!socketContext.socket.current) {
             navigate("/");
         } else {
-            socketContext.socket.current.off("invalid")
+            socketContext.socket.current.off("invalid");
             socketContext.socket.current.on("countdown", () => {
                 startTimer();
                 setStarted(true);
@@ -73,15 +73,6 @@ function Lobby() {
         socketContext.socket.current.emit("start-countdown");
     }
 
-    /**
-     * Checks if the displayed user is the current user
-     * @param {Object} user 
-     * @returns {Boolean}
-     */
-    function checkUser(user) {
-        return user.id === socketContext.socket.current.id;
-    }
-
     return (
         <div id="home">
             <NavBar />
@@ -95,7 +86,7 @@ function Lobby() {
                                 return <PlayerItem
                                     key={i} name={user.username}
                                     avatar={user.avatar} leader={i === 0}
-                                    myUser={checkUser(user)} />
+                                    myUser={checkUser(user, socketContext.socket.current)} />
                             })}
                             <p ref={roomCode} id="invite-code">
                                 {location.state?.roomCode}

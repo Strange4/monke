@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
-import NavBar from "../Components/NavBar";
 import "./Styles/Profile.css";
+import NavBar from "../Components/NavBar";
 import AuthContext from "../Context/AuthContext";
 import { useContext, useEffect, useState, useRef } from "react";
 import { RiImageEditFill, RiEdit2Fill, RiSave3Line, RiCloseCircleLine } from "react-icons/ri";
@@ -12,8 +12,8 @@ import FirstTimePopUp from "../Components/FirstTimeTour/FirstTimePopUp";
 import { getCookieValue } from "../Controller/CookieHelper.js";
 
 const Profile = () => {
-    const navigate = useNavigate()
-    const locationContext = useContext(LocationContext)
+    const navigate = useNavigate();
+    const locationContext = useContext(LocationContext);
     const auth = useContext(AuthContext);
     const [profileData, setProfileData] = useState({
         username: "",
@@ -45,7 +45,7 @@ const Profile = () => {
     const inputFile = useRef();
 
     useEffect(() => {
-        if(!locationContext.validAccess) {
+        if (!locationContext.validAccess) {
             navigate("/");
         }
     }, [locationContext.validAccess]);
@@ -141,8 +141,12 @@ const Profile = () => {
         }
     }
 
+    /**
+     * Reads image as url
+     * @param {Event} e 
+     */
     function readURL(e) {
-        const img = e.target.files[0]
+        const img = e.target.files[0];
         var reader = new FileReader();
         reader.onload = function (e) {
             avatarField.current.src = e.target.result;
@@ -150,6 +154,10 @@ const Profile = () => {
         reader.readAsDataURL(img);
     }
 
+    /**
+     * Temporarily displays the chosen image for preview
+     * @param {Event} e 
+     */
     const handleFileUpload = e => {
         const { files } = e.target;
         if (files && files.length) {
@@ -162,13 +170,13 @@ const Profile = () => {
     // Cookie related variables.
     const profileValue = getCookieValue("profileFirstTime") === "visited";
     const [profileCookie, visitedProfile] = useState(profileValue);
-    
+
     return (
         <div id="home">
             <div className="blur"></div>
             <NavBar />
-            { profileCookie ? <></> : 
-                <FirstTimePopUp area={"profile"} setCookieArea={visitedProfile}/> }
+            {profileCookie ? <></> :
+                <FirstTimePopUp area={"profile"} setCookieArea={visitedProfile} />}
             <div id="profile">
                 <div id="user">
                     <div id="image">
@@ -198,50 +206,39 @@ const Profile = () => {
                     </div>
 
                     <div id="update-avatar">
-                        {<>
-                            <form id="image-picker-form"
-                                onSubmit={async (e) => await saveAvatar(e)}>
-                                <input
-                                    style={{ display: "none" }}
-                                    ref={inputFile}
-                                    accept="image/png, image/jpeg, image/jpg"
-                                    onChange={(e) => {
-                                        handleFileUpload(e)
-                                    }}
-                                    type="file"
-                                />
-                            </form>
-                            <p> {AvatarFeedback} </p>
-                        </>}
-
+                        <form id="image-picker-form"
+                            onSubmit={async (e) => await saveAvatar(e)}>
+                            <input
+                                style={{ display: "none" }}
+                                ref={inputFile}
+                                accept="image/png, image/jpeg, image/jpg"
+                                onChange={(e) => {
+                                    handleFileUpload(e)
+                                }}
+                                type="file"
+                            />
+                        </form>
+                        <p> {AvatarFeedback} </p>
                     </div>
                     <div id="user-info">
                         <div id="username-info">
-                            {
-                                EditingUsername ?
-                                    <>
-                                        <RiSave3Line
-                                            id="edit-name-icon"
-                                            onClick={saveUsername} />
-                                    </>
-                                    :
-                                    <RiEdit2Fill
-                                        id="edit-name-icon"
-                                        onClick={() => {
-                                            setEditingUsername(true)
-                                        }} />
-                            }
+                            {EditingUsername ?
+                                <RiSave3Line
+                                    id="edit-name-icon"
+                                    onClick={saveUsername} />
+                                :
+                                <RiEdit2Fill
+                                    id="edit-name-icon"
+                                    onClick={() => {
+                                        setEditingUsername(true)
+                                    }} />}
 
                             <h2><span className="user-label">Name: </span></h2>
                             <h2 id="user-name" contentEditable={EditingUsername}
                                 className={EditingUsername ? "editable" : ""}
                                 suppressContentEditableWarning={true}
                                 ref={usernameField}
-                                maxLength={5}>
-
-                                {profileData.username}
-                            </h2>
-
+                                maxLength={5}> {profileData.username} </h2>
                         </div>
                         <div id="rank-info">
                             <h2> <span className="user-label">Rank: </span></h2>

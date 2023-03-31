@@ -16,8 +16,9 @@ function CookieBanner() {
     const cookieValues = [];
     let falseIndex;
     let setFalseIndex = false;
-    for (let i = 0; i < cookieNames.length; i++) {
-        if (getCookieValue(cookieNames[i]) === "visited") {
+
+    cookieNames.forEach((cookieName, i) => {
+        if (getCookieValue(cookieName) === "visited") {
             cookieValues.push(true);
         } else {
             if (!setFalseIndex) {
@@ -26,16 +27,10 @@ function CookieBanner() {
             }
             cookieValues.push(false);
         }
-    }
+    })
 
     // To count if the count is equal to 6 or else we will reset in a later step.
-    let count = 0;
-    cookieValues.forEach(element => {
-        if (element === true) {
-            count++;
-        }
-    });
-
+    const count = cookieValues.filter(x => x).length;
     const cookieSetter = [];
 
     // Reset the cookie if the person did not finish pressing next until the end.
@@ -45,9 +40,9 @@ function CookieBanner() {
         });
     } else {
         // This should make it so that no cookie banner appear.
-        for (let i = 0; i < cookieValues.length; i++) {
-            cookieSetter.push(!(i <= falseIndex));
-        }
+        cookieValues.forEach((_, index) => {
+            cookieSetter.push(!(index <= falseIndex));
+        });
     }
 
     // This is where we set the set state of cookie banners.

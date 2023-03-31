@@ -19,27 +19,47 @@ function LobbyPopup() {
     const auth = useContext(AuthContext);
     const socketContext = useContext(SocketContext);
 
+    /**
+     * Joins the lobby at the given room code
+     * @param {Event} e 
+     */
     const joinLobby = async (e) => {
         e.target.disabled = true;
         await setUpSocket(roomCode.current.value, e.target);
     }
 
+    /**
+     * Creates a lobby with a new room code
+     * @param {Event} e 
+     */
     const createLobby = async (e) => {
         e.target.disabled = true;
         let newRoomCode = await FetchModule.fetchData("/api/lobby");
         await setUpSocket(newRoomCode, e.target);
     }
 
+    /**
+     * Disconnects the socket and sets it to undefined
+     */
     function disconnectSocket() {
         socketContext.socket.current.disconnect();
         socketContext.socket.current = undefined;
     }
 
+    /**
+     * Updates the current room to reflect the user join/leave changes
+     * @param {Object} users 
+     * @param {String} roomCode 
+     */
     function updateRoom(users, roomCode) {
         socketContext.userList = users;
         navigate("/lobby", { state: { roomCode: roomCode } });
     }
 
+    /**
+     * Sets up the socket listeners for basic lobby actions
+     * @param {*} joinButton 
+     */
     function setSocketListeners(joinButton) {
         socketContext.socket.current.on("join-room", (users, roomCode) => {
             updateRoom(users, roomCode);
@@ -59,6 +79,11 @@ function LobbyPopup() {
         });
     }
 
+    /**
+     * Sets up the socket and sets the user data
+     * @param {String} roomCode 
+     * @param {*} joinButton 
+     */
     async function setUpSocket(roomCode, joinButton) {
         if (socketContext.socket.current) {
             disconnectSocket();
