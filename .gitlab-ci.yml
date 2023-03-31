@@ -22,7 +22,6 @@ eslint-job:
   cache:
     paths:
       - ./node_modules
-      - ./client/node_modules
   before_script:
     - npm install
   script:
@@ -62,10 +61,13 @@ server-build-job:
 test-job:
   extends: .important-branches
   stage: test
+  cache:
+    paths:
+      - ./server/node_modules
   script:
-    # - cd server && npm run install
+    - cd server && npm run install
     - echo "Testing 🧪🔬"
-    # - npm run test
+    - npm run test
 
 deploy-job:
   extends: .deploy-branches
