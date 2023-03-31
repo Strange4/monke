@@ -24,7 +24,8 @@ eslint-job:
       - ./node_modules
       - ./client/node_modules
   before_script:
-    - npm install
+    - npm install -g eslint
+    - cd client && npm install --save-dev eslint-plugin-security@latest eslint-plugin-react@latest
   script:
     - echo "Running eslint to see if everything is pretty 💅"
     - npm run lint
