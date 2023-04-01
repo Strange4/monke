@@ -14,7 +14,7 @@
 
 #playing-players > div.highlight{
     background-color: transparent !important;
-    color: var(--accent-color);
+    color: var(--highlight);
 }
 
 div.highlight > div#game-single-result > p#end-game-rank{
@@ -108,7 +108,7 @@ div#playing-players>div.player-info>img.player-image {
 }
 
 #end-game-rank {
-    color: var(--accent-color) !important;
+    color: var(--highlight) !important;
     font-weight: bold;
     font-size: 1.3em;
 }
