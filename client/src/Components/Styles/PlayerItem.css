@@ -32,6 +32,6 @@
 }
 
 .highlight {
-    background-color: var(--accent-color) !important;
+    background-color: var(--highlight) !important;
     color: var(--bg-color);
 }
