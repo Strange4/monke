@@ -23,7 +23,7 @@
 + Scrum master on next sprint should be more in charge of who works on what:
   + scrum master should keep track of who is doing what and how long it's taking
   + implement the scrum master and product owner roles more.
-
+---------------------------
 ## SPRINT 02 - The Macaque phase
 
 ### What went well !! (✿◡‿◡)
@@ -50,7 +50,7 @@
 + Having the FrontEnd and BackEnd communicate more.
   + Scrum master should have a greater role in making sure that everyone knows what's happening as well.
 + Put more emphasis and focus on bug fixes and inconsistencies within the app
-
+---------------------------
 ## SPRINT 03 - The Gorilla phase
 
 ### What went well !! (✿◡‿◡)
