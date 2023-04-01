@@ -1,4 +1,5 @@
 import '../Styles/Popup.css';
+import '../Styles/Preferences.css';
 import { useState, useEffect, useRef, useContext } from 'react';
 import { setCookie, getCookieValue, deleteCookie } from '../../Controller/CookieHelper';
 import Popup from 'reactjs-popup';
@@ -88,15 +89,15 @@ function Preferences({ open, toggleShow }) {
 
     return (
         <Popup open={open} modal onClose={toggleShow} ref={popupRef}>
-            <form onSubmit={handleSavePref}>
-                <div className="popup">
+            <form id='preferences' onSubmit={handleSavePref}>
+                <div className="popup" id='pref-popup'>
                     <h1>Accessibility</h1>
                     <div id="TTSQuote-pref">
                         <EnableTTS enabled={tempEnableTTSQuote} changeOption={handlePrefChange} />
                         <TtsSpeed speed={tempTtsSpeed} changeOption={handlePrefChange} />
                         <TtsVoice selected={tempTtsVoice} changeOption={handlePrefChange} />
                     </div>
-                    <button type="submit">Save preferences</button>
+                    <button type="submit" id='save-pref-btn'>Save preferences</button>
                 </div>
             </form>
         </Popup>

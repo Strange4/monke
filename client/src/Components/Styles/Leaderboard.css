@@ -1,17 +1,23 @@
 #leaderboard {
-    min-width: 600px;
-    width: 80vw;
+    min-width: 450px;
+    width: 70vw;
     max-width: 1000px;
     height: 80vh;
     overflow-y: scroll;
     padding: 20px;
+    overflow-x: hidden;
+}
+
+div.popup-content:has(#leaderboard) {
+    min-width: 460px;
 }
 
 #header-name {
-    font-size: 3em;
+    font-size: 2.8em;
     color: var(--sub-color);
     letter-spacing: 15px;
     margin-bottom: 40px;
+
 }
 
 #leaderboard::-webkit-scrollbar {
@@ -37,12 +43,17 @@
 
 #leaderboard::-webkit-scrollbar-button {
     height: 20px;
+    border-radius: 20px;
 }
 
 #leaderboard-header {
     display: flex;
     justify-content: space-evenly;
     width: 100%;
+}
+
+#rank-date {
+    min-width: 100px !important;
 }
 
 #leaderboard-header p {

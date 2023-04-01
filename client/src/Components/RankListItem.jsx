@@ -15,7 +15,7 @@ function RankListItem(props) {
             </div>
             <p>{props.wpm}</p>
             <p className='user-acc'>{props.accuracy}</p>
-            <p>{props.date}</p>
+            <p id='rank-date'>{props.date}</p>
         </div>
     );
 }

@@ -40,3 +40,16 @@ body{
     flex-flow: column wrap;
     height: auto;
 }
+
+#home > #credits-icon {
+    width: 30px;
+    height: 30px;
+}
+
+#home > #credits-icon:hover {
+    color: var(--text-color);
+}
+
+body::-webkit-scrollbar {
+    display: none;
+}
