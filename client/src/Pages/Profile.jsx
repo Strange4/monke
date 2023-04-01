@@ -245,20 +245,6 @@ const Profile = () => {
                                 suppressContentEditableWarning={true}
                                 ref={usernameField}
                                 maxLength={5}>{profileData.username}</h2>
-                            {
-                                EditingUsername ?
-                                    <>
-                                        <RiSave3Line
-                                            id="edit-name-icon"
-                                            onClick={saveUsername} />
-                                    </>
-                                    :
-                                    <RiEdit2Fill
-                                        id="edit-name-icon"
-                                        onClick={() => {
-                                            setEditingUsername(true)
-                                        }} />
-                            }
                         </div>
                         <div id="rank-info">
                             <h2> <span className="user-label">Rank: </span></h2>
