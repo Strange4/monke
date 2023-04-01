@@ -40,3 +40,38 @@ body{
     flex-flow: column wrap;
     height: auto;
 }
+
+#info-container {
+    display: flex;
+    position: absolute;
+    bottom: 10px;
+    flex-flow: row wrap;
+    align-items: center;
+    height: fit-content;
+    width: 80%;
+}
+
+.hide {
+    opacity: 0;
+    color: var(--sub-color);
+    font-size: 0.8em;
+    margin: 0;
+    margin-left: 10px;
+    padding: 8px;
+    border-radius: 20px;
+    background-color: var(--sub-color-transparent);
+    transition: 0.4s;
+}
+
+#info-icon {
+    color: var(--sub-color);
+}
+
+#info-icon:hover {
+    cursor: pointer;
+    color: var(--text-color);
+}
+
+#info-link:hover + .hide {
+    opacity: 1;
+}
