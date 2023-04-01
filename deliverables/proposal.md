@@ -198,6 +198,25 @@ User stories (give at least 2):
     - able to see other profiles from the leaderboard
     - search up other users and see their profile
 
+**User persona 5**
+
+Persona description: Casual User
+
+Name: Frank
+
+Importance of users corresponding to this persona: 20% of the users 
+
+Broad goal: When he is bored or waiting in lobby for other games he comes and practice typing
+
+User stories (give at least 2):
+1. _Frank wants to multi-task or play two games at the same time_
+    - while waiting in other game lobby's, he can come to the website and play
+    - playing a game is fast and easy, does not require much setup
+    - text to speech is an option, so he can be on another tab/window and still know the quote
+2. _Frank does not want to spend too much time playing games_
+    - ability to switch game settings
+    - cookie preference so he does not have to setup everytime he plays
+
 ---
 
 ## **Mockups**
