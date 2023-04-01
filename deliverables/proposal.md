@@ -210,8 +210,8 @@ Broad goal: When he is bored or waiting in lobby for other games he comes and pr
 
 User stories (give at least 2):
 1. _Frank wants to multi-task or play two games at the same time_
-    - while waiting in other game lobby's, he can come to the website and play
-    - playing a game is fast and easy, does not require much setup
+    - If Frank is currently playing another game and is idle because he is waiting for an event, he can kill time by playing Keyboard Champions
+    - A single player session for Keyboard Champions should require little setup and should be ready the moment Frank loads the site
     - text to speech is an option, so he can be on another tab/window and still know the quote
 2. _Frank wants to play different game modes and want those changes to persist in his next session_
     - ability to switch game settings
