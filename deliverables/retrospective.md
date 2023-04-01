@@ -50,3 +50,17 @@
 + Having the FrontEnd and BackEnd communicate more.
   + Scrum master should have a greater role in making sure that everyone knows what's happening as well.
 + Put more emphasis and focus on bug fixes and inconsistencies within the app
+
+## SPRINT 03 - The Gorilla phase
+
+### What went well !! (✿◡‿◡)
+
++ Time Management! Because we managed our time accordingly, it freed up us more time to focus on the small details that made the application much better
+
+### What did not go well ╰（‵□′）╯
+
++ Stand ups seemed a little less relevant as the tasks to complete gradually got smaller
+
+### What to change in next sprint ¯\\(°_o)/¯
+
++ 
