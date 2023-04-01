@@ -20,7 +20,7 @@ function PageHolder() {
         null || !ROUTES.includes(currentLocation.pathname)) {
         locationContext.validAccess = false;
     } else {
-        locationContext.lastVisitedLocation.current = currentLocation.pathname
+        locationContext.lastVisitedLocation.current = currentLocation.pathname;
         locationContext.validAccess = true;
     }
 

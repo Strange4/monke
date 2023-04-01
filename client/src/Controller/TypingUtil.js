@@ -2,7 +2,7 @@
  * prevents the deafult behavior from an event
  * @param {Event} e the event to prevent
  */
-export function preventDefaultBehavior(e){
+export function preventDefaultBehavior(e) {
     e.preventDefault();
 }
 
@@ -21,22 +21,22 @@ export function renderLetters(newInput, display) {
         newDisplay[i].type = "none";
         newDisplay[i].current = false;
     }
-    
+
     const inputIsEmpty = newInput.length === 0;
     const inputIsDone = newInput.length > newDisplay.length;
     // if the input is done don't do anything
-    if(inputIsDone){
+    if (inputIsDone) {
         return display;
     }
     const nextLetter = newDisplay[newLetterIndex + 1];
-    if(nextLetter){
+    if (nextLetter) {
         nextLetter.current = true;
     }
 
-    if(!inputIsEmpty){
+    if (!inputIsEmpty) {
         const newLetter = newDisplay[newLetterIndex];
         newLetter.current = false;
-        if(newLetter.letter === newInput[newLetterIndex]){
+        if (newLetter.letter === newInput[newLetterIndex]) {
             newLetter.type = "right";
         } else {
             newLetter.type = "wrong";
@@ -50,7 +50,7 @@ export function renderLetters(newInput, display) {
  * @param {string} stringToDisplay the original string that needs to be transformed
  */
 export function getDefaultUserDisplay(stringToDisplay) {
-    if(!stringToDisplay){
+    if (!stringToDisplay) {
         return [];
     }
     const display = Array.from(stringToDisplay).map((letter) => {
@@ -61,7 +61,7 @@ export function getDefaultUserDisplay(stringToDisplay) {
             current: false
         }
     });
-    if(display[0]){
+    if (display[0]) {
         display[0].current = true;
     }
     return display;
@@ -73,10 +73,10 @@ export function getDefaultUserDisplay(stringToDisplay) {
  * @param {string[][]} keys the keys that need to me mapped
  * @param {{ keyValue: string; isPressed: boolean; }[][]?} previousState
  */
-export function mapKeyToKeyboard(keys, previousState){
+export function mapKeyToKeyboard(keys, previousState) {
     return keys.map((row, rowIndex) => {
         return row.map((keyValue, keyValueIndex) => {
-            if(previousState){
+            if (previousState) {
                 return {
                     keyValue,
                     isPressed: previousState[rowIndex][keyValueIndex].isPressed
@@ -95,6 +95,6 @@ export function mapKeyToKeyboard(keys, previousState){
  * @param {number} min inclusive
  * @param {number} max inclusive
  */
-export function randomNumber(min, max){
+export function randomNumber(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }

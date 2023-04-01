@@ -8,7 +8,7 @@ import { useFetch } from '../Controller/FetchModule';
  * @returns {ReactElement}
  */
 function Leaderboard() {
-    const [loadingIndicator, leaderboard] = useFetch("leaderboard", "/api/leaderboard")
+    const [loadingIndicator, leaderboard] = useFetch("leaderboard", "/api/leaderboard");
 
     return (
         <div id="leaderboard" className='popup'>
@@ -18,8 +18,8 @@ function Leaderboard() {
                     <p>#</p>
                     <p className='rank-header'>user</p>
                     <p>wpm</p>
-                    <p className='rank-header'>accuracy</p>
-                    <p>date</p>
+                    <p className='rank-header'>acc.</p>
+                    <p id='rank-date'>date</p>
                 </div>
                 {
                     loadingIndicator || leaderboard.map((user, i) => <RankListItem

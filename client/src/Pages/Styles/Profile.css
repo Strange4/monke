@@ -6,8 +6,6 @@
     min-width: 500px;
     max-width: 1100px;
     height: fit-content;
-    min-height: fit-content;
-    max-height: fit-content;
     margin-top: 10vh;
     flex-flow: row wrap;
     color: var(--accent-color);
@@ -23,10 +21,10 @@
     margin-bottom: 0;
     border-radius: 20px;
     background-color: var(--sub-color-transparent);
-    width: 90%;
-    min-width: 650px;
+    width: 80%;
     height: fit-content;
     padding: 20px;
+    padding-top: 30px;
 }
 
 #image {
@@ -59,15 +57,11 @@
 
 #edit-name-icon {
     display: flex;
-    position: absolute;
-    left: -30px;
-    bottom: 5px;
     justify-content: center;
     width: 1.8em;
     height: 1.8em;
     margin-bottom: auto;
     margin-top: auto;
-    margin-left: 20px;
     color: var(--sub-color);
     cursor: pointer;
 }

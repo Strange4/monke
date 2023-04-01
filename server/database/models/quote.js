@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 export const quoteFields = {
     quote: { type: String, required: true },
-    difficulty: {type: Number, required: true},
+    difficulty: { type: Number, required: true },
     "number_characters": Number,
     "number_special_characters": Number,
     "number_words": Number,

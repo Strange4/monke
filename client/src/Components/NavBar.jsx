@@ -1,15 +1,14 @@
 import './Styles/NavBar.css';
 import Popup from 'reactjs-popup';
 import Leaderboard from './Leaderboard';
-import LobbyPopup from './Lobby/LobbyPopup';
-import Preferences from './Preferences/Preferences';
+import LobbyPopup from './MultiplayerGame/Lobby/LobbyPopup';
 import Login from './Login';
 import logo from "../Assets/keyboard-champions-logo/svg/logo-no-background.svg"
 import { GiCrenelCrown } from "react-icons/gi";
 import { CgProfile } from "react-icons/cg";
-import { HiCog, HiUserGroup } from "react-icons/hi"
+import { HiUserGroup } from "react-icons/hi"
 import AuthContext from '../Context/AuthContext';
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { SecureLink } from './SecureNavigation/SecureLink';
 
 /**
@@ -18,12 +17,6 @@ import { SecureLink } from './SecureNavigation/SecureLink';
  */
 function NavBar() {
     const auth = useContext(AuthContext);
-
-    const [showPref, setShowPref] = useState(false);
-
-    function toggleShowPref() {
-        setShowPref(!showPref);
-    }
 
     async function handleLogout() {
         await fetch("/authentication/logout");
@@ -48,15 +41,10 @@ function NavBar() {
                         <LobbyPopup />
                     </Popup>
                 </li>
-                <li>
-                    <HiCog onClick={toggleShowPref} id="pref-icon" />
-                    {showPref ?
-                        <Preferences open={showPref} toggleShow={toggleShowPref} /> : null}
-                </li>
             </div>
             <li>
-                <Popup trigger={<a><CgProfile id="profile-icon"/></a>} >
-                    {auth.userLoggedIn ? 
+                <Popup trigger={<a><CgProfile id="profile-icon" /></a>} >
+                    {auth.userLoggedIn ?
                         <div className='access'>
                             <SecureLink to='/profile'>
                                 <button className='logged-in'>Profile</button>

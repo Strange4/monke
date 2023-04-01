@@ -16,10 +16,10 @@ const queryClient = new QueryClient();
 function App() {
     const [userLoggedIn, setUserLoggedIn] = useState(false);
     const socket = useRef();
-    
+
     useEffect(() => {
         (async () => {
-            if(!userLoggedIn){
+            if (!userLoggedIn) {
                 const userData = await fetch("/authentication/checkLogin")
                 if (userData.status === 200) {
                     setUserLoggedIn(true);

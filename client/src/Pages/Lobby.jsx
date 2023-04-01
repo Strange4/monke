@@ -1,22 +1,19 @@
 import './Styles/Lobby.css';
 import NavBar from "../Components/NavBar";
 import TypingScreen from "../Components/TypingScreen/TypingScreen";
-import LobbySettings from '../Components/Lobby/LobbySettings';
-import { AiFillSetting } from "react-icons/ai";
-import PlayerItem from '../Components/PlayerItem';
+import PlayerItem from '../Components/MultiplayerGame/PlayerItem';
 import { useState, useRef, useEffect, useContext } from 'react';
-import { useNavigate } from "react-router-dom";
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from "react-router-dom";
 import { BiCopy } from 'react-icons/bi';
 import { RiCheckDoubleFill } from 'react-icons/ri';
 import SocketContext from '../Context/SocketContext';
 import Chronometer, { useChronometer } from '../Components/TypingScreen/Chronometer';
 import { LocationContext } from '../Context/LocationContext';
+import { checkUser } from '../Controller/GameResultsHelper';
 
 function Lobby() {
     const roomCode = useRef();
     const location = useLocation();
-    const [settings, showSettings] = useState(false);
     const [copied, setCopied] = useState(false);
     const socketContext = useContext(SocketContext);
     const locationContext = useContext(LocationContext);
@@ -36,7 +33,7 @@ function Lobby() {
         if (!socketContext.socket.current) {
             navigate("/");
         } else {
-            socketContext.socket.current.off("invalid")
+            socketContext.socket.current.off("invalid");
             socketContext.socket.current.on("countdown", () => {
                 startTimer();
                 setStarted(true);
@@ -50,11 +47,6 @@ function Lobby() {
             socketContext.socket.current.emit("try-start");
         }
     }, [displayTime]);
-
-    // Toggle settings view
-    const handleClick = () => {
-        showSettings(current => !current);
-    }
 
     // Copies the code to the clipboard through click
     function copyCode(e) {
@@ -81,15 +73,6 @@ function Lobby() {
         socketContext.socket.current.emit("start-countdown");
     }
 
-    /**
-     * Checks if the displayed user is the current user
-     * @param {Object} user 
-     * @returns {Boolean}
-     */
-    function checkUser(user) {
-        return user.id === socketContext.socket.current.id;
-    }
-
     return (
         <div id="home">
             <NavBar />
@@ -103,7 +86,7 @@ function Lobby() {
                                 return <PlayerItem
                                     key={i} name={user.username}
                                     avatar={user.avatar} leader={i === 0}
-                                    myUser={checkUser(user)} />
+                                    myUser={checkUser(user, socketContext.socket.current)} />
                             })}
                             <p ref={roomCode} id="invite-code">
                                 {location.state?.roomCode}
@@ -117,15 +100,13 @@ function Lobby() {
                             <button id="play-btn" onClick={startGame}>PLAY</button>
                             <button id="leave-btn" onClick={leave}>LEAVE</button>
                         </div>
-
-                        {settings && <LobbySettings />}
-                        <AiFillSetting id="lobby-settings-icon" onClick={handleClick} />
                     </>
                 }
             </div>
             <div id="practice">
                 <div id="popup-root" />
-                <TypingScreen multiplayer={false} id='lobby-game' />
+                <TypingScreen multiplayer={false} practice={true} punctuation={true}
+                    quoteLength={"random"} id='lobby-game' />
             </div>
         </div>
     );

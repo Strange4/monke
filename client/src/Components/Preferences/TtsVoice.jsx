@@ -1,11 +1,11 @@
-function TtsVoice({ selected, changeOption }){
+function TtsVoice({ selected, changeOption }) {
 
     // Thanks OpenAI for providing me the
     // information to get a list of available voices
     const synth = window.speechSynthesis;
     const voices = synth.getVoices();
     return(
-        <>
+        <div id="tts-voice">
             <p>Text-To-Speech voice</p>
             <select id="voice-dropdown" value={selected} onChange={changeOption} name="ttsVoice">
                 {
@@ -14,7 +14,7 @@ function TtsVoice({ selected, changeOption }){
                     )
                 }
             </select>
-        </>
+        </div>
     );
 }
 

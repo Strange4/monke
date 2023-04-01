@@ -1,19 +1,20 @@
 import '../Styles/Popup.css';
+import '../Styles/Preferences.css';
 import { useState, useEffect, useRef, useContext } from 'react';
-import {setCookie, getCookieValue, deleteCookie} from '../../Controller/CookieHelper';
+import { setCookie, getCookieValue, deleteCookie } from '../../Controller/CookieHelper';
 import Popup from 'reactjs-popup';
 import EnableTTS from './EnableTTS';
 import TtsSpeed from './TtsSpeed';
 import PreferenceContext from '../../Context/PreferenceContext';
 import TtsVoice from './TtsVoice';
 
-function Preferences({open, toggleShow}){
+function Preferences({ open, toggleShow }) {
 
-    const preferenceContext = useContext(PreferenceContext)
+    const preferenceContext = useContext(PreferenceContext);
     /**
      * Define states for all preferences and their default values
      */
-    const [tempEnableTTSQuote, setEnableTTSQuote] = useState(preferenceContext.enableTTSQuote)
+    const [tempEnableTTSQuote, setEnableTTSQuote] = useState(preferenceContext.enableTTSQuote);
     const [tempTtsSpeed, setTtsSpeed] = useState(preferenceContext.ttsSpeed);
     const [tempTtsVoice, setTtsVoice] = useState(undefined);
     const popupRef = useRef(null);
@@ -43,7 +44,7 @@ function Preferences({open, toggleShow}){
      * appropriate state setting function in the stateMap object.
      * @param {*} event
      */
-    function handlePrefChange(event){
+    function handlePrefChange(event) {
         const stateSetter = stateMap[event.target.name].setter;
         stateSetter(event.target.value);
     }
@@ -53,7 +54,7 @@ function Preferences({open, toggleShow}){
      * preference context
      * @param {*} event 
      */
-    function handleSavePref(event){
+    function handleSavePref(event) {
         event.preventDefault();
         Object.keys(stateMap).forEach(key => {
             deleteCookie(key);
@@ -70,10 +71,10 @@ function Preferences({open, toggleShow}){
     /**
      * loads preferences from cookies
      */
-    function handleLoadPref(){
+    function handleLoadPref() {
         Object.keys(stateMap).forEach(key => {
             const cookieValue = getCookieValue(key);
-            if(cookieValue !== undefined){
+            if (cookieValue !== undefined) {
                 const stateSetter = stateMap[key].setter;
                 stateSetter(cookieValue);
             }
@@ -81,22 +82,22 @@ function Preferences({open, toggleShow}){
     }
 
     useEffect(() => {
-        if(open){
+        if (open) {
             handleLoadPref();
         }
     }, [open]);
 
-    return(
+    return (
         <Popup open={open} modal onClose={toggleShow} ref={popupRef}>
-            <form onSubmit={handleSavePref}>
-                <div className="popup">
+            <form id='preferences' onSubmit={handleSavePref}>
+                <div className="popup" id='pref-popup'>
                     <h1>Accessibility</h1>
                     <div id="TTSQuote-pref">
                         <EnableTTS enabled={tempEnableTTSQuote} changeOption={handlePrefChange} />
                         <TtsSpeed speed={tempTtsSpeed} changeOption={handlePrefChange} />
                         <TtsVoice selected={tempTtsVoice} changeOption={handlePrefChange} />
                     </div>
-                    <button type="submit">Save preferences</button>
+                    <button type="submit" id='save-pref-btn'>Save preferences</button>
                 </div>
             </form>
         </Popup>
