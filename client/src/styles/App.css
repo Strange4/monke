@@ -2,6 +2,7 @@
     --font-family: "Roboto Mono", "Vazirmatn", sans-serif;
     --bg-color: #191a1b;
     --accent-color: #D68B49;
+    --highlight:#c7986f;
     --caret-color: #79a617;
     --main-color: #79a617;
     --sub-color: #8b8b8b;
@@ -41,15 +42,37 @@ body{
     height: auto;
 }
 
-#home > #credits-icon {
-    width: 30px;
-    height: 30px;
+#info-container {
+    display: flex;
+    position: absolute;
+    bottom: 10px;
+    flex-flow: row wrap;
+    align-items: center;
+    height: fit-content;
+    width: 80%;
 }
 
-#home > #credits-icon:hover {
+.hide {
+    opacity: 0;
+    color: var(--sub-color);
+    font-size: 0.8em;
+    margin: 0;
+    margin-left: 10px;
+    padding: 8px;
+    border-radius: 20px;
+    background-color: var(--sub-color-transparent);
+    transition: 0.4s;
+}
+
+#info-icon {
+    color: var(--sub-color);
+}
+
+#info-icon:hover {
+    cursor: pointer;
     color: var(--text-color);
 }
 
-body::-webkit-scrollbar {
-    display: none;
+#info-link:hover + .hide {
+    opacity: 1;
 }
