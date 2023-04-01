@@ -216,6 +216,8 @@ User stories (give at least 2):
 2. _Frank wants to play different game modes and want those changes to persist in his next session_
     - ability to switch game settings
     - cookie preference so he does not have to setup everytime he plays
+3. _Frank does not want to sit idle on the lobby screen while hes friends are preparing, so he wants to play a game in the meantime_
+    - Ability to practice typing quotes during the multiplayer lobby while waiting for the match to begin
 
 ---
 
