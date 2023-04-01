@@ -213,7 +213,7 @@ User stories (give at least 2):
     - while waiting in other game lobby's, he can come to the website and play
     - playing a game is fast and easy, does not require much setup
     - text to speech is an option, so he can be on another tab/window and still know the quote
-2. _Frank does not want to spend too much time playing games_
+2. _Frank wants to play different game modes and want those changes to persist in his next session_
     - ability to switch game settings
     - cookie preference so he does not have to setup everytime he plays
 
