@@ -45,7 +45,7 @@ const Profile = () => {
     const inputFile = useRef();
 
     useEffect(() => {
-        if (!locationContext.validAccess) {
+        if (!locationContext.validAccess && !auth.userLoggedIn) {
             navigate("/");
         }
     }, [locationContext.validAccess]);

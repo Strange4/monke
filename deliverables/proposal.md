@@ -198,6 +198,26 @@ User stories (give at least 2):
     - able to see other profiles from the leaderboard
     - search up other users and see their profile
 
+**User persona 5**
+
+Persona description: Casual User
+
+Name: Frank
+
+Importance of users corresponding to this persona: 20% of the users 
+
+Broad goal: When he is bored or waiting in lobby for other games he comes and practice typing
+
+User stories (give at least 2):
+1. _Frank wants to multi-task or play two games at the same time_
+    - If Frank is currently playing another game and is idle because he is waiting for an event, he can kill time by playing Keyboard Champions
+    - A single player session for Keyboard Champions should require little setup and should be ready the moment Frank loads the site
+2. _Frank wants to play different game modes and want those changes to persist in his next session_
+    - ability to switch game settings
+    - cookie preference so he does not have to setup everytime he plays
+3. _Frank does not want to sit idle on the lobby screen while hes friends are preparing, so he wants to play a game in the meantime_
+    - Ability to practice typing quotes during the multiplayer lobby while waiting for the match to begin
+
 ---
 
 ## **Mockups**

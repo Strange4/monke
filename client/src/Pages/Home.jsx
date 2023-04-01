@@ -6,6 +6,7 @@ import { useContext, useEffect, useState } from "react";
 import CookieBanner from "../Components/FirstTimeTour/CookieBanner";
 import { getCookieValue } from "../Controller/CookieHelper";
 import PreferenceContext from "../Context/PreferenceContext";
+import { AiFillInfoCircle } from "react-icons/ai"
 
 const Home = () => {
 
@@ -73,6 +74,19 @@ const Home = () => {
                         punctuation={punctuation} />
                 </div>
             </PreferenceContext.Provider>
+            <div id="info-container">
+                <a 
+                    id="info-link" 
+                    href="https://www.gutenberg.org/" 
+                    target="_blank"
+                    rel="noreferrer">
+                    <AiFillInfoCircle id="info-icon"/>
+                </a>
+                <p className="hide">
+                All quotes provided by books in 
+                        Project Gutenberg
+                </p>
+            </div>
         </div>
     );
 }
