@@ -57,12 +57,15 @@
 
 + Time Management! Because we managed our time accordingly, it freed up us more time to focus on the small details that made the application much better
 + All tasks were completed ahead of time without the need of dropping any feature.
++ Everyone worked on what they were supposed to, there were no time wasted.
 
 ### What did not go well ╰（‵□′）╯
 
 + Stand ups seemed a little less relevant as the tasks to complete gradually got smaller
 + MR reviews slowed down, there would often be 3 MRs waiting for review with no one as a reviewer
++ Some questions asked in the group chat were left unanswered for a while, took longer than in previous sprints to get a reply back
 
 ### What to change in next sprint ¯\\(°_o)/¯
 
 + Keep up the same pace throughout the sprints
++ Try to follow the planned schedule. Inability to do so led us to a day to day plan.
