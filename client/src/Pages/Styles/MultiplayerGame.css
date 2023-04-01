@@ -59,6 +59,8 @@ div#playing-players>div.player-info>img.player-image {
     background-color: var(--sub-color-transparent);
     margin: 20px;
     height: 40px;
+    margin-left: 0;
+
 }
 
 #game-results > .player-name {
@@ -94,7 +96,7 @@ div#playing-players>div.player-info>img.player-image {
 #end-game-leaderboard {
     margin: auto;
     margin-top: 40px;
-    width: 100%;
+    width: 90%;
     max-width: 800px;
 }
 
