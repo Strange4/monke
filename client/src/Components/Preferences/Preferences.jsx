@@ -17,7 +17,20 @@ function Preferences({ open, toggleShow }) {
     const [tempEnableTTSQuote, setEnableTTSQuote] = useState(preferenceContext.enableTTSQuote);
     const [tempTtsSpeed, setTtsSpeed] = useState(preferenceContext.ttsSpeed);
     const [tempTtsVoice, setTtsVoice] = useState(undefined);
+
+    const [loadedVoices, setLoadedVoices] = useState(false);
+    const [voiceList, setVoiceList] = useState([]);
     const popupRef = useRef(null);
+
+    
+    
+    // Thanks OpenAI for providing me the
+    // information to get a list of available voices
+    async function initVoiceList() {
+        const synth = window.speechSynthesis;
+        setVoiceList(await synth.getVoices());
+        setLoadedVoices(true);
+    }
 
     /**
      * Used to facilitate handling changing preferences,
@@ -84,23 +97,33 @@ function Preferences({ open, toggleShow }) {
     useEffect(() => {
         if (open) {
             handleLoadPref();
+            initVoiceList();
         }
     }, [open]);
 
     return (
-        <Popup open={open} modal onClose={toggleShow} ref={popupRef}>
-            <form id='preferences' onSubmit={handleSavePref}>
-                <div className="popup" id='pref-popup'>
-                    <h1>Accessibility</h1>
-                    <div id="TTSQuote-pref">
-                        <EnableTTS enabled={tempEnableTTSQuote} changeOption={handlePrefChange} />
-                        <TtsSpeed speed={tempTtsSpeed} changeOption={handlePrefChange} />
-                        <TtsVoice selected={tempTtsVoice} changeOption={handlePrefChange} />
-                    </div>
-                    <button type="submit" id='save-pref-btn'>Save preferences</button>
-                </div>
-            </form>
-        </Popup>
+        <>
+            {
+                voiceList.length > 0 && open &&
+                    <Popup open={open} modal onClose={toggleShow} ref={popupRef}>
+                        <form id='preferences' onSubmit={handleSavePref}>
+                            <div className="popup" id='pref-popup'>
+                                <h1>Accessibility</h1>
+                                <div id="TTSQuote-pref">
+                                    <EnableTTS enabled={tempEnableTTSQuote}
+                                        changeOption={handlePrefChange} />
+                                    <TtsSpeed speed={tempTtsSpeed}
+                                        changeOption={handlePrefChange} />
+                                    <TtsVoice selected={tempTtsVoice} voices={voiceList}
+                                        changeOption={handlePrefChange} />
+                                </div>
+                                <button type="submit" id='save-pref-btn'>Save preferences</button>
+                            </div>
+                        </form>
+                    </Popup>
+            }
+
+        </>
     );
 }
 
