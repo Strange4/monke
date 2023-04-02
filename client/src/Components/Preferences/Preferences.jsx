@@ -18,18 +18,21 @@ function Preferences({ open, toggleShow }) {
     const [tempTtsSpeed, setTtsSpeed] = useState(preferenceContext.ttsSpeed);
     const [tempTtsVoice, setTtsVoice] = useState(undefined);
 
-    const [loadedVoices, setLoadedVoices] = useState(false);
+    // contains available TTS voices
     const [voiceList, setVoiceList] = useState([]);
+
     const popupRef = useRef(null);
 
     
     
     // Thanks OpenAI for providing me the
     // information to get a list of available voices
+    /**
+     * populates a list TTS voices avalailable to the browser
+     */
     async function initVoiceList() {
         const synth = window.speechSynthesis;
         setVoiceList(await synth.getVoices());
-        setLoadedVoices(true);
     }
 
     /**
