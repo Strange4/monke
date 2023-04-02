@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node ./bin/www.js",
     "test": "cross-env NODE_ENV=test && node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:watch": "cross-env NODE_ENV=test && node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
     "dev": "nodemon bin/www.js"
   },
   "keywords": [],
