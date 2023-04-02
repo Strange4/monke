@@ -6,11 +6,9 @@
     background-color: var(--sub-color);
     border-radius: 20px;
     align-items: center;
-    height: 15%;
-    max-height: 40px;
-    min-height: 35px;
-    min-width: 120px;
-    margin: 10px;
+    height: 30px;
+    width: 100%;
+    min-width: 100px;
 }
 
 .player-image {
@@ -22,16 +20,24 @@
 }
 
 .player-name {
-    display: flex;
+    display: inline-block;
     flex-wrap: wrap;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     align-content: center;
     justify-content: center;
-    width: 100%;
-    /* max-width: 300px; */
-    /* min-width: 120px; */
-    margin: 5px;
+    width: 80%;
+    font-size: 1em;
 }
 
+/* @media (min-width: 800px) {
+    .player-name {
+       font-size: 1em;
+    }
+} */
+
 .highlight {
-    background-color: #d68b4931 !important;
+    background-color: var(--highlight) !important;
+    color: var(--bg-color);
 }

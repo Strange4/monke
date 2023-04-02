@@ -40,16 +40,16 @@ router.get("/lobby", (_, res) => {
 router.use(express.json());
 router.use(usersRouter);
 
-function dbConnected(_, __, next){
+function dbConnected(_, __, next) {
     // the node_env could be changed to mock the connection state instead
-    if(mongoose.connection.readyState !== 1 && process.env.NODE_ENV !== "test"){
+    if (mongoose.connection.readyState !== 1 && process.env.NODE_ENV !== "test") {
         next(new createHttpError.InternalServerError("Database is unavailable"));
-        if(!process.env.ATLAS_URI){
+        if (!process.env.ATLAS_URI) {
             console.error("Trying to reconnect to the db but there is no atlas uri");
             return;
         }
-        mongoose.connect(process.env.ATLAS_URI, {dbName: "QuotesDatabase"})
-            .catch(() => {});
+        mongoose.connect(process.env.ATLAS_URI, { dbName: "QuotesDatabase" })
+            .catch(() => { });
         return;
     }
     next();

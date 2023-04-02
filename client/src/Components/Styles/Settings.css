@@ -5,8 +5,28 @@
     margin-top: 40px;
     background-color: var(--sub-color-transparent);
     max-width: 500px;
-    min-width: 480px;
+    min-width: 485px;
     border-radius: 20px;
+    height: fit-content;
+}
+
+#prefs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+    list-style-type: none;
+}
+
+#prefs > svg {
+    width: 20px;
+    height: 20px;
+    color: var(--sub-color);
+}
+
+#prefs > svg:hover {
+    cursor: pointer;
+    color: var(--text-color);
 }
 
 .highlightSetting{
@@ -18,7 +38,7 @@
     border: none;
     background-color: transparent;
     color: var(--sub-color);
-    margin: 10px;
+    margin: 5px;
     font-size: 0.9em;
 }
 
@@ -27,9 +47,12 @@
     color: var(--text-color);
 }
 
-#time-settings, #length-settings {
+#length-settings {
     display: flex;
+    flex-flow: row wrap;
     min-width: 200px;
+    line-height: 10px;
+    justify-content: center;
 }
 
 .game-setting-icon {

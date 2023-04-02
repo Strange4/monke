@@ -10,17 +10,26 @@ function Login(props) {
     const auth = useContext(AuthContext);
 
     async function handleLogin(googleData) {
-        const data = await postData("/authentication/login", {token: googleData.credential}, "POST")
-        await setUserData(data);
-        auth.setUserLoggedIn(true);
+        const data =
+            await postData("/authentication/login", { token: googleData.credential }, "POST");
+        if (data) {
+            const userSet = await setUserData(data);
+            if (userSet) {
+                auth.setUserLoggedIn(true);
+            }
+        }
     }
 
     async function setUserData(data) {
-        const userData = {
-            username: data.user.username,
-            "picture_url": data.user.pic,
+        if (data) {
+            const userData = {
+                username: data.user.username,
+                "picture_url": data.user.pic,
+            }
+            await postData("/api/user", userData, "POST");
+            return true;
         }
-        await postData("/api/user", userData, "POST");
+        return false;
     }
 
     return (

@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import './Styles/GameText.css';
+import '../Styles/GameText.css';
 /**
  * 
  * @param {{display: {letter: string; type: string; current: boolean; }[]}} param0 
@@ -11,7 +11,7 @@ function GameText({ display, isFocused, onClick }) {
 
     // shout out to noah for coming in clutch with a big brain idea
     requestAnimationFrame(() => {
-        if(!caretRef.current || !currentLetterRef.current){
+        if (!caretRef.current || !currentLetterRef.current) {
             return;
         }
         const currentLetter = currentLetterRef.current;
@@ -28,15 +28,15 @@ function GameText({ display, isFocused, onClick }) {
             style={{ cursor: isFocused ? 'none' : 'auto' }}>
             <div
                 style={{ display: isFocused ? 'none' : 'inline-block' }}
-                onClick={onClick} 
+                onClick={onClick}
                 id="text-focus-message">
                 👆 Click here to start typing
             </div>
             <div
                 id="typing-screen-text"
-                onClick={onClick} 
+                onClick={onClick}
                 className={isFocused ? 'letter-container' : 'blurred-container letter-container'}>
-                <span ref={caretRef} id="inputCaret"></span> 
+                <span ref={caretRef} id="inputCaret"></span>
                 {
                     display.map((letter, index) => {
                         return (

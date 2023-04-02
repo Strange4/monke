@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import SocketContext from "../../Context/SocketContext";
 import UserProgress from "./UserProgress";
+import { GiTrophy } from 'react-icons/gi';
 
 function GameProgress() {
     const socketContext = useContext(SocketContext);
@@ -17,11 +18,12 @@ function GameProgress() {
     return (
         <div id="game-progress">
             {
-                users.map((user, i) => {
+                users.sort((a, b) => b.progress - a.progress).map((user, i) => {
                     return <UserProgress
-                        key={i} index={i} progress={Math.round(user.progress)} />
+                        key={i} progress={Math.round(user.progress)} color={user.color} />
                 })
             }
+            <GiTrophy />
         </div>
     );
 }

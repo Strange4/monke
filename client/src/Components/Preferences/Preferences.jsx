@@ -1,18 +1,22 @@
 import '../Styles/Popup.css';
-import { useState, useEffect, useRef } from 'react';
-import {setCookie, getCookieValue, deleteCookie} from '../../Controller/CookieHelper';
+import '../Styles/Preferences.css';
+import { useState, useEffect, useRef, useContext } from 'react';
+import { setCookie, getCookieValue, deleteCookie } from '../../Controller/CookieHelper';
 import Popup from 'reactjs-popup';
 import EnableTTS from './EnableTTS';
-import TssSpeed from './TssSpeed';
+import TtsSpeed from './TtsSpeed';
+import PreferenceContext from '../../Context/PreferenceContext';
+import TtsVoice from './TtsVoice';
 
-function Preferences({open, toggleShow}){
+function Preferences({ open, toggleShow }) {
 
+    const preferenceContext = useContext(PreferenceContext);
     /**
      * Define states for all preferences and their default values
      */
-    const [enableTTSQuote, setEnableTTSQuote] = useState("false")
-    const [tssSpeed, setTssSpeed] = useState("1");
-
+    const [tempEnableTTSQuote, setEnableTTSQuote] = useState(preferenceContext.enableTTSQuote);
+    const [tempTtsSpeed, setTtsSpeed] = useState(preferenceContext.ttsSpeed);
+    const [tempTtsVoice, setTtsVoice] = useState(undefined);
     const popupRef = useRef(null);
 
     /**
@@ -21,47 +25,56 @@ function Preferences({open, toggleShow}){
      */
     const stateMap = {
         "enableTTSQuote": {
-            state: enableTTSQuote,
+            state: tempEnableTTSQuote,
             setter: setEnableTTSQuote
         },
-        "tssSpeed": {
-            state: tssSpeed,
-            setter: setTssSpeed
+        "ttsSpeed": {
+            state: tempTtsSpeed,
+            setter: setTtsSpeed
+        },
+        "ttsVoice": {
+            state: tempTtsVoice,
+            setter: setTtsVoice
         }
     }
 
     /**
-     * Will handle changing the state of preference value.
+     * Will handle changing the temporary state of preference value.
      * The target's name value will be retrieved and used to reference the
      * appropriate state setting function in the stateMap object.
      * @param {*} event
      */
-    function handlePrefChange(event){
+    function handlePrefChange(event) {
         const stateSetter = stateMap[event.target.name].setter;
         stateSetter(event.target.value);
     }
 
     /**
-     * Save states of all values to cookie
+     * Save states of all values to cookie and applies changes to
+     * preference context
      * @param {*} event 
      */
-    function handleSavePref(event){
+    function handleSavePref(event) {
         event.preventDefault();
         Object.keys(stateMap).forEach(key => {
             deleteCookie(key);
             setCookie(key, stateMap[key].state);
         });
-
+        tempEnableTTSQuote === "true" ?
+            preferenceContext.setEnableTTSQuote("true") :
+            preferenceContext.setEnableTTSQuote("false");
+        preferenceContext.setTtsSpeed(tempTtsSpeed);
+        preferenceContext.setTtsVoice(tempTtsVoice);
         popupRef.current.close();
     }
 
     /**
      * loads preferences from cookies
      */
-    function handleLoadPref(){
+    function handleLoadPref() {
         Object.keys(stateMap).forEach(key => {
             const cookieValue = getCookieValue(key);
-            if(cookieValue !== undefined){
+            if (cookieValue !== undefined) {
                 const stateSetter = stateMap[key].setter;
                 stateSetter(cookieValue);
             }
@@ -69,21 +82,22 @@ function Preferences({open, toggleShow}){
     }
 
     useEffect(() => {
-        if(open){
+        if (open) {
             handleLoadPref();
         }
     }, [open]);
 
-    return(
+    return (
         <Popup open={open} modal onClose={toggleShow} ref={popupRef}>
-            <form onSubmit={handleSavePref}>
-                <div className="popup">
+            <form id='preferences' onSubmit={handleSavePref}>
+                <div className="popup" id='pref-popup'>
                     <h1>Accessibility</h1>
                     <div id="TTSQuote-pref">
-                        <EnableTTS enabled={enableTTSQuote} changeOption={handlePrefChange} />
-                        <TssSpeed speed={tssSpeed} changeOption={handlePrefChange} />
+                        <EnableTTS enabled={tempEnableTTSQuote} changeOption={handlePrefChange} />
+                        <TtsSpeed speed={tempTtsSpeed} changeOption={handlePrefChange} />
+                        <TtsVoice selected={tempTtsVoice} changeOption={handlePrefChange} />
                     </div>
-                    <button type="submit">Save preferences</button>
+                    <button type="submit" id='save-pref-btn'>Save preferences</button>
                 </div>
             </form>
         </Popup>

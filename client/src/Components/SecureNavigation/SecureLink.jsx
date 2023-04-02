@@ -9,4 +9,4 @@ const SecureLink = React.forwardRef(function a(props, ref) {
     );
 });
 
-export {SecureLink};
+export { SecureLink };

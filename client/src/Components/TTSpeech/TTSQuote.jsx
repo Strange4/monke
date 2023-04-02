@@ -1,42 +1,49 @@
 import Speech from "react-speech";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useContext, useState } from "react";
+import PreferenceContext from "../../Context/PreferenceContext";
 
 /**
- * React component that converts a quote spoken words using the 'react-speech' library.
+ * React component that converts a quote to spoken words using the 'react-speech' library.
  * @param {string} text - Text to be read by react-speech.
- * @param {boolean} resultScreenOff - Flag indicating if result screen is active.
- * @param {boolean} enabled - Flag indicating if the user enbled the TTS feature.
- * @returns {ReactElement} - If result screen inactive and TTS enabled, returns TTS component.
+ * @returns {ReactElement} - If context state enableTTSQuote is "true", returns TTS component.
  */
-function TTSQuote({ text, resultScreenOff, enabled }){
+function TTSQuote({ text }) {
 
-    const [isMounted, setIsMounted] = useState(false);
+    const prefContext = useContext(PreferenceContext);
     const speechRef = useRef();
+    const [isPlaying, setIsPlaying] = useState(false);
 
     useEffect(() => {
-        resultScreenOff && enabled ? setIsMounted(true) : setIsMounted(false);
-    }, [resultScreenOff, enabled]);
-
-    useEffect(() => {
-        if(speechRef.current && isMounted){
-            playQuote();
+        if (speechRef.current) {
+            setIsPlaying(true);
         }
-    }, [isMounted]);
+    }, [text, prefContext.enableTTSQuote]);
 
     /**
      * function that invokes react-speech to read out the text.
      * Invoked automatically upon being mounted.
      * User can invoke it either by clicking the replay button or pressing enter when it is focused
      */
-    function playQuote(){
+    function playQuote() {
         speechRef.current.play();
     }
 
-    return isMounted && <Speech ref={speechRef} text={text}
+    useEffect(() => {
+        if (isPlaying) {
+            playQuote();
+        }
+        return () => {
+            setIsPlaying(false);
+        }
+    }, [isPlaying]);
+
+    return prefContext.enableTTSQuote === "true" && <Speech ref={speechRef} text={text}
         displayText="Replay quote"
         textAsButton={true}
+        rate={prefContext.ttsSpeed}
+        voice={prefContext.ttsVoice}
         onKeyUp={(e) => {
-            if(e.key === 'Enter'){
+            if (e.key === 'Enter') {
                 playQuote();
             }
         }}

@@ -2,7 +2,7 @@ import './Layout/TypingScreen.css';
 import { useState, useRef, useContext, useEffect } from "react";
 import VirtualKeyboard from './VirtualKeyboard';
 import keyboardKeys from "../../Data/keyboard_keys.json";
-import GameText from '../GameText';
+import GameText from './GameText';
 import Chronometer, { useChronometer } from './Chronometer';
 import SoloGameResult from './SoloGameResult';
 import { useQuery } from 'react-query';
@@ -11,9 +11,11 @@ import SocketContext from '../../Context/SocketContext';
 import {
     renderLetters, getDefaultUserDisplay, mapKeyToKeyboard, preventDefaultBehavior,
     randomNumber
-} from './TypingUtil';
+} from '../../Controller/TypingUtil';
 import defaultQuotes from '../../Data/default_quotes.json';
 import TTSQuote from '../TTSpeech/TTSQuote';
+import AuthContext from '../../Context/AuthContext';
+import { computeResults, postUserStats } from '../../Controller/GameResultsHelper';
 
 const allShiftKeys = keyboardKeys.english.upper;
 const allRegKeys = keyboardKeys.english.lower;
@@ -33,9 +35,9 @@ function TypingScreen(props) {
             return props.quote
         }
         let url;
-        if (props.quoteLength === "random"){
+        if (props.quoteLength === "random") {
             url = "/api/quote";
-        } else{
+        } else {
             url = `/api/quote?quoteLength=${props.quoteLength}`;
         }
         const resp = await fetch(url,
@@ -49,7 +51,7 @@ function TypingScreen(props) {
     }, {
         onSuccess: (quote) => {
             let newQuote = quote;
-            if (!props.punctuation){
+            if (!props.punctuation) {
                 newQuote = quote.replace(/[^\w\s']|_/g, "").replace(/\s+/g, " ");
             }
             setTextToDisplay(newQuote);
@@ -57,7 +59,7 @@ function TypingScreen(props) {
         }, onError: () => {
             const quote = defaultQuotes[randomNumber(0, defaultQuotes.length)];
             let newQuote = quote;
-            if (!props.punctuation){
+            if (!props.punctuation) {
                 newQuote = quote.replace(/[^\w\s']|_/g, "").replace(/\s+/g, " ");
             }
             setTextToDisplay(newQuote);
@@ -71,10 +73,11 @@ function TypingScreen(props) {
     const [displayResults, setDisplayResults] = useState(false);
     const { startTimer, stopTimer, resetTimer, timer } = useChronometer(setDisplayTime);
     const [userDisplay, setUserDisplay] = useState(getDefaultUserDisplay(textToDisplay));
-    const [enableTTS, setEnableTTS] = useState(false);
+
     const [isFocused, setIsFocused] = useState(true);
     const textContainerRef = useRef();
     const socketContext = useContext(SocketContext);
+    const auth = useContext(AuthContext);
 
 
     // Refreshes the game when a setting changes.
@@ -93,9 +96,22 @@ function TypingScreen(props) {
      */
     function handleGameEnd() {
         stopTimer();
-        if(!props.multiplayer){
+        if (props.multiplayer) {
+            const results = computeMultiplayerResults();
+            socketContext.socket.current.emit("send-results", results);
+        } else if (props.practice) {
+            resetGame();
+        } else {
             setDisplayResults(true);
         }
+    }
+
+    function computeMultiplayerResults() {
+        const results = computeResults(timer.current.time().s, textToDisplay, userDisplay);
+        if (auth.userLoggedIn) {
+            postUserStats(results);
+        }
+        return results;
     }
 
     /**
@@ -105,7 +121,7 @@ function TypingScreen(props) {
         refetch();
         setDisplayResults(false);
         resetTimer();
-        if(textContainerRef.current){
+        if (textContainerRef.current) {
             textContainerRef.current.focus();
             textContainerRef.current.value = "";
         }
@@ -174,63 +190,46 @@ function TypingScreen(props) {
     }
 
     if (isLoading) {
-        return <Spinner />
-    }
-
-    function handleChkBoxEvent(e) {
-        setEnableTTS(e.target.checked);
+        return <Spinner />;
     }
 
     return (
         <div>
             <div className='center'>
                 <Chronometer seconds={displayTime} />
+                <input
+                    onBlur={() => setIsFocused(false)}
+                    onFocus={() => setIsFocused(true)}
+                    autoFocus
+                    type="text"
+                    id="typing-input-box"
+                    ref={textContainerRef}
+                    onChange={onChangeText}
+                    onKeyDown={handleKeyDown}
+                    onKeyUp={handlekeyUp}
+                    onPaste={preventDefaultBehavior}
+                    onDrag={preventDefaultBehavior}
+                    onDrop={preventDefaultBehavior}
+                    onCopy={preventDefaultBehavior}
+                />
                 <GameText onClick={() => {
                     textContainerRef.current.focus();
                     setIsFocused(true);
                 }} display={userDisplay} isFocused={isFocused} />
                 <VirtualKeyboard currentKeys={keyboard} />
+
                 <TTSQuote
                     text={textToDisplay}
-                    resultScreenOff={!displayResults}
-                    enabled={enableTTS} />
-                <label>!TEMPORARY! Enable text to speech</label>
-                <input type="checkbox"
-                    id="enableTTS"
-                    name="enableTTSQuote"
-                    defaultChecked={false}
-                    onClick={handleChkBoxEvent}
-                    onKeyUp={(e) => {
-                        if (e.key === 'Enter') {
-                            e.target.checked = !e.target.checked;
-                            handleChkBoxEvent(e)
-                        }
-                    }}
                 />
+
                 <SoloGameResult
                     isOpen={displayResults}
                     displayText={userDisplay}
                     timer={timer.current}
                     originalText={textToDisplay}
                     closeWindow={resetGame}
-                    multiplayer={props.multiplayer}
                 />
             </div>
-
-            <input
-                onBlur={() => setIsFocused(false)}
-                autoFocus
-                type="text"
-                id="typing-input-box"
-                ref={textContainerRef}
-                onChange={onChangeText}
-                onKeyDown={handleKeyDown}
-                onKeyUp={handlekeyUp}
-                onPaste={preventDefaultBehavior}
-                onDrag={preventDefaultBehavior}
-                onDrop={preventDefaultBehavior}
-                onCopy={preventDefaultBehavior}
-            />
         </div>
     );
 }

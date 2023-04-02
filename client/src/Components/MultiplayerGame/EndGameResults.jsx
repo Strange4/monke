@@ -5,18 +5,10 @@ const EndGameResults = (props) => {
             <p className='player-name'> {props.name} {props.myUser ? "(You)" : ""}</p>
             {props.ended ?
                 <div id="game-single-result">
-                    <p id="end-game-rank">
-                        {props.rank + 1}
-                    </p>
-                    <p>
-                        wpm: {props.wpm}
-                    </p>
-                    <p>
-                        acc: {props.acc}
-                    </p>
-                    <p>
-                        score: {Math.round(props.wpm * props.acc)}
-                    </p>
+                    <p id="end-game-rank"> {props.rank + 1} </p>
+                    <p> wpm: {props.wpm} </p>
+                    <p> acc: {props.acc} </p>
+                    <p> score: {Math.round(props.wpm * props.acc)} </p>
                 </div>
                 :
                 <div id="game-single-result">

@@ -1,4 +1,4 @@
-import './Styles/PlayerItem.css';
+import '../Styles/PlayerItem.css';
 import { RiVipCrownLine } from 'react-icons/ri';
 
 /**
@@ -14,7 +14,6 @@ function PlayerItem(props) {
                 {props.leader ? <RiVipCrownLine /> : null}
                 {props.name}
                 {props.myUser ? "    (You)" : ""}
-
             </p>
         </div>
     );

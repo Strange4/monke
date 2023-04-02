@@ -1,0 +1,90 @@
+.popup-content:has(#preferences) {
+    width: 60%;
+    height: fit-content;
+    min-width: 450px;
+    max-width: 1000px;
+}
+
+#preferences {
+    display: flex;
+    flex-flow: column wrap;
+}
+
+#pref-popup {
+    padding: 30px;
+    outline: none;
+}
+
+#TTSQuote-pref > div {
+    margin: 30px;
+    background-color: var(--bg-color);
+    border-radius: 20px;
+    padding: 10px;
+}
+
+.pref-group {
+    display: flex;
+    flex-flow: column wrap;
+    align-content: center;
+    min-width: 300px;
+}
+
+.pref-group p {
+    min-width: 270px;
+}
+
+.pref-btns {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-evenly;
+    width: 80%;
+    min-width: 270px;
+}
+
+input[type="radio"] {
+    height: 1rem;
+    width: 1rem;
+    margin-right: 0.5rem;
+    accent-color: var(--accent-color);
+}
+
+#tts-voice {
+    background-color: transparent !important;
+}
+
+#tts-voice > select {
+    height: 40px;
+    width: 80%;
+    border-radius: 20px;
+    padding: 10px;
+    background-color: var(--bg-color);
+    color: var(--text-xolor);
+    border-color: var(--bg-color);
+}
+
+#save-pref-btn {
+    width: 40%;
+    height: 40px;
+    border-radius: 20px;
+    border: none;
+    background-color: var(--bg-color);
+    color: var(--text-xolor);
+    font-size: 3.5vw;
+    transition: 0.3s;
+}
+
+#save-pref-btn:hover {
+    cursor: pointer;
+    background-color: var(--sub-color);
+    color: var(--bg-color);
+}
+
+#save-pref-btn:active {
+    background-color: var(--accent-color);
+}
+
+@media (min-width: 1000px) {
+    #save-pref-btn {
+       font-size: 1.5em;
+    }
+}
