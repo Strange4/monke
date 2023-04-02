@@ -31,12 +31,6 @@
     font-size: 1em;
 }
 
-/* @media (min-width: 800px) {
-    .player-name {
-       font-size: 1em;
-    }
-} */
-
 .highlight {
     background-color: var(--highlight) !important;
     color: var(--bg-color);

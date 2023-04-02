@@ -24,6 +24,8 @@
   + scrum master should keep track of who is doing what and how long it's taking
   + implement the scrum master and product owner roles more.
 
+---
+
 ## SPRINT 02 - The Macaque phase
 
 ### What went well !! (✿◡‿◡)
@@ -50,3 +52,25 @@
 + Having the FrontEnd and BackEnd communicate more.
   + Scrum master should have a greater role in making sure that everyone knows what's happening as well.
 + Put more emphasis and focus on bug fixes and inconsistencies within the app
+
+---
+
+## SPRINT 03 - The Gorilla phase
+
+### What went well !! (✿◡‿◡)
+
++ Time Management! Because we managed our time accordingly, it freed up us more time to focus on the small details that made the application much better
++ All tasks were completed ahead of time without the need of dropping any feature.
++ Everyone worked on what they were supposed to, there were no time wasted.
+
+### What did not go well ╰（‵□′）╯
+
++ MR reviews slowed down, there would often be 3 MRs waiting for review with no one as a reviewer
++ Some questions asked in the group chat were left unanswered for a while, took longer than in previous sprints to get a reply back
+
+### What to change in next sprint ¯\\(°_o)/¯
+
++ Keep up the same pace throughout the sprints
++ Try to follow the planned schedule. Inability to do so led us to a day to day plan.
++ Implement a beat boxing ai bot that tries to learn how to beatbox the quotes.
+  + If you type the quote before the ai finishes beat boxing you get a +20% boost on your wpm.
