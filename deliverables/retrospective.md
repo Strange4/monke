@@ -74,3 +74,16 @@
 + Try to follow the planned schedule. Inability to do so led us to a day to day plan.
 + Implement a beat boxing ai bot that tries to learn how to beatbox the quotes.
   + If you type the quote before the ai finishes beat boxing you get a +20% boost on your wpm.
+
+### Champion Features (✿o‿o)/╯
+
++ Christopher Hu
+  - Accessibility (Text To Speech)
++ Katharina Orfanidis
+  - User Friendliness (Aesthetic of the website)
++ Rim Dallali
+  - Multiplayer (Progress bar with all users)
++ Andrew Trinh
+  - First Time Tour
++ Mauricio Maurillo
+  - Scalability
