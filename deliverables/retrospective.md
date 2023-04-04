@@ -84,6 +84,6 @@
 + Rim Dallali
   - Multiplayer (Progress bar with all users)
 + Andrew Trinh
-  - First Time Tour
+  - Accessibility (First Time Tour)
 + Mauricio Maurillo
   - Scalability
