@@ -86,4 +86,4 @@
 + Andrew Trinh
   - Accessibility (First Time Tour)
 + Mauricio Maurillo
-  - Scalability
+  - Scalability (Reduce Server load)
